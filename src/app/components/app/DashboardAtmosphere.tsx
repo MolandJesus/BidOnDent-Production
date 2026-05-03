@@ -97,7 +97,8 @@ export default function DashboardAtmosphere({ isLightAppearance }: { isLightAppe
         className="fixed inset-0 z-0 pointer-events-none"
         style={{
           background: isLightAppearance
-            ? "radial-gradient(ellipse 32% 70% at 0% 38%, rgba(220, 165, 90, 0.10) 0%, transparent 62%)"
+            ? // Diffuse far-halo gutter wash — locked palette (KI-066).
+              "radial-gradient(ellipse 32% 70% at 0% 38%, rgba(196, 130, 45, 0.10) 0%, transparent 62%)"
             : "radial-gradient(ellipse 32% 70% at 0% 38%, rgba(220, 150, 60, 0.16) 0%, transparent 60%)",
         }}
       />
@@ -107,7 +108,8 @@ export default function DashboardAtmosphere({ isLightAppearance }: { isLightAppe
         className="fixed inset-0 z-0 pointer-events-none"
         style={{
           background: isLightAppearance
-            ? "radial-gradient(ellipse 30% 65% at 100% 62%, rgba(220, 165, 90, 0.09) 0%, transparent 62%)"
+            ? // Diffuse far-halo gutter wash — locked palette (KI-066).
+              "radial-gradient(ellipse 30% 65% at 100% 62%, rgba(196, 130, 45, 0.09) 0%, transparent 62%)"
             : "radial-gradient(ellipse 30% 65% at 100% 62%, rgba(220, 150, 60, 0.14) 0%, transparent 60%)",
         }}
       />
@@ -118,7 +120,8 @@ export default function DashboardAtmosphere({ isLightAppearance }: { isLightAppe
         className="fixed inset-0 z-0 pointer-events-none"
         style={{
           background: isLightAppearance
-            ? "radial-gradient(ellipse 56% 22% at 50% 100%, rgba(220, 165, 90, 0.08) 0%, transparent 70%)"
+            ? // Diffuse far-halo bottom wash — locked palette (KI-066).
+              "radial-gradient(ellipse 56% 22% at 50% 100%, rgba(196, 130, 45, 0.08) 0%, transparent 70%)"
             : "radial-gradient(ellipse 56% 22% at 50% 100%, rgba(220, 150, 60, 0.12) 0%, transparent 68%)",
         }}
       />

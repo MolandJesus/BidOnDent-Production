@@ -174,7 +174,8 @@ export default function NotificationCenter({
                   ? "rgba(147, 197, 253, 0.42)"
                   : "rgba(96, 165, 250, 0.22)",
                 boxShadow: isLightAppearance
-                  ? "0 20px 60px rgba(15, 23, 42, 0.16), 0 4px 12px rgba(30, 58, 138, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.92), inset 0 -1px 0 rgba(220, 165, 90, 0.22), 0 0 0 1px rgba(220, 165, 90, 0.14), 0 0 0 1px rgba(191, 219, 254, 0.30), 0 0 36px rgba(220, 140, 50, 0.16)"
+                  ? // Light mode aligned to locked 2026-05-03 palette (KI-066).
+                    "0 20px 60px rgba(15, 23, 42, 0.16), 0 4px 12px rgba(30, 58, 138, 0.08), inset 0 1px 0 rgba(252, 240, 208, 0.88), inset 0 -1px 0 rgba(140, 82, 22, 0.30), 0 0 0 1px rgba(140, 82, 22, 0.20), 0 0 0 1px rgba(191, 219, 254, 0.30), 0 0 36px rgba(196, 130, 45, 0.18)"
                   : "0 20px 64px rgba(2, 6, 23, 0.52), 0 0 0 1px rgba(96, 165, 250, 0.20), inset 0 1px 0 rgba(220, 165, 90, 0.22), inset 0 -1px 0 rgba(220, 165, 90, 0.18), 0 0 36px rgba(37, 99, 235, 0.12), 0 0 50px rgba(220, 140, 50, 0.16)",
                 backdropFilter: isLightAppearance
                   ? "blur(26px) saturate(1.5)"
@@ -281,7 +282,10 @@ export default function NotificationCenter({
                     <div
                       className={`mx-auto flex h-11 w-11 items-center justify-center rounded-xl ${
                         isLightAppearance
-                          ? "bg-[linear-gradient(135deg,rgba(219,234,254,0.85)_0%,rgba(191,219,254,0.55)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.85),inset_0_-1px_0_rgba(220,165,90,0.18),0_0_0_1px_rgba(147,197,253,0.30),0_4px_14px_rgba(59,130,246,0.10),0_0_20px_rgba(220,140,50,0.14)]"
+                          ? // Light mode aligned to locked 2026-05-03 palette
+                            // (KI-066): cream inset, bronze rim, outer halo
+                            // tuned to rgba(196,130,45) per reconciled doctrine.
+                            "bg-[linear-gradient(135deg,rgba(219,234,254,0.85)_0%,rgba(191,219,254,0.55)_100%)] shadow-[inset_0_1px_0_rgba(252,240,208,0.82),inset_0_-1px_0_rgba(140,82,22,0.26),0_0_0_1px_rgba(147,197,253,0.30),0_4px_14px_rgba(59,130,246,0.10),0_0_20px_rgba(196,130,45,0.16)]"
                           : "bg-[linear-gradient(135deg,rgba(37,99,235,0.18)_0%,rgba(59,130,246,0.10)_100%)] shadow-[inset_0_1px_0_rgba(147,197,253,0.18),inset_0_-1px_0_rgba(220,165,90,0.18),0_0_0_1px_rgba(96,165,250,0.22),0_4px_18px_rgba(37,99,235,0.18),0_0_22px_rgba(220,140,50,0.18)]"
                       }`}
                     >

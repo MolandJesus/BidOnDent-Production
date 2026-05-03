@@ -244,10 +244,12 @@ export default function DashboardSidebar({
       </nav>
 
       <div
-        className={`p-3 border-t ${isLightAppearance ? "border-[rgba(220,165,90,0.18)]" : "border-[rgba(220,165,90,0.16)]"}`}
+        className={`p-3 border-t ${isLightAppearance ? "border-[rgba(140,82,22,0.26)]" : "border-[rgba(220,165,90,0.16)]"}`}
         style={{
           boxShadow: isLightAppearance
-            ? "inset 0 1px 0 rgba(255, 252, 245, 0.85), 0 -8px 22px rgba(220, 140, 50, 0.06)"
+            ? // Light footer mini-card aligned to locked 2026-05-03 palette
+              // (KI-066): cream inset + deep outer warm halo.
+              "inset 0 1px 0 rgba(252, 240, 208, 0.85), 0 -8px 22px rgba(196, 130, 45, 0.08)"
             : "inset 0 1px 0 rgba(220, 175, 110, 0.10), 0 -8px 22px rgba(220, 140, 50, 0.10)",
         }}
       >
@@ -269,7 +271,8 @@ export default function DashboardSidebar({
               className="w-10 h-10 rounded-full object-cover ring-2 ring-blue-500/20"
               style={{
                 boxShadow: isLightAppearance
-                  ? "0 0 0 1px rgba(220, 165, 90, 0.22), 0 0 18px rgba(220, 140, 50, 0.18)"
+                  ? // Light avatar ring — bronze trim + deep outer halo (KI-066).
+                    "0 0 0 1px rgba(140, 82, 22, 0.30), 0 0 18px rgba(196, 130, 45, 0.20)"
                   : "0 0 0 1px rgba(220, 165, 90, 0.20), 0 0 22px rgba(220, 140, 50, 0.22)",
               }}
             />
@@ -279,7 +282,8 @@ export default function DashboardSidebar({
               style={{
                 background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
                 boxShadow: isLightAppearance
-                  ? "0 0 0 1px rgba(220, 165, 90, 0.22), 0 0 18px rgba(220, 140, 50, 0.18)"
+                  ? // Light avatar ring — bronze trim + deep outer halo (KI-066).
+                    "0 0 0 1px rgba(140, 82, 22, 0.30), 0 0 18px rgba(196, 130, 45, 0.20)"
                   : "0 0 0 1px rgba(220, 165, 90, 0.20), 0 0 22px rgba(220, 140, 50, 0.22)",
               }}
             >

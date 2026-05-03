@@ -123,7 +123,7 @@ export default function InsurerMapWidget({
           <span
             className={`bd-dashboard-chip shrink-0 px-2.5 py-1 text-[11px] font-medium ${
               isLight
-                ? "bg-white/85 text-indigo-700"
+                ? "bg-[rgba(238,247,255,0.92)] text-indigo-700"
                 : "border-indigo-200/18 bg-white/10 text-indigo-50"
             }`}
           >

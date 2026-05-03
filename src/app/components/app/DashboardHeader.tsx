@@ -314,7 +314,8 @@ export default function DashboardHeader({
               <div
                 className={`absolute left-0 right-0 top-full mt-1.5 rounded-xl overflow-hidden z-50 ${
                   isLightAppearance
-                    ? "border border-blue-200/45 bg-white/97 shadow-[0_18px_44px_rgba(15,23,42,0.12),0_4px_10px_rgba(30,58,138,0.06),inset_0_1px_0_rgba(255,255,255,0.85)]"
+                    ? // Cool blue-cream glass replaces near-white surface (KI-066).
+                      "border border-blue-200/45 bg-[linear-gradient(180deg,rgba(238,247,255,0.96)_0%,rgba(219,234,254,0.92)_100%)] shadow-[0_18px_44px_rgba(15,23,42,0.12),0_4px_10px_rgba(30,58,138,0.06),inset_0_1px_0_rgba(252,240,208,0.85)]"
                     : "border border-blue-400/20 bg-[#0d1f35]/95 shadow-[0_18px_44px_rgba(2,6,23,0.45),inset_0_1px_0_rgba(147,197,253,0.10)]"
                 }`}
               >
@@ -367,7 +368,7 @@ export default function DashboardHeader({
                 setShowNotifications((current) => !current);
                 setShowTopProfileMenu(false);
               }}
-              className={`relative flex h-10 w-10 min-h-[44px] min-w-[44px] items-center justify-center rounded-xl border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/40 ${isLightAppearance ? "border-blue-200/55 bg-white/72 shadow-[inset_0_1px_0_rgba(255,255,255,0.78)] hover:bg-white/92 hover:border-blue-300/65" : "border-blue-400/[0.14] bg-white/[0.05] hover:bg-white/[0.09] hover:border-blue-400/[0.22] shadow-[inset_0_1px_0_rgba(147,197,253,0.06)]"}`}
+              className={`relative flex h-10 w-10 min-h-[44px] min-w-[44px] items-center justify-center rounded-xl border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/40 ${isLightAppearance ? "border-blue-200/55 bg-[linear-gradient(180deg,rgba(238,247,255,0.85)_0%,rgba(219,234,254,0.78)_100%)] shadow-[inset_0_1px_0_rgba(252,240,208,0.78)] hover:bg-[linear-gradient(180deg,rgba(238,247,255,0.96)_0%,rgba(219,234,254,0.90)_100%)] hover:border-blue-300/65" : "border-blue-400/[0.14] bg-white/[0.05] hover:bg-white/[0.09] hover:border-blue-400/[0.22] shadow-[inset_0_1px_0_rgba(147,197,253,0.06)]"}`}
               aria-label={
                 showNotifications
                   ? "Close notifications"
@@ -463,7 +464,7 @@ export default function DashboardHeader({
                 id="dashboard-user-profile-menu"
                 role="menu"
                 aria-label="User profile menu"
-                className={`absolute right-0 mt-2 w-60 z-50 overflow-hidden rounded-2xl border backdrop-blur-xl ${isLightAppearance ? "border-blue-200/45 bg-white/97 shadow-[0_18px_44px_rgba(15,23,42,0.14),0_4px_10px_rgba(30,58,138,0.07),inset_0_1px_0_rgba(255,255,255,0.85),0_0_0_1px_rgba(191,219,254,0.20)]" : "border-blue-400/22 bg-[linear-gradient(180deg,rgba(11,23,47,0.94)_0%,rgba(8,18,38,0.90)_100%)] shadow-[0_22px_56px_rgba(2,6,23,0.50),inset_0_1px_0_rgba(147,197,253,0.14),0_0_0_1px_rgba(96,165,250,0.18)]"}`}
+                className={`absolute right-0 mt-2 w-60 z-50 overflow-hidden rounded-2xl border backdrop-blur-xl ${isLightAppearance ? "border-blue-200/45 bg-[linear-gradient(180deg,rgba(238,247,255,0.96)_0%,rgba(219,234,254,0.92)_100%)] shadow-[0_18px_44px_rgba(15,23,42,0.14),0_4px_10px_rgba(30,58,138,0.07),inset_0_1px_0_rgba(252,240,208,0.85),0_0_0_1px_rgba(191,219,254,0.20)]" : "border-blue-400/22 bg-[linear-gradient(180deg,rgba(11,23,47,0.94)_0%,rgba(8,18,38,0.90)_100%)] shadow-[0_22px_56px_rgba(2,6,23,0.50),inset_0_1px_0_rgba(147,197,253,0.14),0_0_0_1px_rgba(96,165,250,0.18)]"}`}
               >
                 <div
                   className={`px-3 py-2.5 border-b ${isLightAppearance ? "border-blue-200/35" : "border-blue-400/15"}`}

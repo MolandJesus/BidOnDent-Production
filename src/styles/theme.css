@@ -2606,14 +2606,18 @@ body {
   pointer-events: none;
 }
 
-/* D4 (final v3.2): stronger amber highlight strip + corner lamp blob in light. */
+/* Premium gold lamp identity — top trim + corner lamp blob in light.
+   Tuned to the locked 2026-05-03 palette (LAW_PROJECT_RULES § Premium
+   Gold Palette): top/corner lamp light = rgba(196, 144, 65, *). The
+   older yellow-amber register (rgba(220, 165, 90), rgba(220, 140, 50))
+   is forbidden — see KI-066. */
 [data-appearance-mode="light"] .bd-dashboard-panel::before,
 [data-appearance-mode="light"] .bd-dashboard-section::before {
-  background: linear-gradient(90deg, transparent, rgba(220, 165, 90, 0.62), transparent);
+  background: linear-gradient(90deg, transparent, rgba(196, 144, 65, 0.62), transparent);
 }
 
 [data-appearance-mode="light"] .bd-dashboard-panel::after {
-  background: radial-gradient(circle, rgba(220, 140, 50, 0.3) 0%, transparent 72%);
+  background: radial-gradient(circle, rgba(196, 144, 65, 0.32) 0%, transparent 72%);
 }
 
 .bd-dashboard-panel {
@@ -3009,10 +3013,22 @@ body {
     border-color 180ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.bd-dashboard-section--interactive::before {
+  transition: background 220ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .bd-dashboard-section--interactive:hover {
   transform: translateY(-1px);
   box-shadow: var(--bd-dashboard-section-hover-shadow);
   border-color: rgba(125, 211, 252, 0.28);
+}
+
+/* Light-mode polish: interactive tiles brighten their top lamp trim on
+   hover so the lamp metaphor responds to touch. Locked palette only
+   (top/corner lamp = rgba(196, 144, 65, *)). Additive — does not change
+   the resting state. */
+[data-appearance-mode="light"] .bd-dashboard-section--interactive:hover::before {
+  background: linear-gradient(90deg, transparent, rgba(196, 144, 65, 0.86), transparent);
 }
 
 .bd-dashboard-section--interactive:focus-visible {

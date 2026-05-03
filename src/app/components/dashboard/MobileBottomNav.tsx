@@ -33,7 +33,9 @@ export default function MobileBottomNav({
       style={{
         paddingBottom: "env(safe-area-inset-bottom, 0px)",
         background: isLightAppearance
-          ? "linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(245, 249, 255, 0.94) 100%)"
+          ? // LAW: bottom-nav body must not be pure white. Cool blue-gray
+            // canvas matching the sidebar light gradient (KI-066).
+            "linear-gradient(180deg, rgba(232, 242, 254, 0.92) 0%, rgba(214, 230, 248, 0.88) 100%)"
           : "linear-gradient(180deg, rgba(8, 18, 38, 0.94) 0%, rgba(6, 13, 28, 0.92) 100%)",
         backdropFilter: "blur(24px) saturate(1.3)",
         WebkitBackdropFilter: "blur(24px) saturate(1.3)",
@@ -73,7 +75,8 @@ export default function MobileBottomNav({
                         ? "linear-gradient(135deg, rgba(37, 99, 235, 0.16) 0%, rgba(96, 165, 250, 0.09) 100%)"
                         : "linear-gradient(135deg, rgba(37, 99, 235, 0.22) 0%, rgba(59, 130, 246, 0.14) 100%)",
                       boxShadow: isLightAppearance
-                        ? "inset 0 1px 0 rgba(255, 255, 255, 0.80), inset 0 -1px 0 rgba(147, 197, 253, 0.16), 0 4px 12px rgba(59, 130, 246, 0.10)"
+                        ? // Cream inset replaces white inset (KI-066).
+                          "inset 0 1px 0 rgba(252, 240, 208, 0.78), inset 0 -1px 0 rgba(147, 197, 253, 0.16), 0 4px 12px rgba(59, 130, 246, 0.10)"
                         : "inset 0 1px 0 rgba(147, 197, 253, 0.14), 0 4px 14px rgba(37, 99, 235, 0.16)",
                       border: isLightAppearance
                         ? "1px solid rgba(147, 197, 253, 0.32)"
@@ -103,7 +106,8 @@ export default function MobileBottomNav({
                     style={{
                       width: "40%",
                       background: isLightAppearance
-                        ? "linear-gradient(90deg, transparent, rgba(220,165,90,0.55) 50%, transparent)"
+                        ? // Top/corner lamp halo per locked palette (KI-066).
+                          "linear-gradient(90deg, transparent, rgba(196,144,65,0.55) 50%, transparent)"
                         : "linear-gradient(90deg, transparent, rgba(220,165,90,0.65) 50%, transparent)",
                     }}
                   />

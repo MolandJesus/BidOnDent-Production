@@ -169,7 +169,7 @@ export default function ShopMapWidget({
           </div>
           <span
             className={`bd-dashboard-chip shrink-0 px-2.5 py-1 text-[11px] font-medium ${
-              isLight ? "bg-white/85 text-blue-700" : "border-blue-200/18 bg-white/10 text-blue-50"
+              isLight ? "bg-[rgba(238,247,255,0.92)] text-blue-700" : "border-blue-200/18 bg-white/10 text-blue-50"
             }`}
           >
             {liveRequestCount} live

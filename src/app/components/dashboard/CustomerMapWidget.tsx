@@ -135,7 +135,10 @@ export default function CustomerMapWidget({
           className="absolute inset-x-0 bottom-0 z-10 flex items-end justify-center pb-3 pt-16 pointer-events-none transition-opacity group-hover:opacity-100 opacity-80"
           style={{
             background: isLight
-              ? "linear-gradient(to top, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.4) 60%, transparent 100%)"
+              ? // Cool blue-gray fade replaces white fade (KI-066) so the
+                // map preview "Explore" teaser feels like the dashboard glass,
+                // not a printer-paper overlay.
+                "linear-gradient(to top, rgba(232,242,254,0.92) 0%, rgba(232,242,254,0.40) 60%, transparent 100%)"
               : "linear-gradient(to top, rgba(2,6,23,0.92) 0%, rgba(2,6,23,0.4) 60%, transparent 100%)",
           }}
         >
@@ -190,7 +193,7 @@ export default function CustomerMapWidget({
           </div>
           <span
             className={`bd-dashboard-chip shrink-0 px-2.5 py-1 text-[11px] font-medium ${
-              isLight ? "bg-white/85 text-cyan-700" : "border-cyan-200/18 bg-white/10 text-cyan-50"
+              isLight ? "bg-[rgba(238,247,255,0.92)] text-cyan-700" : "border-cyan-200/18 bg-white/10 text-cyan-50"
             }`}
           >
             {capabilities.length} tools
@@ -217,7 +220,7 @@ export default function CustomerMapWidget({
             >
               <div
                 className={`flex h-8 w-8 items-center justify-center rounded-lg ${
-                  isLight ? "bg-white/80 text-blue-700" : "bg-white/10 text-blue-100"
+                  isLight ? "bg-[rgba(238,247,255,0.88)] text-blue-700" : "bg-white/10 text-blue-100"
                 }`}
               >
                 <Icon className="h-4 w-4" />
@@ -267,7 +270,7 @@ export default function CustomerMapWidget({
               >
                 <div
                   className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${
-                    isLight ? "bg-white/80 text-blue-700" : "bg-white/10 text-blue-100"
+                    isLight ? "bg-[rgba(238,247,255,0.88)] text-blue-700" : "bg-white/10 text-blue-100"
                   }`}
                 >
                   <Store className="h-3.5 w-3.5" />

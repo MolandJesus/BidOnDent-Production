@@ -244,7 +244,7 @@ export default function MapLibreDashboardMapPreview({
                 fontWeight: 600,
                 lineHeight: 1.3,
                 color: isLight ? "#1e293b" : "#f1f5f9",
-                background: isLight ? "rgba(255,255,255,0.92)" : "rgba(15,23,42,0.92)",
+                background: isLight ? "rgba(238,247,255,0.94)" : "rgba(15,23,42,0.92)",
                 borderRadius: 8,
                 backdropFilter: "blur(8px)",
                 whiteSpace: "nowrap",

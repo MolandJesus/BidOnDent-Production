@@ -21,7 +21,9 @@ export default function MarketStatusIndicator({
     <div
       className={`inline-flex items-center gap-3 rounded-full px-3 py-1.5 text-[11px] font-medium ${
         isLight
-          ? "bg-white/88 text-slate-700 border border-blue-200/50 shadow-[inset_0_1px_0_rgba(255,255,255,0.82),0_2px_8px_rgba(59,130,246,0.06)]"
+          ? // Light pill: cream-leaning glass replaces near-white body, cream
+            // inset replaces white inset (KI-066). Cool blue ring + drop preserved.
+            "bg-[linear-gradient(180deg,rgba(238,247,255,0.92)_0%,rgba(219,234,254,0.86)_100%)] text-slate-700 border border-blue-200/50 shadow-[inset_0_1px_0_rgba(252,240,208,0.82),0_2px_8px_rgba(59,130,246,0.06)]"
           : "bg-white/10 text-blue-50 border border-blue-300/22 shadow-[inset_0_1px_0_rgba(147,197,253,0.10),0_2px_10px_rgba(37,99,235,0.10)]"
       }`}
     >
