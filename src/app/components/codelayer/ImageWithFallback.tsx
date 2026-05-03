@@ -47,6 +47,12 @@ export default function ImageWithFallback(props: ImageWithFallbackProps) {
       style={style}
       {...rest}
       onError={() => setDidError(true)}
+      onLoad={(event) => {
+        const target = event.currentTarget;
+        if (target.naturalWidth < 8 || target.naturalHeight < 8) {
+          setDidError(true);
+        }
+      }}
     />
   );
 }
