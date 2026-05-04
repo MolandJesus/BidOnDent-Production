@@ -178,7 +178,7 @@ export default function BenefitsSection({
           <span
             className={`inline-flex items-center px-4 py-1.5 rounded-full backdrop-blur-sm text-sm font-medium ${isLightAppearance ? "border border-[rgba(200,165,80,0.30)] bg-[rgba(255,248,235,0.55)] text-amber-700 shadow-[inset_0_1px_0_rgba(255,250,235,0.7)]" : "border border-amber-400/45 bg-amber-500/[0.16] text-amber-100 shadow-[inset_0_1px_0_rgba(255,232,180,0.18),0_0_24px_rgba(240,170,70,0.18)]"}`}
           >
-            <span className="w-2 h-2 rounded-full mr-2 bg-amber-300 shadow-[0_0_10px_rgba(253,224,124,0.85)]" />
+            <span className="w-2 h-2 rounded-full mr-2 bg-[rgb(252,240,208)] shadow-[0_0_10px_rgba(196,144,65,0.75)]" />
             Built for Real Repairs
           </span>
         </div>
@@ -199,8 +199,8 @@ export default function BenefitsSection({
               className="hidden sm:block h-[2px] w-20 lg:w-28 rounded-full flex-shrink-0"
               style={{
                 background: isLightAppearance
-                  ? "linear-gradient(90deg, transparent 0%, rgba(184,134,11,0.10) 25%, rgba(218,165,32,0.85) 60%, rgba(184,134,11,0.55) 85%, transparent 100%)"
-                  : "linear-gradient(90deg, transparent 0%, rgba(180,140,40,0.20) 25%, rgba(253,224,124,0.90) 60%, rgba(218,165,32,0.55) 85%, transparent 100%)",
+                  ? "linear-gradient(90deg, transparent 0%, rgba(140,82,22,0.10) 25%, rgba(196,144,65,0.85) 60%, rgba(140,82,22,0.55) 85%, transparent 100%)"
+                  : "linear-gradient(90deg, transparent 0%, rgba(196,130,45,0.20) 25%, rgba(252,240,208,0.90) 60%, rgba(196,144,65,0.55) 85%, transparent 100%)",
               }}
             />
             <h3
@@ -230,8 +230,8 @@ export default function BenefitsSection({
               className="hidden sm:block h-[2px] w-20 lg:w-28 rounded-full flex-shrink-0"
               style={{
                 background: isLightAppearance
-                  ? "linear-gradient(90deg, transparent 0%, rgba(184,134,11,0.55) 15%, rgba(218,165,32,0.85) 40%, rgba(184,134,11,0.10) 75%, transparent 100%)"
-                  : "linear-gradient(90deg, transparent 0%, rgba(218,165,32,0.55) 15%, rgba(253,224,124,0.90) 40%, rgba(180,140,40,0.20) 75%, transparent 100%)",
+                  ? "linear-gradient(90deg, transparent 0%, rgba(140,82,22,0.55) 15%, rgba(196,144,65,0.85) 40%, rgba(140,82,22,0.10) 75%, transparent 100%)"
+                  : "linear-gradient(90deg, transparent 0%, rgba(196,144,65,0.55) 15%, rgba(252,240,208,0.90) 40%, rgba(196,130,45,0.20) 75%, transparent 100%)",
               }}
             />
           </div>

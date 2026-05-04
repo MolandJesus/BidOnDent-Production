@@ -71,7 +71,7 @@ export default function TrustStatsSection({
             height: "800px",
             top: "-200px",
             left: "-200px",
-            background: "radial-gradient(circle, rgba(180,140,40,0.22), transparent 65%)",
+            background: "radial-gradient(circle, rgba(196,130,45,0.22), transparent 65%)",
           }}
         />
         {isLightAppearance ? (
@@ -153,7 +153,7 @@ export default function TrustStatsSection({
                 : "border border-amber-400/45 bg-amber-500/[0.16] text-amber-100 shadow-[inset_0_1px_0_rgba(255,232,180,0.18),0_0_24px_rgba(240,170,70,0.18)]"
             }`}
           >
-            <span className="w-2 h-2 rounded-full mr-2 bg-amber-300 shadow-[0_0_10px_rgba(253,224,124,0.85)]" />
+            <span className="w-2 h-2 rounded-full mr-2 bg-[rgb(252,240,208)] shadow-[0_0_10px_rgba(196,144,65,0.75)]" />
             Our Commitments
           </span>
           {/* Pass 12 (calibrated test, 2026-05-02): metallic-gold flanking accent.
@@ -167,8 +167,8 @@ export default function TrustStatsSection({
               className="hidden sm:block h-[2px] w-20 lg:w-28 rounded-full"
               style={{
                 background: isLightAppearance
-                  ? "linear-gradient(90deg, transparent 0%, rgba(184,134,11,0.10) 25%, rgba(218,165,32,0.85) 60%, rgba(184,134,11,0.55) 85%, transparent 100%)"
-                  : "linear-gradient(90deg, transparent 0%, rgba(180,140,40,0.20) 25%, rgba(253,224,124,0.90) 60%, rgba(218,165,32,0.55) 85%, transparent 100%)",
+                  ? "linear-gradient(90deg, transparent 0%, rgba(140,82,22,0.10) 25%, rgba(196,144,65,0.85) 60%, rgba(140,82,22,0.55) 85%, transparent 100%)"
+                  : "linear-gradient(90deg, transparent 0%, rgba(196,130,45,0.20) 25%, rgba(252,240,208,0.90) 60%, rgba(196,144,65,0.55) 85%, transparent 100%)",
               }}
             />
             <h3
@@ -186,8 +186,8 @@ export default function TrustStatsSection({
               className="hidden sm:block h-[2px] w-20 lg:w-28 rounded-full"
               style={{
                 background: isLightAppearance
-                  ? "linear-gradient(90deg, transparent 0%, rgba(184,134,11,0.55) 15%, rgba(218,165,32,0.85) 40%, rgba(184,134,11,0.10) 75%, transparent 100%)"
-                  : "linear-gradient(90deg, transparent 0%, rgba(218,165,32,0.55) 15%, rgba(253,224,124,0.90) 40%, rgba(180,140,40,0.20) 75%, transparent 100%)",
+                  ? "linear-gradient(90deg, transparent 0%, rgba(140,82,22,0.55) 15%, rgba(196,144,65,0.85) 40%, rgba(140,82,22,0.10) 75%, transparent 100%)"
+                  : "linear-gradient(90deg, transparent 0%, rgba(196,144,65,0.55) 15%, rgba(252,240,208,0.90) 40%, rgba(196,130,45,0.20) 75%, transparent 100%)",
               }}
             />
           </div>

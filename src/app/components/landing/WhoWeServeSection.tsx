@@ -316,8 +316,8 @@ export default function WhoWeServeSection({
                       style={{
                         backgroundColor: isLightAppearance ? card.checkColor : card.checkColorDark,
                         boxShadow: isLightAppearance
-                          ? `0 0 8px ${card.checkColor}66`
-                          : `0 0 10px ${card.checkColorDark}88`,
+                          ? `0 0 8px ${card.checkColor}66, 0 0 14px rgba(196, 144, 65, 0.18)`
+                          : `0 0 10px ${card.checkColorDark}88, 0 0 16px rgba(196, 144, 65, 0.22)`,
                       }}
                     />
                     <span

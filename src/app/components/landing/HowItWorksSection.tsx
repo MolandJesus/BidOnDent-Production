@@ -163,7 +163,7 @@ export default function HowItWorksSection({
           <span
             className={`inline-flex items-center px-4 py-1.5 rounded-full border backdrop-blur-sm text-sm font-medium ${isLightAppearance ? "border-[rgba(100,160,230,0.30)] bg-[rgba(230,244,255,0.60)] text-sky-700 shadow-[inset_0_1px_0_rgba(220,240,255,0.8)]" : "border-blue-400/25 bg-blue-500/10 text-blue-200"}`}
           >
-            <span className="w-2 h-2 rounded-full mr-2 bg-blue-400" />
+            <span className="w-2 h-2 rounded-full mr-2 bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.6),0_0_14px_rgba(196,144,65,0.20)]" />
             Three Steps
           </span>
         </div>

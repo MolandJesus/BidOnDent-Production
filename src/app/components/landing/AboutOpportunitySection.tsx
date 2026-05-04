@@ -141,7 +141,7 @@ export default function AboutOpportunitySection({
           <span
             className={`inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium ${isLightAppearance ? "border border-[rgba(200,180,150,0.25)] bg-[rgba(255,251,245,0.4)] text-blue-700 backdrop-blur-sm shadow-[inset_0_1px_0_rgba(255,250,240,0.6)]" : "border border-blue-400/20 bg-blue-500/10 text-blue-200 backdrop-blur-sm"}`}
           >
-            <span className="w-2 h-2 rounded-full mr-2 bg-blue-400" />
+            <span className="w-2 h-2 rounded-full mr-2 bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.6),0_0_14px_rgba(196,144,65,0.20)]" />
             About BidOnDent
           </span>
           {/* Pass 14/15 — Direction C flanking accent: cobalt-family for
