@@ -3,7 +3,7 @@
 **Last updated:** 2026-05-04
 **Status:** Active documentation operating index
 **Current phase:** Soft Launch Hardening (edge functions v50, `verify_jwt: false`, storage pointer pattern)
-**Current handoff master prompt:** [`HANDOFF_MASTER_PROMPT_2026-05-04_CODEBASE_CLEAN_AND_POLISH.md`](HANDOFF_MASTER_PROMPT_2026-05-04_CODEBASE_CLEAN_AND_POLISH.md)
+**Current handoff:** see git log + active relay prompt context (per relay discipline: do NOT create new session-report docs — the git log + commit messages are the durable record)
 
 BidOnDent is a **geo-native, map-first automotive repair marketplace**. Three user types (customer, shop, insurer) interact through a spatial bidding loop backed by Supabase and PostGIS.
 
@@ -80,7 +80,7 @@ These are the primary governing documents. Always start here.
 - **[`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md)** — long-form design philosophy and historical decisions. The "why behind the system."
 - **[`PLAN_VISUAL_MASTER_2026-05-03.md`](archive/2026-05-03-visual-handoffs/PLAN_VISUAL_MASTER_2026-05-03_archived_2026-05-04.md)** — ARCHIVED 2026-05-04. Visual master ledger from 2026-05-03 session, superseded by Pass G/H/I/J/K/L/M/N/O.
 - **[`PLAN_DESIGN_POLISH_QUEUE_OPUS_2026-05-03.md`](archive/2026-05-03-visual-handoffs/PLAN_DESIGN_POLISH_QUEUE_OPUS_2026-05-03_archived_2026-05-04.md)** — ARCHIVED 2026-05-04. Surgical polish queue from 2026-05-03 session; P0/P1/P2 items consumed by Pass H1/H1.6/H2 + KI-090 + Pass G/H/I.
-- **[`HANDOFF_VISUAL_MASTER_PROMPT_OPUS_4_7_2026-05-03.md`](archive/2026-05-03-visual-handoffs/HANDOFF_VISUAL_MASTER_PROMPT_OPUS_4_7_2026-05-03_archived_2026-05-04.md)** — ARCHIVED 2026-05-04. Was the 2026-05-03 visual session master prompt; superseded by `HANDOFF_MASTER_PROMPT_2026-05-04_CODEBASE_CLEAN_AND_POLISH.md`. Kept for KI-067 (owner HOLD) historical reference.
+- **[`HANDOFF_VISUAL_MASTER_PROMPT_OPUS_4_7_2026-05-03.md`](archive/2026-05-03-visual-handoffs/HANDOFF_VISUAL_MASTER_PROMPT_OPUS_4_7_2026-05-03_archived_2026-05-04.md)** — ARCHIVED 2026-05-04. Was the 2026-05-03 visual session master prompt; consumed across the 2026-05-04 / 2026-05-05 autopilot work. Kept for KI-067 (owner HOLD) historical reference.
 
 ### AI Collaboration / Handoffs
 
@@ -117,10 +117,15 @@ Everything under [`docs/archive/`](archive/) is historical reference, retained f
 
 Most recent archive moves (2026-05-04):
 
+- `AUDIT_FULL_AUTOPILOT_2026-05-05.md` → archive — Phase 0 audit baseline for the 2026-05-05 long-run autopilot session; findings consumed (KI-086-090 all RESOLVED across that pass). Captured at HEAD `23f4a2cd`; stale at this writing.
+- `AUTOPILOT_2026-05-05_FUNCTIONALITY_SWEEP_REPORT.md` (parts 1-4) → archive — 4-part sustained functionality sweep report; all referenced commits + KIs (F-04 / F-16 / F-18 / F-24 / KI-095-103) shipped or marked owner-action per current REF_KNOWN_ISSUES.md.
+- `HANDOFF_MASTER_PROMPT_2026-05-04_CODEBASE_CLEAN_AND_POLISH.md` → archive — was the inherited handoff into the 2026-05-04 codebase-cleanup-and-polish runway; consumed across the prior block + this relay supersedes it. Per relay discipline: handoff prompts no longer get persisted as docs (git log + relay context = durable record).
+- `PASS_AUTOPILOT_2026-05-04_MASTER_PROMPT_AND_POLISH_REPORT.md` → archive — past pass report (range `e5937a27 → 34c96526`).
+- `PASS_AUTOPILOT_2026-05-04_MASTER_PROMPT_FOLLOWUP_REPORT.md` → archive — past pass followup report.
 - `PASS_AUTOPILOT_2026-05-03_MASTER_REPORT.md` → archive — Cloud master pass (Buckets 1-7) all KIs RESOLVED or owner-gated (KI-067 HOLD, KI-075 DEFERRED).
 - `PASS_AUTOPILOT_2026-05-04_MOBILE_DARK_REPORT.md` → archive — mobile/dark visual pass; KI-076-080 all RESOLVED, KI-067/068/075 owner-gated.
 - `PASS_AUTOPILOT_2026-05-05_LONGRUN_REPORT.md` → archive — long-run pass; KI-086-090 all RESOLVED, KI-067/075/089 owner-gated.
-- `HANDOFF_CLOUD_MASTER_AUTOPILOT_2026-05-03.md` → archive — Cloud master autopilot handoff brief, superseded by HANDOFF_MASTER_PROMPT_2026-05-04.
+- `HANDOFF_CLOUD_MASTER_AUTOPILOT_2026-05-03.md` → archive — Cloud master autopilot handoff brief, superseded by 2026-05-04 work (now also archived).
 - `AUDIT_VISUAL_MOBILE_DARK_LIGHT_2026-05-04.md` → archive — visual mobile audit; bucket findings all RESOLVED across Pass H/I/J/K/L/M/N/O.
 - `AUDIT_FULL_2026-05-04_SONNET.md` → archive — F-01..F-24 audit findings; all RESOLVED or owner-gated (per Part 3 report scorecard).
 - `PASS_H_2026-05-05_REPORT.md` → archive — KI-091/092 RESOLVED.
@@ -130,7 +135,7 @@ Most recent archive moves (2026-05-04):
 
 Earlier archive moves (2026-05-03):
 
-- `2026-05-03-visual-handoffs/` — superseded Sonnet audit prep/prompt/report, earlier Opus visual handoff docs, AND (added 2026-05-04) the full 2026-05-03 visual session trio: `PLAN_VISUAL_MASTER_2026-05-03_archived_2026-05-04.md`, `PLAN_DESIGN_POLISH_QUEUE_OPUS_2026-05-03_archived_2026-05-04.md`, `HANDOFF_VISUAL_MASTER_PROMPT_OPUS_4_7_2026-05-03_archived_2026-05-04.md`. Current visual handoff is `HANDOFF_MASTER_PROMPT_2026-05-04_CODEBASE_CLEAN_AND_POLISH.md`.
+- `2026-05-03-visual-handoffs/` — superseded Sonnet audit prep/prompt/report, earlier Opus visual handoff docs, AND (added 2026-05-04) the full 2026-05-03 visual session trio: `PLAN_VISUAL_MASTER_2026-05-03_archived_2026-05-04.md`, `PLAN_DESIGN_POLISH_QUEUE_OPUS_2026-05-03_archived_2026-05-04.md`, `HANDOFF_VISUAL_MASTER_PROMPT_OPUS_4_7_2026-05-03_archived_2026-05-04.md`. All visual handoff prompts now consumed; current handoff is the active relay prompt context, not a doc.
 - `PLAN_LANDING_REDESIGN.md` → archive — 16-pass landing redesign, STATUS COMPLETE 2026-05-02.
 - `PLAN_LANDING_LIQUID_MAP_INTELLIGENCE.md` → archive — Passes A–G shipped; Pass H verification completed through the archived Sonnet audit handoff in `archive/2026-05-03-visual-handoffs/`.
 - `PLAN_LANDING_BUTTON_SYSTEM_ADOPTION.md` → archive — cross-app primary-CTA shell adoption, SHIPPED 2026-05-03.
