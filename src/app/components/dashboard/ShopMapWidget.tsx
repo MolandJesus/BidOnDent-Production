@@ -117,6 +117,9 @@ export default function ShopMapWidget({
       {/* Embedded mini-map — Bucket 1.3 (KI-074 partial): inner-glass bezel
           ring eliminates the flat seam between panel chrome and map canvas. */}
       <div className="relative h-[180px] md:h-[200px] rounded-xl ring-1 ring-[rgba(96,165,250,0.16)] ring-inset overflow-hidden">
+        {/* Bucket 5.9 (KI-074 RESOLVED): map canvas edge sheen — premium
+            curved-glass edge feel above the map canvas. */}
+        <div className="bd-map-canvas-sheen z-[1]" aria-hidden="true" />
         <DashboardMapPreview
           shops={partnerShops}
           reportPins={reportPins}

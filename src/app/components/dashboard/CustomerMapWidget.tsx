@@ -139,6 +139,11 @@ export default function CustomerMapWidget({
           aria-hidden="true"
         />
 
+        {/* Bucket 5.9 (KI-074 RESOLVED): map canvas edge sheen — 1px cream
+            top catchlight + 1px bronze bottom rim. Premium curved-glass
+            edge feel. */}
+        <div className="bd-map-canvas-sheen" aria-hidden="true" />
+
         {/* Bottom gradient overlay — "Explore" teaser */}
         <div
           className="absolute inset-x-0 bottom-0 z-10 flex items-end justify-center pb-3 pt-16 pointer-events-none transition-opacity group-hover:opacity-100 opacity-80"
