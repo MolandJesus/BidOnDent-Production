@@ -854,7 +854,7 @@ body {
   --bd-warm-dark-amber-start: #1a0c06;
   --bd-warm-dark-amber-mid: #251608;
   --bd-warm-dark-amber-end: #1c0c05;
-  --bd-warm-dark-amber-ellipse-top: rgba(196, 130, 45, 0.30);
+  --bd-warm-dark-amber-ellipse-top: rgba(196, 130, 45, 0.3);
   --bd-warm-dark-amber-ellipse-bottom: rgba(200, 115, 25, 0.24);
   --bd-warm-dark-amber-pool: rgba(220, 145, 50, 0.42);
   --bd-warm-dark-amber-pool-soft: rgba(200, 125, 35, 0.3);
@@ -955,11 +955,11 @@ body {
     0 18px 48px rgba(15, 23, 42, 0.13),
     0 6px 16px rgba(30, 58, 138, 0.08),
     inset 0 1px 0 rgba(252, 240, 208, 0.88),
-    inset 0 -1px 0 rgba(140, 82, 22, 0.20),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.2),
     0 0 0 1px rgba(140, 82, 22, 0.08),
     0 0 0 1px rgba(191, 219, 254, 0.12),
     0 0 32px rgba(196, 130, 45, 0.14),
-    0 -28px 70px -14px rgba(196, 144, 65, 0.10),
+    0 -28px 70px -14px rgba(196, 144, 65, 0.1),
     var(--bd-glow-medium);
 }
 
@@ -980,7 +980,7 @@ body {
     0 6px 16px rgba(180, 130, 50, 0.1),
     inset 0 1px 0 rgba(252, 240, 208, 0.92),
     inset 0 -1px 0 rgba(140, 82, 22, 0.22),
-    0 0 0 1px rgba(140, 82, 22, 0.10),
+    0 0 0 1px rgba(140, 82, 22, 0.1),
     0 0 36px rgba(196, 144, 65, 0.16),
     0 -30px 80px -16px rgba(196, 144, 65, 0.12);
 }
@@ -1007,7 +1007,7 @@ body {
     0 10px 24px rgba(30, 58, 138, 0.1),
     inset 0 1px 0 rgba(252, 240, 208, 0.92),
     inset 0 -1px 0 rgba(140, 82, 22, 0.26),
-    0 0 0 1px rgba(140, 82, 22, 0.10),
+    0 0 0 1px rgba(140, 82, 22, 0.1),
     0 0 0 1px rgba(147, 197, 253, 0.32),
     0 0 44px rgba(196, 130, 45, 0.16),
     0 -32px 90px -16px rgba(196, 144, 65, 0.14),
@@ -1087,7 +1087,7 @@ body {
     inset 0 -1px 0 rgba(196, 144, 65, 0.28),
     0 0 0 1px rgba(196, 144, 65, 0.18),
     0 0 0 1px rgba(191, 219, 254, 0.3),
-    0 0 28px rgba(59, 130, 246, 0.10),
+    0 0 28px rgba(59, 130, 246, 0.1),
     0 0 44px rgba(196, 130, 45, 0.18),
     0 -30px 80px -16px rgba(196, 144, 65, 0.12);
 }
@@ -1159,7 +1159,7 @@ body {
      edits. Light register default; dark register override below. */
   text-shadow:
     0 0 20px rgba(196, 144, 65, 0.18),
-    0 0 36px rgba(196, 144, 65, 0.10);
+    0 0 36px rgba(196, 144, 65, 0.1);
 }
 
 /* Dashboard ambient layer — single subtle top-anchored radial glow. Apply as a
@@ -1562,7 +1562,7 @@ body {
     0 0 36px rgba(37, 99, 235, 0.16),
     0 0 48px rgba(196, 130, 45, 0.18),
     0 -36px 100px -18px rgba(196, 144, 65, 0.16),
-    inset 1px 0 0 rgba(252, 240, 208, 0.10),
+    inset 1px 0 0 rgba(252, 240, 208, 0.1),
     inset -1px 0 0 rgba(252, 240, 208, 0.06);
 }
 
@@ -1579,7 +1579,7 @@ body {
     0 0 0 1px rgba(147, 197, 253, 0.4),
     0 0 56px rgba(37, 99, 235, 0.24),
     0 0 52px rgba(196, 130, 45, 0.18),
-    0 -42px 120px -20px rgba(196, 144, 65, 0.20);
+    0 -42px 120px -20px rgba(196, 144, 65, 0.2);
 }
 
 /* Warm variant — dark mode. Amber-tinted glass for Direction B sections.
@@ -1599,7 +1599,7 @@ body {
     0 8px 18px rgba(140, 80, 25, 0.42),
     inset 0 1px 0 rgba(252, 240, 208, 0.32),
     inset 0 -1px 0 rgba(200, 115, 35, 0.16),
-    0 0 0 1px rgba(238, 184, 110, 0.30),
+    0 0 0 1px rgba(238, 184, 110, 0.3),
     0 0 48px rgba(240, 150, 60, 0.28),
     0 -38px 110px -18px rgba(240, 150, 60, 0.18);
 }
@@ -1613,8 +1613,8 @@ body {
     0 12px 26px rgba(140, 80, 25, 0.5),
     inset 0 1px 0 rgba(255, 232, 180, 0.42),
     inset 0 -1px 0 rgba(200, 115, 35, 0.22),
-    0 0 0 1px rgba(252, 240, 208, 0.50),
-    0 0 72px rgba(240, 150, 60, 0.40),
+    0 0 0 1px rgba(252, 240, 208, 0.5),
+    0 0 72px rgba(240, 150, 60, 0.4),
     0 -44px 130px -22px rgba(240, 150, 60, 0.22);
 }
 
@@ -2377,7 +2377,7 @@ body {
   box-shadow:
     var(--bd-report-input-shadow),
     0 0 0 3px rgba(196, 144, 65, 0.18),
-    0 0 18px rgba(196, 130, 45, 0.10),
+    0 0 18px rgba(196, 130, 45, 0.1),
     0 -8px 20px -4px rgba(196, 144, 65, 0.14);
   outline: none;
   transform: translateY(-1px);
@@ -2392,7 +2392,7 @@ body {
     var(--bd-report-input-shadow),
     0 0 0 3px rgba(196, 144, 65, 0.16),
     0 0 18px rgba(196, 130, 45, 0.09),
-    0 -8px 20px -4px rgba(196, 144, 65, 0.10);
+    0 -8px 20px -4px rgba(196, 144, 65, 0.1);
 }
 
 .bd-report-note {
@@ -2609,8 +2609,8 @@ body {
     inset 0 1px 0 rgba(196, 144, 65, 0.32), inset 0 -1px 0 rgba(140, 82, 22, 0.24),
     0 0 0 1px rgba(96, 165, 250, 0.18), 0 24px 60px rgba(196, 130, 45, 0.12),
     0 0 60px rgba(196, 130, 45, 0.14), 0 0 110px rgba(196, 130, 45, 0.08),
-    0 -40px 120px -20px rgba(196, 144, 65, 0.16),
-    inset 1px 0 0 rgba(252, 240, 208, 0.10), inset -1px 0 0 rgba(252, 240, 208, 0.06);
+    0 -40px 120px -20px rgba(196, 144, 65, 0.16), inset 1px 0 0 rgba(252, 240, 208, 0.1),
+    inset -1px 0 0 rgba(252, 240, 208, 0.06);
   /* Pass 2 (KI-077): dark section body layers a softer internal ceiling lamp
      (rgba(196,144,65,0.10), narrower than panels) so cool-toned report cards
      and accent sections still feel lit at narrow widths (375px mobile). Lower
@@ -2623,7 +2623,7 @@ body {
   --bd-dashboard-section-bg:
     radial-gradient(ellipse 60% 28% at 50% 0%, rgba(196, 144, 65, 0.14) 0%, transparent 70%),
     linear-gradient(180deg, rgba(16, 31, 60, 0.72) 0%, rgba(11, 22, 43, 0.66) 100%);
-  --bd-dashboard-section-border: rgba(96, 165, 250, 0.20);
+  --bd-dashboard-section-border: rgba(96, 165, 250, 0.2);
   /* Bucket 6 (KI-072): far-drop softened (0 22px 56px -> 0 16px 40px, 0 8px 18px
      -> 0 6px 14px). NO asymmetric bias — sections sit inside panels, not as the
      stack. Symmetric halos preserved.
@@ -2642,36 +2642,34 @@ body {
      Close + mid halos demoted. Hover gets stronger top-cast at 0.18 for hover lift. */
   --bd-dashboard-section-shadow:
     0 16px 40px rgba(2, 6, 23, 0.34), 0 6px 14px rgba(2, 6, 23, 0.22),
-    inset 0 1px 0 rgba(196, 144, 65, 0.20), inset 0 -1px 0 rgba(140, 82, 22, 0.22),
+    inset 0 1px 0 rgba(196, 144, 65, 0.2), inset 0 -1px 0 rgba(140, 82, 22, 0.22),
     0 0 0 1px rgba(96, 165, 250, 0.14), 0 0 44px rgba(196, 130, 45, 0.14),
-    0 0 90px rgba(196, 130, 45, 0.08),
-    0 -32px 100px -16px rgba(196, 144, 65, 0.14),
-    inset 1px 0 0 rgba(252, 240, 208, 0.10), inset -1px 0 0 rgba(252, 240, 208, 0.06);
+    0 0 90px rgba(196, 130, 45, 0.08), 0 -32px 100px -16px rgba(196, 144, 65, 0.14),
+    inset 1px 0 0 rgba(252, 240, 208, 0.1), inset -1px 0 0 rgba(252, 240, 208, 0.06);
   --bd-dashboard-section-hover-shadow:
-    0 28px 64px rgba(2, 6, 23, 0.40), 0 10px 22px rgba(2, 6, 23, 0.26),
+    0 28px 64px rgba(2, 6, 23, 0.4), 0 10px 22px rgba(2, 6, 23, 0.26),
     inset 0 1px 0 rgba(196, 144, 65, 0.28), inset 0 -1px 0 rgba(140, 82, 22, 0.28),
     0 0 0 1px rgba(96, 165, 250, 0.24), 0 0 52px rgba(196, 130, 45, 0.16),
-    0 0 100px rgba(196, 130, 45, 0.08),
-    0 -36px 110px -18px rgba(196, 144, 65, 0.18);
+    0 0 100px rgba(196, 130, 45, 0.08), 0 -36px 110px -18px rgba(196, 144, 65, 0.18);
   --bd-dashboard-section-selected-bg: linear-gradient(
     180deg,
     rgba(34, 74, 156, 0.4) 0%,
     rgba(17, 46, 104, 0.3) 100%
   );
-  --bd-dashboard-section-selected-border: rgba(96, 165, 250, 0.50);
+  --bd-dashboard-section-selected-border: rgba(96, 165, 250, 0.5);
   --bd-dashboard-chip-bg: linear-gradient(
     180deg,
     rgba(17, 43, 92, 0.62) 0%,
     rgba(10, 26, 56, 0.46) 100%
   );
-  --bd-dashboard-chip-border: rgba(196, 144, 65, 0.30);
+  --bd-dashboard-chip-border: rgba(196, 144, 65, 0.3);
   --bd-dashboard-chip-text: #fcf0d0;
   --bd-dashboard-note-bg: linear-gradient(
     180deg,
     rgba(17, 43, 92, 0.28) 0%,
     rgba(10, 26, 56, 0.2) 100%
   );
-  --bd-dashboard-note-border: rgba(196, 144, 65, 0.20);
+  --bd-dashboard-note-border: rgba(196, 144, 65, 0.2);
   --bd-dashboard-secondary-bg: linear-gradient(
     180deg,
     rgba(18, 33, 65, 0.94) 0%,
@@ -2713,10 +2711,9 @@ body {
      atmosphere visible through reduced body opacity. */
   --bd-dashboard-panel-shadow:
     0 18px 42px rgba(15, 30, 60, 0.22), 0 36px 80px rgba(15, 30, 60, 0.1),
-    0 6px 14px rgba(15, 30, 60, 0.1), 0 0 0 1px rgba(140, 82, 22, 0.30),
-    inset 0 1px 0 rgba(254, 247, 232, 0.88), inset 0 -1px 0 rgba(140, 82, 22, 0.30),
-    0 0 18px rgba(196, 130, 45, 0.10),
-    0 -32px 80px -16px rgba(196, 144, 65, 0.18);
+    0 6px 14px rgba(15, 30, 60, 0.1), 0 0 0 1px rgba(140, 82, 22, 0.3),
+    inset 0 1px 0 rgba(254, 247, 232, 0.88), inset 0 -1px 0 rgba(140, 82, 22, 0.3),
+    0 0 18px rgba(196, 130, 45, 0.1), 0 -32px 80px -16px rgba(196, 144, 65, 0.18);
   /* Pass F-fix (KI-086): section body 0.74/0.62 -> 0.82/0.74 — preserves
      translucency for page-atmosphere bleed-through but restores enough
      opacity for clear panel containment per owner verification feedback. */
@@ -2735,9 +2732,9 @@ body {
     0 -28px 70px -14px rgba(196, 144, 65, 0.16);
   --bd-dashboard-section-hover-shadow:
     0 22px 44px rgba(15, 30, 60, 0.22), 0 50px 100px rgba(15, 30, 60, 0.1),
-    0 0 0 1px rgba(140, 82, 22, 0.36), inset 0 1px 0 rgba(254, 247, 232, 0.90),
-    inset 0 -1px 0 rgba(140, 82, 22, 0.36), 0 0 18px rgba(196, 130, 45, 0.10),
-    0 -32px 80px -16px rgba(196, 144, 65, 0.20);
+    0 0 0 1px rgba(140, 82, 22, 0.36), inset 0 1px 0 rgba(254, 247, 232, 0.9),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.36), 0 0 18px rgba(196, 130, 45, 0.1),
+    0 -32px 80px -16px rgba(196, 144, 65, 0.2);
   --bd-dashboard-section-selected-bg: linear-gradient(
     180deg,
     rgba(224, 238, 255, 0.96) 0%,
@@ -2810,7 +2807,7 @@ body {
      light spilling onto the panel from the upper-right. The light-mode
      override below holds at the original 0.32 alpha + width: 38% (light
      is untouched per owner directive — light mode is "amazing as is"). */
-  background: radial-gradient(circle, rgba(196, 144, 65, 0.40) 0%, transparent 72%);
+  background: radial-gradient(circle, rgba(196, 144, 65, 0.4) 0%, transparent 72%);
   pointer-events: none;
 }
 
@@ -2866,10 +2863,10 @@ body {
   box-shadow:
     0 32px 80px rgba(2, 6, 23, 0.44),
     0 12px 24px rgba(2, 6, 23, 0.32),
-    inset 0 1px 0 rgba(196, 144, 65, 0.30),
-    inset 0 -1px 0 rgba(140, 82, 22, 0.30),
-    0 0 0 1px rgba(96, 165, 250, 0.20),
-    0 0 60px rgba(196, 130, 45, 0.20),
+    inset 0 1px 0 rgba(196, 144, 65, 0.3),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.3),
+    0 0 0 1px rgba(96, 165, 250, 0.2),
+    0 0 60px rgba(196, 130, 45, 0.2),
     0 0 24px rgba(96, 165, 250, 0.14);
 }
 
@@ -2878,8 +2875,8 @@ body {
   border-color: rgba(96, 165, 250, 0.24);
   box-shadow:
     0 32px 80px rgba(2, 6, 23, 0.42),
-    0 12px 24px rgba(2, 6, 23, 0.30),
-    inset 0 1px 0 rgba(196, 144, 65, 0.30),
+    0 12px 24px rgba(2, 6, 23, 0.3),
+    inset 0 1px 0 rgba(196, 144, 65, 0.3),
     inset 0 -1px 0 rgba(140, 82, 22, 0.28),
     0 0 0 1px rgba(96, 165, 250, 0.18),
     0 0 60px rgba(196, 130, 45, 0.18),
@@ -2892,7 +2889,7 @@ body {
   box-shadow:
     0 32px 80px rgba(2, 6, 23, 0.44),
     0 12px 24px rgba(2, 6, 23, 0.32),
-    inset 0 1px 0 rgba(196, 144, 65, 0.30),
+    inset 0 1px 0 rgba(196, 144, 65, 0.3),
     inset 0 -1px 0 rgba(140, 82, 22, 0.28),
     0 0 0 1px rgba(96, 165, 250, 0.18),
     0 0 60px rgba(196, 130, 45, 0.18),
@@ -3017,14 +3014,14 @@ body {
 
 .bd-dashboard-section--deep {
   background: linear-gradient(180deg, rgba(8, 18, 39, 0.95) 0%, rgba(7, 15, 31, 0.92) 100%);
-  border-color: rgba(96, 165, 250, 0.20);
+  border-color: rgba(96, 165, 250, 0.2);
   box-shadow:
     0 22px 56px rgba(2, 6, 23, 0.36),
     0 8px 18px rgba(2, 6, 23, 0.26),
     inset 0 1px 0 rgba(196, 144, 65, 0.18),
     inset 0 -1px 0 rgba(140, 82, 22, 0.18),
     0 0 0 1px rgba(96, 165, 250, 0.14),
-    0 0 44px rgba(196, 130, 45, 0.10);
+    0 0 44px rgba(196, 130, 45, 0.1);
 }
 
 /* Pass 3 (KI-078): cool accent variants get a slight bronze atmospheric halo
@@ -3040,11 +3037,11 @@ body {
   box-shadow:
     0 22px 56px rgba(2, 6, 23, 0.34),
     0 8px 18px rgba(2, 6, 23, 0.26),
-    inset 0 1px 0 rgba(196, 144, 65, 0.20),
-    inset 0 -1px 0 rgba(140, 82, 22, 0.20),
+    inset 0 1px 0 rgba(196, 144, 65, 0.2),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.2),
     0 0 0 1px rgba(96, 165, 250, 0.18),
     0 0 44px rgba(196, 130, 45, 0.16),
-    0 0 18px rgba(96, 165, 250, 0.10);
+    0 0 18px rgba(96, 165, 250, 0.1);
 }
 
 .bd-dashboard-section--accent-cyan {
@@ -3053,11 +3050,11 @@ body {
   box-shadow:
     0 22px 56px rgba(2, 6, 23, 0.32),
     0 8px 18px rgba(2, 6, 23, 0.24),
-    inset 0 1px 0 rgba(196, 144, 65, 0.20),
+    inset 0 1px 0 rgba(196, 144, 65, 0.2),
     inset 0 -1px 0 rgba(140, 82, 22, 0.18),
     0 0 0 1px rgba(96, 165, 250, 0.16),
     0 0 44px rgba(196, 130, 45, 0.14),
-    0 0 18px rgba(34, 211, 238, 0.10);
+    0 0 18px rgba(34, 211, 238, 0.1);
 }
 
 .bd-dashboard-section--accent-indigo {
@@ -3066,16 +3063,16 @@ body {
   box-shadow:
     0 22px 56px rgba(2, 6, 23, 0.34),
     0 8px 18px rgba(2, 6, 23, 0.26),
-    inset 0 1px 0 rgba(196, 144, 65, 0.20),
+    inset 0 1px 0 rgba(196, 144, 65, 0.2),
     inset 0 -1px 0 rgba(140, 82, 22, 0.18),
     0 0 0 1px rgba(96, 165, 250, 0.16),
     0 0 44px rgba(196, 130, 45, 0.14),
-    0 0 18px rgba(129, 140, 248, 0.10);
+    0 0 18px rgba(129, 140, 248, 0.1);
 }
 
 .bd-dashboard-section--accent-rose {
   background: linear-gradient(180deg, rgba(63, 22, 44, 0.86) 0%, rgba(39, 14, 28, 0.82) 100%);
-  border-color: rgba(96, 165, 250, 0.20);
+  border-color: rgba(96, 165, 250, 0.2);
   box-shadow:
     0 22px 56px rgba(2, 6, 23, 0.34),
     0 8px 18px rgba(2, 6, 23, 0.26),
@@ -3083,7 +3080,7 @@ body {
     inset 0 -1px 0 rgba(140, 82, 22, 0.18),
     0 0 0 1px rgba(96, 165, 250, 0.16),
     0 0 44px rgba(196, 130, 45, 0.14),
-    0 0 18px rgba(244, 63, 94, 0.10);
+    0 0 18px rgba(244, 63, 94, 0.1);
 }
 
 /* Deeper-gold tile: warm pop tile per LAW. Body stays warm-brown, trim
@@ -3092,13 +3089,13 @@ body {
    champagne for the cool/warm/cool/warm Quick Actions rhythm. */
 .bd-dashboard-section--accent-gold {
   background: linear-gradient(180deg, rgba(38, 28, 12, 0.92) 0%, rgba(22, 16, 6, 0.88) 100%);
-  border-color: rgba(196, 144, 65, 0.40);
+  border-color: rgba(196, 144, 65, 0.4);
   box-shadow:
     0 22px 56px rgba(2, 6, 23, 0.36),
     0 8px 18px rgba(2, 6, 23, 0.28),
     inset 0 1px 0 rgba(252, 240, 208, 0.24),
     inset 0 -1px 0 rgba(140, 82, 22, 0.34),
-    0 0 0 1px rgba(140, 82, 22, 0.20),
+    0 0 0 1px rgba(140, 82, 22, 0.2),
     0 0 44px rgba(196, 130, 45, 0.26),
     0 0 18px rgba(196, 144, 65, 0.16);
 }
@@ -3107,14 +3104,14 @@ body {
    as --accent-gold but with softer values. */
 .bd-dashboard-section--accent-champagne {
   background: linear-gradient(180deg, rgba(28, 24, 14, 0.9) 0%, rgba(16, 14, 8, 0.86) 100%);
-  border-color: rgba(196, 144, 65, 0.30);
+  border-color: rgba(196, 144, 65, 0.3);
   box-shadow:
     0 22px 56px rgba(2, 6, 23, 0.34),
     0 8px 18px rgba(2, 6, 23, 0.26),
-    inset 0 1px 0 rgba(252, 240, 208, 0.20),
+    inset 0 1px 0 rgba(252, 240, 208, 0.2),
     inset 0 -1px 0 rgba(140, 82, 22, 0.28),
     0 0 0 1px rgba(140, 82, 22, 0.16),
-    0 0 44px rgba(196, 130, 45, 0.20);
+    0 0 44px rgba(196, 130, 45, 0.2);
 }
 
 /* D4 (final v3.2): soft off-white liquid glass + more gold on every section. */
@@ -3664,7 +3661,7 @@ body {
   background: linear-gradient(
     115deg,
     transparent 35%,
-    rgba(196, 144, 65, 0.30) 50%,
+    rgba(196, 144, 65, 0.3) 50%,
     transparent 65%
   );
   opacity: 0;
@@ -3843,7 +3840,7 @@ body {
      boundary instead of adding a darker between-stripe. */
   background: radial-gradient(
     ellipse 70% 100% at 50% 50%,
-    rgba(196, 144, 65, 0.20) 0%,
+    rgba(196, 144, 65, 0.2) 0%,
     rgba(196, 144, 65, 0.06) 50%,
     rgba(196, 144, 65, 0) 100%
   );
@@ -3885,19 +3882,18 @@ body {
 }
 [data-theme="dark"] .bd-landing-section-toplamp,
 .dark .bd-landing-section-toplamp {
-  background: radial-gradient(
-    ellipse 80% 100% at 50% 0%,
-    rgba(196, 144, 65, 0.20),
-    transparent 70%
-  );
+  background: radial-gradient(ellipse 80% 100% at 50% 0%, rgba(196, 144, 65, 0.2), transparent 70%);
 }
 
-/* Pass H9 (KI-091): companion to .bd-landing-section-toplamp. Cool blue
+/* Pass H9 + O (KI-091): companion to .bd-landing-section-toplamp. Cool blue
    atmospheric depth wash from the BOTTOM of each cool section so the
    section reads as a "lit room" — gold from above, navy depth from
    below — instead of as a flat plane. Cool blue dominant (LAW:
    cool blue is the color identity, gold is the lighting). Inserted
-   identically to toplamp, just sibling-positioned at bottom: 0. */
+   identically to toplamp, just sibling-positioned at bottom: 0.
+   Pass O (2026-05-04): light alpha 0.10 → 0.14 to address owner's
+   zoomed-out screenshot wash-thinness signal in light mode. Mirrors
+   Pass M / N progression. Dark unchanged. */
 .bd-landing-section-bottomwash {
   position: absolute;
   bottom: 0;
@@ -3908,17 +3904,13 @@ body {
   z-index: 0;
   background: radial-gradient(
     ellipse 90% 100% at 50% 100%,
-    rgba(30, 58, 138, 0.10),
+    rgba(30, 58, 138, 0.14),
     transparent 70%
   );
 }
 [data-theme="dark"] .bd-landing-section-bottomwash,
 .dark .bd-landing-section-bottomwash {
-  background: radial-gradient(
-    ellipse 90% 100% at 50% 100%,
-    rgba(15, 30, 60, 0.30),
-    transparent 70%
-  );
+  background: radial-gradient(ellipse 90% 100% at 50% 100%, rgba(15, 30, 60, 0.3), transparent 70%);
 }
 
 /* Pass H7 (KI-091): landing CTA pill atmospheric glow. Applied to the
@@ -3954,7 +3946,7 @@ body {
   background: radial-gradient(
     ellipse 70% 65% at 50% 50%,
     rgba(196, 144, 65, 0.22) 0%,
-    rgba(196, 130, 45, 0.10) 45%,
+    rgba(196, 130, 45, 0.1) 45%,
     transparent 75%
   );
 }
