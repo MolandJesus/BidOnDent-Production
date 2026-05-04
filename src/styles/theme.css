@@ -934,30 +934,29 @@ body {
    Use on marketing/landing cards where visible presence matters more than dashboard calm.
    Dark variant lives below in the dark-mode override block. */
 .bd-glass-card--landing {
-  /* D5 enhancement: cool blue body + subtle gold lamp trim so cool landing
-     cards read as same family as warm cards and dashboard panels. Gold is
-     subtle here (0.12-0.14 vs dashboard's 0.20-0.26) — landing rhythm.
-     Pass C (KI-082, 2026-05-04 site-wide light deepening on landing per
-     owner directive "landing page still need deep work in light mode"):
-       (1) LAW VIOLATION FIX -- pure-white inset rgba(255,255,255,0.95) ->
-           locked premium gold cream rgba(252,240,208,0.92) per
-           LAW_PROJECT_RULES.md § Light-Mode Surface Rule.
-       (2) Bronze rim deepening 0.14 -> 0.26 (premium gold trim line at
-           card bottom).
-       (3) Bronze ring deepening 0.10 -> 0.18 (premium gold material trim).
-       (4) Cool ring kept at 0.22 (cool action identity preserved).
-     Body kept cool ice/blue per landing identity (cool dominant). Touching
-     the body would shift hierarchy -- deferred to a future pass. */
+  /* Pass C-fix (KI-082, 2026-05-04 owner feedback "new boarder design isnt
+     smoth gradient at all"): the prior pass stacked two 1px rings (bronze
+     0.18 + cool 0.22) on top of a 1px bronze rim, producing a stamped
+     2-3px hard edge. Fix replaces hard rings with feathered diffuse
+     halos so trim reads as premium light, not paint:
+       Hard rings softened:
+         bronze ring 0.18 -> 0.10
+         cool ring   0.22 -> 0.12
+       Diffuse halos amplified for smooth-gradient feel:
+         primary halo (32px)  0.16 -> 0.20
+         feather halo (64px)  NEW @ 0.10 (wider soft fall-off)
+       Rim + LAW cream inset preserved (Pass C wins kept). */
   border-color: rgba(191, 219, 254, 0.7);
   background: linear-gradient(180deg, rgba(252, 253, 255, 0.9) 0%, rgba(241, 247, 255, 0.74) 100%);
   box-shadow:
     0 18px 48px rgba(15, 23, 42, 0.13),
     0 6px 16px rgba(30, 58, 138, 0.08),
     inset 0 1px 0 rgba(252, 240, 208, 0.92),
-    inset 0 -1px 0 rgba(140, 82, 22, 0.26),
-    0 0 0 1px rgba(140, 82, 22, 0.18),
-    0 0 0 1px rgba(191, 219, 254, 0.22),
-    0 0 32px rgba(196, 130, 45, 0.16),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.24),
+    0 0 0 1px rgba(140, 82, 22, 0.10),
+    0 0 0 1px rgba(191, 219, 254, 0.12),
+    0 0 32px rgba(196, 130, 45, 0.20),
+    0 0 64px rgba(196, 130, 45, 0.10),
     var(--bd-glow-medium);
 }
 
@@ -970,44 +969,50 @@ body {
    0.30, bronze ring 0.22 -> 0.30 (locked bronze rgba(140,82,22) family).
    Outer warm halo 0.10 -> 0.18 (within cap). */
 .bd-glass-card--landing-warm {
+  /* Pass C-fix: hard ring softened from 0.30 -> 0.12, rim eased 0.30 -> 0.26,
+     diffuse halo amplified 0.18 -> 0.22 + new 64px feather @ 0.12. */
   border-color: rgba(220, 180, 110, 0.42);
   background: linear-gradient(180deg, rgba(255, 252, 245, 0.92) 0%, rgba(252, 246, 235, 0.78) 100%);
   box-shadow:
     0 18px 48px rgba(60, 40, 15, 0.13),
     0 6px 16px rgba(180, 130, 50, 0.1),
     inset 0 1px 0 rgba(252, 240, 208, 0.94),
-    inset 0 -1px 0 rgba(140, 82, 22, 0.30),
-    0 0 0 1px rgba(140, 82, 22, 0.30),
-    0 0 36px rgba(196, 144, 65, 0.18);
+    inset 0 -1px 0 rgba(140, 82, 22, 0.26),
+    0 0 0 1px rgba(140, 82, 22, 0.12),
+    0 0 36px rgba(196, 144, 65, 0.22),
+    0 0 72px rgba(196, 144, 65, 0.12);
 }
 
 .bd-glass-card--landing-warm:hover {
-  /* Pass C: pure-white-leaning hover inset rgba(255,252,240,1) ->
-     rgba(252,240,208,0.96). Bronze trim deepening proportional to idle. */
+  /* Pass C-fix: hover ring 0.42 was the worst hard-line offender ->
+     softened to 0.16. Rim 0.36 -> 0.30. Diffuse halo at cap + new 80px
+     feather @ 0.14 for smooth lift on hover. */
   transform: translateY(-6px);
   border-color: rgba(220, 180, 110, 0.65);
   box-shadow:
     0 28px 64px rgba(60, 40, 15, 0.18),
     0 10px 24px rgba(180, 130, 50, 0.14),
     inset 0 1px 0 rgba(252, 240, 208, 0.96),
-    inset 0 -1px 0 rgba(140, 82, 22, 0.36),
-    0 0 0 1px rgba(140, 82, 22, 0.42),
-    0 0 56px rgba(196, 144, 65, 0.22);
+    inset 0 -1px 0 rgba(140, 82, 22, 0.30),
+    0 0 0 1px rgba(140, 82, 22, 0.16),
+    0 0 56px rgba(196, 144, 65, 0.22),
+    0 0 80px rgba(196, 144, 65, 0.14);
 }
 
 .bd-glass-card--landing:hover {
-  /* Pass C: LAW pure-white inset rgba(255,255,255,1) -> warm cream
-     rgba(252,240,208,0.96). Bronze rim 0.20 -> 0.32, bronze ring 0.16
-     -> 0.22 (locked bronze family). Cool ring kept at 0.45. */
+  /* Pass C-fix: bronze ring 0.22 -> 0.12. Cool ring 0.45 -> 0.32 (still
+     reads as active focus indicator but no longer a hard band). Rim eased
+     0.32 -> 0.30. Diffuse halo at cap + new 80px feather @ 0.12. */
   transform: translateY(-6px);
   box-shadow:
     0 28px 64px rgba(15, 23, 42, 0.16),
     0 10px 24px rgba(30, 58, 138, 0.1),
     inset 0 1px 0 rgba(252, 240, 208, 0.96),
-    inset 0 -1px 0 rgba(140, 82, 22, 0.32),
-    0 0 0 1px rgba(140, 82, 22, 0.22),
-    0 0 0 1px rgba(147, 197, 253, 0.45),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.30),
+    0 0 0 1px rgba(140, 82, 22, 0.12),
+    0 0 0 1px rgba(147, 197, 253, 0.32),
     0 0 44px rgba(196, 130, 45, 0.22),
+    0 0 80px rgba(196, 130, 45, 0.12),
     var(--bd-glow-strong);
   border-color: rgba(147, 197, 253, 0.85);
 }
