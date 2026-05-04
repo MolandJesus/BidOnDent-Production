@@ -3818,13 +3818,18 @@ body {
   z-index: 1;
   /* Light: gold radial atmospheric bridge — overlaid on adjacent section
      content (via negative margins) so the gradient soft-lights across
-     the boundary instead of darkening an empty between-band. Alphas
-     unchanged from Pass K (0.13 / 0.04) — still well under the 0.22a
-     single-layer halo cap. Navy linear layer REMOVED. */
+     the boundary instead of darkening an empty between-band. Navy linear
+     layer REMOVED.
+     Pass M (2026-05-05): owner zoomed-out screenshot review surfaced
+     light-mode wash thinness at warm-to-cool section boundaries —
+     seam center reading near-white. Alphas bumped 0.13→0.18 center,
+     0.04→0.06 mid. Still well under the 0.22a single-layer halo cap.
+     Still below dark's 0.20 center alpha so dark/light hierarchy is
+     preserved. Dark mode UNTOUCHED. */
   background: radial-gradient(
     ellipse 70% 100% at 50% 50%,
-    rgba(196, 144, 65, 0.13) 0%,
-    rgba(196, 144, 65, 0.04) 50%,
+    rgba(196, 144, 65, 0.18) 0%,
+    rgba(196, 144, 65, 0.06) 50%,
     rgba(196, 144, 65, 0) 100%
   );
 }
