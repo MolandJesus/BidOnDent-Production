@@ -604,6 +604,20 @@ export default function HeroSection({
                 }}
               />
 
+              {/* Bucket 5.7 (KI-074 partial): dual-source counter-glow — cool
+                  blue sky catch at top-left + warm bronze lamp catch at
+                  bottom-right. Premium "lit at sunset" feel; locks the hero
+                  map into the same lamp-from-above + cool-floor convention
+                  the dashboard atmosphere D8/D9/D10 layers express. */}
+              <div
+                aria-hidden="true"
+                className="absolute -inset-4 rounded-[2rem] blur-2xl pointer-events-none -z-10"
+                style={{
+                  background:
+                    "radial-gradient(ellipse 50% 45% at 0% 0%, rgba(96, 165, 250, 0.12), transparent 65%), radial-gradient(ellipse 50% 45% at 100% 100%, rgba(196, 130, 45, 0.10), transparent 65%)",
+                }}
+              />
+
               {/* Layer 1 — stylized road network (mobile scale) */}
               <svg
                 aria-hidden="true"
@@ -783,6 +797,20 @@ export default function HeroSection({
                   background: isLightAppearance
                     ? "radial-gradient(ellipse 85% 75% at 50% 30%, rgba(196, 144, 65,0.14), transparent 68%)"
                     : "radial-gradient(ellipse 85% 75% at 50% 25%, rgba(196, 144, 65,0.18), transparent 68%)",
+                }}
+              />
+              {/* Bucket 5.7 (KI-074 partial): dual-source counter-glow on
+                  the desktop hero map shell — cool blue sky catch at top-left
+                  + warm bronze lamp catch at bottom-right. Mirrors the mobile
+                  hero counter-glow at wider scale to match the desktop hero's
+                  open atmosphere. Locks the map into the lamp-from-above +
+                  cool-floor convention. */}
+              <div
+                aria-hidden="true"
+                className="absolute -inset-16 rounded-[3rem] blur-3xl pointer-events-none"
+                style={{
+                  background:
+                    "radial-gradient(ellipse 55% 50% at 0% 0%, rgba(96, 165, 250, 0.12), transparent 65%), radial-gradient(ellipse 55% 50% at 100% 100%, rgba(196, 130, 45, 0.10), transparent 65%)",
                 }}
               />
               {/* Inner edge bleed — sits flush around the card, bridging
