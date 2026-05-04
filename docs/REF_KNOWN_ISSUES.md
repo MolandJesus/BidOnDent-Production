@@ -771,6 +771,17 @@
 - **Hard stops respected:** Cool blue identity preserved (no warm encroachment). LAW Light-Mode Surface Rule respected (no pure-white). No structural change to map layers (route lines, pin pulse, gold flow, contour grid all UNCHANGED). Dark-mode tile + stroke colors UNCHANGED (`#0d1d3a`, `#334155`, `#293449` preserved). Build clean (3817.64 KiB precache stable). Branch-aware forbidden grep ZERO.
 - **Skill:** `bd-design-identity`.
 
+### KI-106: SpeedLimitBadge solid `bg-white` — semantic real-world signage exception (P7-DOCS-ONLY)
+
+- **Impact:** During the 2026-05-05 fresh-eyes audit, the only solid `bg-white` (no alpha) usage left in `src/` outside dev-only files is at [src/app/components/maps/navigation/SpeedLimitBadge.tsx:37](src/app/components/maps/navigation/SpeedLimitBadge.tsx#L37) — an 84×84 circular badge that mimics a US speed-limit road sign. The white IS the design intent (matches real-world driver-recognized signage with red ring + black numerals). Not a panel, not arbitrary surface paint — semantic convention.
+- **Location:** [src/app/components/maps/navigation/SpeedLimitBadge.tsx:37](src/app/components/maps/navigation/SpeedLimitBadge.tsx#L37) — `className="...rounded-full border-[6px] border-rose-500 bg-white text-slate-950..."`.
+- **Status:** **OPEN — INTENTIONAL EXCEPTION (P7-DOCS-ONLY)**. Documents the exception so future audits don't flag this as a LAW Light-Mode Surface Rule violation. Same exception class as `amber-*` warning chips in `CoverageSearchPanel`/`CoverageActiveNavigationLayout`/`CoverageNearestShopCard` — semantic UI convention, not arbitrary canon surface paint.
+- **Fix direction:** No fix needed. If a future design pass wants the badge to feel premium-canon-aligned while still recognizable, options would be:
+  - (a) Add a subtle bronze trim ring outside the rose-500 border (preserves real-world recognition + adds canon hint).
+  - (b) Shift `bg-white` to `bg-[#fffaf0]` (very subtle warm cream tint — still reads as white but inside canon family). Owner judgment call.
+- **Skill:** `bd-design-identity` (semantic exception class).
+- **Audit context:** 2026-05-05 fresh-eyes scan also confirmed: ZERO off-canon goldenrod values in landing/shop/dashboard component paint (only HowItWorksSection.tsx:88 has them inside a doc-comment about prior Pass I swap, not actual paint). ZERO fire-and-forget signOut/Promise patterns post-KI-097. ZERO storage hydration gaps — `vehicles.image_url`, `profiles.profile_image_url`, `damage_reports.photo_urls` all properly hydrate via `hydrateSignedStorageUrl(s)` in their respective handlers.
+
 ### KI-101: F-01 — "Toyoto" misspelled vehicle make persisted in DB (P6-SPELL — owner action)
 
 - **Impact:** Audit AI F-01 (P6-SPELL): the 2021 Toyota Camry vehicle record was saved with the make field as "Toyoto" (misspelled). Propagates to every display of this vehicle/report — dashboard "Your Reports" h3 (`2021 Toyoto Camry`), Account tab Vehicles list, Report creation flow Step 1 vehicle selector, Make field pre-fill. Visible typo on production-facing content. Make input placeholder correctly shows "Toyota" — so the field hint is correct but there's no enforcement.
