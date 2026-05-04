@@ -76,7 +76,7 @@ export default function ShopBidModal({
                 value={bidAmount}
                 onChange={(e) => onBidAmountChange(e.target.value)}
                 placeholder="0.00"
-                className={`w-full pl-8 pr-4 py-3 border rounded-xl text-lg outline-none transition-colors ${isLight ? "border-slate-200 bg-white text-slate-800 placeholder:text-slate-400 focus:border-blue-400/60" : "border-blue-300/20 bg-white/8 text-slate-100 placeholder:text-blue-200/40 focus:border-blue-400/40 focus:ring-1 focus:ring-blue-400/20"}`}
+                className={`w-full pl-8 pr-4 py-3 border rounded-xl text-lg outline-none transition-colors ${isLight ? "border-[rgba(140,82,22,0.26)] bg-[linear-gradient(180deg,rgba(232,238,248,0.92),rgba(247,232,194,0.86))] text-slate-800 placeholder:text-slate-400 focus:border-blue-500/60 shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]" : "border-[rgba(96,165,250,0.20)] bg-[linear-gradient(180deg,rgba(15,23,42,0.74),rgba(8,16,33,0.78))] text-slate-100 placeholder:text-blue-200/40 focus:border-blue-400/60 focus:ring-1 focus:ring-blue-400/30 shadow-[inset_0_1px_0_rgba(196,144,65,0.16),inset_0_-1px_0_rgba(140,82,22,0.16)]"}`}
                 step="0.01"
                 min="0"
               />
@@ -97,7 +97,7 @@ export default function ShopBidModal({
               value={estimatedDays}
               onChange={(e) => onEstimatedDaysChange(e.target.value)}
               placeholder="e.g. 3"
-              className={`w-full px-4 py-3 border rounded-xl outline-none transition-colors ${isLight ? "border-slate-200 bg-white text-slate-800 placeholder:text-slate-400 focus:border-blue-400/60" : "border-blue-300/20 bg-white/8 text-slate-100 placeholder:text-blue-200/40 focus:border-blue-400/40 focus:ring-1 focus:ring-blue-400/20"}`}
+              className={`w-full px-4 py-3 border rounded-xl outline-none transition-colors ${isLight ? "border-[rgba(140,82,22,0.26)] bg-[linear-gradient(180deg,rgba(232,238,248,0.92),rgba(247,232,194,0.86))] text-slate-800 placeholder:text-slate-400 focus:border-blue-500/60 shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]" : "border-[rgba(96,165,250,0.20)] bg-[linear-gradient(180deg,rgba(15,23,42,0.74),rgba(8,16,33,0.78))] text-slate-100 placeholder:text-blue-200/40 focus:border-blue-400/60 focus:ring-1 focus:ring-blue-400/30 shadow-[inset_0_1px_0_rgba(196,144,65,0.16),inset_0_-1px_0_rgba(140,82,22,0.16)]"}`}
               min="1"
               max="90"
             />
@@ -113,7 +113,7 @@ export default function ShopBidModal({
               value={bidDescription}
               onChange={(e) => onBidDescriptionChange(e.target.value)}
               placeholder="Describe your repair approach, parts needed, etc."
-              className={`w-full px-4 py-3 border rounded-xl outline-none transition-colors resize-none ${isLight ? "border-slate-200 bg-white text-slate-800 placeholder:text-slate-400 focus:border-blue-400/60" : "border-blue-300/20 bg-white/8 text-slate-100 placeholder:text-blue-200/40 focus:border-blue-400/40 focus:ring-1 focus:ring-blue-400/20"}`}
+              className={`w-full px-4 py-3 border rounded-xl outline-none transition-colors resize-none ${isLight ? "border-[rgba(140,82,22,0.26)] bg-[linear-gradient(180deg,rgba(232,238,248,0.92),rgba(247,232,194,0.86))] text-slate-800 placeholder:text-slate-400 focus:border-blue-500/60 shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]" : "border-[rgba(96,165,250,0.20)] bg-[linear-gradient(180deg,rgba(15,23,42,0.74),rgba(8,16,33,0.78))] text-slate-100 placeholder:text-blue-200/40 focus:border-blue-400/60 focus:ring-1 focus:ring-blue-400/30 shadow-[inset_0_1px_0_rgba(196,144,65,0.16),inset_0_-1px_0_rgba(140,82,22,0.16)]"}`}
               rows={3}
               maxLength={500}
             />
