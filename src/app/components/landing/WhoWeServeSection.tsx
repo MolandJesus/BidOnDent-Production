@@ -133,13 +133,14 @@ export default function WhoWeServeSection({
         />
         {isLightAppearance ? (
           <>
-            {/* Subtle dot grid texture */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(200,170,110,0.05)_1px,transparent_1px)] [background-size:36px_36px] opacity-80" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_50%_0%,rgba(210,180,130,0.18),transparent_60%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_50%_at_15%_70%,rgba(200,165,100,0.14),transparent_55%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_35%_35%_at_70%_60%,rgba(220,185,115,0.14),transparent_50%)]" />
+            {/* Pass I — atmospheric dot-grid + radials canon-swapped at
+                SAME alpha. Pre-canon goldenrod -> canon champagne. */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(196,144,65,0.05)_1px,transparent_1px)] [background-size:36px_36px] opacity-80" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_50%_0%,rgba(196,144,65,0.18),transparent_60%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_50%_at_15%_70%,rgba(196,144,65,0.14),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_35%_35%_at_70%_60%,rgba(196,144,65,0.14),transparent_50%)]" />
             <div className="absolute bottom-0 right-[20%] w-64 h-64 bg-[rgba(196,144,65,0.18)] rounded-full blur-[110px]" />
-            <div className="absolute top-10 left-[15%] w-48 h-48 bg-amber-100/[0.14] rounded-full blur-[120px]" />
+            <div className="absolute top-10 left-[15%] w-48 h-48 bg-[rgba(196,144,65,0.14)] rounded-full blur-[120px]" />
             <div className="absolute -top-10 right-[0%] w-[30rem] h-[30rem] bg-sky-400/[0.18] rounded-full blur-[130px]" />
             <div className="absolute bottom-0 left-[10%] w-80 h-80 bg-blue-300/[0.14] rounded-full blur-[120px]" />
           </>
@@ -198,10 +199,10 @@ export default function WhoWeServeSection({
         style={{ animationDelay: "5s" }}
       >
         <div
-          className={`w-4 h-4 rounded-full ${isLightAppearance ? "bg-amber-300/[0.10]" : "bg-indigo-400/40"}`}
+          className={`w-4 h-4 rounded-full ${isLightAppearance ? "bg-[rgba(196,144,65,0.10)]" : "bg-indigo-400/40"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 26px 9px rgba(200,165,100,0.12)"
+              ? "0 0 26px 9px rgba(196,144,65,0.12)"
               : "0 0 24px 8px rgba(99,102,241,0.22)",
           }}
         />
