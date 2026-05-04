@@ -46,11 +46,18 @@ const toneThemes: Record<MapSurfaceTone, MapSurfaceToneVariant> = {
     mapCanvasClassName: "bg-[#dce8f7]",
     /* Side/floating panels inside the map dialog — cool frosted blue with
        gold lamp halo + bronze trim; pure white surfaces are forbidden per
-       LAW. Strong + accent variants increase the trim weight. */
+       LAW. Strong + accent variants increase the trim weight.
+       Pass H (KI-091, 2026-05-05): canon adoption — internal gold radial
+       0.16 -> 0.05 per LAW canon, body opacity 0.86/0.78 -> 0.84/0.76
+       (canon range), directional top-cast champagne lamp added per
+       canon, cream highlight inset added. backdrop-blur inherited from
+       baseTheme.panelClassName. */
     panelToneClassName:
-      "border-[rgba(140,82,22,0.26)] bg-[radial-gradient(ellipse_90%_50%_at_50%_0%,rgba(196,144,65,0.16),transparent_70%),linear-gradient(180deg,rgba(232,242,254,0.86),rgba(214,230,248,0.78))]",
+      "border-[rgba(140,82,22,0.30)] bg-[radial-gradient(ellipse_90%_50%_at_50%_0%,rgba(196,144,65,0.05),transparent_70%),linear-gradient(180deg,rgba(232,242,254,0.84),rgba(214,230,248,0.76))] shadow-[0_-28px_70px_-14px_rgba(196,144,65,0.16),0_0_32px_rgba(196,130,45,0.10),0_22px_52px_rgba(15,30,60,0.14),inset_0_1px_0_rgba(252,240,208,0.85),inset_0_-1px_0_rgba(140,82,22,0.30)]",
+    /* Pass H (KI-091): canon adoption — internal gold radial 0.20 -> 0.05,
+       body opacity 0.92/0.86 -> 0.84/0.76, directional top-cast added. */
     panelStrongToneClassName:
-      "border-[rgba(140,82,22,0.32)] bg-[radial-gradient(ellipse_90%_50%_at_50%_0%,rgba(196,144,65,0.20),transparent_70%),linear-gradient(180deg,rgba(232,242,254,0.92),rgba(204,222,246,0.86))]",
+      "border-[rgba(140,82,22,0.36)] bg-[radial-gradient(ellipse_90%_50%_at_50%_0%,rgba(196,144,65,0.05),transparent_70%),linear-gradient(180deg,rgba(232,242,254,0.84),rgba(204,222,246,0.76))] shadow-[0_-32px_80px_-16px_rgba(196,144,65,0.18),0_0_36px_rgba(196,130,45,0.12),0_30px_72px_rgba(15,30,60,0.16),inset_0_1px_0_rgba(252,240,208,0.88),inset_0_-1px_0_rgba(140,82,22,0.34)]",
     accentPanelToneClassName:
       "border-[rgba(140,82,22,0.36)] bg-[radial-gradient(ellipse_90%_50%_at_50%_0%,rgba(196,144,65,0.22),transparent_70%),linear-gradient(180deg,rgba(244,222,178,0.92),rgba(228,198,144,0.84))]",
     /* LAW correction (KI-066): map control bodies in light mode now use

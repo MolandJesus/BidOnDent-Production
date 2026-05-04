@@ -247,14 +247,18 @@ DIRECTIONAL       0 -28 to -44px    blur 70-130px    spread -14 to -22px    ≤ 
 - `ShopBidModal` light body — full canon (body opacity + directional top-cast + cream highlight inset + backdrop-filter), KI-088 RESOLVED 2026-05-05
 - `ShopOnboardingStep4` light toggles — canonical cool ice register + bronze trim + cream highlight inset, KI-088
 - `.bd-landing-section-toplamp` utility (NEW 2026-05-05) — section-level directional top-cast champagne lamp; applied to `WhoWeServeSection` + `AboutOpportunitySection` light + dark per KI-090
+- `.bd-landing-seam-fade` utility (Pass H 2026-05-05) — now renders in BOTH light + dark with 64px atmospheric bridge (champagne lamp cross-fade + cool/navy haze) per owner directive ("abrupt splitter")
+- `.bd-dashboard-panel-shadow` (light base CSS var) + `.bd-dashboard-panel--deep` / `--accent-cyan` / `--accent-indigo` (light) + `.bd-dashboard-section-shadow` (light base) + `.bd-dashboard-section--deep` (light) — directional top-cast champagne lamp added/bumped per H1.6 (premium gold restored via canon means after T1.1 paint demote)
+- `MapBidSheet` body (light + dark) — full LAW canon (body in canon range + directional top-cast + cream highlight + backdrop-filter) per H1
+- `CoverageSearchPanel` light shell (`mapSurfaceTheme.panelToneClassName` + `panelStrongToneClassName`) — full LAW canon (internal radial demoted 0.16/0.20 → 0.05, body 0.92/0.86 → 0.84/0.76, directional top-cast + cream inset added) per H2 KI-091
 
-Pending canon adoption (deferred until owner verifies prior cohort):
-- `MapBidSheet` body — dirent triad + body opacity (LAW canon already partially applied via cool ice gradient, KI-083; full triad not yet)
-- `CoverageSearchPanel` floating shell — same
-- `.bd-input` family focus state — micro-triad scaled down
-- `MobileBottomNav` background — verify harmony with canon
-- Top header bar background — same audit
-- Other landing sections (HowItWorks, OperatingRegions, BusinessInquiry, CTA) — apply `.bd-landing-section-toplamp` if owner confirms primitive looks right on Who We Serve + About first
+Pending canon adoption (Pass H queue, in flight):
+- `.bd-input` family focus state — micro-triad scaled down (H3, in flight)
+- `MobileBottomNav` light background — canon harmony, dark untouched per Pass F-fix lock (H4)
+- `DashboardHeader` top bar light background — same (H5)
+- `.bd-section-eyebrow-glow` utility — backing radial under section eyebrow chips (H6)
+- Landing CTA pill atmospheric glow (H7)
+- List-marker champagne tint on landing benefit lists (H8)
 
 ### Future: Landing sections — more gold areas + premium lighting (planned, not yet implemented)
 
