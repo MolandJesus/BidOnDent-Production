@@ -91,38 +91,77 @@ export default function DashboardAtmosphere({ isLightAppearance }: { isLightAppe
           opacity: isLightAppearance ? 0.3 : 1,
         }}
       />
+      {/* ── D8 (Bucket 7, KI-073): top-left corner gold lamp — premium ceiling
+            lamp from above-left, sits deeper than gutters so the room reads
+            as lit from a fixed source. Light gets a ghost; dark gets full
+            premium gold. ── */}
+      <div
+        className="fixed inset-0 z-0 pointer-events-none"
+        style={{
+          background: isLightAppearance
+            ? "radial-gradient(ellipse 38% 28% at 8% 0%, rgba(196, 144, 65, 0.06) 0%, transparent 65%)"
+            : "radial-gradient(ellipse 42% 32% at 8% 0%, rgba(196, 144, 65, 0.22) 0%, transparent 60%)",
+        }}
+      />
+      {/* ── D9 (Bucket 7, KI-073): top-right corner gold lamp — slightly
+            weaker than D8 so the asymmetric premium feel mimics a single
+            ceiling lamp source biased upper-left. ── */}
+      <div
+        className="fixed inset-0 z-0 pointer-events-none"
+        style={{
+          background: isLightAppearance
+            ? "radial-gradient(ellipse 32% 24% at 92% 0%, rgba(196, 144, 65, 0.04) 0%, transparent 65%)"
+            : "radial-gradient(ellipse 36% 28% at 92% 0%, rgba(196, 144, 65, 0.16) 0%, transparent 60%)",
+        }}
+      />
+      {/* ── D10 (Bucket 7, KI-073): bronze floor wash — full-width low
+            atmospheric floor under the panel stack so the dashboard reads as
+            a lit room with bronze ambient at the floor, not a void. Dark
+            only — light dashboard floor stays cool blue-cream per LAW. ── */}
+      <div
+        className="fixed inset-0 z-0 pointer-events-none"
+        style={{
+          background: isLightAppearance
+            ? "transparent"
+            : "linear-gradient(180deg, transparent 70%, rgba(196, 130, 45, 0.10) 100%)",
+        }}
+      />
       {/* ── D6: warm gold gutter wash, left edge — balances cool atmosphere
-            so far-left rail of the page reads as lit, not empty. Subtle. ── */}
+            so far-left rail of the page reads as lit, not empty. Subtle.
+            Bucket 7 (KI-073): dark alpha amplified 0.18 → 0.22 to push the
+            premium gold lamp lighting per owner directive. ── */}
       <div
         className="fixed inset-0 z-0 pointer-events-none"
         style={{
           background: isLightAppearance
             ? // Diffuse far-halo gutter wash — locked palette (KI-066).
               "radial-gradient(ellipse 32% 70% at 0% 38%, rgba(196, 130, 45, 0.10) 0%, transparent 62%)"
-            : "radial-gradient(ellipse 32% 70% at 0% 38%, rgba(196, 130, 45, 0.18) 0%, transparent 60%)",
+            : "radial-gradient(ellipse 32% 70% at 0% 38%, rgba(196, 130, 45, 0.22) 0%, transparent 60%)",
         }}
       />
       {/* ── D6: warm gold gutter wash, right edge — same as left but opposite
-            corner, so the two rails balance and the page feels lamp-lit. ── */}
+            corner, so the two rails balance and the page feels lamp-lit.
+            Bucket 7 (KI-073): dark alpha amplified 0.15 → 0.19. ── */}
       <div
         className="fixed inset-0 z-0 pointer-events-none"
         style={{
           background: isLightAppearance
             ? // Diffuse far-halo gutter wash — locked palette (KI-066).
               "radial-gradient(ellipse 30% 65% at 100% 62%, rgba(196, 130, 45, 0.09) 0%, transparent 62%)"
-            : "radial-gradient(ellipse 30% 65% at 100% 62%, rgba(196, 130, 45, 0.15) 0%, transparent 60%)",
+            : "radial-gradient(ellipse 30% 65% at 100% 62%, rgba(196, 130, 45, 0.19) 0%, transparent 60%)",
         }}
       />
       {/* ── D7: subtle warm bottom-center halo — completes the 4-corner
             ambient lamp lighting (top from atmosphere ribbon, sides from D6
-            gutters, now bottom). Very low alpha — premium not loud. ── */}
+            gutters, now bottom). Very low alpha — premium not loud.
+            Bucket 7 (KI-073): dark alpha amplified 0.13 → 0.17. ── */}
       <div
         className="fixed inset-0 z-0 pointer-events-none"
         style={{
           background: isLightAppearance
             ? // Diffuse far-halo bottom wash — locked palette (KI-066).
               "radial-gradient(ellipse 56% 22% at 50% 100%, rgba(196, 130, 45, 0.08) 0%, transparent 70%)"
-            : "radial-gradient(ellipse 56% 22% at 50% 100%, rgba(196, 130, 45, 0.13) 0%, transparent 68%)",
+            : "radial-gradient(ellipse 56% 22% at 50% 100%, rgba(196, 130, 45, 0.17) 0%, transparent 68%)",
         }}
       />
     </>

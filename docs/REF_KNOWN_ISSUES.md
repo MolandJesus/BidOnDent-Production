@@ -477,3 +477,23 @@
   3. `theme.css` dark `--bd-dashboard-section-shadow`: same direction, smaller (`0 22px 56px` → `0 16px 40px`; `0 8px 18px` → `0 6px 14px`). NO asymmetric bias — sections sit inside panels, not as the stacking surface.
   4. `theme.css` light `--bd-dashboard-panel-shadow`: cool-shadow softened (`0 26px 56px rgba(15,30,60,0.22)` → `0 18px 42px rgba(15,30,60,0.22)`; `0 56px 110px rgba(15,30,60,0.10)` → `0 36px 80px rgba(15,30,60,0.10)`). NO bias addition in light — cool-shadow-on-cream is the light mode grounding language; warm bronze bias would disturb it.
 - **Result:** Adjacent panels now read as separate floating glass plates with ambient space between them, not as stacked shingles. Asymmetric downward bronze bias on dark panels reinforces the "lamp from above" lighting convention (light hits the top, glow falls below). Skill: `bd-design-identity`.
+
+### KI-073: Dashboard atmospheric gold glow underweight in dark mode + landing page lacks gold lamp lighting entirely
+
+- **Impact:** Owner directive: "needs more atmospheric glow with premium gold in dashboard, more shadow + 3D + layering." Pre-Bucket-7 dashboard atmosphere had three gold gutter washes (D6 left at 0.18α dark, D6 right at 0.15α dark, D7 bottom at 0.13α dark) but no top corner lamps and no bronze floor wash, so the room read as cool blue with subtle warm rails — insufficient premium gold lamp lighting per owner directive. Landing page atmosphere had ZERO gold layers — just a single dark base radial. Owner directive: "bring dashboard's premium look to landing while keeping landing's eye-catching richer colors." Both surfaces needed amplified gold lamp lighting that lights the SPACE between panels rather than painting any panel itself.
+- **Location:** `src/app/components/app/DashboardAtmosphere.tsx` (existing 3 gold gutters at L94-127); `src/app/components/app/LandingPageLayout.tsx` (no gold layers, just inline base radial at L68-70).
+- **Fix direction:** Amplify (alphas + new radials), do NOT restructure. Add top-left + top-right corner lamps + bronze floor wash to dashboard. Add a parallel-but-restrained gold lamp stack (2 corners + 2 gutters + 1 bottom = 5 layers) to landing, using lower alphas so landing's richer hero gradients stay theatrical.
+- **Status:** RESOLVED 2026-05-03. Two-file commit:
+  1. `DashboardAtmosphere.tsx` — added three NEW dark-mode-prominent layers BEFORE existing gold gutters (so they sit deeper under the panel stack):
+     - **D8 top-left corner gold lamp**: `radial-gradient(ellipse 42% 32% at 8% 0%, rgba(196,144,65,0.22), transparent 60%)` dark / `0.06α` light ghost.
+     - **D9 top-right corner gold lamp**: `rgba(196,144,65,0.16) at 92% 0%` dark (asymmetric weaker than D8 — single ceiling lamp source biased upper-left), `0.04α` light.
+     - **D10 bronze floor wash**: `linear-gradient(180deg, transparent 70%, rgba(196,130,45,0.10) 100%)` dark only — light dashboard floor stays cool blue-cream per LAW.
+     - Existing D6 left / D6 right / D7 bottom dark alphas amplified +0.04 each (0.18→0.22, 0.15→0.19, 0.13→0.17). Light alphas untouched (light is "close to perfect" per owner directive).
+  2. `LandingPageLayout.tsx` — added FIVE new fixed full-screen gold layers as first children inside the wrapper div (paint between wrapper bg and page content):
+     - **L1 top-left corner lamp**: `0.18α` dark / `0.05α` light
+     - **L2 top-right corner lamp**: `0.13α` dark / `0.04α` light
+     - **L3 left gutter wash**: `0.15α` dark / `0.08α` light
+     - **L4 right gutter wash**: `0.12α` dark / `0.07α` light
+     - **L5 bottom wash**: `0.10α` dark / `0.06α` light
+     - All alphas slightly lower than dashboard equivalents because landing's hero gradients carry more decorative color; over-amplifying gold would mute the hero's eye-catching role per owner directive.
+- **Result:** Dashboard dark mode now reads as a lit room with premium ceiling-lamp asymmetric gold from upper-left + bronze floor. Landing dark mode picks up parallel premium lamp lighting while preserving its richer hero color story. Cohesion across landing + dashboard: shared gold lamp grammar, distinct surface character. Light mode: subtle ghost of the same grammar for dashboard, restrained for landing — no over-cream regression. Skill: `bd-design-identity`.
