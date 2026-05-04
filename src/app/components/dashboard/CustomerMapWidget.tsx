@@ -133,9 +133,11 @@ export default function CustomerMapWidget({
         {/* Bucket 5.6 (KI-074 partial): top ambient gold lamp overlay — simulates
             premium lamp light hitting the top edge of the map canvas. Pointer-
             events-none so it never intercepts map interactions. Both modes
-            get the gold tint so the cohesion grammar reads in light + dark. */}
+            get the gold tint so the cohesion grammar reads in light + dark.
+            Pass 5 (2026-05-04): alpha bumped 0.06 -> 0.09 for stronger dark-
+            mode presence; still well below the 0.22 single-layer halo cap. */}
         <div
-          className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-12 bg-gradient-to-b from-[rgba(196,144,65,0.06)] via-transparent to-transparent"
+          className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-12 bg-gradient-to-b from-[rgba(196,144,65,0.09)] via-transparent to-transparent"
           aria-hidden="true"
         />
 

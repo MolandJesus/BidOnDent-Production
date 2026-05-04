@@ -3619,13 +3619,17 @@ body {
    map widget (CustomerMapWidget / ShopMapWidget / InsurerMapWidget). Both
    modes share the values — works against light + dark map tiles. Inherits
    the parent's border-radius so it matches whatever rounded shape the
-   wrapper uses (rounded-xl, rounded-2xl, etc). */
+   wrapper uses (rounded-xl, rounded-2xl, etc).
+   Pass 5 (2026-05-04): cream top alpha bumped 0.14 -> 0.18 so the map
+   canvas curved-glass edge reads premium against dark map tiles (cream
+   against light tiles is intentionally near-invisible). Bronze bottom
+   stays 0.16 — already visible in both modes. */
 .bd-map-canvas-sheen {
   position: absolute;
   inset: 0;
   pointer-events: none;
   box-shadow:
-    inset 0 1px 0 rgba(252, 240, 208, 0.14),
+    inset 0 1px 0 rgba(252, 240, 208, 0.18),
     inset 0 -1px 0 rgba(140, 82, 22, 0.16);
   border-radius: inherit;
 }
