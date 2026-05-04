@@ -948,6 +948,8 @@ body {
        Rim + LAW cream inset preserved (Pass C wins kept). */
   border-color: rgba(191, 219, 254, 0.7);
   background: linear-gradient(180deg, rgba(252, 253, 255, 0.9) 0%, rgba(241, 247, 255, 0.74) 100%);
+  /* Pass E (KI-084): 140px ambient gold bleed @ 0.06 — light register
+     keeps lower alpha so cool canvas isn't muddied. */
   box-shadow:
     0 18px 48px rgba(15, 23, 42, 0.13),
     0 6px 16px rgba(30, 58, 138, 0.08),
@@ -957,6 +959,7 @@ body {
     0 0 0 1px rgba(191, 219, 254, 0.12),
     0 0 32px rgba(196, 130, 45, 0.20),
     0 0 64px rgba(196, 130, 45, 0.10),
+    0 0 140px rgba(196, 130, 45, 0.06),
     var(--bd-glow-medium);
 }
 
@@ -969,8 +972,7 @@ body {
    0.30, bronze ring 0.22 -> 0.30 (locked bronze rgba(140,82,22) family).
    Outer warm halo 0.10 -> 0.18 (within cap). */
 .bd-glass-card--landing-warm {
-  /* Pass C-fix: hard ring softened from 0.30 -> 0.12, rim eased 0.30 -> 0.26,
-     diffuse halo amplified 0.18 -> 0.22 + new 64px feather @ 0.12. */
+  /* Pass C-fix + Pass E: 150px ambient amber bleed @ 0.07 for warm light. */
   border-color: rgba(220, 180, 110, 0.42);
   background: linear-gradient(180deg, rgba(255, 252, 245, 0.92) 0%, rgba(252, 246, 235, 0.78) 100%);
   box-shadow:
@@ -980,13 +982,12 @@ body {
     inset 0 -1px 0 rgba(140, 82, 22, 0.26),
     0 0 0 1px rgba(140, 82, 22, 0.12),
     0 0 36px rgba(196, 144, 65, 0.22),
-    0 0 72px rgba(196, 144, 65, 0.12);
+    0 0 72px rgba(196, 144, 65, 0.12),
+    0 0 150px rgba(196, 144, 65, 0.07);
 }
 
 .bd-glass-card--landing-warm:hover {
-  /* Pass C-fix: hover ring 0.42 was the worst hard-line offender ->
-     softened to 0.16. Rim 0.36 -> 0.30. Diffuse halo at cap + new 80px
-     feather @ 0.14 for smooth lift on hover. */
+  /* Pass C-fix + Pass E: hover ambient 170px @ 0.08. */
   transform: translateY(-6px);
   border-color: rgba(220, 180, 110, 0.65);
   box-shadow:
@@ -996,13 +997,12 @@ body {
     inset 0 -1px 0 rgba(140, 82, 22, 0.30),
     0 0 0 1px rgba(140, 82, 22, 0.16),
     0 0 56px rgba(196, 144, 65, 0.22),
-    0 0 80px rgba(196, 144, 65, 0.14);
+    0 0 80px rgba(196, 144, 65, 0.14),
+    0 0 170px rgba(196, 144, 65, 0.08);
 }
 
 .bd-glass-card--landing:hover {
-  /* Pass C-fix: bronze ring 0.22 -> 0.12. Cool ring 0.45 -> 0.32 (still
-     reads as active focus indicator but no longer a hard band). Rim eased
-     0.32 -> 0.30. Diffuse halo at cap + new 80px feather @ 0.12. */
+  /* Pass C-fix + Pass E: hover ambient 160px @ 0.07. */
   transform: translateY(-6px);
   box-shadow:
     0 28px 64px rgba(15, 23, 42, 0.16),
@@ -1013,6 +1013,7 @@ body {
     0 0 0 1px rgba(147, 197, 253, 0.32),
     0 0 44px rgba(196, 130, 45, 0.22),
     0 0 80px rgba(196, 130, 45, 0.12),
+    0 0 160px rgba(196, 130, 45, 0.07),
     var(--bd-glow-strong);
   border-color: rgba(147, 197, 253, 0.85);
 }
@@ -1525,6 +1526,8 @@ body {
      0.22 -- landing cool-dominant identity untouched. */
   border-color: rgba(96, 165, 250, 0.32);
   background: linear-gradient(180deg, rgba(37, 99, 235, 0.22) 0%, rgba(12, 25, 41, 0.78) 100%);
+  /* Pass E (KI-084): added 140px ambient gold bleed so cool dark landing
+     cards read as lit-from-page-atmosphere (the navy + gold-lamp page) */
   box-shadow:
     0 18px 48px rgba(2, 6, 23, 0.5),
     0 6px 16px rgba(30, 58, 138, 0.32),
@@ -1534,15 +1537,14 @@ body {
     0 0 0 1px rgba(96, 165, 250, 0.22),
     0 0 36px rgba(37, 99, 235, 0.18),
     0 0 48px rgba(196, 130, 45, 0.22),
+    0 0 140px rgba(196, 144, 65, 0.08),
     inset 1px 0 0 rgba(252, 240, 208, 0.14),
     inset -1px 0 0 rgba(252, 240, 208, 0.08);
 }
 
 .dark .bd-glass-card--landing:hover,
 [data-theme="dark"] .bd-glass-card--landing:hover {
-  /* Pass B: hover proportional bumps so hover delta over idle stays
-     visible. Bronze rim 0.20 -> 0.28, bronze ring 0.16 -> 0.22, cool
-     ring 0.40 unchanged, bronze outer 0.22 unchanged (at cap). */
+  /* Pass E: hover lift gets 160px @ 0.10 so the ambient bleed grows on hover. */
   border-color: rgba(147, 197, 253, 0.55);
   box-shadow:
     0 28px 68px rgba(2, 6, 23, 0.62),
@@ -1552,7 +1554,8 @@ body {
     0 0 0 1px rgba(196, 144, 65, 0.22),
     0 0 0 1px rgba(147, 197, 253, 0.4),
     0 0 56px rgba(37, 99, 235, 0.28),
-    0 0 52px rgba(196, 130, 45, 0.22);
+    0 0 52px rgba(196, 130, 45, 0.22),
+    0 0 160px rgba(196, 144, 65, 0.10);
 }
 
 /* Warm variant — dark mode. Amber-tinted glass for Direction B sections.
@@ -1563,6 +1566,10 @@ body {
    delta over idle so the lift on interaction stays distinct. */
 .dark .bd-glass-card--landing-warm,
 [data-theme="dark"] .bd-glass-card--landing-warm {
+  /* Pass E (KI-084): 160px ambient amber bleed so warm dark landing cards
+     feel lit from the page atmosphere. Warm variant carries richer halos
+     by intentional design (landing identity = "should POP"); ambient
+     bleed extends the existing rich treatment. */
   border-color: rgba(238, 184, 110, 0.52);
   background: linear-gradient(180deg, rgba(200, 115, 35, 0.24) 0%, rgba(22, 14, 8, 0.78) 100%);
   box-shadow:
@@ -1571,11 +1578,13 @@ body {
     inset 0 1px 0 rgba(252, 240, 208, 0.32),
     inset 0 -1px 0 rgba(200, 115, 35, 0.16),
     0 0 0 1px rgba(238, 184, 110, 0.34),
-    0 0 48px rgba(240, 150, 60, 0.32);
+    0 0 48px rgba(240, 150, 60, 0.32),
+    0 0 160px rgba(240, 150, 60, 0.10);
 }
 
 .dark .bd-glass-card--landing-warm:hover,
 [data-theme="dark"] .bd-glass-card--landing-warm:hover {
+  /* Pass E: hover gets 180px @ 0.12 - widest ambient on the warm hover. */
   border-color: rgba(252, 240, 208, 0.72);
   box-shadow:
     0 30px 72px rgba(2, 2, 2, 0.66),
@@ -1583,7 +1592,8 @@ body {
     inset 0 1px 0 rgba(255, 232, 180, 0.42),
     inset 0 -1px 0 rgba(200, 115, 35, 0.22),
     0 0 0 1px rgba(252, 240, 208, 0.55),
-    0 0 72px rgba(240, 150, 60, 0.46);
+    0 0 72px rgba(240, 150, 60, 0.46),
+    0 0 180px rgba(240, 150, 60, 0.12);
 }
 
 /* Dashboard variant — dark mode. D4 (final v2): NAVY infill + heavy GOLD trim
@@ -2531,11 +2541,17 @@ body {
      downward bronze halo 0.10 -> 0.14, symmetric outer halos 0.14/0.08 ->
      0.18/0.10 (all under 0.22 cap), edge catchlights 0.10/0.06 -> 0.14/0.08
      (cream lamp light catching the curved glass edges). */
+  /* Pass E (KI-084, owner directive: "lighting on the cards to be more alive
+     and atmospheric and coming more from the background"): added third FAR
+     ambient bleed layer (180px @ 0.07) so panel reads as lit-from-page-
+     atmosphere rather than stamped trim. The 60px primary + 110px mid +
+     180px ambient triad creates a soft gradient halo envelope. */
   --bd-dashboard-panel-shadow:
     0 22px 56px rgba(2, 6, 23, 0.36), 0 8px 18px rgba(2, 6, 23, 0.24),
     inset 0 1px 0 rgba(196, 144, 65, 0.38), inset 0 -1px 0 rgba(140, 82, 22, 0.30),
     0 0 0 1px rgba(96, 165, 250, 0.18), 0 24px 60px rgba(196, 130, 45, 0.14),
     0 0 60px rgba(196, 130, 45, 0.18), 0 0 110px rgba(196, 130, 45, 0.10),
+    0 0 180px rgba(196, 144, 65, 0.07),
     inset 1px 0 0 rgba(252, 240, 208, 0.14), inset -1px 0 0 rgba(252, 240, 208, 0.08);
   /* Pass 2 (KI-077): dark section body layers a softer internal ceiling lamp
      (rgba(196,144,65,0.10), narrower than panels) so cool-toned report cards
@@ -2562,17 +2578,20 @@ body {
      0.24, bronze inset rim 0.18 -> 0.26, atmospheric halos 0.15/0.08 ->
      0.18/0.10 (still under 0.22), edge catchlights 0.10/0.07 -> 0.14/0.08.
      Hover state proportionally amplified so hover delta stays visible. */
+  /* Pass E: section gets 150px ambient ; hover gets 170px @ 0.08 lift. */
   --bd-dashboard-section-shadow:
     0 16px 40px rgba(2, 6, 23, 0.34), 0 6px 14px rgba(2, 6, 23, 0.22),
     inset 0 1px 0 rgba(196, 144, 65, 0.24), inset 0 -1px 0 rgba(140, 82, 22, 0.26),
     0 0 0 1px rgba(96, 165, 250, 0.14), 0 0 44px rgba(196, 130, 45, 0.18),
     0 0 90px rgba(196, 130, 45, 0.10),
+    0 0 150px rgba(196, 144, 65, 0.06),
     inset 1px 0 0 rgba(252, 240, 208, 0.14), inset -1px 0 0 rgba(252, 240, 208, 0.08);
   --bd-dashboard-section-hover-shadow:
     0 28px 64px rgba(2, 6, 23, 0.40), 0 10px 22px rgba(2, 6, 23, 0.26),
     inset 0 1px 0 rgba(196, 144, 65, 0.34), inset 0 -1px 0 rgba(140, 82, 22, 0.32),
     0 0 0 1px rgba(96, 165, 250, 0.24), 0 0 52px rgba(196, 130, 45, 0.20),
-    0 0 100px rgba(196, 130, 45, 0.10);
+    0 0 100px rgba(196, 130, 45, 0.10),
+    0 0 170px rgba(196, 144, 65, 0.08);
   --bd-dashboard-section-selected-bg: linear-gradient(
     180deg,
     rgba(34, 74, 156, 0.4) 0%,
@@ -2618,27 +2637,34 @@ body {
      doesn't muddy the warm-cream surface gradient. NO bias addition in light —
      light mode is cool-shadow-on-cream and a warm bronze bias would disturb the
      cool blue grounding. */
+  /* Pass E (KI-084): light panels also get a far ambient bleed so the
+     "lit from page atmosphere" pattern applies system-wide. Light alpha
+     is lower (0.04) than dark (0.07) so cool-cream canvas is not muddied. */
   --bd-dashboard-panel-shadow:
     0 18px 42px rgba(15, 30, 60, 0.22), 0 36px 80px rgba(15, 30, 60, 0.1),
     0 6px 14px rgba(15, 30, 60, 0.1), 0 0 0 1px rgba(140, 82, 22, 0.3),
     inset 0 1px 0 rgba(254, 247, 232, 0.92), inset 0 -1px 0 rgba(140, 82, 22, 0.36),
-    0 0 18px rgba(196, 130, 45, 0.14), 0 0 80px rgba(196, 130, 45, 0.06);
+    0 0 18px rgba(196, 130, 45, 0.14), 0 0 80px rgba(196, 130, 45, 0.06),
+    0 0 160px rgba(196, 130, 45, 0.04);
   --bd-dashboard-section-bg: linear-gradient(
     180deg,
     rgba(254, 247, 230, 0.94) 0%,
     rgba(247, 235, 210, 0.84) 100%
   );
   --bd-dashboard-section-border: rgba(140, 82, 22, 0.4);
+  /* Pass E: light section + hover ambient bleed (140px / 150px @ 0.04-0.05). */
   --bd-dashboard-section-shadow:
     0 16px 36px rgba(15, 30, 60, 0.18), 0 44px 90px rgba(15, 30, 60, 0.08),
     0 0 0 1px rgba(140, 82, 22, 0.26), inset 0 1px 0 rgba(254, 247, 232, 0.88),
     inset 0 -1px 0 rgba(140, 82, 22, 0.32), 0 0 14px rgba(196, 130, 45, 0.1),
-    0 0 60px rgba(196, 130, 45, 0.05);
+    0 0 60px rgba(196, 130, 45, 0.05),
+    0 0 140px rgba(196, 130, 45, 0.04);
   --bd-dashboard-section-hover-shadow:
     0 22px 44px rgba(15, 30, 60, 0.22), 0 50px 100px rgba(15, 30, 60, 0.1),
     0 0 0 1px rgba(140, 82, 22, 0.38), inset 0 1px 0 rgba(254, 247, 232, 0.92),
     inset 0 -1px 0 rgba(140, 82, 22, 0.4), 0 0 18px rgba(196, 130, 45, 0.14),
-    0 0 70px rgba(196, 130, 45, 0.07);
+    0 0 70px rgba(196, 130, 45, 0.07),
+    0 0 150px rgba(196, 130, 45, 0.05);
   --bd-dashboard-section-selected-bg: linear-gradient(
     180deg,
     rgba(224, 238, 255, 0.96) 0%,
