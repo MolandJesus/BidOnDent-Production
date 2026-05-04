@@ -704,7 +704,7 @@
 - **Impact:** Audit AI F-16 (P1-RUNTIME, `AUDIT_FULL_2026-05-04_SONNET.md`): user clicks Log Out via dashboard dropdown → app navigates to landing in apparent logged-out state → user clicks appearance toggle → authenticated state restored without re-entering credentials. Trust + security perception issue, especially on shared devices. Read-only F-16 diagnose pass identified H3 as primary cause: `<ClerkProvider>` at [src/app/App.tsx:465](src/app/App.tsx#L465) was configured with only `publishableKey` + `appearance` — no `afterSignOutUrl`. Without provider-level redirect config AND without `redirectUrl` passed to `signOut()` calls, no hard browser navigation occurs on logout. The app's React state navigation (`navigation.setShowLandingPage(true)`) renders the landing UI but in-memory state, contexts, and Clerk's internal session cache persist. On next re-render (e.g. appearance toggle), Clerk's `useUser()` re-hydrates from the still-present session token.
 - **Location:** [src/app/App.tsx:465](src/app/App.tsx#L465) — `<ClerkProvider>` config.
 - **Fix direction:** Add `afterSignOutUrl="/"` to `<ClerkProvider>`. One-line provider config change. Per `@clerk/clerk-react` v5.61.5 type definitions in `node_modules/@clerk/shared/dist/types/index.d.ts`: "Configure `afterSignOutUrl` as a global configuration, either in `<ClerkProvider/>` or in `await Clerk.load()`" — canonical Clerk v5 pattern. Provider-level config applies to every `signOut()` call regardless of whether the call site passes `redirectUrl`.
-- **Status:** RESOLVED (code) 2026-05-05 (commit pending — added in this commit alongside this KI entry). Owner browser smoke test pending: log in → click Log Out from dashboard dropdown → verify hard navigation to `/` (URL bar reloads, not just SPA route change) → verify clicking around landing does not restore session.
+- **Status:** RESOLVED (code) 2026-05-05 (commit `92ce7528`). Owner browser smoke test pending: log in → click Log Out from dashboard dropdown → verify hard navigation to `/` (URL bar reloads, not just SPA route change) → verify clicking around landing does not restore session.
 - **Hard stops respected:** No edge function touched, no JWT verification path touched, `verify_jwt: false` preserved, `requireClerkSession()` unchanged, no Clerk SDK version bump, no env var change, no JWT template change. Single file (App.tsx) plus this doc entry. Per `supabase-clerk-edge-function` skill (no auth verification pattern change — this is session lifecycle, not session verification).
 - **Result:** Clerk's `signOut()` now performs a hard browser navigation to `/` after clearing the session, forcing a full document reload that clears all in-memory React state and gives Clerk a clean slate to verify the now-cleared session token. Both call sites benefit: dashboard `handleLogout` (`src/app/hooks/useAppHandlers.ts:40`) gets the hard nav for free; `LandingPageHeader.tsx:313`'s explicit `redirectUrl: "/"` becomes redundant but harmless.
 
@@ -718,7 +718,7 @@
   - Border: `border-white/30` → canon bronze `border-[rgba(140,82,22,0.22)]` (replaces pure-white with subtle canon bronze trim).
   - Reload button: `bg-white` → `bg-[rgba(248,250,255,0.92)]`; `hover:bg-slate-50` → `hover:bg-[rgba(238,247,255,0.95)]`.
   - Backdrop-filter preserved (premium glass character maintained even on catastrophic failure).
-- **Status:** RESOLVED 2026-05-05 (commit pending — added in this commit alongside this KI entry).
+- **Status:** RESOLVED 2026-05-05 (commit `04e33f4f`).
 - **Hard stops respected:** Outer wrapper `bg-[#eef2f7]` UNCHANGED (already canon cool blue-gray). Logo / heading / paragraph / Try Again button UNCHANGED (cool blue gradient already canon). Build clean (3816.11 KiB precache). Branch-aware forbidden grep ZERO.
 - **Skill:** `bd-design-identity`. Closes the visual-canon arc opened in Pass H (KI-091 → KI-094).
 
@@ -730,7 +730,7 @@
   - Added `SHOP_DIRECTORY_IS_PREVIEW = true` constant exported from `marketIntelligence.ts`. Single source of truth — flip to `false` (or compute from real-data resolved count) when KI-100 ships.
   - New `PreviewDirectoryNotice` component at [src/app/components/shop/PreviewDirectoryNotice.tsx](src/app/components/shop/PreviewDirectoryNotice.tsx) — canon-aligned (cool blue body + canon bronze trim + canon cream highlight inset; no pure-white). Honest copy: "Preview directory — example shops shown while we onboard real partners. Saved bids and estimate requests will activate once shops join your area."
   - Notice placed on `ShopDirectoryListBody.tsx` immediately above the "Recommended shops" header (the highest-traffic dashboard surface for fake shops). Conditional on `SHOP_DIRECTORY_IS_PREVIEW`.
-- **Status:** RESOLVED (short-term mitigation) 2026-05-05 (commit pending — added in this commit alongside this KI entry). Full Supabase swap tracked separately as KI-100.
+- **Status:** RESOLVED (short-term mitigation) 2026-05-05 (commit `7f6d55ce`). Full Supabase swap tracked separately as KI-100.
 - **Hard stops respected:** No `marketIntelligence.ts` API change (sync return signatures preserved — 20+ consumers untouched). No data layer change. No auth invariant change. No storage invariant change. Banner is pure-additive UI. Build clean (3817.71 KiB precache, +1.6 KiB for new component). Branch-aware forbidden grep ZERO.
 - **Skill:** `bd-design-identity` (notice canon-aligned).
 
@@ -754,7 +754,8 @@
 - **Fix direction:** Two-part structural fix in single coherent change.
   - (a) **Negative-margin overlap** — added `margin-top: -36px; margin-bottom: -36px;` to `.bd-landing-seam-fade`. Seam now overlaps adjacent sections by 36px each side. Turns it from a between-band into a true bridge: gold radial center sits exactly at the section boundary, soft-lighting ACROSS rather than DARKENING BETWEEN.
   - (b) **Drop the navy linear layer entirely** (light + dark register). The gold radial alone IS the bridge; navy darkening was an additive misfire. Gold radial alphas UNCHANGED from Pass K (0.13/0.04 light, 0.20/0.06 dark) — still well under 0.22a cap.
-- **Status:** RESOLVED 2026-05-05 (commit pending — added in this commit alongside this KI entry).
+- **Status:** RESOLVED 2026-05-05 (commit `6b96c22b`).
+- **Visual continuation:** Pass M (commit `e5937a27`) bumped this same primitive's light center alpha 0.13→0.18 / mid 0.04→0.06 in response to owner zoomed-out screenshot review. Pass N (commit `e5437355`) and Pass O (commit `c17a6c4c`) extended the alpha-lift pattern to `.bd-landing-section-toplamp` (light 0.13→0.18) and `.bd-landing-section-bottomwash` (light 0.10→0.14) — the M/N/O trilogy together completes the light-mode landing-atmosphere richness pass. All within Locked Premium Gold Palette + 0.22a halo cap. Dark mode untouched in all three.
 - **Hard stops respected:** 0.22a cap NOT exceeded (alphas unchanged). HeroSection UNTOUCHED. Pass K spacing UNTOUCHED (`py-4 sm:py-8 md:py-10` preserved). Locked Premium Gold Palette only. No new utilities. `pointer-events: none` preserved (no click interception). `position: relative; z-index: 1;` preserved (renders above sections in stacking context). Build clean (3817.64 KiB precache stable). Branch-aware forbidden grep ZERO.
 - **Skill:** `bd-design-identity`. Pre-existing IDE diagnostics at L453/L483/L2555/L2685 UNCHANGED — documented in audit, not caused by this edit.
 
@@ -767,7 +768,7 @@
   - Primary roads: `#cbd5e1` → `#94a3b8` (slate-400, more visible — 6 occurrences)
   - Secondary roads: `#dde6f0` → `#a8b8cb` (between slate-300 and slate-400 — 4 occurrences)
   - New light luminance delta: ~68 (primary) / ~46 (secondary) — matches or exceeds dark-mode contrast ratio.
-- **Status:** RESOLVED 2026-05-05 (commit pending — added in this commit alongside this KI entry).
+- **Status:** RESOLVED 2026-05-05 (commit `91835cf9`).
 - **Hard stops respected:** Cool blue identity preserved (no warm encroachment). LAW Light-Mode Surface Rule respected (no pure-white). No structural change to map layers (route lines, pin pulse, gold flow, contour grid all UNCHANGED). Dark-mode tile + stroke colors UNCHANGED (`#0d1d3a`, `#334155`, `#293449` preserved). Build clean (3817.64 KiB precache stable). Branch-aware forbidden grep ZERO.
 - **Skill:** `bd-design-identity`.
 
@@ -814,7 +815,7 @@
 - **Impact:** During F-16 diagnose (KI-096), a secondary code-quality issue surfaced at [src/app/components/landing/LandingPageHeader.tsx](src/app/components/landing/LandingPageHeader.tsx): `signOut({ redirectUrl: "/" })` was invoked fire-and-forget (no `await`, no `void` annotation). After F-16 fix added provider-level `afterSignOutUrl`, the explicit `redirectUrl` was redundant and the unawaited promise was a code-quality smell — but logout worked correctly post-F-16, so this was non-urgent.
 - **Location:** [src/app/components/landing/LandingPageHeader.tsx](src/app/components/landing/LandingPageHeader.tsx) — `onClick` handler in mobile menu Sign Out button.
 - **Fix direction:** Convert click handler to `async` and `await signOut()`. Drop the redundant `{ redirectUrl: "/" }` since provider-level config (KI-096) now handles it.
-- **Status:** RESOLVED 2026-05-05 (commit pending — added in this commit alongside this KI status update). Click handler now `async` + `await signOut()`. Comment in the code points back at KI-097 + KI-096 for institutional memory.
+- **Status:** RESOLVED 2026-05-05 (commit `296f6521`). Click handler now `async` + `await signOut()`. Comment in the code points back at KI-097 + KI-096 for institutional memory.
 - **Skill note:** P7-TECHDEBT cleanup picked up in autopilot sustained pass after F-24 mitigation completed — small enough to ship as its own commit without violating "one bug, one commit" discipline.
 
 ### KI-089: Dead storage adapter direct-upload path (architectural observation — no fix needed)
