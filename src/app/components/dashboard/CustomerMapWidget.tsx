@@ -214,7 +214,7 @@ export default function CustomerMapWidget({
               key={label}
               type="button"
               onClick={() => onViewShops?.()}
-              className={`bd-dashboard-section bd-dashboard-section--interactive flex flex-col items-center gap-1 rounded-xl px-2 py-2.5 text-center active:scale-[0.97] ${
+              className={`bd-dashboard-section bd-dashboard-section--interactive flex min-h-[96px] flex-col items-center justify-center gap-1.5 rounded-xl px-2 py-3 text-center active:scale-[0.97] sm:min-h-0 sm:gap-1 sm:py-2.5 ${
                 capabilitySurfaceClasses[index % capabilitySurfaceClasses.length]
               }`}
             >
