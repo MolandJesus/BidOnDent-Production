@@ -1150,6 +1150,16 @@ body {
   text-transform: uppercase;
   color: rgb(29, 78, 216);
   display: inline-block;
+  /* Pass H6 (KI-091): backing champagne lamp glow behind the eyebrow
+     text — extends the canon's "lit from page atmosphere" principle to
+     section eyebrows so REPAIR OVERVIEW / YOUR DASHBOARD / SMART MAP
+     TOOLS etc. read as sitting ON the atmospheric backlight, not as
+     stamped labels. Applied to .bd-section-eyebrow base so every
+     existing usage (landing + dashboard) inherits without per-call-site
+     edits. Light register default; dark register override below. */
+  text-shadow:
+    0 0 20px rgba(196, 144, 65, 0.18),
+    0 0 36px rgba(196, 144, 65, 0.10);
 }
 
 /* Dashboard ambient layer — single subtle top-anchored radial glow. Apply as a
@@ -1642,6 +1652,12 @@ body {
 .dark .bd-section-eyebrow,
 [data-theme="dark"] .bd-section-eyebrow {
   color: rgb(147, 197, 253);
+  /* Pass H6: dark register stronger champagne backing glow — needs
+     more alpha to read against navy than light-on-cream needed.
+     Single-layer halo cap 0.22a respected. */
+  text-shadow:
+    0 0 22px rgba(196, 144, 65, 0.22),
+    0 0 40px rgba(196, 144, 65, 0.14);
 }
 
 /* Dashboard ambient layer — dark mode. D4 (final v2): stronger gold lamp glow
