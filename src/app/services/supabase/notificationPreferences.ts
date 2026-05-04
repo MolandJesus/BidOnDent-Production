@@ -25,20 +25,33 @@ export interface NotificationPreferences {
 /**
  * Fetch the current user's notification preferences.
  * Auto-creates defaults on the server if none exist.
+ *
+ * F-04 (KI-095): server may return preferences with `fallback: true` when the
+ * persistence layer is unavailable (e.g. table missing on prod, RLS denying
+ * service role). In that case the response is still 200 with the defaults
+ * from the migration, so the UI can render Appearance Settings — but the
+ * caller can read `__fallback` to surface a degraded-mode hint.
  */
 let cachedFailure: { until: number } | null = null;
 const FAILURE_BACKOFF_MS = 60_000;
 
-export async function getNotificationPreferences(): Promise<NotificationPreferences> {
+export type NotificationPreferencesResult = NotificationPreferences & {
+  __fallback?: boolean;
+};
+
+export async function getNotificationPreferences(): Promise<NotificationPreferencesResult> {
   if (cachedFailure && Date.now() < cachedFailure.until) {
     throw new Error("notification-preferences temporarily unavailable");
   }
   try {
     const result = await requestSupabaseEdge<{
       preferences: NotificationPreferences;
+      fallback?: boolean;
     }>(SUPABASE_EDGE_ROUTES.notificationPreferences, { method: "GET" });
     cachedFailure = null;
-    return result.preferences;
+    return result.fallback
+      ? { ...result.preferences, __fallback: true }
+      : result.preferences;
   } catch (err) {
     cachedFailure = { until: Date.now() + FAILURE_BACKOFF_MS };
     throw err;
