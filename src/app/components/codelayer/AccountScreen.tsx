@@ -300,7 +300,7 @@ export default function AccountScreen({
   };
 
   return (
-    <div className="pb-20 relative overflow-hidden">
+    <div className="pb-6 md:pb-8 relative overflow-hidden">
       {/* Page-level atmospheric orbs */}
       <div
         className="absolute top-40 -right-16 w-56 h-56 rounded-full pointer-events-none"
