@@ -79,7 +79,7 @@ These are the primary governing documents. Always start here.
 - **[`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md)** — long-form design philosophy and historical decisions. The "why behind the system."
 - **[`PLAN_VISUAL_MASTER_2026-05-03.md`](archive/2026-05-03-visual-handoffs/PLAN_VISUAL_MASTER_2026-05-03_archived_2026-05-04.md)** — ARCHIVED 2026-05-04. Visual master ledger from 2026-05-03 session, superseded by Pass G/H/I/J/K/L/M/N/O.
 - **[`PLAN_DESIGN_POLISH_QUEUE_OPUS_2026-05-03.md`](archive/2026-05-03-visual-handoffs/PLAN_DESIGN_POLISH_QUEUE_OPUS_2026-05-03_archived_2026-05-04.md)** — ARCHIVED 2026-05-04. Surgical polish queue from 2026-05-03 session; P0/P1/P2 items consumed by Pass H1/H1.6/H2 + KI-090 + Pass G/H/I.
-- **[`HANDOFF_VISUAL_MASTER_PROMPT_OPUS_4_7_2026-05-03.md`](HANDOFF_VISUAL_MASTER_PROMPT_OPUS_4_7_2026-05-03.md)** — current copy-paste master prompt for a fresh Opus 4.7 design/build chat. This supersedes the earlier Sonnet/Opus one-off visual handoffs.
+- **[`HANDOFF_VISUAL_MASTER_PROMPT_OPUS_4_7_2026-05-03.md`](archive/2026-05-03-visual-handoffs/HANDOFF_VISUAL_MASTER_PROMPT_OPUS_4_7_2026-05-03_archived_2026-05-04.md)** — ARCHIVED 2026-05-04. Was the 2026-05-03 visual session master prompt; superseded by `HANDOFF_MASTER_PROMPT_2026-05-04_CODEBASE_CLEAN_AND_POLISH.md`. Kept for KI-067 (owner HOLD) historical reference.
 
 ### AI Collaboration / Handoffs
 
@@ -123,7 +123,7 @@ Most recent archive moves (2026-05-04):
 
 Earlier archive moves (2026-05-03):
 
-- `2026-05-03-visual-handoffs/` — superseded Sonnet audit prep/prompt/report and earlier Opus visual handoff docs. Current visual handoff is `HANDOFF_VISUAL_MASTER_PROMPT_OPUS_4_7_2026-05-03.md`.
+- `2026-05-03-visual-handoffs/` — superseded Sonnet audit prep/prompt/report, earlier Opus visual handoff docs, AND (added 2026-05-04) the full 2026-05-03 visual session trio: `PLAN_VISUAL_MASTER_2026-05-03_archived_2026-05-04.md`, `PLAN_DESIGN_POLISH_QUEUE_OPUS_2026-05-03_archived_2026-05-04.md`, `HANDOFF_VISUAL_MASTER_PROMPT_OPUS_4_7_2026-05-03_archived_2026-05-04.md`. Current visual handoff is `HANDOFF_MASTER_PROMPT_2026-05-04_CODEBASE_CLEAN_AND_POLISH.md`.
 - `PLAN_LANDING_REDESIGN.md` → archive — 16-pass landing redesign, STATUS COMPLETE 2026-05-02.
 - `PLAN_LANDING_LIQUID_MAP_INTELLIGENCE.md` → archive — Passes A–G shipped; Pass H verification completed through the archived Sonnet audit handoff in `archive/2026-05-03-visual-handoffs/`.
 - `PLAN_LANDING_BUTTON_SYSTEM_ADOPTION.md` → archive — cross-app primary-CTA shell adoption, SHIPPED 2026-05-03.

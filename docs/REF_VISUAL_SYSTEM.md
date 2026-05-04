@@ -86,7 +86,7 @@ Every dark `.bd-dashboard-panel`, `.bd-dashboard-section`, premium card, popover
 
 **Light mode parallel:** light follows a different grammar (cool-shadow-on-cream) and SKIPS criterion 7 (cream-on-cream catchlight is invisible) and criterion 3's atmospheric bronze (light atmospheric halo lives at lower alpha 0.06-0.14 instead of dark's 0.10-0.16). Light mode polish is held to "slight only" per owner directive — no over-cream regressions.
 
-The 2026-05-03 visual session docs (`PLAN_VISUAL_MASTER_2026-05-03.md`, `PLAN_DESIGN_POLISH_QUEUE_OPUS_2026-05-03.md`) were archived 2026-05-04 to `docs/archive/2026-05-03-visual-handoffs/` after their items were consumed by Pass G/H/I/J/K/L/M/N/O. The current active master prompt is `HANDOFF_MASTER_PROMPT_2026-05-04_CODEBASE_CLEAN_AND_POLISH.md`. The 2026-05-03 handoff prompt (`HANDOFF_VISUAL_MASTER_PROMPT_OPUS_4_7_2026-05-03.md`) is still in `docs/` for KI-067 (owner HOLD) reference but its action items are largely consumed; treat it as historical context, not current instructions.
+The full 2026-05-03 visual session trio (`PLAN_VISUAL_MASTER_2026-05-03.md`, `PLAN_DESIGN_POLISH_QUEUE_OPUS_2026-05-03.md`, `HANDOFF_VISUAL_MASTER_PROMPT_OPUS_4_7_2026-05-03.md`) was archived 2026-05-04 to `docs/archive/2026-05-03-visual-handoffs/` after its items were consumed by Pass G/H/I/J/K/L/M/N/O. The current active master prompt is `HANDOFF_MASTER_PROMPT_2026-05-04_CODEBASE_CLEAN_AND_POLISH.md`.
 
 ### Mobile Viewport Doctrine
 
