@@ -174,7 +174,7 @@ export default function PlannerRoutePreview({
                               ? "border-sky-300/80 bg-[linear-gradient(180deg,rgba(239,246,255,0.96),rgba(219,234,254,0.86))]"
                               : "border-cyan-400/30 bg-[linear-gradient(180deg,rgba(6,182,212,0.18),rgba(15,23,42,0.78))]"
                             : tone === "light"
-                              ? "border-white/80 bg-white/72 hover:bg-white/90"
+                              ? "border-[rgba(140,82,22,0.28)] bg-[linear-gradient(180deg,rgba(247,232,194,0.72),rgba(232,238,248,0.68))] hover:bg-[linear-gradient(180deg,rgba(247,232,194,0.88),rgba(232,238,248,0.84))]"
                               : "border-white/10 bg-slate-900/76 hover:bg-slate-900/88"
                         )}
                       >
@@ -339,7 +339,7 @@ export default function PlannerRoutePreview({
                       ? "border-sky-300/80 bg-[linear-gradient(180deg,rgba(239,246,255,0.96),rgba(219,234,254,0.86))]"
                       : "border-cyan-400/30 bg-[linear-gradient(180deg,rgba(6,182,212,0.18),rgba(15,23,42,0.78))]"
                     : tone === "light"
-                      ? "border-white/80 bg-white/72"
+                      ? "border-[rgba(140,82,22,0.28)] bg-[linear-gradient(180deg,rgba(247,232,194,0.72),rgba(232,238,248,0.68))]"
                       : "border-white/10 bg-slate-900/76"
                 )}
               >
