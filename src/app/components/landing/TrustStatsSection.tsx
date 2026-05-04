@@ -33,7 +33,7 @@ export default function TrustStatsSection({
   return (
     <section
       ref={sectionRef}
-      className={`py-12 sm:py-16 md:py-20 relative overflow-hidden ${isLightAppearance ? "" : "text-white"}`}
+      className={`py-8 sm:py-12 md:py-16 relative overflow-hidden ${isLightAppearance ? "" : "text-white"}`}
       style={{
         background: isLightAppearance
           ? "linear-gradient(176deg, #faf8f4 0%, #f7f5ef 40%, #f2efe8 70%, #ece8df 100%)"

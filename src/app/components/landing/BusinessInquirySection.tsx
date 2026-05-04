@@ -104,7 +104,7 @@ export default function BusinessInquirySection({
   return (
     <section
       id="business-inquiry"
-      className="pt-8 pb-12 sm:pt-10 sm:pb-16 md:pt-12 md:pb-20 relative overflow-hidden"
+      className="pt-6 pb-8 sm:pt-8 sm:pb-12 md:pt-10 md:pb-16 relative overflow-hidden"
       style={{
         background: isLightAppearance
           ? "linear-gradient(180deg, #f5f7fb 0%, #f8f9fc 35%, #f4f6fb 70%, #f0f4f9 100%)"
@@ -112,6 +112,9 @@ export default function BusinessInquirySection({
       }}
       ref={sectionRef}
     >
+      {/* Pass H1.7 — section-level directional top-cast champagne lamp
+          per hero atmospheric language. */}
+      <div className="bd-landing-section-toplamp" aria-hidden="true" />
       {/* Edge blend — light keeps amber; dark gets a tri-stop with gold
           whisper at center to thread gold identity into the cool register. */}
       <div

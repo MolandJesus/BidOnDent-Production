@@ -57,7 +57,7 @@ export default function BenefitsSection({
 
   return (
     <section
-      className="py-12 sm:py-16 md:py-20 relative overflow-hidden"
+      className="py-8 sm:py-12 md:py-16 relative overflow-hidden"
       style={{
         background: isLightAppearance
           ? "linear-gradient(182deg, #faf9f6 0%, #f5f4f0 42%, #f0eeea 100%)"

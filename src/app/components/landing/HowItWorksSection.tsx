@@ -41,7 +41,7 @@ export default function HowItWorksSection({
   return (
     <section
       id="how-it-works"
-      className="py-12 sm:py-16 md:py-20 relative overflow-hidden"
+      className="py-8 sm:py-12 md:py-16 relative overflow-hidden"
       style={{
         background: isLightAppearance
           ? "linear-gradient(175deg, #eef5ff 0%, #e8f1fd 45%, #e3edfc 100%)"
@@ -49,6 +49,9 @@ export default function HowItWorksSection({
       }}
       ref={sectionRef}
     >
+      {/* Pass H1.7 (KI-090 follow-up) — section-level directional
+          top-cast champagne lamp per hero atmospheric language. */}
+      <div className="bd-landing-section-toplamp" aria-hidden="true" />
       {/* Edge blend — light keeps sky thread; dark gets a subtle gold whisper
           at center to thread the gold identity from warm sections into the
           cool register without overpowering. Owner: "bring subtle dashboard

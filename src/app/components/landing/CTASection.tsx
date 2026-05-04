@@ -19,7 +19,7 @@ export default function CTASection({
 
   return (
     <section
-      className="py-12 sm:py-16 md:py-20 lg:py-24 relative overflow-hidden"
+      className="py-8 sm:py-12 md:py-16 lg:py-20 relative overflow-hidden"
       style={{
         background: isLightAppearance
           ? "linear-gradient(180deg, #e8f1fc 0%, #ddeaf9 40%, #d5e5f8 70%, #cde0f7 100%)"
@@ -27,6 +27,9 @@ export default function CTASection({
       }}
       ref={sectionRef}
     >
+      {/* Pass H1.7 — section-level directional top-cast champagne lamp
+          per hero atmospheric language. */}
+      <div className="bd-landing-section-toplamp" aria-hidden="true" />
       {/* Edge blend */}
       <div
         className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-slate-300/20" : "via-blue-400/25"} to-transparent`}

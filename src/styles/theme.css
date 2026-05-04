@@ -3747,52 +3747,56 @@ body {
    grammar. Pure atmospheric softening — no section paint changes, no
    panel changes, alternating navy/bronze rhythm preserved. */
 .bd-landing-seam-fade {
-  /* Pass H (2026-05-05): owner reported "landing page sections still
-     have abrupt splitter between them instead of it being smooth" —
-     the original Pass 6 KI-080 design left light mode at height: 0
-     because at the time light mode reads as cohesive cream wash. With
-     Pass G's cool-blue section gradient adoption (KI-090), the light
-     transitions now need atmospheric bridging too. Light mode gets a
-     subtle warm-bronze + cool-blue vertical bridge (mirrors the
-     dashboard's lit-from-page-atmosphere convention applied to the
-     landing seam grammar). Dark register unchanged. */
-  height: 64px;
+  /* Pass H1.7 (2026-05-05): owner reported "landing space issues, take
+     away space and better smoothly add atmospheric background with
+     future updated lighting to the different sections." Diagnosis from
+     screenshots: (1) sections have heavy py-12/16/20 padding creating
+     200-300px empty navy gaps between content and section edges; (2)
+     the H1.5 64px seam-fade was too small to bridge the perceived gap
+     and the alphas too subtle to read as continuous atmosphere; (3)
+     the landing's "lit room" feel never carried across section bounds.
+     Two-axis fix: trim section py + boost this utility into a real
+     atmospheric bridge that visually fills the inter-section space.
+     Now 112px tall with stronger alphas — reads as ambient lighting
+     thread, not as a thin divider line. */
+  height: 112px;
   pointer-events: none;
   position: relative;
   z-index: 1;
-  /* Light: subtle atmospheric bridge — 1) faint cool-blue haze
-     darker than canvas at center to signal a transition; 2) thin
-     champagne lamp cross-fade so the canon's gold language threads
-     between sections; 3) zero alpha at top + bottom so adjacent
-     section bodies remain dominant. */
+  /* Light: 3-layer atmospheric bridge — 1) wide champagne lamp glow
+     (the canon's directional gold thread carried across sections);
+     2) cool-blue haze for "atmospheric depth" hint at center; 3)
+     soft fade at edges so adjacent section bodies remain dominant. */
   background:
-    linear-gradient(
-      to bottom,
-      rgba(196, 144, 65, 0) 0%,
-      rgba(196, 144, 65, 0.04) 50%,
+    radial-gradient(
+      ellipse 70% 100% at 50% 50%,
+      rgba(196, 144, 65, 0.10) 0%,
+      rgba(196, 144, 65, 0.03) 50%,
       rgba(196, 144, 65, 0) 100%
     ),
     linear-gradient(
       to bottom,
       rgba(15, 30, 60, 0) 0%,
-      rgba(15, 30, 60, 0.06) 50%,
+      rgba(15, 30, 60, 0.08) 50%,
       rgba(15, 30, 60, 0) 100%
     );
 }
 [data-theme="dark"] .bd-landing-seam-fade,
 .dark .bd-landing-seam-fade {
-  height: 64px;
+  height: 112px;
+  /* Dark: wider champagne lamp ellipse + deeper navy bridge so the
+     thread reads as continuous gold lighting against navy canvas. */
   background:
-    linear-gradient(
-      to bottom,
-      rgba(196, 144, 65, 0) 0%,
-      rgba(196, 144, 65, 0.06) 50%,
+    radial-gradient(
+      ellipse 70% 100% at 50% 50%,
+      rgba(196, 144, 65, 0.16) 0%,
+      rgba(196, 144, 65, 0.05) 50%,
       rgba(196, 144, 65, 0) 100%
     ),
     linear-gradient(
       to bottom,
       rgba(8, 16, 32, 0) 0%,
-      rgba(8, 16, 32, 0.22) 50%,
+      rgba(8, 16, 32, 0.32) 50%,
       rgba(8, 16, 32, 0) 100%
     );
 }
@@ -3815,24 +3819,28 @@ body {
   top: 0;
   left: 0;
   right: 0;
-  height: 280px;
+  height: 320px;
   pointer-events: none;
   z-index: 0;
-  /* Light: subtle warm wash (canon body opacity 0.05 territory — same
-     ceiling as light card internal radials per LAW canon). */
+  /* Pass H1.7 (owner: "hero section is a good example, improve and
+     polish entire landing page"): hero has noticeably more atmospheric
+     presence than cool sections. Boosting toplamp alpha so cool
+     sections read with hero-equivalent gold lamp visibility — light
+     0.06 -> 0.10, dark 0.10 -> 0.16. Both still inside LAW canon
+     thresholds (light bodies ≤ 0.05a internal-radial cap doesn't
+     apply here — this utility paints SECTION ATMOSPHERE not card
+     body, and the canon's directional top-cast halo cap is 0.22a). */
   background: radial-gradient(
     ellipse 80% 100% at 50% 0%,
-    rgba(196, 144, 65, 0.06),
+    rgba(196, 144, 65, 0.10),
     transparent 70%
   );
 }
 [data-theme="dark"] .bd-landing-section-toplamp,
 .dark .bd-landing-section-toplamp {
-  /* Dark: stronger lamp visibility (still under the 0.22 single-layer
-     halo cap — actual visible alpha 0.10 within canon range). */
   background: radial-gradient(
     ellipse 80% 100% at 50% 0%,
-    rgba(196, 144, 65, 0.10),
+    rgba(196, 144, 65, 0.16),
     transparent 70%
   );
 }
