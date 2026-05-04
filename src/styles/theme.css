@@ -2468,11 +2468,15 @@ body {
      Backgrounds stay deep navy (the user-approved dark blue base); amber is
      the trim (border) + lighting (inset highlight + outer glow + atmosphere).
      Reads as "navy glass lit by a gold lamp" — landing register, workspace calm. */
-  --bd-dashboard-panel-bg: linear-gradient(
-    180deg,
-    rgba(10, 22, 45, 0.92) 0%,
-    rgba(7, 16, 33, 0.88) 100%
-  );
+  /* Pass 2 (KI-077): dark panel body now layers an INTERNAL top-edge ceiling
+     lamp radial (rgba(196,144,65,0.14)) over the navy gradient so the panel
+     itself reads as lit-from-above, not just sitting in front of the
+     DashboardAtmosphere D8/D9 corner lamps. Mimics light mode's warm cream
+     internal warmth without painting the panel with cream. Premium gold via
+     lighting, never paint. */
+  --bd-dashboard-panel-bg:
+    radial-gradient(ellipse 70% 30% at 50% 0%, rgba(196, 144, 65, 0.14) 0%, transparent 70%),
+    linear-gradient(180deg, rgba(10, 22, 45, 0.92) 0%, rgba(7, 16, 33, 0.88) 100%);
   /* Depth bar (KI-069): cool blue structural border, gold lamp inset bevel,
      bronze inset rim, cool blue 1px ring, bronze atmospheric halo. */
   --bd-dashboard-panel-border: rgba(96, 165, 250, 0.24);
@@ -2482,31 +2486,40 @@ body {
      layouts. Symmetric halos (0 0 60px / 0 0 110px) stay for ambient lift.
      Bucket 2.3 (depth bar criterion 7): edge catchlights — left brighter than
      right (lamp from upper-left convention). Mimics light catching the curved
-     glass edges of a premium glass panel. Locks 6->8 criteria of the depth bar. */
+     glass edges of a premium glass panel. Locks 6->8 criteria of the depth bar.
+     Pass 2 (KI-077): top inset bevel alpha pushed 0.22 -> 0.30 so the gold lamp
+     trim reads as more present in dark mode (matches light mode's cream lift). */
   --bd-dashboard-panel-shadow:
     0 22px 56px rgba(2, 6, 23, 0.36), 0 8px 18px rgba(2, 6, 23, 0.24),
-    inset 0 1px 0 rgba(196, 144, 65, 0.22), inset 0 -1px 0 rgba(140, 82, 22, 0.22),
+    inset 0 1px 0 rgba(196, 144, 65, 0.30), inset 0 -1px 0 rgba(140, 82, 22, 0.22),
     0 0 0 1px rgba(96, 165, 250, 0.18), 0 24px 60px rgba(196, 130, 45, 0.10),
     0 0 60px rgba(196, 130, 45, 0.14), 0 0 110px rgba(196, 130, 45, 0.08),
     inset 1px 0 0 rgba(252, 240, 208, 0.10), inset -1px 0 0 rgba(252, 240, 208, 0.06);
-  --bd-dashboard-section-bg: linear-gradient(
-    180deg,
-    rgba(16, 31, 60, 0.88) 0%,
-    rgba(11, 22, 43, 0.84) 100%
-  );
+  /* Pass 2 (KI-077): dark section body layers a softer internal ceiling lamp
+     (rgba(196,144,65,0.10), narrower than panels) so cool-toned report cards
+     and accent sections still feel lit at narrow widths (375px mobile). Lower
+     alpha than panel because sections nest inside panels — over-amplification
+     would compete with the panel's own ceiling lamp. */
+  --bd-dashboard-section-bg:
+    radial-gradient(ellipse 60% 25% at 50% 0%, rgba(196, 144, 65, 0.10) 0%, transparent 70%),
+    linear-gradient(180deg, rgba(16, 31, 60, 0.88) 0%, rgba(11, 22, 43, 0.84) 100%);
   --bd-dashboard-section-border: rgba(96, 165, 250, 0.20);
   /* Bucket 6 (KI-072): far-drop softened (0 22px 56px -> 0 16px 40px, 0 8px 18px
      -> 0 6px 14px). NO asymmetric bias — sections sit inside panels, not as the
      stack. Symmetric halos preserved.
      Bucket 2.3 (depth bar criterion 7): edge catchlights at lower alpha than
      panel — sections nest inside panels and over-bright edges would compete
-     with the panel's own catchlight. */
+     with the panel's own catchlight.
+     Pass 2 (KI-077): atmospheric halo alphas bumped (0.12->0.15, 0.06->0.08)
+     so cool-toned sections still feel lit when stacked vertically; edge
+     catchlights bumped (0.08->0.10, 0.05->0.07) so the depth bar reads at
+     narrow card widths (375px mobile). */
   --bd-dashboard-section-shadow:
     0 16px 40px rgba(2, 6, 23, 0.34), 0 6px 14px rgba(2, 6, 23, 0.22),
     inset 0 1px 0 rgba(196, 144, 65, 0.18), inset 0 -1px 0 rgba(140, 82, 22, 0.18),
-    0 0 0 1px rgba(96, 165, 250, 0.14), 0 0 44px rgba(196, 130, 45, 0.12),
-    0 0 90px rgba(196, 130, 45, 0.06),
-    inset 1px 0 0 rgba(252, 240, 208, 0.08), inset -1px 0 0 rgba(252, 240, 208, 0.05);
+    0 0 0 1px rgba(96, 165, 250, 0.14), 0 0 44px rgba(196, 130, 45, 0.15),
+    0 0 90px rgba(196, 130, 45, 0.08),
+    inset 1px 0 0 rgba(252, 240, 208, 0.10), inset -1px 0 0 rgba(252, 240, 208, 0.07);
   --bd-dashboard-section-hover-shadow:
     0 28px 64px rgba(2, 6, 23, 0.40), 0 10px 22px rgba(2, 6, 23, 0.26),
     inset 0 1px 0 rgba(196, 144, 65, 0.28), inset 0 -1px 0 rgba(140, 82, 22, 0.24),
