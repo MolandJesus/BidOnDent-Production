@@ -40,13 +40,15 @@ export default function CTASection({
       <div className={`bd-bloom-atmosphere ${isVisible ? "is-visible" : "is-hidden"}`}>
         {isLightAppearance ? (
           <>
-            {/* Subtle radial dot pattern */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(200,170,110,0.05)_1px,transparent_1px)] [background-size:24px_24px] opacity-80" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_50%_50%,rgba(210,180,130,0.18),transparent_60%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_30%_20%,rgba(200,165,100,0.14),transparent_55%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_35%_at_65%_70%,rgba(220,185,115,0.13),transparent_50%)]" />
+            {/* Pass I — atmospheric radial dot pattern + radials canon-
+                swapped at SAME alpha. Pre-canon goldenrod -> canon
+                champagne. */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(196,144,65,0.05)_1px,transparent_1px)] [background-size:24px_24px] opacity-80" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_50%_50%,rgba(196,144,65,0.18),transparent_60%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_30%_20%,rgba(196,144,65,0.14),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_35%_at_65%_70%,rgba(196,144,65,0.13),transparent_50%)]" />
             <div className="absolute top-0 right-[25%] w-64 h-64 bg-[rgba(196,144,65,0.14)] rounded-full blur-[100px]" />
-            <div className="absolute bottom-0 left-[20%] w-48 h-48 bg-amber-100/[0.12] rounded-full blur-[120px]" />
+            <div className="absolute bottom-0 left-[20%] w-48 h-48 bg-[rgba(196,144,65,0.12)] rounded-full blur-[120px]" />
             <div className="absolute -top-10 left-[10%] w-[44rem] h-[44rem] bg-sky-400/[0.16] rounded-full blur-[220px]" />
             <div className="absolute bottom-0 right-[8%] w-[30rem] h-[30rem] bg-blue-400/[0.14] rounded-full blur-[210px]" />
           </>
