@@ -1,3 +1,34 @@
+/* ============================================================================
+   BidOnDent — theme.css Pass Index
+   ============================================================================
+   Navigation aid for future agents working on this 4000+ line file.
+   Each Pass below is a coherent visual-canon delta with its own commit and
+   (usually) a paired KI entry in docs/REF_KNOWN_ISSUES.md.
+
+   Older Passes (A–G, 2026-05-04 site-wide deepening):
+     Pass A (eda7913a) — Dashboard dark premium gold trim + atmospheric (KI-081)
+     Pass B (913154da) — Landing dark bronze trim + atmospheric gold (KI-081)
+     Pass C (0cd9d8ba) — Landing light pure-white inset fix + bronze deepening (KI-082)
+     Pass D (81c3b05a) — Map light pure-white violations swept (KI-083)
+     Pass E (b4d0b10f) — Site-wide far-ambient gold backlight (KI-084)
+     Pass F (6f59f113) — Directional top-cast supersedes Pass E omni (KI-085)
+     Pass G (5d42dfc9) — Cool-section directional top-cast + 2 pure-white fixes (KI-090)
+
+   Landing visual-canon arc (H–O, 2026-05-05):
+     Pass H (91147e12..a7e1d274) — Landing atmospheric boost across 11 commits (KI-091)
+     Pass I (1afea721..10644ada) — 5 landing sections atmospheric/radial canon swap (KI-092)
+     Pass J (897259ab)           — Heading-area spacing trim across 7 sections
+     Pass K (907f0cd8)           — Between-section spacing tightening (KI-094)
+     Pass L (6b96c22b)           — Section-transition stripe fix via seam-fade overlap (KI-104)
+     Pass M (e5937a27)           — Light seam-fade alpha 0.13→0.18 / 0.04→0.06 (KI-104 cont.)
+     Pass N (e5437355)           — Light .bd-landing-section-toplamp alpha 0.13→0.18
+     Pass O (c17a6c4c)           — Light .bd-landing-section-bottomwash alpha 0.10→0.14
+
+   Per-rule comment preambles INTENTIONALLY KEPT — they document the WHY
+   (root-cause analysis, ruled-out hypotheses, hard-stop rationale) that no
+   single-line index reference can convey. Future audits should NOT trim them.
+   ============================================================================ */
+
 /* WCAG AA — Global keyboard focus indicator */
 :focus-visible {
   outline: 2px solid #60a5fa;
