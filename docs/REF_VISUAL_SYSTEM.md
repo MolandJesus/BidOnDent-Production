@@ -215,6 +215,37 @@ These should **not** be flattened.
 
 ---
 
+## 4b. Premium glass shadow stack canon (KI-085 directional triad, 2026-05-04)
+
+Every premium liquid-glass surface (`.bd-dashboard-panel`, `.bd-dashboard-section`, `.bd-glass-card--landing*`, `.bd-glass-card--dashboard`, future forms/sheets/dialogs) uses this shadow stack pattern:
+
+```
+close edge halo   0 0 32-60px       ≤ 0.18α    soft edge presence
+mid spread        0 0 90-110px      ≤ 0.10α    atmosphere lift
+DIRECTIONAL       0 -28 to -44px    blur 70-130px    spread -14 to -22px    ≤ 0.22α
+                  champagne-gold rgba(196,144,65) — light from page atmosphere ABOVE
+```
+
+**Rationale:** the third layer is **directional top-cast** (negative offset-Y, negative spread). This reads as light coming FROM the DashboardAtmosphere ceiling lamps above the card, falling onto the card from above. The earlier (Pass E) attempt used `0 0 X-large` omnidirectional ambient bleed — but that surrounded cards evenly and read as edge halo / stamped trim, plus caused a peach blush in cool-cream light canvas. The directional top-cast is the canonical approach.
+
+**Light register bias:** light cards keep ONLY the directional top-cast — all omnidirectional warm bleeds are removed. Warm halos that surround a cool-cream card create cosmetic blush; the cool canvas should read clean and cool, with gold only at the top edge.
+
+**Body translucency invariant:** premium glass card bodies should sit between 0.62 and 0.78 opacity so the page DashboardAtmosphere lamps can show THROUGH the body. With `backdrop-filter: blur(20px) saturate(1.4) brightness(1.02)`, this creates real liquid-glass refraction. Bodies at 0.92+ are paint, not glass.
+
+### Future: Gold-Trim Text Treatment (planned, not yet implemented)
+
+Owner directive captured 2026-05-04: "future gold trimmed text." When this is built, follow the same directional principle as the shadow stack canon above:
+
+- Gold-trim text uses **negative-Y `text-shadow`** so the gold appears ABOVE the text (light cascading down onto the glyph from above), not surrounding it.
+- Use the locked palette: champagne `rgba(252, 240, 208, *)` cream-highlight on the upper edge, bronze `rgba(140, 82, 22, *)` deeper trim if a second layer is needed.
+- Avoid `text-stroke` or surrounding outline — those read as sticker outline, not lit-from-above gold trim.
+- Pattern: `text-shadow: 0 -1px 0 rgba(252, 240, 208, 0.8), 0 -2px 4px rgba(196, 144, 65, 0.5)`.
+- Apply to brand-significant headings and CTAs only — gold-trim everywhere is the LAW yellow-amber regression risk.
+
+This subsection is intentionally documented BEFORE the technique is built so when any future agent or owner request prompts gold-trim text, the principle is captured.
+
+---
+
 ## 5. What this doc does NOT cover
 
 - Dashboard premium-lift roadmap (D1–D12) — see `PLAN_DASHBOARD_REDESIGN.md`.
