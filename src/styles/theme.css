@@ -2467,19 +2467,26 @@ body {
   /* Depth bar (KI-069): cool blue structural border, gold lamp inset bevel,
      bronze inset rim, cool blue 1px ring, bronze atmospheric halo. */
   --bd-dashboard-panel-border: rgba(96, 165, 250, 0.24);
+  /* Bucket 6 (KI-072): far-drop softened (0 32px 80px -> 0 22px 56px, 0 12px 24px
+     -> 0 8px 18px) + asymmetric downward bronze halo (0 24px 60px) so glow biases
+     below the panel instead of colliding with adjacent panel halos in stacked
+     layouts. Symmetric halos (0 0 60px / 0 0 110px) stay for ambient lift. */
   --bd-dashboard-panel-shadow:
-    0 32px 80px rgba(2, 6, 23, 0.46), 0 12px 24px rgba(2, 6, 23, 0.30),
+    0 22px 56px rgba(2, 6, 23, 0.36), 0 8px 18px rgba(2, 6, 23, 0.24),
     inset 0 1px 0 rgba(196, 144, 65, 0.22), inset 0 -1px 0 rgba(140, 82, 22, 0.22),
-    0 0 0 1px rgba(96, 165, 250, 0.18), 0 0 60px rgba(196, 130, 45, 0.14),
-    0 0 110px rgba(196, 130, 45, 0.08);
+    0 0 0 1px rgba(96, 165, 250, 0.18), 0 24px 60px rgba(196, 130, 45, 0.10),
+    0 0 60px rgba(196, 130, 45, 0.14), 0 0 110px rgba(196, 130, 45, 0.08);
   --bd-dashboard-section-bg: linear-gradient(
     180deg,
     rgba(16, 31, 60, 0.88) 0%,
     rgba(11, 22, 43, 0.84) 100%
   );
   --bd-dashboard-section-border: rgba(96, 165, 250, 0.20);
+  /* Bucket 6 (KI-072): far-drop softened (0 22px 56px -> 0 16px 40px, 0 8px 18px
+     -> 0 6px 14px). NO asymmetric bias — sections sit inside panels, not as the
+     stack. Symmetric halos preserved. */
   --bd-dashboard-section-shadow:
-    0 22px 56px rgba(2, 6, 23, 0.34), 0 8px 18px rgba(2, 6, 23, 0.22),
+    0 16px 40px rgba(2, 6, 23, 0.34), 0 6px 14px rgba(2, 6, 23, 0.22),
     inset 0 1px 0 rgba(196, 144, 65, 0.18), inset 0 -1px 0 rgba(140, 82, 22, 0.18),
     0 0 0 1px rgba(96, 165, 250, 0.14), 0 0 44px rgba(196, 130, 45, 0.12),
     0 0 90px rgba(196, 130, 45, 0.06);
@@ -2528,8 +2535,13 @@ body {
     radial-gradient(ellipse 90% 60% at 50% 0%, rgba(196, 144, 65, 0.16), transparent 65%),
     linear-gradient(180deg, rgba(254, 248, 232, 0.94) 0%, rgba(248, 238, 215, 0.86) 100%);
   --bd-dashboard-panel-border: rgba(140, 82, 22, 0.46);
+  /* Bucket 6 (KI-072): light-mode far-drop softened (0 26px 56px -> 0 18px 42px,
+     0 56px 110px -> 0 36px 80px) so cool-shadow stacking on light dashboard
+     doesn't muddy the warm-cream surface gradient. NO bias addition in light —
+     light mode is cool-shadow-on-cream and a warm bronze bias would disturb the
+     cool blue grounding. */
   --bd-dashboard-panel-shadow:
-    0 26px 56px rgba(15, 30, 60, 0.22), 0 56px 110px rgba(15, 30, 60, 0.1),
+    0 18px 42px rgba(15, 30, 60, 0.22), 0 36px 80px rgba(15, 30, 60, 0.1),
     0 6px 14px rgba(15, 30, 60, 0.1), 0 0 0 1px rgba(140, 82, 22, 0.3),
     inset 0 1px 0 rgba(254, 247, 232, 0.92), inset 0 -1px 0 rgba(140, 82, 22, 0.36),
     0 0 18px rgba(196, 130, 45, 0.14), 0 0 80px rgba(196, 130, 45, 0.06);

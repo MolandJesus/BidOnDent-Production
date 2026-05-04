@@ -134,7 +134,7 @@ export default function HomeScreen({
   return (
     <div className="relative w-full h-full min-h-[80vh] flex flex-col items-center justify-start pb-20 md:pb-10">
       {/* Dashboard content — welcome, actions, reports, then map widget */}
-      <div className="relative z-20 mt-3 w-full max-w-5xl px-2 md:mt-6 md:px-6 flex flex-col gap-3.5 md:gap-5 overflow-x-hidden">
+      <div className="relative z-20 mt-3 w-full max-w-5xl px-2 md:mt-6 md:px-6 flex flex-col gap-5 md:gap-7 overflow-x-hidden">
         {/* Compact welcome bar */}
         <section className="bd-dashboard-panel bd-dashboard-panel--accent-blue relative flex flex-wrap items-center justify-between gap-3 overflow-hidden px-4 py-3 md:px-5 md:py-4">
           {/* Subtle royal blue left-edge accent glow */}
