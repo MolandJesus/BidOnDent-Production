@@ -22,7 +22,7 @@ export default function ShopActiveJobDetailModal({
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-4">
       <div
-        className={`rounded-t-2xl sm:rounded-2xl w-full max-w-2xl overflow-hidden max-h-[90vh] flex flex-col border ${isLight ? "bg-white border-slate-200/60 shadow-xl" : "border-blue-300/20"}`}
+        className={`rounded-t-2xl sm:rounded-2xl w-full max-w-2xl overflow-hidden max-h-[90vh] flex flex-col border ${isLight ? "bg-[linear-gradient(180deg,rgba(247,232,194,0.94),rgba(232,238,248,0.90))] border-[rgba(140,82,22,0.30)] shadow-[inset_0_1px_0_rgba(252,240,208,0.85),0_22px_56px_rgba(15,23,42,0.18),0_0_0_1px_rgba(140,82,22,0.18)]" : "border-blue-300/20"}`}
         style={
           isLight
             ? {}

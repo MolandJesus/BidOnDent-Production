@@ -169,7 +169,7 @@ export default function ShopRequestsScreen({
     <div className="min-h-screen">
       {/* Header */}
       <div
-        className={`border-b ${isLight ? "border-slate-200/60 bg-white/90" : "border-blue-300/15"}`}
+        className={`border-b ${isLight ? "border-[rgba(140,82,22,0.24)] bg-[linear-gradient(180deg,rgba(247,232,194,0.86),rgba(232,238,248,0.80))] shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]" : "border-blue-300/15"}`}
         style={
           isLight
             ? { backdropFilter: "blur(12px)" }
@@ -204,7 +204,7 @@ export default function ShopRequestsScreen({
                 placeholder="Search by customer, vehicle, or damage..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className={`w-full pl-10 pr-4 py-2 border rounded-xl outline-none transition-colors ${isLight ? "border-slate-200 bg-white text-slate-800 placeholder:text-slate-400 focus:border-blue-400/60" : "border-blue-300/20 bg-white/8 text-slate-100 placeholder:text-blue-200/50 focus:border-blue-400/40 focus:ring-1 focus:ring-blue-400/20"}`}
+                className={`w-full pl-10 pr-4 py-2 border rounded-xl outline-none transition-colors ${isLight ? "border-[rgba(140,82,22,0.26)] bg-[linear-gradient(180deg,rgba(232,238,248,0.88),rgba(247,232,194,0.82))] text-slate-800 placeholder:text-slate-400 shadow-[inset_0_1px_0_rgba(252,240,208,0.78)] focus:border-blue-500/60" : "border-[rgba(96,165,250,0.20)] bg-[linear-gradient(180deg,rgba(15,23,42,0.74),rgba(8,16,33,0.78))] text-slate-100 placeholder:text-blue-200/50 shadow-[inset_0_1px_0_rgba(196,144,65,0.16),inset_0_-1px_0_rgba(140,82,22,0.16)] focus:border-blue-400/60 focus:ring-1 focus:ring-blue-400/30"}`}
               />
             </div>
 

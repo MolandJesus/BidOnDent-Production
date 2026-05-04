@@ -105,7 +105,7 @@ export default function LikedShopsScreen({
   return (
     <div className={`min-h-screen pb-20 ${isLight ? "bg-slate-50/80" : ""}`}>
       <div
-        className={`border-b ${isLight ? "border-slate-200/60 bg-white/90" : "border-white/10"}`}
+        className={`border-b ${isLight ? "border-[rgba(140,82,22,0.24)] bg-[linear-gradient(180deg,rgba(247,232,194,0.86),rgba(232,238,248,0.80))] shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]" : "border-white/10"}`}
         style={
           isLight
             ? { backdropFilter: "blur(12px)" }
@@ -155,7 +155,7 @@ export default function LikedShopsScreen({
               onChange={(event) => setSearchQuery(event.target.value)}
               className={`w-full rounded-2xl border py-3 pl-10 pr-4 backdrop-blur-sm focus:outline-none focus:ring-2 ${
                 isLight
-                  ? "border-slate-200 bg-white text-slate-800 placeholder:text-slate-400 focus:ring-blue-300"
+                  ? "border-[rgba(140,82,22,0.26)] bg-[linear-gradient(180deg,rgba(232,238,248,0.88),rgba(247,232,194,0.82))] text-slate-800 placeholder:text-slate-400 shadow-[inset_0_1px_0_rgba(252,240,208,0.78)] focus:ring-blue-400"
                   : "border-white/15 bg-white/10 text-slate-100 placeholder:text-slate-400/60 focus:ring-blue-400/20"
               }`}
             />
@@ -170,7 +170,7 @@ export default function LikedShopsScreen({
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35, ease: "easeOut" }}
-            className={`mb-4 overflow-hidden rounded-[28px] ${isLight ? "bg-white/80 border border-slate-200/60 shadow-sm" : "bd-glass-card"}`}
+            className={`mb-4 overflow-hidden rounded-[28px] ${isLight ? "bg-[linear-gradient(180deg,rgba(247,232,194,0.80),rgba(232,238,248,0.74))] border border-[rgba(140,82,22,0.24)] shadow-[inset_0_1px_0_rgba(252,240,208,0.78),0_8px_22px_rgba(15,23,42,0.10)]" : "bd-glass-card"}`}
           >
             <div className="flex items-center justify-between px-4 pt-3 pb-1">
               <h3
@@ -228,7 +228,7 @@ export default function LikedShopsScreen({
         )}
         {savedListings.length === 0 ? (
           <div
-            className={`rounded-[28px] p-5 sm:p-8 text-center ${isLight ? "bg-white/80 border border-slate-200/60 shadow-sm" : "bd-glass-card"}`}
+            className={`rounded-[28px] p-5 sm:p-8 text-center ${isLight ? "bg-[linear-gradient(180deg,rgba(247,232,194,0.80),rgba(232,238,248,0.74))] border border-[rgba(140,82,22,0.24)] shadow-[inset_0_1px_0_rgba(252,240,208,0.78),0_8px_22px_rgba(15,23,42,0.10)]" : "bd-glass-card"}`}
           >
             <Heart
               className={`mx-auto mb-4 h-16 w-16 ${isLight ? "text-blue-500/60" : "text-blue-400/70"}`}
