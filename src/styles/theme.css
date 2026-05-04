@@ -3100,7 +3100,7 @@ body {
 /* accent-blue — medium cool blue liquid glass with premium gold lamp */
 [data-appearance-mode="light"] .bd-dashboard-section--accent-blue {
   background:
-    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(196, 144, 65, 0.2), transparent 70%),
+    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(196, 144, 65, 0.05), transparent 70%),
     radial-gradient(ellipse 80% 60% at 50% 0%, rgba(96, 165, 250, 0.12), transparent 70%),
     linear-gradient(180deg, rgba(220, 236, 252, 0.94) 0%, rgba(196, 218, 246, 0.86) 100%);
   border-color: rgba(140, 82, 22, 0.4);
@@ -3121,7 +3121,7 @@ body {
 /* accent-cyan — medium cool cyan liquid glass with premium gold lamp */
 [data-appearance-mode="light"] .bd-dashboard-section--accent-cyan {
   background:
-    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(196, 144, 65, 0.2), transparent 70%),
+    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(196, 144, 65, 0.05), transparent 70%),
     radial-gradient(ellipse 80% 60% at 50% 0%, rgba(34, 211, 238, 0.14), transparent 70%),
     linear-gradient(180deg, rgba(216, 240, 244, 0.94) 0%, rgba(188, 226, 232, 0.86) 100%);
   border-color: rgba(140, 82, 22, 0.4);
@@ -3142,7 +3142,7 @@ body {
 /* accent-indigo — darker cool indigo liquid glass with premium gold lamp */
 [data-appearance-mode="light"] .bd-dashboard-section--accent-indigo {
   background:
-    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(196, 144, 65, 0.22), transparent 70%),
+    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(196, 144, 65, 0.05), transparent 70%),
     radial-gradient(ellipse 80% 60% at 50% 0%, rgba(99, 102, 241, 0.16), transparent 70%),
     linear-gradient(180deg, rgba(214, 220, 246, 0.94) 0%, rgba(188, 198, 238, 0.86) 100%);
   border-color: rgba(140, 82, 22, 0.42);
