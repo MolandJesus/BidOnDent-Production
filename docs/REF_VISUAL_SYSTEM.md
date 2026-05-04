@@ -1,7 +1,7 @@
 # BidOnDent — Visual System (REFERENCE)
 
 **Authority level:** REFERENCE — single source of truth for the current visual system.
-**Last updated:** 2026-05-03
+**Last updated:** 2026-05-04
 **Supersedes:** `PLAN_LANDING_REDESIGN.md`, `PLAN_LANDING_LIQUID_MAP_INTELLIGENCE.md`, `PLAN_LANDING_BUTTON_SYSTEM_ADOPTION.md`, `PLAN_LANDING_DARK_MODE_PARITY.md` (all archived 2026-05-03 under `docs/archive/`).
 
 > Read this doc for any visual/design work. The long-form _philosophy_ still lives in `MOLANDJESUS_DESIGN_DECISIONS.md` — this doc is the operating snapshot of what's actually in the code.
@@ -262,22 +262,31 @@ DIRECTIONAL       0 -28 to -44px    blur 70-130px    spread -14 to -22px    ≤ 
 - 6 cool-section atmospheric warm blobs (`HowItWorks`, `WhoWeServe`, `AboutOpp`, `BusinessInquiry`, `CTA`, `OperatingRegions`) canon-swapped from `bg-amber-200` → canon champagne per H9 KI-091
 - 5 cool-section atmospheric mesh + radial decorations canon-swapped from pre-canon goldenrod (`rgba(210,180,130)` / `rgba(220,185,115)` / `rgba(200,170,110)` / `rgba(200,165,100)` / `amber-100`) → canon champagne `rgba(196,144,65)` at SAME alpha per Pass I KI-092 (5 commits, atomic palette swap, no structural change)
 - Landing heading-area spacing trimmed across 7 sections (eyebrow→heading mb-6→mb-4; heading→content mb-8 md:mb-12 → mb-6 md:mb-8) per Pass J — addresses owner's "many gapping issues with spacing" directive
+- Landing between-section spacing tightening (`py-4 sm:py-8 md:py-10` baseline) per Pass K KI-094 — second half of the "spacing issues" directive
+- `.bd-landing-seam-fade` structural fix per Pass L KI-104 — negative `margin-top: -36px; margin-bottom: -36px;` so the seam-fade OVERLAPS adjacent sections (true bridge) instead of darkening empty between-band; navy linear darkening layer dropped (gold radial alone IS the bridge); alphas unchanged from Pass K
+- Pass M/N/O light-mode atmospheric alpha-lift trilogy (visual continuation of Pass L primitive family, all within Locked Premium Gold Palette + 0.22a halo cap, dark UNCHANGED across all three):
+  - Pass M (commit `e5937a27`) — `.bd-landing-seam-fade` light center 0.13→0.18 / mid 0.04→0.06 — addresses owner zoomed-out-screenshot wash-thinness signal at warm-to-cool boundaries
+  - Pass N (commit `e5437355`) — `.bd-landing-section-toplamp` light alpha 0.13→0.18 — same delta as Pass M, applied to cool-section top-cast champagne lamp
+  - Pass O (commit `c17a6c4c`) — `.bd-landing-section-bottomwash` light cool-blue depth 0.10→0.14 — companion to M/N, navy lane (NOT gold; preserves "gold goes UP, blue goes DOWN" rule)
 
 KI-091 RESOLVED 2026-05-05 (Pass H, 12 commits, range `91147e12 → a7e1d274`).
 KI-092 RESOLVED 2026-05-05 (Pass I, 5 commits, range `1afea721 → 10644ada`).
 KI-093 (Pass J spacing trim) shipped 2026-05-05 (commit `897259ab`).
+KI-094 RESOLVED 2026-05-05 (Pass K between-section spacing, commit `907f0cd8`).
+KI-104 RESOLVED 2026-05-05 (Pass L seam-fade overlap structural fix, commit `6b96c22b`).
+Pass M/N/O alpha-lift trilogy shipped 2026-05-05 — owner visual verdict pending. No new KI; iterative tuning of KI-104's primitive family (per commit messages).
 
-### Future: Landing sections — more gold areas + premium lighting (planned, not yet implemented)
+### Future: Landing sections — more gold areas + premium lighting (PARTIALLY IMPLEMENTED via Pass G/H/M/N/O)
 
 Owner directive captured 2026-05-04: "for future landing page design updates, sections still need work as well as more gold areas and lighting prmium." Verified visually by 2026-05-04 evening screenshots showing the cool navy "Opportunity Through Transparency" section's three trust cards reading as cool-blue glass without the premium gold lighting that the warm bronze "Why Choose BidOnDent?" section carries.
 
-Direction for future passes:
+Direction (originally planned, status updated inline):
 
-- **Cool landing sections** (Opportunity Through Transparency, About BidOnDent, Who We Serve) need atmospheric gold lighting BEHIND the cards — gold lamps painted into the section background atmosphere (not the card bodies, which stay cool-blue per landing identity), so the cool cards are visibly LIT FROM BEHIND by gold light bleeding around them. Pattern: extend the directional triad's directional top-cast principle from cards to sections themselves.
-- **More gold AREAS** — owner wants gold to appear in more places on landing. Candidates: section eyebrow chip backing glow (already noted as deferred from KI-080), CTA pill backing glow, link hover states, section dividers (`.bd-landing-seam-fade` could carry a gold tint at top/bottom), inline checkmark icons in feature lists, the "Learn more →" expand affordances.
-- **Lighting premium** — apply the Premium Glass Body Opacity + Directional Backlight Canon (LAW, added 2026-05-04) to landing section backgrounds, not just cards. Section background atmospheric layer with directional top-cast champagne lamp would lift cool sections into the same premium register as warm sections without changing landing identity (cool stays cool-dominant; warm stays warm-dominant; gold lighting is the unifying TECHNIQUE).
+- **Cool landing sections** (Opportunity Through Transparency, About BidOnDent, Who We Serve) need atmospheric gold lighting BEHIND the cards — gold lamps painted into the section background atmosphere (not the card bodies, which stay cool-blue per landing identity), so the cool cards are visibly LIT FROM BEHIND by gold light bleeding around them. Pattern: extend the directional triad's directional top-cast principle from cards to sections themselves. **STATUS: SHIPPED via `.bd-landing-section-toplamp` (Pass G commit `5d42dfc9` + Pass H9 alpha bump + Pass N alpha 0.13→0.18 light).**
+- **More gold AREAS** — owner wants gold to appear in more places on landing. Candidates: section eyebrow chip backing glow (already noted as deferred from KI-080), CTA pill backing glow, link hover states, section dividers (`.bd-landing-seam-fade` could carry a gold tint at top/bottom), inline checkmark icons in feature lists, the "Learn more →" expand affordances. **STATUS: PARTIALLY SHIPPED — `.bd-section-eyebrow` champagne backing glow per Pass H6, `.bd-landing-cta-glow` per Pass H7, list-marker champagne tint per Pass H8, `.bd-landing-seam-fade` carrying gold radial bridge per Pass L+M (light alpha now at 0.18 center post Pass M). Remaining: link hover states, inline checkmark icon glow, "Learn more" affordances — owner re-verifies before propagating.**
+- **Lighting premium** — apply the Premium Glass Body Opacity + Directional Backlight Canon (LAW, added 2026-05-04) to landing section backgrounds, not just cards. Section background atmospheric layer with directional top-cast champagne lamp would lift cool sections into the same premium register as warm sections without changing landing identity (cool stays cool-dominant; warm stays warm-dominant; gold lighting is the unifying TECHNIQUE). **STATUS: SHIPPED — atmospheric layer is `.bd-landing-section-toplamp` + `.bd-landing-section-bottomwash` companion (Pass H9 + Pass O alpha 0.10→0.14 light). Pass M/N/O alpha-lift trilogy completes the light-mode richness gap owner flagged in 2026-05-04 zoomed-out screenshots.**
 
-This subsection is intentionally documented BEFORE the work is built so when owner asks for "landing sections need more work" the principles are captured and the next agent doesn't have to re-derive them.
+This subsection is intentionally documented BEFORE the work is built so when owner asks for "landing sections need more work" the principles are captured and the next agent doesn't have to re-derive them. **Pass G/H/M/N/O have now consumed most of this future-direction. Remaining items (link hover gold glow, inline checkmark glow, "Learn more" affordance polish) are owner-judgment-call follow-ups.**
 
 ### Future: Gold-Trim Text Treatment (planned, not yet implemented)
 
