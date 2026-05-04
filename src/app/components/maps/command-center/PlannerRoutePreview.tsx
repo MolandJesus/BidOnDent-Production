@@ -7,7 +7,12 @@
 
 import { MapPinned, Navigation, RefreshCcw, Route } from "lucide-react";
 import { cn } from "../../ui/utils";
-import { formatApproximateDriveWindow, formatDistanceMiles } from "../mapRoutePresentation";
+import {
+  formatApproximateDriveWindow,
+  formatDistanceMiles,
+  formatDurationMinutes,
+  formatTurnDistance,
+} from "../mapRoutePresentation";
 import type { MapSurfaceTheme, MapSurfaceTone } from "../serviceCoverageMapTypes";
 import type { NavigationRoutePreview } from "../../../types/navigation";
 import type { CoveragePartnerShop } from "../serviceCoverageMapTypes";
@@ -347,8 +352,19 @@ export default function PlannerRoutePreview({
                   {step.instruction}
                 </div>
                 <div className={cn("text-[10px]", theme.secondaryTextClassName)}>
-                  {(step.distanceMeters / 1609.34).toFixed(1)} mi •{" "}
-                  {Math.max(1, Math.round(step.durationSeconds / 60))} min
+                  {/* KI-052 family honesty fix: replaced inline `Math.max(1, ...)` floor
+                      with the canonical `formatDurationMinutes` helper (returns null below
+                      30 sec rather than fabricating "1 min" for genuine zero-duration steps).
+                      Distance label uses canonical `formatTurnDistance` for the same reason —
+                      step.distanceMeters can legitimately be 0 (e.g. arrival step), and
+                      `0.0 mi` would similarly be a fabrication. Filter+join handles either
+                      label being null. */}
+                  {[
+                    formatTurnDistance(step.distanceMeters),
+                    formatDurationMinutes(step.durationSeconds),
+                  ]
+                    .filter(Boolean)
+                    .join(" • ")}
                 </div>
               </div>
             ))}
