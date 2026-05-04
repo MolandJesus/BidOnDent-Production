@@ -160,7 +160,7 @@ export default function ShopProfileModal({
               value={businessAddress}
               onChange={(e) => setBusinessAddress(e.target.value)}
               placeholder="123 Main St, City, State 12345"
-              className={`w-full p-2 border rounded ${isLight ? "border-slate-200 bg-white text-slate-800" : "border-white/[0.12]"}`}
+              className={`w-full p-2 border rounded ${isLight ? "border-slate-200 bg-[#fffefa] text-slate-800" : "border-white/[0.12]"}`}
             />
           </div>
           <div>
@@ -176,7 +176,7 @@ export default function ShopProfileModal({
               onBlur={() => setTouched((p) => ({ ...p, phone: true }))}
               maxLength={14}
               placeholder="(555) 123-4567"
-              className={`w-full p-2 border rounded ${touched.phone && validation.phone ? "border-rose-400" : isLight ? "border-slate-200 bg-white text-slate-800" : "border-white/[0.12]"}`}
+              className={`w-full p-2 border rounded ${touched.phone && validation.phone ? "border-rose-400" : isLight ? "border-slate-200 bg-[#fffefa] text-slate-800" : "border-white/[0.12]"}`}
             />
             {touched.phone && validation.phone && (
               <p className="mt-1 text-xs text-rose-400">{validation.phone}</p>
@@ -193,7 +193,7 @@ export default function ShopProfileModal({
               value={businessHours}
               onChange={(e) => setBusinessHours(e.target.value)}
               placeholder="Mon-Fri: 8AM-6PM, Sat: 9AM-3PM"
-              className={`w-full p-2 border rounded ${isLight ? "border-slate-200 bg-white text-slate-800" : "border-white/[0.12]"}`}
+              className={`w-full p-2 border rounded ${isLight ? "border-slate-200 bg-[#fffefa] text-slate-800" : "border-white/[0.12]"}`}
             />
           </div>
           <div>
@@ -206,7 +206,7 @@ export default function ShopProfileModal({
               value={certifications}
               onChange={(e) => setCertifications(e.target.value)}
               placeholder="e.g. ASE Certified, I-CAR Gold Class"
-              className={`w-full p-2 border rounded ${isLight ? "border-slate-200 bg-white text-slate-800" : "border-white/[0.12]"}`}
+              className={`w-full p-2 border rounded ${isLight ? "border-slate-200 bg-[#fffefa] text-slate-800" : "border-white/[0.12]"}`}
               rows={3}
             />
           </div>
