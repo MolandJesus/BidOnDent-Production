@@ -2464,52 +2464,57 @@ body {
     rgba(10, 22, 45, 0.92) 0%,
     rgba(7, 16, 33, 0.88) 100%
   );
-  --bd-dashboard-panel-border: rgba(228, 175, 100, 0.4);
+  /* Depth bar (KI-069): cool blue structural border, gold lamp inset bevel,
+     bronze inset rim, cool blue 1px ring, bronze atmospheric halo. */
+  --bd-dashboard-panel-border: rgba(96, 165, 250, 0.24);
   --bd-dashboard-panel-shadow:
-    0 22px 48px rgba(2, 6, 23, 0.46), 0 50px 110px rgba(2, 6, 23, 0.22),
-    inset 0 1px 0 rgba(255, 228, 175, 0.22), 0 0 0 1px rgba(228, 175, 100, 0.2),
-    0 0 44px rgba(228, 140, 55, 0.26), 0 0 110px rgba(228, 140, 55, 0.1);
+    0 32px 80px rgba(2, 6, 23, 0.46), 0 12px 24px rgba(2, 6, 23, 0.30),
+    inset 0 1px 0 rgba(196, 144, 65, 0.22), inset 0 -1px 0 rgba(140, 82, 22, 0.22),
+    0 0 0 1px rgba(96, 165, 250, 0.18), 0 0 60px rgba(196, 130, 45, 0.14),
+    0 0 110px rgba(196, 130, 45, 0.08);
   --bd-dashboard-section-bg: linear-gradient(
     180deg,
     rgba(16, 31, 60, 0.88) 0%,
     rgba(11, 22, 43, 0.84) 100%
   );
-  --bd-dashboard-section-border: rgba(228, 175, 100, 0.32);
+  --bd-dashboard-section-border: rgba(96, 165, 250, 0.20);
   --bd-dashboard-section-shadow:
-    0 16px 30px rgba(2, 6, 23, 0.34), 0 40px 90px rgba(2, 6, 23, 0.18),
-    inset 0 1px 0 rgba(255, 228, 175, 0.16), 0 0 0 1px rgba(228, 175, 100, 0.14),
-    0 0 28px rgba(228, 140, 55, 0.18), 0 0 90px rgba(228, 140, 55, 0.08);
+    0 22px 56px rgba(2, 6, 23, 0.34), 0 8px 18px rgba(2, 6, 23, 0.22),
+    inset 0 1px 0 rgba(196, 144, 65, 0.18), inset 0 -1px 0 rgba(140, 82, 22, 0.18),
+    0 0 0 1px rgba(96, 165, 250, 0.14), 0 0 44px rgba(196, 130, 45, 0.12),
+    0 0 90px rgba(196, 130, 45, 0.06);
   --bd-dashboard-section-hover-shadow:
-    0 22px 38px rgba(2, 6, 23, 0.42), 0 50px 110px rgba(2, 6, 23, 0.2),
-    inset 0 1px 0 rgba(255, 230, 180, 0.24), 0 0 0 1px rgba(255, 215, 150, 0.38),
-    0 0 38px rgba(228, 140, 55, 0.32), 0 0 100px rgba(228, 140, 55, 0.1);
+    0 28px 64px rgba(2, 6, 23, 0.40), 0 10px 22px rgba(2, 6, 23, 0.26),
+    inset 0 1px 0 rgba(196, 144, 65, 0.28), inset 0 -1px 0 rgba(140, 82, 22, 0.24),
+    0 0 0 1px rgba(96, 165, 250, 0.24), 0 0 52px rgba(196, 130, 45, 0.18),
+    0 0 100px rgba(196, 130, 45, 0.08);
   --bd-dashboard-section-selected-bg: linear-gradient(
     180deg,
     rgba(34, 74, 156, 0.4) 0%,
     rgba(17, 46, 104, 0.3) 100%
   );
-  --bd-dashboard-section-selected-border: rgba(253, 200, 130, 0.5);
+  --bd-dashboard-section-selected-border: rgba(96, 165, 250, 0.50);
   --bd-dashboard-chip-bg: linear-gradient(
     180deg,
     rgba(17, 43, 92, 0.62) 0%,
     rgba(10, 26, 56, 0.46) 100%
   );
-  --bd-dashboard-chip-border: rgba(253, 200, 130, 0.3);
-  --bd-dashboard-chip-text: #fde6c0;
+  --bd-dashboard-chip-border: rgba(196, 144, 65, 0.30);
+  --bd-dashboard-chip-text: #fcf0d0;
   --bd-dashboard-note-bg: linear-gradient(
     180deg,
     rgba(17, 43, 92, 0.28) 0%,
     rgba(10, 26, 56, 0.2) 100%
   );
-  --bd-dashboard-note-border: rgba(220, 165, 90, 0.2);
+  --bd-dashboard-note-border: rgba(196, 144, 65, 0.20);
   --bd-dashboard-secondary-bg: linear-gradient(
     180deg,
     rgba(18, 33, 65, 0.94) 0%,
     rgba(12, 23, 46, 0.9) 100%
   );
-  --bd-dashboard-secondary-border: rgba(220, 165, 90, 0.26);
-  --bd-dashboard-secondary-text: #fde6c0;
-  --bd-dashboard-ghost-text: rgba(253, 220, 160, 0.9);
+  --bd-dashboard-secondary-border: rgba(196, 144, 65, 0.26);
+  --bd-dashboard-secondary-text: #fcf0d0;
+  --bd-dashboard-ghost-text: rgba(252, 240, 208, 0.88);
 }
 
 [data-appearance-mode="light"] {
@@ -2590,8 +2595,10 @@ body {
   inset-inline: 1.25rem;
   top: 0;
   height: 1px;
-  /* D4 (final v2): stronger warm-amber top highlight line — the gold trim lamp. */
-  background: linear-gradient(90deg, transparent, rgba(253, 200, 130, 0.62), transparent);
+  /* D4 (final v2): warm top highlight line — the gold trim lamp. Aligned
+     to locked 2026-05-03 premium gold palette (KI-066). Forbidden legacy:
+     rgba(253, 200, 130, 0.62). */
+  background: linear-gradient(90deg, transparent, rgba(196, 144, 65, 0.62), transparent);
   pointer-events: none;
 }
 
@@ -2637,45 +2644,53 @@ body {
    same gold lamp treatment so the dashboard reads cohesively gold-lit. */
 .bd-dashboard-panel--deep {
   background: linear-gradient(180deg, rgba(7, 16, 33, 0.96) 0%, rgba(5, 12, 26, 0.92) 100%);
-  border-color: rgba(220, 165, 90, 0.28);
+  border-color: rgba(96, 165, 250, 0.22);
   box-shadow:
-    0 24px 46px rgba(2, 6, 23, 0.42),
-    inset 0 1px 0 rgba(253, 220, 160, 0.14),
-    0 0 0 1px rgba(220, 165, 90, 0.12),
-    0 0 32px rgba(220, 130, 50, 0.2);
+    0 32px 80px rgba(2, 6, 23, 0.46),
+    0 12px 24px rgba(2, 6, 23, 0.32),
+    inset 0 1px 0 rgba(196, 144, 65, 0.20),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.20),
+    0 0 0 1px rgba(96, 165, 250, 0.16),
+    0 0 60px rgba(196, 130, 45, 0.12);
 }
 
 .bd-dashboard-panel--accent-blue {
   background: linear-gradient(180deg, rgba(12, 35, 74, 0.94) 0%, rgba(9, 24, 52, 0.9) 100%);
-  border-color: rgba(220, 165, 90, 0.36);
+  border-color: rgba(96, 165, 250, 0.26);
   box-shadow:
-    0 22px 42px rgba(2, 6, 23, 0.4),
-    inset 0 1px 0 rgba(253, 220, 160, 0.18),
-    0 0 0 1px rgba(220, 165, 90, 0.16),
-    0 0 32px rgba(220, 130, 50, 0.22),
-    0 0 24px rgba(96, 165, 250, 0.1);
+    0 32px 80px rgba(2, 6, 23, 0.44),
+    0 12px 24px rgba(2, 6, 23, 0.32),
+    inset 0 1px 0 rgba(196, 144, 65, 0.22),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.22),
+    0 0 0 1px rgba(96, 165, 250, 0.20),
+    0 0 60px rgba(196, 130, 45, 0.14),
+    0 0 24px rgba(96, 165, 250, 0.10);
 }
 
 .bd-dashboard-panel--accent-cyan {
   background: linear-gradient(180deg, rgba(8, 37, 58, 0.94) 0%, rgba(7, 22, 36, 0.9) 100%);
-  border-color: rgba(220, 165, 90, 0.34);
+  border-color: rgba(96, 165, 250, 0.24);
   box-shadow:
-    0 22px 42px rgba(2, 6, 23, 0.38),
-    inset 0 1px 0 rgba(253, 220, 160, 0.18),
-    0 0 0 1px rgba(220, 165, 90, 0.14),
-    0 0 32px rgba(220, 130, 50, 0.2),
-    0 0 24px rgba(34, 211, 238, 0.1);
+    0 32px 80px rgba(2, 6, 23, 0.42),
+    0 12px 24px rgba(2, 6, 23, 0.30),
+    inset 0 1px 0 rgba(196, 144, 65, 0.22),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.20),
+    0 0 0 1px rgba(96, 165, 250, 0.18),
+    0 0 60px rgba(196, 130, 45, 0.12),
+    0 0 24px rgba(34, 211, 238, 0.10);
 }
 
 .bd-dashboard-panel--accent-indigo {
   background: linear-gradient(180deg, rgba(20, 27, 69, 0.94) 0%, rgba(13, 18, 45, 0.9) 100%);
-  border-color: rgba(220, 165, 90, 0.34);
+  border-color: rgba(96, 165, 250, 0.24);
   box-shadow:
-    0 22px 42px rgba(2, 6, 23, 0.4),
-    inset 0 1px 0 rgba(253, 220, 160, 0.18),
-    0 0 0 1px rgba(220, 165, 90, 0.14),
-    0 0 32px rgba(220, 130, 50, 0.2),
-    0 0 24px rgba(129, 140, 248, 0.1);
+    0 32px 80px rgba(2, 6, 23, 0.44),
+    0 12px 24px rgba(2, 6, 23, 0.32),
+    inset 0 1px 0 rgba(196, 144, 65, 0.22),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.20),
+    0 0 0 1px rgba(96, 165, 250, 0.18),
+    0 0 60px rgba(196, 130, 45, 0.12),
+    0 0 24px rgba(129, 140, 248, 0.10);
 }
 
 /* LAW: light-mode panels are a layered hierarchy — hero (richest cream-gold)
@@ -2793,81 +2808,97 @@ body {
 
 .bd-dashboard-section--deep {
   background: linear-gradient(180deg, rgba(8, 18, 39, 0.95) 0%, rgba(7, 15, 31, 0.92) 100%);
-  border-color: rgba(220, 165, 90, 0.22);
+  border-color: rgba(96, 165, 250, 0.20);
   box-shadow:
-    0 16px 30px rgba(2, 6, 23, 0.3),
-    inset 0 1px 0 rgba(253, 220, 160, 0.1),
-    0 0 0 1px rgba(220, 165, 90, 0.08),
-    0 0 22px rgba(220, 130, 50, 0.16);
+    0 22px 56px rgba(2, 6, 23, 0.36),
+    0 8px 18px rgba(2, 6, 23, 0.26),
+    inset 0 1px 0 rgba(196, 144, 65, 0.18),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.18),
+    0 0 0 1px rgba(96, 165, 250, 0.14),
+    0 0 44px rgba(196, 130, 45, 0.10);
 }
 
 .bd-dashboard-section--accent-blue {
   background: linear-gradient(180deg, rgba(16, 42, 84, 0.92) 0%, rgba(11, 29, 59, 0.88) 100%);
-  border-color: rgba(220, 165, 90, 0.32);
+  border-color: rgba(96, 165, 250, 0.24);
   box-shadow:
-    0 16px 30px rgba(2, 6, 23, 0.3),
-    inset 0 1px 0 rgba(253, 220, 160, 0.14),
-    0 0 0 1px rgba(220, 165, 90, 0.12),
-    0 0 24px rgba(220, 130, 50, 0.18),
-    0 0 18px rgba(96, 165, 250, 0.1);
+    0 22px 56px rgba(2, 6, 23, 0.34),
+    0 8px 18px rgba(2, 6, 23, 0.26),
+    inset 0 1px 0 rgba(196, 144, 65, 0.20),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.20),
+    0 0 0 1px rgba(96, 165, 250, 0.18),
+    0 0 44px rgba(196, 130, 45, 0.12),
+    0 0 18px rgba(96, 165, 250, 0.10);
 }
 
 .bd-dashboard-section--accent-cyan {
   background: linear-gradient(180deg, rgba(10, 49, 74, 0.92) 0%, rgba(8, 30, 47, 0.88) 100%);
-  border-color: rgba(220, 165, 90, 0.3);
+  border-color: rgba(96, 165, 250, 0.22);
   box-shadow:
-    0 16px 30px rgba(2, 6, 23, 0.28),
-    inset 0 1px 0 rgba(253, 220, 160, 0.14),
-    0 0 0 1px rgba(220, 165, 90, 0.1),
-    0 0 24px rgba(220, 130, 50, 0.16),
-    0 0 18px rgba(34, 211, 238, 0.1);
+    0 22px 56px rgba(2, 6, 23, 0.32),
+    0 8px 18px rgba(2, 6, 23, 0.24),
+    inset 0 1px 0 rgba(196, 144, 65, 0.20),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.18),
+    0 0 0 1px rgba(96, 165, 250, 0.16),
+    0 0 44px rgba(196, 130, 45, 0.10),
+    0 0 18px rgba(34, 211, 238, 0.10);
 }
 
 .bd-dashboard-section--accent-indigo {
   background: linear-gradient(180deg, rgba(29, 34, 82, 0.92) 0%, rgba(17, 21, 54, 0.88) 100%);
-  border-color: rgba(220, 165, 90, 0.3);
+  border-color: rgba(96, 165, 250, 0.22);
   box-shadow:
-    0 16px 30px rgba(2, 6, 23, 0.3),
-    inset 0 1px 0 rgba(253, 220, 160, 0.14),
-    0 0 0 1px rgba(220, 165, 90, 0.1),
-    0 0 24px rgba(220, 130, 50, 0.16),
-    0 0 18px rgba(129, 140, 248, 0.1);
+    0 22px 56px rgba(2, 6, 23, 0.34),
+    0 8px 18px rgba(2, 6, 23, 0.26),
+    inset 0 1px 0 rgba(196, 144, 65, 0.20),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.18),
+    0 0 0 1px rgba(96, 165, 250, 0.16),
+    0 0 44px rgba(196, 130, 45, 0.10),
+    0 0 18px rgba(129, 140, 248, 0.10);
 }
 
 .bd-dashboard-section--accent-rose {
   background: linear-gradient(180deg, rgba(63, 22, 44, 0.86) 0%, rgba(39, 14, 28, 0.82) 100%);
-  border-color: rgba(220, 165, 90, 0.28);
+  border-color: rgba(96, 165, 250, 0.20);
   box-shadow:
-    0 16px 30px rgba(2, 6, 23, 0.3),
-    inset 0 1px 0 rgba(253, 220, 160, 0.12),
-    0 0 0 1px rgba(220, 165, 90, 0.1),
-    0 0 22px rgba(220, 130, 50, 0.16),
-    0 0 18px rgba(244, 63, 94, 0.1);
+    0 22px 56px rgba(2, 6, 23, 0.34),
+    0 8px 18px rgba(2, 6, 23, 0.26),
+    inset 0 1px 0 rgba(196, 144, 65, 0.18),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.18),
+    0 0 0 1px rgba(96, 165, 250, 0.16),
+    0 0 44px rgba(196, 130, 45, 0.10),
+    0 0 18px rgba(244, 63, 94, 0.10);
 }
 
-/* Deeper-gold tile: navy base, stronger champagne inner glow + halo. Pairs
-   with --accent-champagne for a cool/warm/cool/warm Quick Actions rhythm. */
+/* Deeper-gold tile: warm pop tile per LAW. Body stays warm-brown, trim
+   stays warm-bronze (cool blue would clash with the warm body). Inset
+   bevel + outer halo aligned to locked palette. Pairs with --accent-
+   champagne for the cool/warm/cool/warm Quick Actions rhythm. */
 .bd-dashboard-section--accent-gold {
   background: linear-gradient(180deg, rgba(38, 28, 12, 0.92) 0%, rgba(22, 16, 6, 0.88) 100%);
-  border-color: rgba(220, 165, 90, 0.42);
+  border-color: rgba(196, 144, 65, 0.40);
   box-shadow:
-    0 16px 30px rgba(2, 6, 23, 0.32),
-    inset 0 1px 0 rgba(253, 220, 160, 0.22),
-    0 0 0 1px rgba(220, 165, 90, 0.18),
-    0 0 28px rgba(220, 140, 50, 0.28),
-    0 0 18px rgba(253, 200, 110, 0.14);
+    0 22px 56px rgba(2, 6, 23, 0.36),
+    0 8px 18px rgba(2, 6, 23, 0.28),
+    inset 0 1px 0 rgba(252, 240, 208, 0.24),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.34),
+    0 0 0 1px rgba(140, 82, 22, 0.20),
+    0 0 44px rgba(196, 130, 45, 0.26),
+    0 0 18px rgba(196, 144, 65, 0.16);
 }
 
-/* Lighter champagne tile: still navy base but a softer warm wash; reads
-   adjacent-but-distinct from the deeper gold tile. */
+/* Lighter champagne tile: warm pop tile per LAW. Same warm-trim treatment
+   as --accent-gold but with softer values. */
 .bd-dashboard-section--accent-champagne {
   background: linear-gradient(180deg, rgba(28, 24, 14, 0.9) 0%, rgba(16, 14, 8, 0.86) 100%);
-  border-color: rgba(220, 165, 90, 0.32);
+  border-color: rgba(196, 144, 65, 0.30);
   box-shadow:
-    0 16px 30px rgba(2, 6, 23, 0.3),
-    inset 0 1px 0 rgba(253, 220, 160, 0.16),
-    0 0 0 1px rgba(220, 165, 90, 0.12),
-    0 0 22px rgba(220, 130, 50, 0.18);
+    0 22px 56px rgba(2, 6, 23, 0.34),
+    0 8px 18px rgba(2, 6, 23, 0.26),
+    inset 0 1px 0 rgba(252, 240, 208, 0.20),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.28),
+    0 0 0 1px rgba(140, 82, 22, 0.16),
+    0 0 44px rgba(196, 130, 45, 0.20);
 }
 
 /* D4 (final v3.2): soft off-white liquid glass + more gold on every section. */
