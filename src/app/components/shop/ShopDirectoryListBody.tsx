@@ -129,7 +129,7 @@ export default function ShopDirectoryListBody({
                 key={`collection-${shop.id}`}
                 className={`w-full ${
                   isLight
-                    ? "bg-white/80 border border-slate-200/60 rounded-xl hover:border-blue-300/60"
+                    ? "bg-[linear-gradient(180deg,rgba(247,232,194,0.78),rgba(232,238,248,0.72))] border border-[rgba(140,82,22,0.24)] rounded-xl shadow-[inset_0_1px_0_rgba(252,240,208,0.78)] hover:border-blue-300/60"
                     : "bd-glass-card hover:border-white/[0.20]"
                 } px-3 py-2 text-left transition-colors`}
                 onClick={() => session.setSelectedShopId(shop.id)}
@@ -185,7 +185,7 @@ export default function ShopDirectoryListBody({
                 key={place.id}
                 className={`rounded-xl sm:rounded-2xl border px-2.5 py-1.5 sm:px-3 sm:py-2 text-left text-xs sm:text-sm transition-colors ${
                   isLight
-                    ? "border-slate-200 bg-white text-slate-700 hover:border-blue-300"
+                    ? "border-[rgba(140,82,22,0.26)] bg-[linear-gradient(180deg,rgba(247,232,194,0.84),rgba(232,238,248,0.78))] text-slate-700 shadow-[inset_0_1px_0_rgba(252,240,208,0.78)] hover:border-blue-300"
                     : "border-white/[0.10] bg-white/[0.05] text-slate-100 hover:bg-white/[0.10]"
                 }`}
                 onClick={() => session.handleSelectOrigin(place)}
@@ -215,7 +215,7 @@ export default function ShopDirectoryListBody({
                 key={`${search.query}-${search.timestamp}`}
                 className={`rounded-xl sm:rounded-2xl border px-2.5 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm transition-colors ${
                   isLight
-                    ? "border-slate-200 bg-white text-slate-700 hover:border-blue-300"
+                    ? "border-[rgba(140,82,22,0.26)] bg-[linear-gradient(180deg,rgba(247,232,194,0.84),rgba(232,238,248,0.78))] text-slate-700 shadow-[inset_0_1px_0_rgba(252,240,208,0.78)] hover:border-blue-300"
                     : "border-white/[0.10] bg-white/[0.05] text-slate-100 hover:border-white/[0.20] hover:bg-white/[0.08]"
                 }`}
                 onClick={() => {

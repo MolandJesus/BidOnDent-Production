@@ -93,7 +93,7 @@ export default function ShopDirectoryOriginSearch({
           <input
             className={`w-full min-w-0 rounded-full border py-2.5 pl-9 pr-3 text-sm outline-none transition-colors ${
               isLight
-                ? "border-slate-200/80 bg-white/90 text-slate-800 placeholder:text-slate-400 focus:border-blue-400/60 focus:bg-white shadow-sm"
+                ? "border-[rgba(140,82,22,0.26)] bg-[linear-gradient(180deg,rgba(232,238,248,0.88),rgba(247,232,194,0.82))] text-slate-800 placeholder:text-slate-400 shadow-[inset_0_1px_0_rgba(252,240,208,0.78)] focus:border-blue-500/60"
                 : "bd-glass-control border-white/[0.12] bg-white/[0.06] text-slate-100 placeholder:text-slate-400/70 focus:border-blue-400/40 focus:bg-white/[0.08]"
             }`}
             onChange={(event) => onOriginSearchQueryChange(event.target.value)}
@@ -105,7 +105,7 @@ export default function ShopDirectoryOriginSearch({
         <button
           className={`min-h-[36px] rounded-full border px-2.5 py-1.5 text-xs font-medium transition-colors ${
             isLight
-              ? "border-slate-200 bg-white text-slate-700 hover:border-blue-300 hover:bg-blue-50 shadow-sm"
+              ? "border-[rgba(140,82,22,0.26)] bg-[linear-gradient(180deg,rgba(247,232,194,0.84),rgba(232,238,248,0.78))] text-slate-700 shadow-[inset_0_1px_0_rgba(252,240,208,0.78)] hover:border-blue-300 hover:bg-[linear-gradient(180deg,rgba(232,238,248,0.92),rgba(219,234,254,0.86))]"
               : "border-white/[0.10] bg-white/[0.04] text-slate-200 hover:bg-white/[0.08]"
           }`}
           onClick={() => {
@@ -121,7 +121,7 @@ export default function ShopDirectoryOriginSearch({
         <div
           className={`overflow-hidden rounded-2xl border ${
             isLight
-              ? "border-slate-200/80 bg-white/90 shadow-sm"
+              ? "border-[rgba(140,82,22,0.26)] bg-[linear-gradient(180deg,rgba(247,232,194,0.88),rgba(232,238,248,0.82))] shadow-[inset_0_1px_0_rgba(252,240,208,0.78),0_8px_20px_rgba(15,23,42,0.10)]"
               : "border-white/[0.10] bg-slate-950/72 backdrop-blur-md"
           }`}
         >
@@ -199,7 +199,7 @@ export default function ShopDirectoryOriginSearch({
                     ? "border-blue-400 bg-blue-50 text-blue-700 shadow-sm"
                     : "border-blue-400/60 bg-blue-500/20 text-white"
                   : isLight
-                    ? "border-slate-200 bg-white text-slate-600 hover:border-blue-300 hover:bg-blue-50 shadow-sm"
+                    ? "border-[rgba(140,82,22,0.26)] bg-[linear-gradient(180deg,rgba(247,232,194,0.84),rgba(232,238,248,0.78))] text-slate-600 shadow-[inset_0_1px_0_rgba(252,240,208,0.78)] hover:border-blue-300 hover:bg-[linear-gradient(180deg,rgba(232,238,248,0.92),rgba(219,234,254,0.86))]"
                     : "border-white/[0.10] bg-white/[0.04] text-slate-300 hover:border-blue-400/30 hover:bg-white/[0.08]"
               }`}
               onClick={() => onSelectOrigin(origin)}

@@ -25,7 +25,7 @@ export default function ShopDirectoryIntelligencePanel({
   const isLight = appearanceMode === "light";
   return (
     <div
-      className={`mt-4 ${isLight ? "bg-white/90 border border-slate-200/60 rounded-2xl" : "bd-glass-panel"}`}
+      className={`mt-4 ${isLight ? "bg-[linear-gradient(180deg,rgba(247,232,194,0.86),rgba(232,238,248,0.80))] border border-[rgba(140,82,22,0.26)] rounded-2xl shadow-[inset_0_1px_0_rgba(252,240,208,0.78),0_8px_22px_rgba(15,23,42,0.10)]" : "bd-glass-panel"}`}
     >
       <button
         type="button"
@@ -121,7 +121,7 @@ export default function ShopDirectoryIntelligencePanel({
             </div>
             <div
               className={`rounded-[22px] px-4 py-3.5 ${
-                isLight ? "bg-white/80 border border-slate-200/60" : "bd-glass-card"
+                isLight ? "bg-[linear-gradient(180deg,rgba(247,232,194,0.78),rgba(232,238,248,0.72))] border border-[rgba(140,82,22,0.24)] shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]" : "bd-glass-card"
               }`}
             >
               <p
@@ -179,7 +179,7 @@ export default function ShopDirectoryIntelligencePanel({
                 key={chip}
                 className={`rounded-full border px-3 py-1.5 text-sm ${
                   isLight
-                    ? "border-slate-200 bg-white text-slate-600"
+                    ? "border-[rgba(140,82,22,0.26)] bg-[linear-gradient(180deg,rgba(247,232,194,0.84),rgba(232,238,248,0.78))] text-slate-600 shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]"
                     : "border-white/[0.10] bg-white/[0.05] text-slate-300"
                 }`}
               >

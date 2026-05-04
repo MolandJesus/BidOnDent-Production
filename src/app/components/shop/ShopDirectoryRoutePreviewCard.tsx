@@ -64,13 +64,13 @@ export default function ShopDirectoryRoutePreviewCard({
   const isCompactDensity = density === "compact";
 
   const glassPanel = isDark
-    ? "border-blue-400/25 bg-slate-950/82 backdrop-blur-md text-white shadow-[0_0_24px_rgba(59,130,246,0.08)]"
-    : "border-black/8 bg-white/88 backdrop-blur-md text-slate-800";
+    ? "border-[rgba(96,165,250,0.22)] bg-[linear-gradient(180deg,rgba(15,23,42,0.86),rgba(8,16,33,0.82))] backdrop-blur-md text-white shadow-[inset_0_1px_0_rgba(196,144,65,0.20),inset_0_-1px_0_rgba(140,82,22,0.18),0_0_0_1px_rgba(96,165,250,0.16),0_18px_40px_rgba(2,6,23,0.40),0_0_36px_rgba(196,130,45,0.12)]"
+    : "border-[rgba(140,82,22,0.26)] bg-[linear-gradient(180deg,rgba(247,232,194,0.88),rgba(232,238,248,0.82))] backdrop-blur-md text-slate-800 shadow-[inset_0_1px_0_rgba(252,240,208,0.78),0_8px_20px_rgba(15,23,42,0.10)]";
   const secondaryText = isDark ? "text-white/60" : "text-slate-500";
   const divider = isDark ? "border-white/10" : "border-black/8";
   const activeRoute = isDark
     ? "map-liquid-card bg-[linear-gradient(180deg,rgba(15,23,42,0.96),rgba(14,116,144,0.18))] font-semibold text-white"
-    : "map-liquid-card bg-white/96 font-semibold text-slate-800 shadow-sm";
+    : "map-liquid-card bg-[linear-gradient(180deg,rgba(247,232,194,0.94),rgba(232,238,248,0.88))] font-semibold text-slate-800 shadow-[inset_0_1px_0_rgba(252,240,208,0.85),0_4px_14px_rgba(15,23,42,0.08)]";
   const inactiveRoute = isDark
     ? "map-liquid-card bg-white/[0.06] text-white/70 hover:bg-white/[0.1]"
     : "map-liquid-card bg-black/[0.04] text-slate-500 hover:bg-black/[0.08]";
