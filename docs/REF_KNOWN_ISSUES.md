@@ -673,6 +673,32 @@
 - **Status:** RESOLVED 2026-05-05 (commit `897259ab`). Pairs with Pass I canon foundation to deliver "more atmospheric and more premium" feel — atmospheric richness from canon swap + tighter rhythm from spacing trim.
 - **Result:** Layout/structure UNCHANGED (only `mb` values trimmed); typography sizes/weights UNCHANGED; mobile-first responsive structure preserved. Build clean; forbidden grep ZERO. Skills: `bd-design-identity`, `mola-ai-relay-protocol`.
 
+### KI-094: Pass K — between-section spacing on landing page (audit F-12)
+
+- **Impact:** Owner directive 2026-05-05: "fix spacing issue on landing page between sections." Audit AI F-12 (`AUDIT_FULL_2026-05-04_SONNET.md`) independently confirmed hard section color transitions remained after Pass J (Pass J fixed within-section heading spacing only). Outgoing `pb-bottom` + `.bd-landing-seam-fade` (112px) + incoming `pt-top` summed to ~176-240px per transition × 8 transitions = ~1400-1900px of empty atmospheric ground stacked through the landing scroll. Owner-visible "gappy" reading especially between cool↔cool and cool↔warm section boundaries.
+- **Location:** 6 landing sections (HowItWorks, Benefits, WhoWeServe, AboutOpportunity, TrustStats, CTA) + `.bd-landing-seam-fade` utility in `src/styles/theme.css`. BusinessInquiry + OperatingRegions had already been asymmetrically trimmed in earlier passes and were left alone.
+- **Fix direction:** Two-axis tightening, single coordinated commit.
+  - Section `py`: `py-8 sm:py-12 md:py-16 → py-4 sm:py-8 md:py-10` (CTA also `lg:py-20 → lg:py-12`). Saves 32-48px per side per section.
+  - `.bd-landing-seam-fade` height: 112px → 72px (light + dark). Compensating alpha bumps so bridge stays visually present: light gold 0.10/0.03 → 0.13/0.04, navy linear 0.08 → 0.12; dark gold 0.16/0.05 → 0.20/0.06 (still under 0.22a single-layer halo cap), navy linear 0.32 → 0.38.
+  - Net per-transition savings ~70-130px × 8 transitions = ~560-1040px scroll reduction across landing.
+- **Status:** RESOLVED 2026-05-05 (commit `907f0cd8`).
+- **Hard stops respected:** 0.22a single-layer halo cap NOT exceeded (max new alpha 0.20). Locked Premium Gold Palette only (`rgba(196,144,65)` champagne). HeroSection UNTOUCHED. BusinessInquiry + OperatingRegions UNTOUCHED (pre-trimmed). Card grid `gap-*` UNTOUCHED (intra-card spacing). Typography sizes/weights UNTOUCHED. Build clean (3815.32 KiB precache). Branch-aware forbidden grep ZERO.
+- **Skill:** `bd-design-identity`.
+
+### KI-095: F-04 — `GET /notification-preferences` 500 in cloud prod (graceful-degradation half resolved)
+
+- **Impact:** Audit AI F-04 (P1-RUNTIME, `AUDIT_FULL_2026-05-04_SONNET.md`): GET `/notification-preferences` returns 500 in cloud prod when the user opens Appearance Settings. Client circuit-breaker (60s) suppresses the error toast but also blocks subsequent reads/writes for a minute. Audit identified three possible causes: table missing on prod, schema mismatch, or edge function v50 runtime error.
+- **Location:** [supabase/functions/server/handlers/notification_preferences.ts](supabase/functions/server/handlers/notification_preferences.ts) + [src/app/services/supabase/notificationPreferences.ts](src/app/services/supabase/notificationPreferences.ts). Server handler review confirmed the code itself is correct — uses `.maybeSingle()` (not `.single()`) + auto-INSERT on null. So the 500 is a real DB-side error, not a missing-row bug.
+- **Fix direction (graceful-degradation half — code-side resilience):**
+  - `logPostgrestError()` helper logs full Postgres error (code + message + details + hint) server-side. Previous code logged only `sanitizeErrorMessage(error.message)`, which strips relation/RLS details — making prod logs useless for diagnosis.
+  - `isPersistenceUnavailable()` detects 42P01 (`undefined_table`), 42501 (`insufficient_privilege`/RLS), 0LP01 (`invalid_grant`) — the three Postgres codes meaning "infrastructure not available."
+  - On those specific failures, GET returns 200 with `FALLBACK_PREFERENCES` (mirrors the DEFAULT clauses in migration 20251230000001 §3.17) and `fallback: true`, instead of 500. Other errors still 500.
+  - PUT path UNCHANGED — preferences fail loudly when saving against a missing table (correct: don't mask data-layer bugs).
+  - Client `getNotificationPreferences()` reads server's `fallback` flag, tags result with `__fallback`. Circuit-breaker no longer trips on graceful 200.
+- **Status:** **OPEN** — code-side graceful-degradation RESOLVED 2026-05-05 (commit `0df5d4c9`). Root-cause investigation pending owner action: open Supabase Dashboard → Functions → `server` → Logs, trigger Appearance Settings against prod, confirm Postgres code, then either apply migration §3.17 + RLS via Dashboard SQL Editor (per `feedback_supabase_cli_pg17` memory: `db push` broken on PG17, dashboard paste is the working path) for `42P01`, OR re-apply RLS policy for `42501`/`0LP01`.
+- **Hard stops respected:** No schema change. No auth invariant change (`verify_jwt: false` preserved). No storage invariant change. PUT endpoint UNCHANGED. Build clean (3815.36 KiB precache). Branch-aware forbidden grep ZERO.
+- **Skill:** `supabase-clerk-edge-function` (no auth pattern change). Pattern candidate for future `supabase-edge-diagnostic-logging` skill once used in a second handler.
+
 ### KI-096: F-16 — Clerk session persists after Log Out (afterSignOutUrl missing on ClerkProvider)
 
 - **Impact:** Audit AI F-16 (P1-RUNTIME, `AUDIT_FULL_2026-05-04_SONNET.md`): user clicks Log Out via dashboard dropdown → app navigates to landing in apparent logged-out state → user clicks appearance toggle → authenticated state restored without re-entering credentials. Trust + security perception issue, especially on shared devices. Read-only F-16 diagnose pass identified H3 as primary cause: `<ClerkProvider>` at [src/app/App.tsx:465](src/app/App.tsx#L465) was configured with only `publishableKey` + `appearance` — no `afterSignOutUrl`. Without provider-level redirect config AND without `redirectUrl` passed to `signOut()` calls, no hard browser navigation occurs on logout. The app's React state navigation (`navigation.setShowLandingPage(true)`) renders the landing UI but in-memory state, contexts, and Clerk's internal session cache persist. On next re-render (e.g. appearance toggle), Clerk's `useUser()` re-hydrates from the still-present session token.
