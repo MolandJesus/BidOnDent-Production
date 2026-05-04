@@ -232,6 +232,18 @@ DIRECTIONAL       0 -28 to -44px    blur 70-130px    spread -14 to -22px    ≤ 
 
 **Body translucency invariant:** premium glass card bodies should sit between 0.62 and 0.78 opacity so the page DashboardAtmosphere lamps can show THROUGH the body. With `backdrop-filter: blur(20px) saturate(1.4) brightness(1.02)`, this creates real liquid-glass refraction. Bodies at 0.92+ are paint, not glass.
 
+### Future: Landing sections — more gold areas + premium lighting (planned, not yet implemented)
+
+Owner directive captured 2026-05-04: "for future landing page design updates, sections still need work as well as more gold areas and lighting prmium." Verified visually by 2026-05-04 evening screenshots showing the cool navy "Opportunity Through Transparency" section's three trust cards reading as cool-blue glass without the premium gold lighting that the warm bronze "Why Choose BidOnDent?" section carries.
+
+Direction for future passes:
+
+- **Cool landing sections** (Opportunity Through Transparency, About BidOnDent, Who We Serve) need atmospheric gold lighting BEHIND the cards — gold lamps painted into the section background atmosphere (not the card bodies, which stay cool-blue per landing identity), so the cool cards are visibly LIT FROM BEHIND by gold light bleeding around them. Pattern: extend the directional triad's directional top-cast principle from cards to sections themselves.
+- **More gold AREAS** — owner wants gold to appear in more places on landing. Candidates: section eyebrow chip backing glow (already noted as deferred from KI-080), CTA pill backing glow, link hover states, section dividers (`.bd-landing-seam-fade` could carry a gold tint at top/bottom), inline checkmark icons in feature lists, the "Learn more →" expand affordances.
+- **Lighting premium** — apply the Premium Glass Body Opacity + Directional Backlight Canon (LAW, added 2026-05-04) to landing section backgrounds, not just cards. Section background atmospheric layer with directional top-cast champagne lamp would lift cool sections into the same premium register as warm sections without changing landing identity (cool stays cool-dominant; warm stays warm-dominant; gold lighting is the unifying TECHNIQUE).
+
+This subsection is intentionally documented BEFORE the work is built so when owner asks for "landing sections need more work" the principles are captured and the next agent doesn't have to re-derive them.
+
 ### Future: Gold-Trim Text Treatment (planned, not yet implemented)
 
 Owner directive captured 2026-05-04: "future gold trimmed text." When this is built, follow the same directional principle as the shadow stack canon above:

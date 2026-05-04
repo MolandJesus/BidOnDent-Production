@@ -249,3 +249,44 @@ This palette was approved by the owner ("wow, just wow. it looks so premium and 
 | `rgba(250, 232, 192) → rgba(240, 218, 168)` for hero | Pale yellow cream, not deep premium champagne  |
 
 **Improvement direction (allowed):** finer saturation tuning, micro-adjustments to opacity/spread, additional 3D depth refinements that respect the palette. Anything that **shifts the warm tone back toward yellow** or **makes the cool surfaces white** requires explicit owner override (per the rule above).
+
+---
+
+## Premium Glass Body Opacity + Directional Backlight Canon (added 2026-05-04 — non-negotiable)
+
+Owner directive 2026-05-04 ("make needed law changes for better design") elevated the directional-triad pattern from REF tier to LAW tier after Pass A-F surfaced it as the canonical premium-glass treatment. These rules apply to every premium liquid-glass surface (`.bd-dashboard-panel`, `.bd-dashboard-section` and accent variants, `.bd-glass-card--landing*`, `.bd-glass-card--dashboard`, `.bd-glass-floating`, `MapBidSheet`, future forms/sheets/dialogs).
+
+### Body opacity invariants (verified by Pass F + Pass F-fix owner verification)
+
+Premium glass card bodies must sit in these opacity ranges so the page DashboardAtmosphere ceiling lamps show through the body via `backdrop-filter: blur + saturate`:
+
+| Register | Range          | Verified balance for | Notes                                               |
+| -------- | -------------- | -------------------- | --------------------------------------------------- |
+| Light    | **0.76 – 0.84** | dashboard panel + section + glass-card-dashboard | Pass F's 0.74/0.62 was too aggressive (washed-out, lost panel containment per owner verification). 0.84/0.76 is the verified balance. |
+| Dark     | **0.66 – 0.78** | dashboard panel + section                        | Pass F-verified working: page navy + gold lamps clearly bleed through, panel still contained. |
+
+Bodies above 0.92 are paint, not glass — `backdrop-filter` has nothing to refract. Bodies below 0.62 lose panel containment and read washed-out.
+
+### Directional Backlight Canon — REQUIRED
+
+Premium glass cards use a 3-layer shadow stack:
+
+```
+close edge halo   0 0 32-60px       ≤ 0.18α    soft edge presence
+mid spread        0 0 90-110px      ≤ 0.10α    atmosphere lift
+DIRECTIONAL       0 -28 to -44px    blur 70-130px    spread -14 to -22px    ≤ 0.22α
+                  champagne-gold rgba(196,144,65) — light cascading from page atmosphere ABOVE
+```
+
+Negative offset-Y on the third layer reads as "light coming FROM above" (the DashboardAtmosphere ceiling lamps), not "halo around card" (which omnidirectional `0 0 X-large` produces).
+
+### Forbidden patterns
+
+- **Omnidirectional `0 0 X-large` far-ambient bleeds (≥120px blur) on premium glass cards.** They read as stamped trim, not backlit glass. Use directional top-cast `0 -Y blur -spread` champagne-gold instead. (Pass E shipped this and was corrected in Pass F because cards still read as stamped.)
+- **Internal radial gold paint at >0.05α in light-mode card bodies.** Stacks with cream body to cause peach/pink blush. Light register reserves the warm gold lamp for the directional top-cast shadow only — the body itself stays cool-cream, no warm radial overlay. (Pass F shipped this fix after owner reported "blushing.")
+- **Pink/peach/red-leaning ambient anywhere on light-mode surfaces.** Cosmetic blush look forbidden going forward. (Symptom of stacking warm-bronze halos on cool-cream canvas.)
+- **Pure-white inset highlights** `inset 0 1px 0 rgba(255,255,255,*)` are ALREADY forbidden by the Light-Mode Surface Rule above; reaffirming here because LAW-violation on `.bd-glass-card--dashboard` and `.bd-glass-floating` was caught and fixed in this 2026-05-04 pass.
+
+### Improvement direction (allowed)
+
+Per-surface alpha micro-tuning within the body opacity invariants, blur/spread micro-tuning within the directional triad ranges, addition of new premium glass surfaces using the canon. **Forbidden:** going back to omnidirectional `0 0 X-large`, going back to body opacity >0.92, going back to internal radial gold paint stacking on light cream bodies. These regressions cost owner trust to find and own to correct.
