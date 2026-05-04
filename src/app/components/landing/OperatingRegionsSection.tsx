@@ -69,6 +69,8 @@ export default function OperatingRegionsSection({
       {/* Pass H1.7 — section-level directional top-cast champagne lamp
           per hero atmospheric language. */}
       <div className="bd-landing-section-toplamp" aria-hidden="true" />
+      {/* Pass H9 — companion cool-blue bottom depth wash. */}
+      <div className="bd-landing-section-bottomwash" aria-hidden="true" />
       {/* Smooth transition edges — top/bottom gradient fades */}
       {/* Pass 10 — atmospheric bloom-bridge at TrustStats→Coverage cool transition.
           Replaces the previous transparent-to-transparent placeholder strip with a

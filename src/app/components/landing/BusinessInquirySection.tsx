@@ -115,6 +115,8 @@ export default function BusinessInquirySection({
       {/* Pass H1.7 — section-level directional top-cast champagne lamp
           per hero atmospheric language. */}
       <div className="bd-landing-section-toplamp" aria-hidden="true" />
+      {/* Pass H9 — companion cool-blue bottom depth wash. */}
+      <div className="bd-landing-section-bottomwash" aria-hidden="true" />
       {/* Edge blend — light keeps amber; dark gets a tri-stop with gold
           whisper at center to thread gold identity into the cool register. */}
       <div
@@ -146,7 +148,7 @@ export default function BusinessInquirySection({
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_60%_-5%,rgba(210,180,130,0.18),transparent_55%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_50%_at_25%_80%,rgba(200,165,100,0.14),transparent_55%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_35%_at_45%_50%,rgba(220,185,115,0.13),transparent_50%)]" />
-            <div className="absolute bottom-0 left-[30%] w-60 h-60 bg-amber-200/[0.22] rounded-full blur-[110px]" />
+            <div className="absolute bottom-0 left-[30%] w-60 h-60 bg-[rgba(196,144,65,0.22)] rounded-full blur-[110px]" />
             <div className="absolute top-10 right-[20%] w-48 h-48 bg-amber-100/[0.18] rounded-full blur-[120px]" />
           </>
         ) : (

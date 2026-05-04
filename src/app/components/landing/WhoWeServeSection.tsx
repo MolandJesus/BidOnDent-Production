@@ -94,6 +94,8 @@ export default function WhoWeServeSection({
       {/* Pass G (KI-090) — section-level directional top-cast champagne
           lamp. LAW canon extension from cards to section backgrounds. */}
       <div className="bd-landing-section-toplamp" aria-hidden="true" />
+      {/* Pass H9 — companion cool-blue bottom depth wash. */}
+      <div className="bd-landing-section-bottomwash" aria-hidden="true" />
       {/* Edge blend */}
       <div
         className="absolute -top-px left-0 right-0 h-px"
@@ -136,7 +138,7 @@ export default function WhoWeServeSection({
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_50%_0%,rgba(210,180,130,0.18),transparent_60%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_50%_at_15%_70%,rgba(200,165,100,0.14),transparent_55%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_35%_35%_at_70%_60%,rgba(220,185,115,0.14),transparent_50%)]" />
-            <div className="absolute bottom-0 right-[20%] w-64 h-64 bg-amber-200/[0.18] rounded-full blur-[110px]" />
+            <div className="absolute bottom-0 right-[20%] w-64 h-64 bg-[rgba(196,144,65,0.18)] rounded-full blur-[110px]" />
             <div className="absolute top-10 left-[15%] w-48 h-48 bg-amber-100/[0.14] rounded-full blur-[120px]" />
             <div className="absolute -top-10 right-[0%] w-[30rem] h-[30rem] bg-sky-400/[0.18] rounded-full blur-[130px]" />
             <div className="absolute bottom-0 left-[10%] w-80 h-80 bg-blue-300/[0.14] rounded-full blur-[120px]" />

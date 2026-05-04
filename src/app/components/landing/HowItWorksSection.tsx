@@ -52,6 +52,10 @@ export default function HowItWorksSection({
       {/* Pass H1.7 (KI-090 follow-up) — section-level directional
           top-cast champagne lamp per hero atmospheric language. */}
       <div className="bd-landing-section-toplamp" aria-hidden="true" />
+      {/* Pass H9 — companion cool-blue bottom depth wash so cool
+          sections read as a "lit room" (gold from above, navy depth
+          from below) instead of as flat planes. */}
+      <div className="bd-landing-section-bottomwash" aria-hidden="true" />
       {/* Edge blend — light keeps sky thread; dark gets a subtle gold whisper
           at center to thread the gold identity from warm sections into the
           cool register without overpowering. Owner: "bring subtle dashboard
@@ -84,7 +88,7 @@ export default function HowItWorksSection({
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_70%_-10%,rgba(210,180,130,0.18),transparent_60%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_20%_80%,rgba(200,165,100,0.14),transparent_55%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_35%_at_40%_90%,rgba(220,185,115,0.14),transparent_50%)]" />
-            <div className="absolute top-10 left-[20%] w-64 h-64 bg-amber-200/[0.22] rounded-full blur-[110px]" />
+            <div className="absolute top-10 left-[20%] w-64 h-64 bg-[rgba(196,144,65,0.22)] rounded-full blur-[110px]" />
             <div className="absolute bottom-0 right-[20%] w-48 h-48 bg-amber-100/[0.18] rounded-full blur-[120px]" />
             <div className="absolute -top-10 right-[8%] w-[28rem] h-[28rem] bg-sky-400/[0.18] rounded-full blur-[130px]" />
             <div className="absolute bottom-0 left-[5%] w-72 h-72 bg-blue-300/[0.14] rounded-full blur-[130px]" />

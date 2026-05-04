@@ -30,6 +30,8 @@ export default function CTASection({
       {/* Pass H1.7 — section-level directional top-cast champagne lamp
           per hero atmospheric language. */}
       <div className="bd-landing-section-toplamp" aria-hidden="true" />
+      {/* Pass H9 — companion cool-blue bottom depth wash. */}
+      <div className="bd-landing-section-bottomwash" aria-hidden="true" />
       {/* Edge blend */}
       <div
         className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-slate-300/20" : "via-blue-400/25"} to-transparent`}
@@ -43,7 +45,7 @@ export default function CTASection({
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_50%_50%,rgba(210,180,130,0.18),transparent_60%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_30%_20%,rgba(200,165,100,0.14),transparent_55%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_35%_at_65%_70%,rgba(220,185,115,0.13),transparent_50%)]" />
-            <div className="absolute top-0 right-[25%] w-64 h-64 bg-amber-200/[0.14] rounded-full blur-[100px]" />
+            <div className="absolute top-0 right-[25%] w-64 h-64 bg-[rgba(196,144,65,0.14)] rounded-full blur-[100px]" />
             <div className="absolute bottom-0 left-[20%] w-48 h-48 bg-amber-100/[0.12] rounded-full blur-[120px]" />
             <div className="absolute -top-10 left-[10%] w-[44rem] h-[44rem] bg-sky-400/[0.16] rounded-full blur-[220px]" />
             <div className="absolute bottom-0 right-[8%] w-[30rem] h-[30rem] bg-blue-400/[0.14] rounded-full blur-[210px]" />
