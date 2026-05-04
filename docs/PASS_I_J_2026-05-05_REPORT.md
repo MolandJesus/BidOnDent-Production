@@ -2,10 +2,11 @@
 
 **Branch:** `BidOnDent-Horizon-Beta`
 **Commit ranges:**
+
 - Pass I: `1afea721 → 10644ada` (5 atomic-palette-swap commits)
 - Pass J: `897259ab` (1 coordinated spacing-trim commit)
-**Status:** ✅ Complete. KI-092 + KI-093 RESOLVED.
-**Authority:** LAW_PROJECT_RULES.md § Premium Gold Palette (locked 2026-05-03) + owner directives 2026-05-05.
+  **Status:** ✅ Complete. KI-092 + KI-093 RESOLVED.
+  **Authority:** LAW_PROJECT_RULES.md § Premium Gold Palette (locked 2026-05-03) + owner directives 2026-05-05.
 
 ---
 
@@ -22,28 +23,28 @@ Together: richer canon paint + tighter rhythm = "more atmospheric and more premi
 
 ## Pass I — atomic canon palette swap (5 commits)
 
-| File | Commit | Hits swapped | Notes |
-|---|---|---|---|
-| `HowItWorksSection.tsx` | `1afea721` | 6 (mesh + 3 radials + 1 amber-100 blob, plus the canon-swapped amber-200 from H9 already in place) | Mesh + radial decorations |
-| `WhoWeServeSection.tsx` | `d85fb144` | 7 (dot-grid + 3 radials + amber-100 blob + decorative orb dot + orb shadow) | Includes orb shadow (rgba(200,165,100,0.12)) and decorative orb dot bg |
-| `AboutOpportunitySection.tsx` | `77ceac3d` | 9 (stripe + 3 radials + amber-100 blob + amber-400 orb + 2 orb shadows) | Largest count; AboutOpp had 2 decorative orbs with shadows |
-| `BusinessInquirySection.tsx` | `5eb929a9` | 5 (dot-grid + 3 radials + amber-100 blob) | Card semantic borders left alone (UI surface scope, not atmospheric) |
-| `CTASection.tsx` | `10644ada` | 5 (dot pattern + 3 radials + amber-100 blob) | Cool blue ambient (sky-400, blue-400) preserved as already canon |
-| `OperatingRegionsSection.tsx` | — | 0 | Verified zero off-canon hits; no commit needed |
+| File                          | Commit     | Hits swapped                                                                                       | Notes                                                                  |
+| ----------------------------- | ---------- | -------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `HowItWorksSection.tsx`       | `1afea721` | 6 (mesh + 3 radials + 1 amber-100 blob, plus the canon-swapped amber-200 from H9 already in place) | Mesh + radial decorations                                              |
+| `WhoWeServeSection.tsx`       | `d85fb144` | 7 (dot-grid + 3 radials + amber-100 blob + decorative orb dot + orb shadow)                        | Includes orb shadow (rgba(200,165,100,0.12)) and decorative orb dot bg |
+| `AboutOpportunitySection.tsx` | `77ceac3d` | 9 (stripe + 3 radials + amber-100 blob + amber-400 orb + 2 orb shadows)                            | Largest count; AboutOpp had 2 decorative orbs with shadows             |
+| `BusinessInquirySection.tsx`  | `5eb929a9` | 5 (dot-grid + 3 radials + amber-100 blob)                                                          | Card semantic borders left alone (UI surface scope, not atmospheric)   |
+| `CTASection.tsx`              | `10644ada` | 5 (dot pattern + 3 radials + amber-100 blob)                                                       | Cool blue ambient (sky-400, blue-400) preserved as already canon       |
+| `OperatingRegionsSection.tsx` | —          | 0                                                                                                  | Verified zero off-canon hits; no commit needed                         |
 
 **Total:** 32 atomic palette swaps (the original "56" estimate was a high-water count counting individual occurrences across file scans; actual deduplicated count after H8's flanking-accent fixes already shipping was 32). Every swap was alpha-preserving, structure-preserving.
 
 **Swap mapping (canon equivalents at SAME alpha):**
 
-| Pre-canon | Canon | Notes |
-|---|---|---|
-| `rgba(200, 170, 110, α)` | `rgba(196, 144, 65, α)` | mesh/dot-grid pale gold → canon champagne |
-| `rgba(210, 180, 130, α)` | `rgba(196, 144, 65, α)` | central radial pale gold → canon champagne |
-| `rgba(200, 165, 100, α)` | `rgba(196, 144, 65, α)` | secondary radial mid pale gold → canon champagne |
-| `rgba(220, 185, 115, α)` | `rgba(196, 144, 65, α)` | extra radial pale champagne → canon champagne |
-| `bg-amber-100/[α]` | `bg-[rgba(196,144,65,α)]` | atmospheric pale-cream blob → canon champagne |
-| `bg-amber-300/[α]` (orb dot) | `bg-[rgba(196,144,65,α)]` | decorative orb pale-amber → canon champagne |
-| `bg-amber-400/[α]` (orb dot) | `bg-[rgba(196,144,65,α)]` | decorative orb mid-amber → canon champagne |
+| Pre-canon                    | Canon                     | Notes                                            |
+| ---------------------------- | ------------------------- | ------------------------------------------------ |
+| `rgba(200, 170, 110, α)`     | `rgba(196, 144, 65, α)`   | mesh/dot-grid pale gold → canon champagne        |
+| `rgba(210, 180, 130, α)`     | `rgba(196, 144, 65, α)`   | central radial pale gold → canon champagne       |
+| `rgba(200, 165, 100, α)`     | `rgba(196, 144, 65, α)`   | secondary radial mid pale gold → canon champagne |
+| `rgba(220, 185, 115, α)`     | `rgba(196, 144, 65, α)`   | extra radial pale champagne → canon champagne    |
+| `bg-amber-100/[α]`           | `bg-[rgba(196,144,65,α)]` | atmospheric pale-cream blob → canon champagne    |
+| `bg-amber-300/[α]` (orb dot) | `bg-[rgba(196,144,65,α)]` | decorative orb pale-amber → canon champagne      |
+| `bg-amber-400/[α]` (orb dot) | `bg-[rgba(196,144,65,α)]` | decorative orb mid-amber → canon champagne       |
 
 ---
 
@@ -52,22 +53,23 @@ Together: richer canon paint + tighter rhythm = "more atmospheric and more premi
 **Commit:** `897259ab`
 **Files:** 7
 
-| File | Change | Saves |
-|---|---|---|
-| `HowItWorksSection.tsx` | eyebrow `mb-6 → mb-4`; heading `mb-8 md:mb-12 → mb-6 md:mb-8` | 16-24px |
-| `WhoWeServeSection.tsx` | eyebrow `mb-6 → mb-4`; heading `mb-8 md:mb-12 → mb-6 md:mb-8` | 16-24px |
-| `AboutOpportunitySection.tsx` | heading `mb-8 → mb-6` | 8px |
-| `BusinessInquirySection.tsx` | eyebrow `mb-6 sm:mb-7 → mb-4 sm:mb-5` | 8px |
-| `BenefitsSection.tsx` | eyebrow `mb-6 → mb-4`; heading `mb-8 md:mb-12 → mb-6 md:mb-8` | 16-24px |
-| `TrustStatsSection.tsx` | heading `mb-8 sm:mb-10 → mb-6 sm:mb-8` | 8px |
-| `CTASection.tsx` | top `mb-6 → mb-4`; subhead `mb-8 → mb-6` | 16px |
+| File                          | Change                                                        | Saves   |
+| ----------------------------- | ------------------------------------------------------------- | ------- |
+| `HowItWorksSection.tsx`       | eyebrow `mb-6 → mb-4`; heading `mb-8 md:mb-12 → mb-6 md:mb-8` | 16-24px |
+| `WhoWeServeSection.tsx`       | eyebrow `mb-6 → mb-4`; heading `mb-8 md:mb-12 → mb-6 md:mb-8` | 16-24px |
+| `AboutOpportunitySection.tsx` | heading `mb-8 → mb-6`                                         | 8px     |
+| `BusinessInquirySection.tsx`  | eyebrow `mb-6 sm:mb-7 → mb-4 sm:mb-5`                         | 8px     |
+| `BenefitsSection.tsx`         | eyebrow `mb-6 → mb-4`; heading `mb-8 md:mb-12 → mb-6 md:mb-8` | 16-24px |
+| `TrustStatsSection.tsx`       | heading `mb-8 sm:mb-10 → mb-6 sm:mb-8`                        | 8px     |
+| `CTASection.tsx`              | top `mb-6 → mb-4`; subhead `mb-8 → mb-6`                      | 16px    |
 
 **Total:** ~110-220px scroll reduction across landing.
 
 **What's NOT touched:**
+
 - Section outer `py` (already trimmed in H1.7)
 - Typography sizes/weights
-- Card grid gap-* (intra-card spacing)
+- Card grid gap-\* (intra-card spacing)
 - Hero section
 - Mobile-first responsive structure (sm:/md: breakpoints retained, just trimmed by 1 size step each)
 
@@ -84,7 +86,7 @@ Together: richer canon paint + tighter rhythm = "more atmospheric and more premi
 - ✅ Dark register UNTOUCHED on all section atmospheric layers
 - ✅ Card semantic surface borders (`rgba(200,180,150,0.20-0.32)`) UNTOUCHED — UI surface scope, not atmospheric paint
 - ✅ Cream highlights (`rgba(255,250,240,0.7-0.92)`) UNTOUCHED — already canon cream member
-- ✅ Status-semantic amber-* in Coverage* components UNTOUCHED — UI warn/alert convention
+- ✅ Status-semantic amber-_ in Coverage_ components UNTOUCHED — UI warn/alert convention
 - ✅ npm run build clean every commit (3808.26 KiB precache stable)
 - ✅ Branch-aware forbidden grep returned ZERO every commit
 
@@ -121,5 +123,5 @@ git log --oneline 1afea721^..897259ab
 
 ---
 
-*Generated end of Pass I + J autopilot continuation 2026-05-05.*
-*Per `bd-design-identity` and `mola-ai-relay-protocol` skills.*
+_Generated end of Pass I + J autopilot continuation 2026-05-05._
+_Per `bd-design-identity` and `mola-ai-relay-protocol` skills._

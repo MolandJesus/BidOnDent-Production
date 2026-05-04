@@ -15,14 +15,14 @@ Sustained autopilot pass closing audit-AI findings across both **design** (visua
 
 ## Commits in this autopilot block
 
-| # | Commit | Subject | Scope |
-|---|---|---|---|
-| 1 | `92ce7528` | fix(auth): F-16 — `afterSignOutUrl="/"` on ClerkProvider | App.tsx + REF_KNOWN_ISSUES.md (KI-096 + KI-097 opened) |
-| 2 | `facd9933` | docs(known-issues): backfill KI-094 + KI-095 | REF_KNOWN_ISSUES.md only |
-| 3 | `04e33f4f` | fix(canon): F-18 — error boundary canon-aligned | main.tsx + REF_KNOWN_ISSUES.md (KI-098) |
-| 4 | `7f6d55ce` | fix(directory): F-24 — preview-directory banner | marketIntelligence.ts + new PreviewDirectoryNotice.tsx + ShopDirectoryListBody.tsx + REF_KNOWN_ISSUES.md (KI-099 + KI-100) |
-| 5 | `dc1d909c` | docs(known-issues): track P6 audit batch | REF_KNOWN_ISSUES.md only (KI-101 + KI-102 + KI-103) |
-| 6 | `296f6521` | fix(auth): KI-097 — async + await signOut() in LandingPageHeader | LandingPageHeader.tsx + REF_KNOWN_ISSUES.md |
+| #   | Commit     | Subject                                                          | Scope                                                                                                                      |
+| --- | ---------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| 1   | `92ce7528` | fix(auth): F-16 — `afterSignOutUrl="/"` on ClerkProvider         | App.tsx + REF_KNOWN_ISSUES.md (KI-096 + KI-097 opened)                                                                     |
+| 2   | `facd9933` | docs(known-issues): backfill KI-094 + KI-095                     | REF_KNOWN_ISSUES.md only                                                                                                   |
+| 3   | `04e33f4f` | fix(canon): F-18 — error boundary canon-aligned                  | main.tsx + REF_KNOWN_ISSUES.md (KI-098)                                                                                    |
+| 4   | `7f6d55ce` | fix(directory): F-24 — preview-directory banner                  | marketIntelligence.ts + new PreviewDirectoryNotice.tsx + ShopDirectoryListBody.tsx + REF_KNOWN_ISSUES.md (KI-099 + KI-100) |
+| 5   | `dc1d909c` | docs(known-issues): track P6 audit batch                         | REF_KNOWN_ISSUES.md only (KI-101 + KI-102 + KI-103)                                                                        |
+| 6   | `296f6521` | fix(auth): KI-097 — async + await signOut() in LandingPageHeader | LandingPageHeader.tsx + REF_KNOWN_ISSUES.md                                                                                |
 
 (Plus the F-04 commit `0df5d4c9` which preceded this autopilot block; KI-095 backfilled in `facd9933`.)
 
@@ -31,19 +31,25 @@ Sustained autopilot pass closing audit-AI findings across both **design** (visua
 ## What shipped (functional)
 
 ### F-16 — Clerk session persists after Log Out (P1-RUNTIME)
+
 **Commits:** `92ce7528` (primary fix) + `296f6521` (KI-097 cleanup follow-up)
+
 - Added `afterSignOutUrl="/"` to `<ClerkProvider>` so `signOut()` performs a hard browser navigation (clears in-memory state + lets Clerk re-evaluate session against now-cleared cookie/localStorage).
 - Cleanup: converted `LandingPageHeader.tsx` Sign Out handler to `async` + `await signOut()`, dropped redundant `{ redirectUrl: "/" }` (provider config handles it now).
 - **Owner action item:** browser smoke test (log in → Log Out from dashboard dropdown → verify hard reload + session does not restore on appearance toggle). KI-096 stays open until verified.
 
 ### F-18 — Error boundary near-white backgrounds (P4-UX, canon)
+
 **Commit:** `04e33f4f`
+
 - Single-file fix at [src/main.tsx](src/main.tsx) `GlobalErrorBoundary.render()`.
 - Replaced `rgba(255,255,255,0.82)` body + `rgba(255,255,255,0.42)` cream highlight + `bg-white` button + `border-white/30` border with canon equivalents (cool ice body, canon cream highlight `rgba(252,240,208,0.42)`, canon bronze trim `rgba(140,82,22,0.22)`).
 - **Visual-canon arc formally closed.** Pass H opened it; this commit ships the last remaining LAW Light-Mode Surface Rule violation.
 
 ### F-24 — Demo shop data shown as real recommendations (P2-DATA, soft-launch blocker)
+
 **Commit:** `7f6d55ce`
+
 - Diagnose found `marketIntelligence.ts` returns demo data unconditionally with 20+ downstream consumers. Full Supabase swap (audit option a) too risky for autopilot — sync→async refactor across 20 files + production DB likely empty at soft launch.
 - Chose audit option (c): honest preview-directory banner.
 - New `SHOP_DIRECTORY_IS_PREVIEW = true` flag in `marketIntelligence.ts` (single source of truth — flip when KI-100 ships).
@@ -55,11 +61,15 @@ Sustained autopilot pass closing audit-AI findings across both **design** (visua
 ## What shipped (documentation)
 
 ### KI-094 + KI-095 backfill
+
 **Commit:** `facd9933`
+
 - KI-094 (Pass K between-section spacing) and KI-095 (F-04 graceful-degradation) had been referenced in their commit messages but never written to `REF_KNOWN_ISSUES.md`. Backfilled directly from the source commits — no new analysis, pure institutional-memory closure.
 
 ### P6 data-integrity batch — KI-101/102/103
+
 **Commit:** `dc1d909c`
+
 - KI-101 (F-01) — "Toyoto" misspelled vehicle make → owner DB UPDATE
 - KI-102 (F-03) — Cat photo as damage report thumbnail → owner storage delete + DB update
 - KI-103 (F-14) — `bidondent@gmail.com` in landing footer → owner email mailbox decision required before code change
@@ -70,18 +80,18 @@ All three are owner-action items. Surfaced in the KI register so they have expli
 
 ## KI status changes (full ledger)
 
-| KI | Subject | Pre-session | Post-session |
-|---|---|---|---|
-| KI-094 | Pass K between-section spacing | Code shipped, doc missing | RESOLVED + documented |
+| KI     | Subject                                                          | Pre-session               | Post-session                                               |
+| ------ | ---------------------------------------------------------------- | ------------------------- | ---------------------------------------------------------- |
+| KI-094 | Pass K between-section spacing                                   | Code shipped, doc missing | RESOLVED + documented                                      |
 | KI-095 | F-04 `/notification-preferences` 500 (graceful-degradation half) | Code shipped, doc missing | RESOLVED (code-side) + documented; owner DB action pending |
-| KI-096 | F-16 Clerk session persists after Log Out | Not yet opened | RESOLVED (code) + documented; owner smoke test pending |
-| KI-097 | F-16 follow-up: LandingPageHeader fire-and-forget signOut | Not yet opened | RESOLVED + documented |
-| KI-098 | F-18 error boundary canon violation | Not yet opened | RESOLVED + documented |
-| KI-099 | F-24 short-term mitigation (preview banner) | Not yet opened | RESOLVED + documented |
-| KI-100 | F-24 long-term: full Supabase swap | Not yet opened | OPEN + scoped (deferred) |
-| KI-101 | F-01 "Toyoto" typo | Not yet opened | OPEN (owner action) |
-| KI-102 | F-03 cat photo damage report | Not yet opened | OPEN (owner action) |
-| KI-103 | F-14 Gmail in footer | Not yet opened | OPEN (owner decision) |
+| KI-096 | F-16 Clerk session persists after Log Out                        | Not yet opened            | RESOLVED (code) + documented; owner smoke test pending     |
+| KI-097 | F-16 follow-up: LandingPageHeader fire-and-forget signOut        | Not yet opened            | RESOLVED + documented                                      |
+| KI-098 | F-18 error boundary canon violation                              | Not yet opened            | RESOLVED + documented                                      |
+| KI-099 | F-24 short-term mitigation (preview banner)                      | Not yet opened            | RESOLVED + documented                                      |
+| KI-100 | F-24 long-term: full Supabase swap                               | Not yet opened            | OPEN + scoped (deferred)                                   |
+| KI-101 | F-01 "Toyoto" typo                                               | Not yet opened            | OPEN (owner action)                                        |
+| KI-102 | F-03 cat photo damage report                                     | Not yet opened            | OPEN (owner action)                                        |
+| KI-103 | F-14 Gmail in footer                                             | Not yet opened            | OPEN (owner decision)                                      |
 
 ---
 
@@ -142,6 +152,6 @@ grep -rE "rgba\(228, ?(140|175)|rgba\(220, ?(140|165)|rgba\(255, ?(228|230|215)|
 
 ---
 
-*Generated end of sustained functionality-sweep autopilot session 2026-05-05.*
-*Per `bd-design-identity`, `mola-ai-relay-protocol`, `supabase-clerk-edge-function`, `supabase-storage-signed-urls` skills.*
-*Per LAW_PROJECT_RULES.md § Clerk auth invariant, § Premium Glass Body Opacity, § Light-Mode Surface Rule, § Premium Gold Palette, § Co-Update Rules.*
+_Generated end of sustained functionality-sweep autopilot session 2026-05-05._
+_Per `bd-design-identity`, `mola-ai-relay-protocol`, `supabase-clerk-edge-function`, `supabase-storage-signed-urls` skills._
+_Per LAW_PROJECT_RULES.md § Clerk auth invariant, § Premium Glass Body Opacity, § Light-Mode Surface Rule, § Premium Gold Palette, § Co-Update Rules._

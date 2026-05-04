@@ -17,20 +17,20 @@ The unifying canon: every premium glass surface in BidOnDent should read as "lit
 
 ## What shipped (chronological)
 
-| # | Commit | Surface | Brief |
-|---|---|---|---|
-| H1 | `91147e12` | MapBidSheet body | Directional top-cast + body opacity to canon + cream highlight + backdrop-filter |
-| H1.5 | `c140e983` | Landing seam-fade light register | Owner: "still have abrupt splitter" — light mode now renders the bridge |
-| H1.6 | `9b269117` | Light-card panel/section accent variants | Owner: "add gold back in light mode" — restored premium gold via canon directional top-cast |
-| H1.7 | `d97c827b` | Landing spacing + atmosphere | Owner directive bundle: trim cool-section py + boost seam-fade + apply toplamp to all 4 unapplied cool sections |
-| H2 | `b10807a2` | CoverageSearchPanel light shell | LAW canon adoption via centralized `getMapSurfaceTheme` |
-| H3 | `ddec7719` | `.bd-report-input` focus | Micro-triad directional top-cast + canon palette swap |
-| H4 | `b57d74a6` | MobileBottomNav light bg | Body opacity → canon + bronze trim + cream highlight + canon micro top-cast |
-| H5 | `718bad04` | DashboardHeader light shell | Canon micro top-cast champagne lamp appended |
-| H6 | `f66e856f` | `.bd-section-eyebrow` (light + dark) | Canon champagne backing glow inherited by ~14 existing usages without per-call-site edits |
-| H7 | `93b6fd72` | Landing CTA pill | New `.bd-landing-cta-glow` utility; applied to CTASection closing CTA |
-| H8 | `b6557b75` | List markers + flanking accents | 5 marker locations + 4 flanking-accent strands swapped to canon palette |
-| H9 | `e07087ec` | Landing atmospheric boost | toplamp alpha bump + new `.bd-landing-section-bottomwash` utility + canon-swap of 6 cool-section warm blobs |
+| #    | Commit     | Surface                                  | Brief                                                                                                           |
+| ---- | ---------- | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| H1   | `91147e12` | MapBidSheet body                         | Directional top-cast + body opacity to canon + cream highlight + backdrop-filter                                |
+| H1.5 | `c140e983` | Landing seam-fade light register         | Owner: "still have abrupt splitter" — light mode now renders the bridge                                         |
+| H1.6 | `9b269117` | Light-card panel/section accent variants | Owner: "add gold back in light mode" — restored premium gold via canon directional top-cast                     |
+| H1.7 | `d97c827b` | Landing spacing + atmosphere             | Owner directive bundle: trim cool-section py + boost seam-fade + apply toplamp to all 4 unapplied cool sections |
+| H2   | `b10807a2` | CoverageSearchPanel light shell          | LAW canon adoption via centralized `getMapSurfaceTheme`                                                         |
+| H3   | `ddec7719` | `.bd-report-input` focus                 | Micro-triad directional top-cast + canon palette swap                                                           |
+| H4   | `b57d74a6` | MobileBottomNav light bg                 | Body opacity → canon + bronze trim + cream highlight + canon micro top-cast                                     |
+| H5   | `718bad04` | DashboardHeader light shell              | Canon micro top-cast champagne lamp appended                                                                    |
+| H6   | `f66e856f` | `.bd-section-eyebrow` (light + dark)     | Canon champagne backing glow inherited by ~14 existing usages without per-call-site edits                       |
+| H7   | `93b6fd72` | Landing CTA pill                         | New `.bd-landing-cta-glow` utility; applied to CTASection closing CTA                                           |
+| H8   | `b6557b75` | List markers + flanking accents          | 5 marker locations + 4 flanking-accent strands swapped to canon palette                                         |
+| H9   | `e07087ec` | Landing atmospheric boost                | toplamp alpha bump + new `.bd-landing-section-bottomwash` utility + canon-swap of 6 cool-section warm blobs     |
 
 ---
 
@@ -46,9 +46,9 @@ Three directives surfaced mid-execution and were extracted via the `mola-ai-rela
 
 ## New utilities introduced
 
-| Utility | Purpose |
-|---|---|
-| `.bd-landing-cta-glow` | Backing radial champagne aura behind landing pill CTAs (button itself untouched since shared with dashboard) |
+| Utility                          | Purpose                                                                                                           |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `.bd-landing-cta-glow`           | Backing radial champagne aura behind landing pill CTAs (button itself untouched since shared with dashboard)      |
 | `.bd-landing-section-bottomwash` | Companion to `.bd-landing-section-toplamp`; cool-blue depth wash from section bottom; "lit room" canon completion |
 
 `.bd-section-eyebrow` gained inherited `text-shadow` (no new utility, base + dark-register override).
@@ -73,7 +73,7 @@ Three directives surfaced mid-execution and were extracted via the `mola-ai-rela
 Identified during H8/H9 grep sweeps but deferred to maintain Pass H coherence:
 
 - **56 pre-canon goldenrod values** in landing atmospheric mesh/radial internals (`rgba(210,180,130)`, `rgba(220,185,115)`, `rgba(184,134,11)` etc.). Pre-date the LAW palette lock. Not flagged by branch-aware forbidden grep. → Future **Pass I — landing atmospheric palette canon sweep**.
-- **Status-semantic amber-* uses** in `CoverageSearchPanel`, `CoverageActiveNavigationLayout`, `CoverageNearestShopCard`. UI warn/alert convention, not design canon decoration. → Stays.
+- **Status-semantic amber-\* uses** in `CoverageSearchPanel`, `CoverageActiveNavigationLayout`, `CoverageNearestShopCard`. UI warn/alert convention, not design canon decoration. → Stays.
 - **HeroSection atmospheric blobs** still use `bg-amber-200/[0.32]` etc. Owner explicitly cited hero as the template ("hero is a good example") — preserved.
 - **BenefitsSection / TrustStatsSection** warm bronze paint untouched per LAW landing identity rule (warm bronze sections are intentional warm sections).
 
@@ -111,5 +111,5 @@ git log --oneline 91147e12^..e07087ec
 
 ---
 
-*Generated end of long-run autopilot session 2026-05-05.*
-*Per `bd-design-identity` and `mola-ai-relay-protocol` skills.*
+_Generated end of long-run autopilot session 2026-05-05._
+_Per `bd-design-identity` and `mola-ai-relay-protocol` skills._

@@ -69,16 +69,16 @@ Future agents should treat these as shipped wins. Improve them only by adding de
 
 Every dark `.bd-dashboard-panel`, `.bd-dashboard-section`, premium card, popover, sheet, modal, or map shell in this codebase must satisfy all 8 criteria below or have an explicit reason documented in `REF_KNOWN_ISSUES.md`. Light mode follows a parallel cool-shadow-on-cream grammar (cream inset highlight + bronze trim + cool blue ring + cool blue navy-cool shadow).
 
-| # | Criterion | Spec |
-|---|---|---|
-| 1 | Top inset bevel | `inset 0 1px 0 rgba(196, 144, 65, 0.16-0.24)` — gold lamp from above (panel ~0.22, section ~0.18) |
-| 2 | 2-layer black drop | close `0 8-12px rgba(2,6,23,0.35-0.50)` + far `0 16-22px rgba(2,6,23,0.18-0.36)` — softened per Bucket 6 to prevent stacking shadow collision |
-| 3 | Bronze atmospheric halo | `0 0 60-110px rgba(196,130,45,0.06-0.14)` — premium gold "the room is lit" feel |
-| 4 | Bottom rim | `inset 0 -1px 0 rgba(140, 82, 22, 0.18-0.22)` — bronze depth seam |
-| 5 | Cool blue 1px ring | `0 0 0 1px rgba(96, 165, 250, 0.14-0.24)` + `border: 1px solid rgba(96, 165, 250, 0.20-0.26)` |
-| 6 | Body | navy gradient `linear-gradient(180deg, rgba(10,22,45,0.88-0.92), rgba(7,16,33,0.84-0.88))` — no white ≥70% alpha on any panel surface |
-| 7 | Edge catchlights (Bucket 2.3) | `inset 1px 0 0 rgba(252,240,208,0.10), inset -1px 0 0 rgba(252,240,208,0.06)` — left brighter than right (lamp from upper-left convention). Section uses 0.08/0.05 (lower than panel since sections nest inside) |
-| 8 | Hover/focus catchlight (Bucket 2.1) | hover gold halo `0 0 24-32px rgba(196,130,45,0.18-0.22)` + cool blue ring brightens to 0.32 + inset bevel brightens to 0.28; focus-visible adds an outer accessibility ring |
+| #   | Criterion                           | Spec                                                                                                                                                                                                             |
+| --- | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Top inset bevel                     | `inset 0 1px 0 rgba(196, 144, 65, 0.16-0.24)` — gold lamp from above (panel ~0.22, section ~0.18)                                                                                                                |
+| 2   | 2-layer black drop                  | close `0 8-12px rgba(2,6,23,0.35-0.50)` + far `0 16-22px rgba(2,6,23,0.18-0.36)` — softened per Bucket 6 to prevent stacking shadow collision                                                                    |
+| 3   | Bronze atmospheric halo             | `0 0 60-110px rgba(196,130,45,0.06-0.14)` — premium gold "the room is lit" feel                                                                                                                                  |
+| 4   | Bottom rim                          | `inset 0 -1px 0 rgba(140, 82, 22, 0.18-0.22)` — bronze depth seam                                                                                                                                                |
+| 5   | Cool blue 1px ring                  | `0 0 0 1px rgba(96, 165, 250, 0.14-0.24)` + `border: 1px solid rgba(96, 165, 250, 0.20-0.26)`                                                                                                                    |
+| 6   | Body                                | navy gradient `linear-gradient(180deg, rgba(10,22,45,0.88-0.92), rgba(7,16,33,0.84-0.88))` — no white ≥70% alpha on any panel surface                                                                            |
+| 7   | Edge catchlights (Bucket 2.3)       | `inset 1px 0 0 rgba(252,240,208,0.10), inset -1px 0 0 rgba(252,240,208,0.06)` — left brighter than right (lamp from upper-left convention). Section uses 0.08/0.05 (lower than panel since sections nest inside) |
+| 8   | Hover/focus catchlight (Bucket 2.1) | hover gold halo `0 0 24-32px rgba(196,130,45,0.18-0.22)` + cool blue ring brightens to 0.32 + inset bevel brightens to 0.28; focus-visible adds an outer accessibility ring                                      |
 
 **Where the depth bar lives in code:** `src/styles/theme.css` `--bd-dashboard-panel-shadow` (dark) + `--bd-dashboard-section-shadow` (dark). Variants (`.bd-dashboard-panel--deep`, `--accent-blue`, `--accent-cyan`, `--accent-indigo`) inherit and override only what they need.
 

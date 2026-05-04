@@ -596,15 +596,15 @@ If after reading this doc you still need to verify something visually, open the 
 
 All six recommended passes shipped clean to `BidOnDent-Horizon-Beta`. See [`PASS_AUTOPILOT_2026-05-04_MOBILE_DARK_REPORT.md`](PASS_AUTOPILOT_2026-05-04_MOBILE_DARK_REPORT.md) for the full report.
 
-| Pass | Audit reference | Status | Commit | KI |
-|---|---|---|---|---|
-| 1 | P0-001 + P0-002 (scroll-past-content + page-end halo) | ✅ RESOLVED | `a0954b12` | KI-076 |
-| 2 | P1-001 (Repair Overview hero panel internal lamp) + P1-003 (cards stack at narrow widths) | ✅ RESOLVED | `74b9df0b` | KI-077 |
-| 3 | P1-002 (Quick Actions cool/warm asymmetry) | ✅ RESOLVED | `5acafe07` | KI-078 |
-| 4 | P1-005 (Bottom nav inactive tabs too dim) | ✅ RESOLVED | `972a3353` | KI-079 |
-| 5 | P1-004 (map preview dark presence — canvas sheen + ambient lamp) | ✅ RESOLVED | `e922bb30` | KI-074 follow-up |
-| 6 | P2 (Landing section seams) — simplified by master-designer authority from elaborate `::after` / `::before` / per-section spec | ✅ RESOLVED | `c7473a95` | KI-080 |
-| 7 + 8 | P2/P3/P4 (Report / Bids / Account / Notifications dark verification) | ✅ AUDIT-CONFIRMED NO-OP | — | — |
+| Pass  | Audit reference                                                                                                               | Status                   | Commit     | KI               |
+| ----- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------ | ---------- | ---------------- |
+| 1     | P0-001 + P0-002 (scroll-past-content + page-end halo)                                                                         | ✅ RESOLVED              | `a0954b12` | KI-076           |
+| 2     | P1-001 (Repair Overview hero panel internal lamp) + P1-003 (cards stack at narrow widths)                                     | ✅ RESOLVED              | `74b9df0b` | KI-077           |
+| 3     | P1-002 (Quick Actions cool/warm asymmetry)                                                                                    | ✅ RESOLVED              | `5acafe07` | KI-078           |
+| 4     | P1-005 (Bottom nav inactive tabs too dim)                                                                                     | ✅ RESOLVED              | `972a3353` | KI-079           |
+| 5     | P1-004 (map preview dark presence — canvas sheen + ambient lamp)                                                              | ✅ RESOLVED              | `e922bb30` | KI-074 follow-up |
+| 6     | P2 (Landing section seams) — simplified by master-designer authority from elaborate `::after` / `::before` / per-section spec | ✅ RESOLVED              | `c7473a95` | KI-080           |
+| 7 + 8 | P2/P3/P4 (Report / Bids / Account / Notifications dark verification)                                                          | ✅ AUDIT-CONFIRMED NO-OP | —          | —                |
 
 **Audit-confirmed no-ops for Pass 7 + 8:** Bids + Account inherit Pass 2's amplified `--bd-dashboard-panel-*` / `--bd-dashboard-section-*` dark tokens automatically. Report flow uses its own `--bd-report-panel-*` token system that wasn't flagged as problematic in the original audit screenshots — deferred to a future pass if owner reports issues. Notifications bottom sheet inherits `.bd-glass-card` system depth.
 

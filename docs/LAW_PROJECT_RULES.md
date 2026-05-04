@@ -260,10 +260,10 @@ Owner directive 2026-05-04 ("make needed law changes for better design") elevate
 
 Premium glass card bodies must sit in these opacity ranges so the page DashboardAtmosphere ceiling lamps show through the body via `backdrop-filter: blur + saturate`:
 
-| Register | Range          | Verified balance for | Notes                                               |
-| -------- | -------------- | -------------------- | --------------------------------------------------- |
+| Register | Range           | Verified balance for                             | Notes                                                                                                                                 |
+| -------- | --------------- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
 | Light    | **0.76 – 0.84** | dashboard panel + section + glass-card-dashboard | Pass F's 0.74/0.62 was too aggressive (washed-out, lost panel containment per owner verification). 0.84/0.76 is the verified balance. |
-| Dark     | **0.66 – 0.78** | dashboard panel + section                        | Pass F-verified working: page navy + gold lamps clearly bleed through, panel still contained. |
+| Dark     | **0.66 – 0.78** | dashboard panel + section                        | Pass F-verified working: page navy + gold lamps clearly bleed through, panel still contained.                                         |
 
 Bodies above 0.92 are paint, not glass — `backdrop-filter` has nothing to refract. Bodies below 0.62 lose panel containment and read washed-out.
 

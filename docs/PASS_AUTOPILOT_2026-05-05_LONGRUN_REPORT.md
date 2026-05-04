@@ -20,26 +20,28 @@ This is the natural checkpoint Codex's prompt explicitly named: "When you genuin
 
 ## Commits shipped (6)
 
-| Commit | Type | Scope |
-|---|---|---|
-| `cb7d412a` | docs(audit) | Phase 0 baseline audit — 7 sections, ~25 findings tagged P0-P7, derived Phase 1 priority queue |
-| `8c3fdc9a` | style(law) | T1.1 — demote 5 light internal gold radials 0.16-0.22α → 0.05α + 6 panels brought to LAW canon body opacity range (0.84/0.76) |
-| `35538907` | fix(shop) | T1.2 — ShopBidModal + ShopOnboardingStep4 LAW pure-white violations resolved (KI-068 partial); ShopBidModal got full LAW canon (body opacity + directional top-cast + cream highlight + backdrop-filter) |
-| `34c571e3` | docs(known-issues) | KI co-update — KI-086, 087, 088, 089 entries added with full root cause + commit references |
-| `5d42dfc9` | style(landing) | T2.2 Pass G — `.bd-landing-section-toplamp` utility + applied to WhoWeServe + AboutOpportunity + 2 LAW pure-white violations resolved (KI-090) |
-| `5953f7bf` | docs(visual+known-issues) | REF §4b "Surfaces following the canon" running list + KI-090 entry |
+| Commit     | Type                      | Scope                                                                                                                                                                                                    |
+| ---------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `cb7d412a` | docs(audit)               | Phase 0 baseline audit — 7 sections, ~25 findings tagged P0-P7, derived Phase 1 priority queue                                                                                                           |
+| `8c3fdc9a` | style(law)                | T1.1 — demote 5 light internal gold radials 0.16-0.22α → 0.05α + 6 panels brought to LAW canon body opacity range (0.84/0.76)                                                                            |
+| `35538907` | fix(shop)                 | T1.2 — ShopBidModal + ShopOnboardingStep4 LAW pure-white violations resolved (KI-068 partial); ShopBidModal got full LAW canon (body opacity + directional top-cast + cream highlight + backdrop-filter) |
+| `34c571e3` | docs(known-issues)        | KI co-update — KI-086, 087, 088, 089 entries added with full root cause + commit references                                                                                                              |
+| `5d42dfc9` | style(landing)            | T2.2 Pass G — `.bd-landing-section-toplamp` utility + applied to WhoWeServe + AboutOpportunity + 2 LAW pure-white violations resolved (KI-090)                                                           |
+| `5953f7bf` | docs(visual+known-issues) | REF §4b "Surfaces following the canon" running list + KI-090 entry                                                                                                                                       |
 
 ---
 
 ## KI delta
 
 **RESOLVED (3):**
+
 - KI-086 (Compare card peach blush — was already shipped at `23f4a2cd` pre-session, KI entry created this session in `34c571e3`)
 - KI-087 (preemptive light-mode internal gold radial > 0.05α LAW canon violations on 6 surfaces, shipped `8c3fdc9a`)
 - KI-088 (ShopBidModal + ShopOnboardingStep4 LAW Light-Mode Surface Rule violations — KI-068 partial follow-up, shipped `35538907`)
 - KI-090 (landing cool-section gold uplift + 2 LAW pure-white violations on About + WhoWeServe sections, shipped `5d42dfc9`)
 
 **OPEN (1) — intentional document-only defer:**
+
 - KI-089 (dead `SupabaseStorageAdapter` direct-upload path — production never calls it; removal exceeds "delete > 3 files" hard stop; document for post-launch dedicated cleanup pass)
 
 **Tracker totals after session:** 46 RESOLVED (was 42), 16 Open (was 15 — added KI-089).
@@ -131,18 +133,18 @@ If anything reads wrong, **next session should ship a corrective** (Codex's Opti
 
 ## Session metrics
 
-| Metric | Value |
-|---|---|
-| Commits shipped | 6 (1 audit + 4 fix + 1 REF doc co-update collapsed into commits) |
-| Files touched | 6 unique (theme.css, ShopBidModal.tsx, ShopOnboardingStep4.tsx, AboutOpportunitySection.tsx, WhoWeServeSection.tsx, REF_VISUAL_SYSTEM.md, REF_KNOWN_ISSUES.md, AUDIT doc) |
-| Build status across session | clean every commit (3.78s, 3808 KiB precache stable) |
-| Branch-aware forbidden grep | ZERO hits maintained throughout |
-| LAW canon recheck after T1.1 | 5 remaining > 0.05α in light all confirmed intentional exceptions |
-| Hard stops triggered | 0 |
-| Soft stops triggered | 0 (no LAW additions needed; bundle of T2.2 noted as cross-task in commit message) |
-| New skills proposed | 0 (existing `bd-design-identity` + `mola-ai-relay-protocol` + `supabase-storage-signed-urls` covered all session work) |
-| KIs RESOLVED | 4 |
-| KIs new (still Open) | 1 (KI-089, document-only) |
+| Metric                       | Value                                                                                                                                                                     |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Commits shipped              | 6 (1 audit + 4 fix + 1 REF doc co-update collapsed into commits)                                                                                                          |
+| Files touched                | 6 unique (theme.css, ShopBidModal.tsx, ShopOnboardingStep4.tsx, AboutOpportunitySection.tsx, WhoWeServeSection.tsx, REF_VISUAL_SYSTEM.md, REF_KNOWN_ISSUES.md, AUDIT doc) |
+| Build status across session  | clean every commit (3.78s, 3808 KiB precache stable)                                                                                                                      |
+| Branch-aware forbidden grep  | ZERO hits maintained throughout                                                                                                                                           |
+| LAW canon recheck after T1.1 | 5 remaining > 0.05α in light all confirmed intentional exceptions                                                                                                         |
+| Hard stops triggered         | 0                                                                                                                                                                         |
+| Soft stops triggered         | 0 (no LAW additions needed; bundle of T2.2 noted as cross-task in commit message)                                                                                         |
+| New skills proposed          | 0 (existing `bd-design-identity` + `mola-ai-relay-protocol` + `supabase-storage-signed-urls` covered all session work)                                                    |
+| KIs RESOLVED                 | 4                                                                                                                                                                         |
+| KIs new (still Open)         | 1 (KI-089, document-only)                                                                                                                                                 |
 
 ---
 

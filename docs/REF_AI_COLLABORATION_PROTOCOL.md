@@ -72,16 +72,16 @@ When Mola pastes a long multi-AI transcript, run this loop before acting:
 4. **Translate expressive language into constraints.**
    Preserve the intent, then operationalize it.
 
-   | Mola phrase                         | Engineering/design interpretation                                                                 |
-   | ----------------------------------- | ------------------------------------------------------------------------------------------------- |
-   | "go full hammer" / "to the max"     | Be ambitious within the approved scope, but preserve existing wins and verify hard.               |
-   | "do not white things out"           | Do not flatten visual depth, remove atmosphere, or replace rich treatment with plain panels.      |
-   | "more gold / amber glow"            | Richer gold as light: rim, halo, inset, bloom, sheen. Do not make gold paint or wallpaper.        |
-   | "liquid glass / 3D / more shadow"   | Add thickness, refraction, inset highlights, contact shadows, layered depth, and glass hierarchy. |
-   | "make mobile user friendly / map focus" | Protect mobile bottom tabs, safe areas, compact headers, visible map surfaces, and avoid sheet-first fullscreen maps. |
+   | Mola phrase                                              | Engineering/design interpretation                                                                                             |
+   | -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+   | "go full hammer" / "to the max"                          | Be ambitious within the approved scope, but preserve existing wins and verify hard.                                           |
+   | "do not white things out"                                | Do not flatten visual depth, remove atmosphere, or replace rich treatment with plain panels.                                  |
+   | "more gold / amber glow"                                 | Richer gold as light: rim, halo, inset, bloom, sheen. Do not make gold paint or wallpaper.                                    |
+   | "liquid glass / 3D / more shadow"                        | Add thickness, refraction, inset highlights, contact shadows, layered depth, and glass hierarchy.                             |
+   | "make mobile user friendly / map focus"                  | Protect mobile bottom tabs, safe areas, compact headers, visible map surfaces, and avoid sheet-first fullscreen maps.         |
    | "landing more eye catching, dashboard more professional" | Landing can carry stronger gold story bands; dashboard gets restrained cool glass with gold lighting, rim, shadow, and sheen. |
-   | "talk and plan only"                | No file edits. Synthesize, ask, prompt, or plan.                                                  |
-   | "go full auto / do not stop for me" | Execute approved scope using safe defaults. Stop only for hard-stop risks.                        |
+   | "talk and plan only"                                     | No file edits. Synthesize, ask, prompt, or plan.                                                                              |
+   | "go full auto / do not stop for me"                      | Execute approved scope using safe defaults. Stop only for hard-stop risks.                                                    |
 
 5. **Restate the extracted plan when useful.**
    For complex work, briefly reflect the interpreted directives before editing. This catches misunderstandings without forcing Mola to rewrite everything.

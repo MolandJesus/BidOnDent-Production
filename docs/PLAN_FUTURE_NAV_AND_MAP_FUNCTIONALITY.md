@@ -24,23 +24,23 @@ This doc captures what's wired vs stub today, what needs full buildout, and the 
 
 The visual + interaction shells are done. The buttons exist, the panels exist, the depth bar is on every dark surface. What's behind them is partial:
 
-| Surface / hook                                                 | Current state                                                                                       |
-| -------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| `NavigationActionRail.tsx`                                     | UI shipped (Bucket A2 dark depth bar). Action buttons fire callbacks; routing engine not connected. |
-| `NavigationActiveManeuverCard.tsx`                             | Card layout shipped. Live maneuver data is mocked.                                                  |
-| `NavigationDeviationPrompt.tsx`                                | Alert UI shipped (Bucket A2 depth bar). Re-route logic is stub.                                     |
-| `NavigationVoiceControlsSheet.tsx`                             | Sheet layout shipped. Voice TTS not implemented.                                                    |
-| `NavigationSavedPlacesPanel.tsx`                               | Panel + list rendering shipped. Persistence is local state only.                                    |
-| `useCoverageNavigationExperience.ts`                           | Orchestration hook exists. Routes to MapLibre + scaffolds nav state.                                |
-| `useNavigationLifecycleEffects.ts`                             | Lifecycle hooks exist. No real navigation lifecycle yet.                                            |
-| `useSavedNavigationLocations.ts`                               | Reads from localStorage. No Supabase backing.                                                       |
-| `useNavigationGpsTracking.ts`                                  | Geolocation API wired. No deviation detection logic.                                                |
-| `useNavigationAddressSearch.ts`                                | Geocoder integration scaffolded. Limited fallback.                                                  |
-| `useNavigationRoutePreview.ts`                                 | Preview state exists. Real route engine not connected.                                              |
-| `useNavigationDiscoveryPlaces.ts`                              | Place discovery scaffolded.                                                                         |
-| `useNavigationLaunch.ts`                                       | Launch handshake exists. Engine connection is stub.                                                 |
-| `CurrentSpeedBadge.tsx` / `NavigationActiveSpeedPanel.tsx`     | UI shipped (Bucket A2). GPS speed feed wired.                                                       |
-| `NavigationBrowseDiscoveryPanel.tsx`                           | Browse mode UI shipped.                                                                             |
+| Surface / hook                                             | Current state                                                                                       |
+| ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `NavigationActionRail.tsx`                                 | UI shipped (Bucket A2 dark depth bar). Action buttons fire callbacks; routing engine not connected. |
+| `NavigationActiveManeuverCard.tsx`                         | Card layout shipped. Live maneuver data is mocked.                                                  |
+| `NavigationDeviationPrompt.tsx`                            | Alert UI shipped (Bucket A2 depth bar). Re-route logic is stub.                                     |
+| `NavigationVoiceControlsSheet.tsx`                         | Sheet layout shipped. Voice TTS not implemented.                                                    |
+| `NavigationSavedPlacesPanel.tsx`                           | Panel + list rendering shipped. Persistence is local state only.                                    |
+| `useCoverageNavigationExperience.ts`                       | Orchestration hook exists. Routes to MapLibre + scaffolds nav state.                                |
+| `useNavigationLifecycleEffects.ts`                         | Lifecycle hooks exist. No real navigation lifecycle yet.                                            |
+| `useSavedNavigationLocations.ts`                           | Reads from localStorage. No Supabase backing.                                                       |
+| `useNavigationGpsTracking.ts`                              | Geolocation API wired. No deviation detection logic.                                                |
+| `useNavigationAddressSearch.ts`                            | Geocoder integration scaffolded. Limited fallback.                                                  |
+| `useNavigationRoutePreview.ts`                             | Preview state exists. Real route engine not connected.                                              |
+| `useNavigationDiscoveryPlaces.ts`                          | Place discovery scaffolded.                                                                         |
+| `useNavigationLaunch.ts`                                   | Launch handshake exists. Engine connection is stub.                                                 |
+| `CurrentSpeedBadge.tsx` / `NavigationActiveSpeedPanel.tsx` | UI shipped (Bucket A2). GPS speed feed wired.                                                       |
+| `NavigationBrowseDiscoveryPanel.tsx`                       | Browse mode UI shipped.                                                                             |
 
 ### What needs real buildout
 
@@ -68,6 +68,7 @@ The current map provider is MapLibre with raster tiles. Functional buildout need
 ### Geocoder hardening
 
 `useNavigationAddressSearch.ts` exists. Needs:
+
 - Fallback strategies when primary geocoder fails (try secondary, then static fallback)
 - Autocomplete tuning (debounce, result quality scoring)
 - Result deduplication when multiple providers return the same place
@@ -75,6 +76,7 @@ The current map provider is MapLibre with raster tiles. Functional buildout need
 ### Place search with Supabase-backed favorites
 
 Current saved places are localStorage. Migration plan:
+
 1. Schema: `user_saved_places` table (Postgres + PostGIS for location).
 2. Edge function: `getSavedPlaces`, `saveSavedPlace`, `deleteSavedPlace` — all JWT-verified via `requireClerkSession()` (see `supabase-clerk-edge-function` skill).
 3. Hydrate on login, cache locally, sync on changes.
@@ -83,6 +85,7 @@ Current saved places are localStorage. Migration plan:
 ### Per-role map layer activation rules
 
 Customer / shop / insurer all see the same map today. Per-role layer activation:
+
 - **Customer:** active reports, partner shops within service area, route preview.
 - **Shop:** incoming reports in service area, accepted jobs, route to current job.
 - **Insurer:** all claims in coverage region, audit-flagged jobs, partnership network.

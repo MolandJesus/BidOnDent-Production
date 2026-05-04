@@ -14,7 +14,7 @@ companion:
 
 # Design Polish Queue — what the next Opus pass should attack
 
-This is a polish *queue*, not a redesign brief. Every item is additive or corrective-toward-LAW. Nothing here removes premium identity. Nothing here whitens, flattens, or pulls toward generic SaaS.
+This is a polish _queue_, not a redesign brief. Every item is additive or corrective-toward-LAW. Nothing here removes premium identity. Nothing here whitens, flattens, or pulls toward generic SaaS.
 
 Codex's current master prompt covers mission + reading list + preserve list. This doc gives the next Opus a concrete checklist with file pointers, current-state evidence, and proposed polish — so the pass can be surgical instead of exploratory.
 
@@ -40,6 +40,7 @@ The locked LAW palette is bronze/champagne. Several load-bearing files still shi
 ### P0.1 — `src/app/components/dashboard/ProfileDropdown.tsx` lines 167–168
 
 Inline `boxShadow` for both light and dark mode uses:
+
 - `rgba(220, 165, 90, 0.22)` inset bottom rim — **forbidden**, replace with `rgba(140, 82, 22, 0.30)` (bronze) or `rgba(196, 144, 65, 0.22)` (gold halo).
 - `rgba(220, 165, 90, 0.14)` ring — replace with `rgba(140, 82, 22, 0.20)`.
 - `rgba(220, 140, 50, 0.16)` outer halo — replace with `rgba(196, 130, 45, 0.16-0.18)`. If the layer is a top/corner lamp rather than a far halo, use `rgba(196, 144, 65, 0.18-0.22)`.
@@ -48,6 +49,7 @@ Inline `boxShadow` for both light and dark mode uses:
 ### P0.2 — `src/app/components/dashboard/NotificationCenter.tsx` lines 284–285
 
 Empty-state icon plate ships:
+
 - `rgba(220, 165, 90, 0.18)` inset rim — **forbidden**, swap to `rgba(140, 82, 22, 0.26)`.
 - `rgba(220, 140, 50, 0.14–0.18)` halo — swap to `rgba(196, 130, 45, 0.14–0.18)` for outer/far halo layers, or `rgba(196, 144, 65, 0.16–0.20)` when it is visually a top/corner lamp.
 - Light mode: `rgba(255, 255, 255, 0.85)` inset — **forbidden**, swap to `rgba(252, 240, 208, 0.82)`.
@@ -208,6 +210,7 @@ Mode Roadmap / 6 regions / 6 live shops chips at the very top read as 3 separate
 The next Opus should not start P1+ until owner names which buckets to attack. P0 (LAW drift) is auto-authorized because it's a LAW correction, not new polish — the locked palette in `LAW_PROJECT_RULES.md` already approves these values.
 
 Suggested order if owner gives a generic "go":
+
 1. P0 in full (LAW drift sweep + corrections).
 2. P1.1 + P1.4 (mobile map-first + safe-area). Highest user impact.
 3. P4.1 + P4.2 (full-map dialog premium chrome). Highest "wow" return.

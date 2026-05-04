@@ -10,6 +10,7 @@
 ## Summary
 
 Sustained autopilot continuation from Part 1. Two outputs:
+
 1. **Pass L** (commit `6b96c22b`) — fixed the visible "border stripe" at landing section transitions that persisted after Pass K. Diagnose-first protocol per owner brief identified two root causes; minimum-change structural fix shipped in single commit.
 2. **KI-100 diagnose-only** (this report) — no patch. Confirms pre-requisites are partially met, scopes the 20-file refactor in detail, surfaces 5 open questions requiring owner input before patch authorization.
 
@@ -30,7 +31,7 @@ Owner reported a visible darker horizontal stripe between landing sections, espe
 
 2. **Hypothesis #2 confirmed** — adjacent section bg gradients have mismatched endpoint colors. Worst at warm↔cool transitions in dark mode (HowItWorks→Benefits, Benefits→WhoWeServe, AboutOpp→TrustStats, TrustStats→OperatingRegions).
 
-3. **Self-inflicted darkening layer** — the seam-fade had a `linear-gradient(to bottom, ...)` navy layer at center: `rgba(8,16,32,0.38)` dark / `rgba(15,30,60,0.12)` light. The navy color (`#081020`) is DARKER than every section bg in dark mode. So the seam-fade was visibly DARKENING the boundary area below adjacent section colors — *creating* the very stripe owner was seeing.
+3. **Self-inflicted darkening layer** — the seam-fade had a `linear-gradient(to bottom, ...)` navy layer at center: `rgba(8,16,32,0.38)` dark / `rgba(15,30,60,0.12)` light. The navy color (`#081020`) is DARKER than every section bg in dark mode. So the seam-fade was visibly DARKENING the boundary area below adjacent section colors — _creating_ the very stripe owner was seeing.
 
 **Hypothesis #1 ruled out** — no explicit `border-t/-b/-y` Tailwind classes on any of the 8 section wrappers (verified via grep).
 
@@ -57,13 +58,13 @@ Gold radial alphas UNCHANGED from Pass K (0.13/0.04 light, 0.20/0.06 dark) — w
 
 ### Pre-requisite check
 
-| Pre-req | Status | Evidence |
-|---|---|---|
-| `public_partner_shops` table exists in migration | ✅ Confirmed | [supabase/migrations/20251230000001_full_schema.sql:400-422](supabase/migrations/20251230000001_full_schema.sql#L400) — full schema, indexes on `is_active` + `zip_code` |
-| RLS enabled with public-read policy | ✅ Confirmed | Migration L543 (`ALTER TABLE … ENABLE ROW LEVEL SECURITY`) + L776-779 (`SELECT` policy for public read) |
-| Existing query infrastructure | ✅ Confirmed | [src/app/services/supabase/map.ts:152](src/app/services/supabase/map.ts#L152) `getPublicPartnerShops()` returns `Promise<PartnerShopMapRecord[]>`, awaited, error-handled |
-| Working consumer pattern | ✅ Confirmed | [src/app/hooks/useCoveragePartnerShops.ts](src/app/hooks/useCoveragePartnerShops.ts) — landing already uses this; useState + useEffect + DEV fallback. Proven model to copy. |
-| **Production DB has ≥1 row in `public_partner_shops`** | ⏳ **Owner action required** | Cannot verify from code. SQL: `SELECT COUNT(*) FROM public.public_partner_shops WHERE is_active = TRUE;` |
+| Pre-req                                                | Status                       | Evidence                                                                                                                                                                     |
+| ------------------------------------------------------ | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `public_partner_shops` table exists in migration       | ✅ Confirmed                 | [supabase/migrations/20251230000001_full_schema.sql:400-422](supabase/migrations/20251230000001_full_schema.sql#L400) — full schema, indexes on `is_active` + `zip_code`     |
+| RLS enabled with public-read policy                    | ✅ Confirmed                 | Migration L543 (`ALTER TABLE … ENABLE ROW LEVEL SECURITY`) + L776-779 (`SELECT` policy for public read)                                                                      |
+| Existing query infrastructure                          | ✅ Confirmed                 | [src/app/services/supabase/map.ts:152](src/app/services/supabase/map.ts#L152) `getPublicPartnerShops()` returns `Promise<PartnerShopMapRecord[]>`, awaited, error-handled    |
+| Working consumer pattern                               | ✅ Confirmed                 | [src/app/hooks/useCoveragePartnerShops.ts](src/app/hooks/useCoveragePartnerShops.ts) — landing already uses this; useState + useEffect + DEV fallback. Proven model to copy. |
+| **Production DB has ≥1 row in `public_partner_shops`** | ⏳ **Owner action required** | Cannot verify from code. SQL: `SELECT COUNT(*) FROM public.public_partner_shops WHERE is_active = TRUE;`                                                                     |
 
 ### Schema gap analysis — `public_partner_shops` vs `marketSeedShops.ShopProfile`
 
@@ -76,6 +77,7 @@ The current dashboard `ShopRecommendation` type has rich fields. The prod `publi
 `reviews` (count), `distanceMiles` (derivable from lat/lng), `completionRate`, `certifications[]`, `capabilityTags[]`, `supportedMakes[]`, `insurerPrograms[]`, `aiSummary`, `capacityBand`
 
 The full Supabase swap requires one of:
+
 - **(i)** Schema extension migration to add the missing columns (significant work, owner action)
 - **(ii)** Map seed-style defaults onto missing fields (partial fidelity loss)
 - **(iii)** Drop missing-data features from the UI (graceful degradation — simpler ranking, no certifications shown, etc.)
@@ -85,25 +87,28 @@ The full Supabase swap requires one of:
 Sync→async swap blast radius identified via grep:
 
 **Service layer (1 file):**
+
 - [src/app/services/intelligence/marketIntelligence.ts](src/app/services/intelligence/marketIntelligence.ts) — `getShopDirectory()` + `buildShopRecommendations()`. Currently sync. Need async variants OR full async conversion.
 
 **Component layer (~15 files):**
+
 - `MapLibreReportLayer.tsx`, `ImmersiveMapResultsDrawer.tsx`, `ShopDirectoryHybridStage.tsx`, `LikedShopCard.tsx`, `MapLibreShopDirectoryViewportManager.tsx`, `GuidanceArrivalSection.tsx`, `ShopDirectoryHero.tsx`, `ShopDirectoryMapInfoPanel.tsx`, `ShopDirectoryListBody.tsx`, `useShopMapInteraction.ts`, `LikedShopsScreen.tsx`, `ShopDirectoryIntelligencePanel.tsx`, `ShopDirectoryMapPopup.tsx`, `ShopDirectoryMapOverlays.tsx`
 
 **Type/helper files (~4 files):**
+
 - `shopDirectoryImmersiveMapTypes.ts`, `shopDirectoryRoutePanelUtils.ts`, `shopDirectoryGuidanceCardHelpers.ts`, `shopDirectoryScreenUtils.ts`
 
 ### Recommended phased decomposition
 
 **NOT a single autopilot commit. Owner-authorized stages.**
 
-| Phase | Scope | Risk | Owner gate |
-|---|---|---|---|
-| **1 — Foundation** | Add `buildShopRecommendationsAsync()` alongside existing sync. Calls `getPublicPartnerShops()` + maps to `ShopRecommendation[]` with seed-style defaults for missing fields. Keep sync version as `import.meta.env.DEV` fallback only. | Low (1 file, additive) | Diagnose questions answered |
-| **2 — First consumer** | Convert `ShopDirectoryHybridStage` (main shop browsing screen) to use async path with useState + useEffect + loading + empty state. Pattern matches `useCoveragePartnerShops` exactly. | Medium (1 component + state design) | Phase 1 verified working |
-| **3 — Consumer rollout** | Convert remaining ~14 components in waves of 3-4 per commit. Each commit: own scope, own KI, "one bug, one commit." | Medium per wave | Each wave: build clean + grep ZERO + smoke test |
-| **4 — Flag flip** | Once all consumers are async + receiving real data, change `SHOP_DIRECTORY_IS_PREVIEW` from `true` to `shops.length >= MIN_REAL_SHOPS_PER_REGION`. Banner auto-disappears as shops onboard per region. | Low (1 file, 1 line) | Owner approves real-shops display |
-| **5 — Schema decision** | Owner picks (i) extend schema, (ii) seed-default mapping, or (iii) feature drop. Phase ordering depends on choice. | Variable | Owner decides |
+| Phase                    | Scope                                                                                                                                                                                                                                  | Risk                                | Owner gate                                      |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | ----------------------------------------------- |
+| **1 — Foundation**       | Add `buildShopRecommendationsAsync()` alongside existing sync. Calls `getPublicPartnerShops()` + maps to `ShopRecommendation[]` with seed-style defaults for missing fields. Keep sync version as `import.meta.env.DEV` fallback only. | Low (1 file, additive)              | Diagnose questions answered                     |
+| **2 — First consumer**   | Convert `ShopDirectoryHybridStage` (main shop browsing screen) to use async path with useState + useEffect + loading + empty state. Pattern matches `useCoveragePartnerShops` exactly.                                                 | Medium (1 component + state design) | Phase 1 verified working                        |
+| **3 — Consumer rollout** | Convert remaining ~14 components in waves of 3-4 per commit. Each commit: own scope, own KI, "one bug, one commit."                                                                                                                    | Medium per wave                     | Each wave: build clean + grep ZERO + smoke test |
+| **4 — Flag flip**        | Once all consumers are async + receiving real data, change `SHOP_DIRECTORY_IS_PREVIEW` from `true` to `shops.length >= MIN_REAL_SHOPS_PER_REGION`. Banner auto-disappears as shops onboard per region.                                 | Low (1 file, 1 line)                | Owner approves real-shops display               |
+| **5 — Schema decision**  | Owner picks (i) extend schema, (ii) seed-default mapping, or (iii) feature drop. Phase ordering depends on choice.                                                                                                                     | Variable                            | Owner decides                                   |
 
 ### Open questions blocking patch authorization
 
@@ -138,10 +143,10 @@ This matches the F-16 diagnose→patch protocol that owner reinforced as the rig
 
 ## KI status changes (this Part 2 block)
 
-| KI | Subject | Pre-Part-2 | Post-Part-2 |
-|---|---|---|---|
-| KI-104 | Pass L — landing section border stripe | Not yet opened | RESOLVED + documented (commit `6b96c22b`) |
-| KI-100 | F-24 follow-up: full Supabase swap | OPEN (deferred) | OPEN (diagnose complete; 5 owner-decision blockers surfaced; phase plan written) |
+| KI     | Subject                                | Pre-Part-2      | Post-Part-2                                                                      |
+| ------ | -------------------------------------- | --------------- | -------------------------------------------------------------------------------- |
+| KI-104 | Pass L — landing section border stripe | Not yet opened  | RESOLVED + documented (commit `6b96c22b`)                                        |
+| KI-100 | F-24 follow-up: full Supabase swap     | OPEN (deferred) | OPEN (diagnose complete; 5 owner-decision blockers surfaced; phase plan written) |
 
 ---
 
@@ -170,18 +175,14 @@ Both Part 2 actions:
 ## Owner action items still pending (carried over from Part 1 + new)
 
 From Part 1:
+
 1. **F-16 browser smoke test** (KI-096) — gate temporarily lifted but should still close
 2. **F-04 Supabase log check** (KI-095)
 3. **KI-101 Toyoto typo** UPDATE
 4. **KI-102 cat photo** delete + UPDATE
 5. **KI-103 footer email** decision
 
-New from Part 2:
-6. **KI-100 prod DB row count check** — `SELECT COUNT(*) FROM public.public_partner_shops WHERE is_active = TRUE`
-7. **KI-100 schema gap decision** — extend / map defaults / drop features
-8. **KI-100 empty-state UX direction**
-9. **KI-100 distance ranking decision** — Haversine over real lat/lng?
-10. **KI-100 AI matching fidelity decision** — simplify algorithm or stub missing fields?
+New from Part 2: 6. **KI-100 prod DB row count check** — `SELECT COUNT(*) FROM public.public_partner_shops WHERE is_active = TRUE` 7. **KI-100 schema gap decision** — extend / map defaults / drop features 8. **KI-100 empty-state UX direction** 9. **KI-100 distance ranking decision** — Haversine over real lat/lng? 10. **KI-100 AI matching fidelity decision** — simplify algorithm or stub missing fields?
 
 ---
 
@@ -215,6 +216,6 @@ npm run build  # → clean, 3817.64 KiB precache stable
 
 ---
 
-*Generated end of Part 2 of the 2026-05-05 sustained functionality-sweep autopilot session.*
-*Per `bd-design-identity`, `mola-ai-relay-protocol`, `supabase-clerk-edge-function`, `supabase-storage-signed-urls` skills.*
-*Per LAW_PROJECT_RULES.md hard-stop discipline + diagnose-first protocol per owner brief.*
+_Generated end of Part 2 of the 2026-05-05 sustained functionality-sweep autopilot session._
+_Per `bd-design-identity`, `mola-ai-relay-protocol`, `supabase-clerk-edge-function`, `supabase-storage-signed-urls` skills._
+_Per LAW_PROJECT_RULES.md hard-stop discipline + diagnose-first protocol per owner brief._

@@ -14,14 +14,14 @@ Six-pass autopilot per the audit doc's recommended pass plan. Each pass single-c
 
 ## 2. What changed (grouped by pass)
 
-| Pass | Commit | KI | Headline |
-|---|---|---|---|
-| 1 | `a0954b12` | KI-076 RESOLVED | Customer dashboard scroll-past-content fixed (HomeScreen + Bids + Account: removed `min-h-[80vh]` + `pb-20 md:pb-10` → `pb-6 md:pb-8`). Last-panel bronze halo no longer chopped at scroll boundary. |
-| 2 | `74b9df0b` | KI-077 RESOLVED | Dark dashboard panel internal ceiling lamp via `--bd-dashboard-panel-bg` radial layer (0.14α) + section ceiling lamp (0.10α) + top inset bevel push (0.22 → 0.30) + section atmospheric halo bumps (0.12→0.15, 0.06→0.08) + section edge catchlight bumps (0.08→0.10, 0.05→0.07). Premium gold via lighting, never paint. |
-| 3 | `5acafe07` | KI-078 RESOLVED | Dark cool accent variants' bronze atmospheric halo bumped (0.10/0.12 → 0.14/0.16) so cool tiles read intentional next to warm pop tiles (--accent-gold 0.26 / --accent-champagne 0.20 unchanged). LAW asymmetry preserved; "broken sibling pair" perception fixed. |
-| 4 | `972a3353` | KI-079 RESOLVED | Bottom nav inactive tab contrast bump (`text-blue-100/50` → `text-slate-300`) + hover background affordance (cool blue `[0.06]` dark / `[0.04]` light tint). All four tabs equally legible on bright phones. |
-| 5 | `e922bb30` | (KI-074 follow-up) | Map preview dark uplift: `.bd-map-canvas-sheen` cream top alpha 0.14 → 0.18 + CustomerMapWidget ambient lamp gradient 0.06 → 0.09. Map family signature reads premium against dark map tiles. |
-| 6 | `c7473a95` | KI-080 RESOLVED | Landing section seam-fade dividers between body sections (HowItWorks ↔ Benefits ↔ ... ↔ CTA). New `.bd-landing-seam-fade` utility: 48px navy haze gradient in dark, **zero-height** in light (no layout shift). Hard horizontal seams replaced with soft atmospheric drift. |
+| Pass | Commit     | KI                 | Headline                                                                                                                                                                                                                                                                                                                  |
+| ---- | ---------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1    | `a0954b12` | KI-076 RESOLVED    | Customer dashboard scroll-past-content fixed (HomeScreen + Bids + Account: removed `min-h-[80vh]` + `pb-20 md:pb-10` → `pb-6 md:pb-8`). Last-panel bronze halo no longer chopped at scroll boundary.                                                                                                                      |
+| 2    | `74b9df0b` | KI-077 RESOLVED    | Dark dashboard panel internal ceiling lamp via `--bd-dashboard-panel-bg` radial layer (0.14α) + section ceiling lamp (0.10α) + top inset bevel push (0.22 → 0.30) + section atmospheric halo bumps (0.12→0.15, 0.06→0.08) + section edge catchlight bumps (0.08→0.10, 0.05→0.07). Premium gold via lighting, never paint. |
+| 3    | `5acafe07` | KI-078 RESOLVED    | Dark cool accent variants' bronze atmospheric halo bumped (0.10/0.12 → 0.14/0.16) so cool tiles read intentional next to warm pop tiles (--accent-gold 0.26 / --accent-champagne 0.20 unchanged). LAW asymmetry preserved; "broken sibling pair" perception fixed.                                                        |
+| 4    | `972a3353` | KI-079 RESOLVED    | Bottom nav inactive tab contrast bump (`text-blue-100/50` → `text-slate-300`) + hover background affordance (cool blue `[0.06]` dark / `[0.04]` light tint). All four tabs equally legible on bright phones.                                                                                                              |
+| 5    | `e922bb30` | (KI-074 follow-up) | Map preview dark uplift: `.bd-map-canvas-sheen` cream top alpha 0.14 → 0.18 + CustomerMapWidget ambient lamp gradient 0.06 → 0.09. Map family signature reads premium against dark map tiles.                                                                                                                             |
+| 6    | `c7473a95` | KI-080 RESOLVED    | Landing section seam-fade dividers between body sections (HowItWorks ↔ Benefits ↔ ... ↔ CTA). New `.bd-landing-seam-fade` utility: 48px navy haze gradient in dark, **zero-height** in light (no layout shift). Hard horizontal seams replaced with soft atmospheric drift.                                            |
 
 ## 3. Files touched
 
@@ -48,14 +48,14 @@ Six-pass autopilot per the audit doc's recommended pass plan. Each pass single-c
 
 ## 5. Problem taxonomy
 
-| Tier | Found | Fixed | Remaining |
-|---|---|---|---|
-| P0 — Layout bugs | 1 (scroll-past on customer screens) | 1 | 0 — KI-076 RESOLVED |
-| P1 — Dark dashboard panel/section flat | 1 panel + 1 section + cool variant asymmetry | 3 (Passes 2 + 3) | 0 — KI-077 + KI-078 RESOLVED |
-| P1 — Bottom nav dark contrast | 1 (inactive tabs dim) | 1 | 0 — KI-079 RESOLVED |
-| P1 — Map preview dark presence | 1 (cream sheen + ambient lamp) | 1 | 0 (Pass 5, KI-074 follow-up) |
-| P2 — Landing dark seams | 1 (hard horizontal cuts) | 1 | 0 — KI-080 RESOLVED |
-| P3 — Report flow dark | Not flagged in audit screenshots | n/a | Audit-confirmed no-op (Report uses separate `--bd-report-panel-*` token system; Bids + Account inherit Pass 2 dashboard tokens) |
+| Tier                                   | Found                                        | Fixed            | Remaining                                                                                                                       |
+| -------------------------------------- | -------------------------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| P0 — Layout bugs                       | 1 (scroll-past on customer screens)          | 1                | 0 — KI-076 RESOLVED                                                                                                             |
+| P1 — Dark dashboard panel/section flat | 1 panel + 1 section + cool variant asymmetry | 3 (Passes 2 + 3) | 0 — KI-077 + KI-078 RESOLVED                                                                                                    |
+| P1 — Bottom nav dark contrast          | 1 (inactive tabs dim)                        | 1                | 0 — KI-079 RESOLVED                                                                                                             |
+| P1 — Map preview dark presence         | 1 (cream sheen + ambient lamp)               | 1                | 0 (Pass 5, KI-074 follow-up)                                                                                                    |
+| P2 — Landing dark seams                | 1 (hard horizontal cuts)                     | 1                | 0 — KI-080 RESOLVED                                                                                                             |
+| P3 — Report flow dark                  | Not flagged in audit screenshots             | n/a              | Audit-confirmed no-op (Report uses separate `--bd-report-panel-*` token system; Bids + Account inherit Pass 2 dashboard tokens) |
 
 ## 6. Architecture decisions
 
@@ -67,10 +67,10 @@ Six-pass autopilot per the audit doc's recommended pass plan. Each pass single-c
 
 ## 7. Doc updates
 
-| Doc | What changed |
-|---|---|
-| `docs/REF_KNOWN_ISSUES.md` | KI-076 + KI-077 + KI-078 + KI-079 + KI-080 entries added with full edit lists, hard-stop compliance audits, deferred follow-up notes |
-| `docs/AUDIT_VISUAL_MOBILE_DARK_LIGHT_2026-05-04.md` | (See section below — strike-through update applied as part of final commit) |
+| Doc                                                 | What changed                                                                                                                         |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `docs/REF_KNOWN_ISSUES.md`                          | KI-076 + KI-077 + KI-078 + KI-079 + KI-080 entries added with full edit lists, hard-stop compliance audits, deferred follow-up notes |
+| `docs/AUDIT_VISUAL_MOBILE_DARK_LIGHT_2026-05-04.md` | (See section below — strike-through update applied as part of final commit)                                                          |
 
 ## 8. What this unlocks
 
@@ -85,6 +85,7 @@ Six-pass autopilot per the audit doc's recommended pass plan. Each pass single-c
 ## 9. Best next pass (one recommendation)
 
 **Real-device mobile dark verification.** All six passes shipped clean on `npm run build` + tsc + grep + visual judgment. Next high-leverage step is opening the running dev server on an actual phone (or a 375×667 simulator) in dark mode and walking through Customer Home → Report flow → Bids → Account → Landing. Two scenarios to verify:
+
 - Dashboard panels in dark show internal gold lamp warmth at all sizes
 - Landing seam-fade dividers create visible-but-subtle handoffs (48px should be felt, not seen)
 
@@ -94,23 +95,23 @@ If anything reads off, the audit-confirmed deferred follow-ups (StepPhotos.tsx m
 
 ## Outstanding KIs at end-of-pass
 
-| KI | Status | Notes |
-|---|---|---|
-| KI-066 + d | RESOLVED | Theme.css palette compliance complete |
-| KI-067 | HOLD | Coverage Command Center sheet height — Codex territory, explicit owner hold |
-| KI-068 | RESOLVED | Shop family white-body load-bearing surfaces |
-| KI-069 + upgrade | RESOLVED | 6→8 criteria depth bar binding |
-| KI-070 | not created | No landing dark depth gaps requiring separate KI |
-| KI-071 | RESOLVED | HeroSection inline boxShadow forbidden register |
-| KI-072 | RESOLVED | Gagged dashboard panel shadows |
-| KI-073 | RESOLVED | Dashboard atmospheric gold underweight + landing missing gold lamp |
-| KI-074 | RESOLVED | Map widgets + hero map + map controls premium glass redesign |
-| KI-075 | DEFERRED | Future nav engine + map functional buildout |
-| KI-076 | **RESOLVED 2026-05-04** | Dashboard scroll-past-content + page-end halo termination |
-| KI-077 | **RESOLVED 2026-05-04** | Dark dashboard panels + sections read flat compared to light |
-| KI-078 | **RESOLVED 2026-05-04** | Quick Actions tile asymmetry in dark |
-| KI-079 | **RESOLVED 2026-05-04** | Bottom nav inactive tabs read too dim in dark |
-| KI-080 | **RESOLVED 2026-05-04** | Landing page hard horizontal seams between cool/warm sections in mobile dark |
+| KI               | Status                  | Notes                                                                        |
+| ---------------- | ----------------------- | ---------------------------------------------------------------------------- |
+| KI-066 + d       | RESOLVED                | Theme.css palette compliance complete                                        |
+| KI-067           | HOLD                    | Coverage Command Center sheet height — Codex territory, explicit owner hold  |
+| KI-068           | RESOLVED                | Shop family white-body load-bearing surfaces                                 |
+| KI-069 + upgrade | RESOLVED                | 6→8 criteria depth bar binding                                               |
+| KI-070           | not created             | No landing dark depth gaps requiring separate KI                             |
+| KI-071           | RESOLVED                | HeroSection inline boxShadow forbidden register                              |
+| KI-072           | RESOLVED                | Gagged dashboard panel shadows                                               |
+| KI-073           | RESOLVED                | Dashboard atmospheric gold underweight + landing missing gold lamp           |
+| KI-074           | RESOLVED                | Map widgets + hero map + map controls premium glass redesign                 |
+| KI-075           | DEFERRED                | Future nav engine + map functional buildout                                  |
+| KI-076           | **RESOLVED 2026-05-04** | Dashboard scroll-past-content + page-end halo termination                    |
+| KI-077           | **RESOLVED 2026-05-04** | Dark dashboard panels + sections read flat compared to light                 |
+| KI-078           | **RESOLVED 2026-05-04** | Quick Actions tile asymmetry in dark                                         |
+| KI-079           | **RESOLVED 2026-05-04** | Bottom nav inactive tabs read too dim in dark                                |
+| KI-080           | **RESOLVED 2026-05-04** | Landing page hard horizontal seams between cool/warm sections in mobile dark |
 
 ## IP / legal claimant gate
 
