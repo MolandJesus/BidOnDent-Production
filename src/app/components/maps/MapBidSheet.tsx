@@ -91,7 +91,7 @@ export default function MapBidSheet({
           "relative z-10 w-full max-w-lg rounded-t-2xl p-6 pb-[max(2rem,env(safe-area-inset-bottom))]",
           isDark
             ? "bg-gradient-to-b from-slate-900/95 to-blue-950/95 border-t border-blue-400/20 shadow-[0_-8px_40px_rgba(59,130,246,0.15)]"
-            : "bg-white border-t border-slate-200 shadow-xl"
+            : "bg-gradient-to-b from-sky-50/96 via-blue-50/94 to-slate-50/92 border-t border-sky-200/80 shadow-[0_-12px_48px_rgba(80,120,180,0.18),inset_0_1px_0_rgba(252,240,208,0.62)]"
         )}
       >
         {/* Drag handle */}
@@ -168,7 +168,7 @@ export default function MapBidSheet({
                   "w-full rounded-xl py-3 pl-8 pr-3 text-sm min-h-[44px] transition-colors outline-none",
                   isDark
                     ? "bg-white/5 border border-blue-400/20 text-white placeholder:text-slate-500 focus:border-blue-400/50 focus:bg-white/8"
-                    : "bg-slate-50 border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:bg-white"
+                    : "bg-blue-50/80 border border-sky-200 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:bg-sky-50"
                 )}
               />
             </div>
@@ -211,7 +211,7 @@ export default function MapBidSheet({
                 "w-full rounded-xl py-3 px-3 text-sm min-h-[44px] transition-colors outline-none",
                 isDark
                   ? "bg-white/5 border border-blue-400/20 text-white placeholder:text-slate-500 focus:border-blue-400/50 focus:bg-white/8"
-                  : "bg-slate-50 border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:bg-white"
+                  : "bg-blue-50/80 border border-sky-200 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:bg-sky-50"
               )}
             />
           </div>
@@ -237,7 +237,7 @@ export default function MapBidSheet({
                 "w-full resize-none rounded-xl py-3 px-3 text-sm transition-colors outline-none",
                 isDark
                   ? "bg-white/5 border border-blue-400/20 text-white placeholder:text-slate-500 focus:border-blue-400/50 focus:bg-white/8"
-                  : "bg-slate-50 border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:bg-white"
+                  : "bg-blue-50/80 border border-sky-200 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:bg-sky-50"
               )}
             />
           </div>
