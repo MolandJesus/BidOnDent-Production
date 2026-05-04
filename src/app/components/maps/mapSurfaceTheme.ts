@@ -96,8 +96,8 @@ const toneThemes: Record<MapSurfaceTone, MapSurfaceToneVariant> = {
        identity. Depth bar applied: gold lamp top bevel rgba(196,144,65),
        bronze rim rgba(140,82,22), cool blue 1px structural ring
        rgba(96,165,250), bronze atmospheric halo rgba(196,130,45). The
-       legacy warm-yellow register (rgba(228,140,55), rgba(228,175,100),
-       rgba(255,228,175)) is forbidden. */
+       legacy warm-yellow register (legacy register, replaced by KI-066)
+       is forbidden. */
     ambientOverlayClassName:
       "bg-[radial-gradient(circle_at_top,rgba(196,130,45,0.22),transparent_36%),radial-gradient(circle_at_18%_18%,rgba(59,130,246,0.26),transparent_28%),radial-gradient(circle_at_78%_12%,rgba(37,99,235,0.22),transparent_24%),linear-gradient(180deg,rgba(30,58,138,0.18),rgba(2,6,23,0.42))]",
     shellToneClassName:

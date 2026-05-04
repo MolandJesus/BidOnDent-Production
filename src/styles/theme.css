@@ -854,7 +854,7 @@ body {
   --bd-warm-dark-amber-start: #1a0c06;
   --bd-warm-dark-amber-mid: #251608;
   --bd-warm-dark-amber-end: #1c0c05;
-  --bd-warm-dark-amber-ellipse-top: rgba(220, 140, 40, 0.3);
+  --bd-warm-dark-amber-ellipse-top: rgba(196, 130, 45, 0.30);
   --bd-warm-dark-amber-ellipse-bottom: rgba(200, 115, 25, 0.24);
   --bd-warm-dark-amber-pool: rgba(220, 145, 50, 0.42);
   --bd-warm-dark-amber-pool-soft: rgba(200, 125, 35, 0.3);
@@ -1526,7 +1526,7 @@ body {
   box-shadow:
     0 20px 52px rgba(2, 2, 2, 0.58),
     0 8px 18px rgba(140, 80, 25, 0.42),
-    inset 0 1px 0 rgba(255, 230, 175, 0.32),
+    inset 0 1px 0 rgba(252, 240, 208, 0.32),
     inset 0 -1px 0 rgba(200, 115, 35, 0.16),
     0 0 0 1px rgba(238, 184, 110, 0.34),
     0 0 48px rgba(240, 150, 60, 0.32);
@@ -1586,7 +1586,7 @@ body {
 .dark .bd-dashboard-atmosphere,
 [data-theme="dark"] .bd-dashboard-atmosphere {
   background:
-    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(220, 140, 40, 0.26) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(196, 130, 45, 0.26) 0%, transparent 60%),
     radial-gradient(ellipse 90% 55% at 50% 100%, rgba(200, 110, 25, 0.18) 0%, transparent 65%),
     radial-gradient(ellipse 60% 80% at 100% 50%, rgba(220, 150, 60, 0.14) 0%, transparent 70%);
 }
@@ -3444,7 +3444,7 @@ body {
   background: linear-gradient(
     115deg,
     transparent 35%,
-    rgba(220, 165, 80, 0.3) 50%,
+    rgba(196, 144, 65, 0.30) 50%,
     transparent 65%
   );
   opacity: 0;

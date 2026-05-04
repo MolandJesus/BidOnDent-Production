@@ -590,7 +590,7 @@ export default function HeroSection({
                 background: isLightAppearance ? "#eef4fb" : "#0d1d3a",
                 boxShadow: isLightAppearance
                   ? "0 14px 40px rgba(15, 30, 60, 0.10), 0 40px 90px rgba(15, 30, 60, 0.08), 0 0 50px rgba(37, 99, 235, 0.06), inset 0 1px 0 rgba(255,255,255,0.55), inset 0 0 0 1px rgba(190,210,235,0.22), inset 0 -1px 0 rgba(140,82,22,0.20), 0 0 80px rgba(196,130,45,0.05)"
-                  : "0 16px 48px rgba(2, 6, 23, 0.40), 0 50px 110px rgba(2, 6, 23, 0.18), 0 0 60px rgba(37, 99, 235, 0.12), inset 0 1px 0 rgba(196, 144, 65,0.20), inset 0 0 0 1px rgba(96, 165, 250, 0.14), inset 0 -1px 0 rgba(196, 144, 65,0.16), 0 0 100px rgba(228,140,55,0.08)",
+                  : "0 16px 48px rgba(2, 6, 23, 0.40), 0 50px 110px rgba(2, 6, 23, 0.18), 0 0 60px rgba(37, 99, 235, 0.12), inset 0 1px 0 rgba(196, 144, 65,0.20), inset 0 0 0 1px rgba(96, 165, 250, 0.14), inset 0 -1px 0 rgba(196, 144, 65,0.16), 0 0 100px rgba(196, 130, 45, 0.08)",
               }}
             >
               {/* Outer ambient bloom — bleeds the strip into the hero atmosphere */}
@@ -981,7 +981,7 @@ export default function HeroSection({
                     color: isLightAppearance ? "#7c4a16" : "#fde6c0",
                     boxShadow: isLightAppearance
                       ? "inset 0 1px 0 rgba(252,240,212,0.92), 0 2px 10px rgba(15,30,60,0.10)"
-                      : "inset 0 1px 0 rgba(228,175,100,0.22), 0 2px 12px rgba(2,6,23,0.34)",
+                      : "inset 0 1px 0 rgba(196, 144, 65, 0.22), inset 0 -1px 0 rgba(140, 82, 22, 0.22), 0 0 0 1px rgba(96, 165, 250, 0.18), 0 16px 32px rgba(2, 6, 23, 0.30), 0 4px 12px rgba(2, 6, 23, 0.22), 0 0 60px rgba(196, 130, 45, 0.12)",
                   }}
                 >
                   Double-tap for full map
