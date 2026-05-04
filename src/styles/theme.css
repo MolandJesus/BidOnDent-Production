@@ -3224,13 +3224,16 @@ body {
 }
 
 /* D10: hover lifts + gold halo expands subtly (primary only — secondary
-   stays calmer per the visual hierarchy). */
+   stays calmer per the visual hierarchy). Bucket 2.1 (depth bar criterion 8):
+   appended cool blue 1px structural ring (rgba(96,165,250,0.32)) so the
+   button picks up the dashboard's depth-bar grammar on hover. */
 .bd-dashboard-primary-button:hover:not(:disabled) {
   box-shadow:
     0 22px 40px rgba(2, 6, 23, 0.3),
     0 0 28px rgba(59, 130, 246, 0.16),
     inset 0 1px 0 rgba(255, 255, 255, 0.22),
     inset 0 -1px 0 rgba(196, 144, 65, 0.22),
+    0 0 0 1px rgba(96, 165, 250, 0.32),
     0 0 32px rgba(196, 130, 45, 0.2);
 }
 
