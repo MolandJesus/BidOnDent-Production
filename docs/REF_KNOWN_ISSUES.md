@@ -2,7 +2,7 @@
 
 **Authority level:** REFERENCE — describes current known gaps, bugs, and structural issues.
 
-**Last updated:** 2026-05-03
+**Last updated:** 2026-05-04
 
 **Update rules:**
 
