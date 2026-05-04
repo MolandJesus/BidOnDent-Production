@@ -405,7 +405,7 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
               </div>
               <fieldset className="mt-3 opacity-60" disabled>
                 <select
-                  className={`w-full h-10 px-3 border rounded-lg ${isLight ? "border-slate-200 bg-white text-slate-800" : "border-white/[0.1] bg-white/[0.05] text-slate-100"}`}
+                  className={`w-full h-10 px-3 border rounded-lg ${isLight ? "border-slate-200 bg-[#fffefa] text-slate-800" : "border-white/[0.1] bg-white/[0.05] text-slate-100"}`}
                 >
                   <option>English</option>
                   <option>Spanish</option>
