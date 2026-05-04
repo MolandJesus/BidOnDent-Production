@@ -2672,7 +2672,7 @@ body {
     0 6px 14px rgba(15, 30, 60, 0.1), 0 0 0 1px rgba(140, 82, 22, 0.30),
     inset 0 1px 0 rgba(254, 247, 232, 0.88), inset 0 -1px 0 rgba(140, 82, 22, 0.30),
     0 0 18px rgba(196, 130, 45, 0.10),
-    0 -32px 80px -16px rgba(196, 144, 65, 0.12);
+    0 -32px 80px -16px rgba(196, 144, 65, 0.18);
   /* Pass F-fix (KI-086): section body 0.74/0.62 -> 0.82/0.74 — preserves
      translucency for page-atmosphere bleed-through but restores enough
      opacity for clear panel containment per owner verification feedback. */
@@ -2688,12 +2688,12 @@ body {
     0 16px 36px rgba(15, 30, 60, 0.18), 0 44px 90px rgba(15, 30, 60, 0.08),
     0 0 0 1px rgba(140, 82, 22, 0.26), inset 0 1px 0 rgba(254, 247, 232, 0.84),
     inset 0 -1px 0 rgba(140, 82, 22, 0.28), 0 0 14px rgba(196, 130, 45, 0.08),
-    0 -28px 70px -14px rgba(196, 144, 65, 0.10);
+    0 -28px 70px -14px rgba(196, 144, 65, 0.16);
   --bd-dashboard-section-hover-shadow:
     0 22px 44px rgba(15, 30, 60, 0.22), 0 50px 100px rgba(15, 30, 60, 0.1),
     0 0 0 1px rgba(140, 82, 22, 0.36), inset 0 1px 0 rgba(254, 247, 232, 0.90),
     inset 0 -1px 0 rgba(140, 82, 22, 0.36), 0 0 18px rgba(196, 130, 45, 0.10),
-    0 -32px 80px -16px rgba(196, 144, 65, 0.14);
+    0 -32px 80px -16px rgba(196, 144, 65, 0.20);
   --bd-dashboard-section-selected-bg: linear-gradient(
     180deg,
     rgba(224, 238, 255, 0.96) 0%,
@@ -2914,7 +2914,8 @@ body {
     0 0 0 1px rgba(140, 82, 22, 0.32),
     0 0 0 1px rgba(96, 165, 250, 0.22),
     0 0 24px rgba(196, 130, 45, 0.2),
-    0 0 80px rgba(196, 130, 45, 0.07);
+    0 0 80px rgba(196, 130, 45, 0.07),
+    0 -32px 80px -16px rgba(196, 144, 65, 0.18);
 }
 
 /* SUPPORTING — accent-cyan: cool cyan/teal liquid glass with gold lamp.
@@ -2936,7 +2937,8 @@ body {
     0 0 0 1px rgba(140, 82, 22, 0.3),
     0 0 0 1px rgba(34, 211, 238, 0.32),
     0 0 24px rgba(196, 130, 45, 0.18),
-    0 0 80px rgba(196, 130, 45, 0.07);
+    0 0 80px rgba(196, 130, 45, 0.07),
+    0 -32px 80px -16px rgba(196, 144, 65, 0.18);
 }
 
 /* SUPPORTING — accent-indigo: DARKER cool indigo liquid glass with gold
@@ -2958,7 +2960,8 @@ body {
     0 0 0 1px rgba(140, 82, 22, 0.32),
     0 0 0 1px rgba(99, 102, 241, 0.36),
     0 0 28px rgba(196, 130, 45, 0.2),
-    0 0 80px rgba(196, 130, 45, 0.08);
+    0 0 80px rgba(196, 130, 45, 0.08),
+    0 -32px 80px -16px rgba(196, 144, 65, 0.18);
 }
 
 .bd-dashboard-section {
@@ -3094,7 +3097,8 @@ body {
     0 0 0 1px rgba(140, 82, 22, 0.26),
     0 0 0 1px rgba(96, 165, 250, 0.18),
     0 0 18px rgba(196, 130, 45, 0.16),
-    0 0 60px rgba(196, 130, 45, 0.06);
+    0 0 60px rgba(196, 130, 45, 0.06),
+    0 -28px 70px -14px rgba(196, 144, 65, 0.16);
 }
 
 /* accent-blue — medium cool blue liquid glass with premium gold lamp */
