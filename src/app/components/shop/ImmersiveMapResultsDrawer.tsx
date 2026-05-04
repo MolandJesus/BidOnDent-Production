@@ -123,13 +123,15 @@ export default function ImmersiveMapResultsDrawer({
           role="region"
           aria-label="Shop results"
           onKeyDown={(e) => e.key === "Escape" && onClose()}
-          style={{
-            // Pass P (2026-05-04): typed as React.CSSProperties so the
-            // custom property `--drawer-h` (consumed by `animate` height
-            // below) is accepted without `as any`.
-            "--drawer-h": snapHeights[snap],
-            paddingBottom: "env(safe-area-inset-bottom, 0px)",
-          } as React.CSSProperties}
+          style={
+            {
+              // Pass P (2026-05-04): typed as React.CSSProperties so the
+              // custom property `--drawer-h` (consumed by `animate` height
+              // below) is accepted without `as any`.
+              "--drawer-h": snapHeights[snap],
+              paddingBottom: "env(safe-area-inset-bottom, 0px)",
+            } as React.CSSProperties
+          }
           initial={{ y: "100%" }}
           animate={{ y: 0, height: `var(--drawer-h)` }}
           exit={{ y: "100%" }}
