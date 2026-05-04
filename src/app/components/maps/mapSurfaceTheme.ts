@@ -20,11 +20,19 @@ const baseTheme = {
   buttonBaseClassName:
     "inline-flex items-center justify-center gap-2 rounded-full border px-4 py-2.5 min-h-[44px] text-sm font-semibold backdrop-blur-xl transition-all duration-200 active:scale-[0.97]",
   compactButtonBaseClassName:
-    "inline-flex items-center justify-center gap-1.5 rounded-full border px-3 py-1.5 min-h-[36px] text-xs font-semibold backdrop-blur-xl transition-all duration-200 active:scale-[0.97]",
+    // Mobile ergonomics: bumped min-h-[36px] → min-h-[40px] to close the gap to
+    // Apple HIG's 44pt minimum. Keeps "compact" character for crowded map UI rows
+    // while improving thumb reach on primary mobile form factor (per owner
+    // directive 2026-05-04: "mobile layout — highest user impact — primary form
+    // factor"). Buttons stay visually compact via px-3 py-1.5 + xs font size.
+    "inline-flex items-center justify-center gap-1.5 rounded-full border px-3 py-1.5 min-h-[40px] text-xs font-semibold backdrop-blur-xl transition-all duration-200 active:scale-[0.97]",
   iconButtonBaseClassName:
     "inline-flex h-11 w-11 items-center justify-center rounded-full border backdrop-blur-xl transition-all duration-200 active:scale-[0.94]",
   compactIconButtonBaseClassName:
-    "inline-flex h-9 w-9 items-center justify-center rounded-full border backdrop-blur-xl transition-all duration-200 active:scale-[0.94]",
+    // Mobile ergonomics: bumped h-9 w-9 (36×36) → h-10 w-10 (40×40), same
+    // reasoning as compactButtonBaseClassName. Closer to iOS HIG 44pt; visual
+    // weight still distinct from full iconButtonBaseClassName (h-11 w-11).
+    "inline-flex h-10 w-10 items-center justify-center rounded-full border backdrop-blur-xl transition-all duration-200 active:scale-[0.94]",
   eyebrowClassName:
     "inline-flex items-center rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em]",
   metricLabelClassName: "text-[11px] font-semibold uppercase tracking-[0.22em]",
