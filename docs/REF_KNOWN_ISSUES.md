@@ -708,6 +708,20 @@
 - **Hard stops respected:** No edge function touched, no JWT verification path touched, `verify_jwt: false` preserved, `requireClerkSession()` unchanged, no Clerk SDK version bump, no env var change, no JWT template change. Single file (App.tsx) plus this doc entry. Per `supabase-clerk-edge-function` skill (no auth verification pattern change — this is session lifecycle, not session verification).
 - **Result:** Clerk's `signOut()` now performs a hard browser navigation to `/` after clearing the session, forcing a full document reload that clears all in-memory React state and gives Clerk a clean slate to verify the now-cleared session token. Both call sites benefit: dashboard `handleLogout` (`src/app/hooks/useAppHandlers.ts:40`) gets the hard nav for free; `LandingPageHeader.tsx:313`'s explicit `redirectUrl: "/"` becomes redundant but harmless.
 
+### KI-098: F-18 — Error boundary used near-white backgrounds (LAW Light-Mode Surface Rule violation)
+
+- **Impact:** Audit AI F-18 (P4-UX, `AUDIT_FULL_2026-05-04_SONNET.md`): the GlobalErrorBoundary recovery screen at [src/main.tsx](src/main.tsx) had three LAW Light-Mode Surface Rule violations: (1) card body gradient started at `rgba(255,255,255,0.82)`, (2) cream-highlight inset used `rgba(255,255,255,0.42)`, (3) the "Reload Page" secondary button used `bg-white` + `hover:bg-slate-50`. Plus a `border-white/30` border. Only visible on catastrophic React crashes — very low blast radius — but a canon violation nonetheless and an embarrassing surface to ship to users at the worst possible moment (when the app has crashed).
+- **Location:** [src/main.tsx](src/main.tsx) `GlobalErrorBoundary.render()` (~L48-L120).
+- **Fix direction:** Replace pure-white surfaces with canon equivalents at the same alpha character.
+  - Body gradient: `rgba(255,255,255,0.82) → rgba(241,245,249,0.64)` → cool ice canon `rgba(248,250,255,0.84) → rgba(229,238,250,0.76)` (LAW canon body opacity range 0.76-0.84).
+  - Cream highlight inset: `rgba(255,255,255,0.42)` → canon `rgba(252,240,208,0.42)`.
+  - Border: `border-white/30` → canon bronze `border-[rgba(140,82,22,0.22)]` (replaces pure-white with subtle canon bronze trim).
+  - Reload button: `bg-white` → `bg-[rgba(248,250,255,0.92)]`; `hover:bg-slate-50` → `hover:bg-[rgba(238,247,255,0.95)]`.
+  - Backdrop-filter preserved (premium glass character maintained even on catastrophic failure).
+- **Status:** RESOLVED 2026-05-05 (commit pending — added in this commit alongside this KI entry).
+- **Hard stops respected:** Outer wrapper `bg-[#eef2f7]` UNCHANGED (already canon cool blue-gray). Logo / heading / paragraph / Try Again button UNCHANGED (cool blue gradient already canon). Build clean (3816.11 KiB precache). Branch-aware forbidden grep ZERO.
+- **Skill:** `bd-design-identity`. Closes the visual-canon arc opened in Pass H (KI-091 → KI-094).
+
 ### KI-097: F-16 follow-up — `LandingPageHeader.tsx:313` fire-and-forget signOut (P7-TECHDEBT)
 
 - **Impact:** During F-16 diagnose (KI-096), a secondary code-quality issue surfaced at [src/app/components/landing/LandingPageHeader.tsx:313](src/app/components/landing/LandingPageHeader.tsx#L313): `signOut({ redirectUrl: "/" })` is invoked fire-and-forget (no `await`, no `void` annotation). After F-16 fix added provider-level `afterSignOutUrl`, the explicit `redirectUrl` is redundant and the unawaited promise is a code-quality smell — but logout works correctly post-F-16, so this is non-urgent.
