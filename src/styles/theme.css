@@ -1492,31 +1492,39 @@ body {
      intentionally stays sky-blue (rgba(147,197,253,0.22)) instead of the
      dashboard's gold lamp — landing identity is "cool blue dominant" per
      owner directive (cohesion via shared grammar, distinct character via
-     per-surface tuning). */
+     per-surface tuning).
+     Pass B (KI-081, 2026-05-04 site-wide dark deepening): bronze trim line
+     (bottom inset rim 0.18 -> 0.26), bronze ring (0.13 -> 0.18), cool ring
+     (0.18 -> 0.22), bronze outer halo (0.20 -> 0.22 at cap), cream edge
+     catchlights (0.10/0.06 -> 0.14/0.08). Top sky-blue inset preserved at
+     0.22 -- landing cool-dominant identity untouched. */
   border-color: rgba(96, 165, 250, 0.32);
   background: linear-gradient(180deg, rgba(37, 99, 235, 0.22) 0%, rgba(12, 25, 41, 0.78) 100%);
   box-shadow:
     0 18px 48px rgba(2, 6, 23, 0.5),
     0 6px 16px rgba(30, 58, 138, 0.32),
     inset 0 1px 0 rgba(147, 197, 253, 0.22),
-    inset 0 -1px 0 rgba(196, 144, 65, 0.18),
-    0 0 0 1px rgba(196, 144, 65, 0.13),
-    0 0 0 1px rgba(96, 165, 250, 0.18),
+    inset 0 -1px 0 rgba(196, 144, 65, 0.26),
+    0 0 0 1px rgba(196, 144, 65, 0.18),
+    0 0 0 1px rgba(96, 165, 250, 0.22),
     0 0 36px rgba(37, 99, 235, 0.18),
-    0 0 48px rgba(196, 130, 45, 0.2),
-    inset 1px 0 0 rgba(252, 240, 208, 0.10),
-    inset -1px 0 0 rgba(252, 240, 208, 0.06);
+    0 0 48px rgba(196, 130, 45, 0.22),
+    inset 1px 0 0 rgba(252, 240, 208, 0.14),
+    inset -1px 0 0 rgba(252, 240, 208, 0.08);
 }
 
 .dark .bd-glass-card--landing:hover,
 [data-theme="dark"] .bd-glass-card--landing:hover {
+  /* Pass B: hover proportional bumps so hover delta over idle stays
+     visible. Bronze rim 0.20 -> 0.28, bronze ring 0.16 -> 0.22, cool
+     ring 0.40 unchanged, bronze outer 0.22 unchanged (at cap). */
   border-color: rgba(147, 197, 253, 0.55);
   box-shadow:
     0 28px 68px rgba(2, 6, 23, 0.62),
     0 10px 24px rgba(30, 58, 138, 0.38),
     inset 0 1px 0 rgba(147, 197, 253, 0.32),
-    inset 0 -1px 0 rgba(196, 144, 65, 0.2),
-    0 0 0 1px rgba(196, 144, 65, 0.16),
+    inset 0 -1px 0 rgba(196, 144, 65, 0.28),
+    0 0 0 1px rgba(196, 144, 65, 0.22),
     0 0 0 1px rgba(147, 197, 253, 0.4),
     0 0 56px rgba(37, 99, 235, 0.28),
     0 0 52px rgba(196, 130, 45, 0.22);
