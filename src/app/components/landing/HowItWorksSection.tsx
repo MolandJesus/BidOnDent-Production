@@ -83,13 +83,16 @@ export default function HowItWorksSection({
         />
         {isLightAppearance ? (
           <>
-            {/* Subtle mesh texture */}
-            <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_39px,rgba(200,170,110,0.05)_39px,rgba(200,170,110,0.05)_40px)] opacity-80" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_70%_-10%,rgba(210,180,130,0.18),transparent_60%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_20%_80%,rgba(200,165,100,0.14),transparent_55%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_35%_at_40%_90%,rgba(220,185,115,0.14),transparent_50%)]" />
+            {/* Pass I — atmospheric mesh + radials swapped to LAW canon
+                palette at SAME alpha. Pre-canon goldenrod values
+                (rgba(200,170,110), (210,180,130), (200,165,100), (220,185,115),
+                amber-100) all map to canon champagne rgba(196,144,65). */}
+            <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_39px,rgba(196,144,65,0.05)_39px,rgba(196,144,65,0.05)_40px)] opacity-80" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_70%_-10%,rgba(196,144,65,0.18),transparent_60%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_20%_80%,rgba(196,144,65,0.14),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_35%_at_40%_90%,rgba(196,144,65,0.14),transparent_50%)]" />
             <div className="absolute top-10 left-[20%] w-64 h-64 bg-[rgba(196,144,65,0.22)] rounded-full blur-[110px]" />
-            <div className="absolute bottom-0 right-[20%] w-48 h-48 bg-amber-100/[0.18] rounded-full blur-[120px]" />
+            <div className="absolute bottom-0 right-[20%] w-48 h-48 bg-[rgba(196,144,65,0.18)] rounded-full blur-[120px]" />
             <div className="absolute -top-10 right-[8%] w-[28rem] h-[28rem] bg-sky-400/[0.18] rounded-full blur-[130px]" />
             <div className="absolute bottom-0 left-[5%] w-72 h-72 bg-blue-300/[0.14] rounded-full blur-[130px]" />
           </>
