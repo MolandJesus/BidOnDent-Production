@@ -117,6 +117,12 @@ Everything under [`docs/archive/`](archive/) is historical reference, retained f
 
 Most recent archive moves (2026-05-04):
 
+- `PASS_AUTOPILOT_2026-05-03_MASTER_REPORT.md` → archive — Cloud master pass (Buckets 1-7) all KIs RESOLVED or owner-gated (KI-067 HOLD, KI-075 DEFERRED).
+- `PASS_AUTOPILOT_2026-05-04_MOBILE_DARK_REPORT.md` → archive — mobile/dark visual pass; KI-076-080 all RESOLVED, KI-067/068/075 owner-gated.
+- `PASS_AUTOPILOT_2026-05-05_LONGRUN_REPORT.md` → archive — long-run pass; KI-086-090 all RESOLVED, KI-067/075/089 owner-gated.
+- `HANDOFF_CLOUD_MASTER_AUTOPILOT_2026-05-03.md` → archive — Cloud master autopilot handoff brief, superseded by HANDOFF_MASTER_PROMPT_2026-05-04.
+- `AUDIT_VISUAL_MOBILE_DARK_LIGHT_2026-05-04.md` → archive — visual mobile audit; bucket findings all RESOLVED across Pass H/I/J/K/L/M/N/O.
+- `AUDIT_FULL_2026-05-04_SONNET.md` → archive — F-01..F-24 audit findings; all RESOLVED or owner-gated (per Part 3 report scorecard).
 - `PASS_H_2026-05-05_REPORT.md` → archive — KI-091/092 RESOLVED.
 - `PASS_I_J_2026-05-05_REPORT.md` → archive — KI-091/092/093/094 RESOLVED.
 - `SHOP_AUDIT_REPORT_2026-04-29.md` → archive — pre-Pass-A era; findings folded into KI ledger.

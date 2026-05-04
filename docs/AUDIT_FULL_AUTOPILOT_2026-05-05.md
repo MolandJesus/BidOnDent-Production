@@ -4,7 +4,7 @@
 
 **Captured by:** Cloud (Opus 4.7) per owner directive 2026-05-04 ("go full auto and have full freedom design work and functionality work for hours without stopping after fully auditing codebase and ts work now"). Codex framework loaded (long-running prompt). Phase 0 is mandatory before any fix commits.
 
-**Repo state at audit:** branch `BidOnDent-Horizon-Beta` HEAD `23f4a2cd` (KI-086 followup just shipped). Working tree clean except for an in-progress handoff doc (`docs/HANDOFF_CLOUD_MASTER_AUTOPILOT_2026-05-03.md`) created during prior session.
+**Repo state at audit:** branch `BidOnDent-Horizon-Beta` HEAD `23f4a2cd` (KI-086 followup just shipped). Working tree clean except for an in-progress handoff doc (`docs/archive/HANDOFF_CLOUD_MASTER_AUTOPILOT_2026-05-03_archived_2026-05-04.md`, archived 2026-05-04) created during prior session.
 
 **Build at audit:** clean. `npm run build` → 3.78s, precache 3808.26 KiB, 61 entries.
 
