@@ -3870,14 +3870,16 @@ body {
   height: 320px;
   pointer-events: none;
   z-index: 0;
-  /* Pass H1.7 + H9 progression: H1.7 boosted 0.06 -> 0.10 light /
-     0.10 -> 0.16 dark. Owner showed older-design screenshots where
-     landing read as more lit than current — H9 takes one more step
-     toward hero-parity within canon: 0.10 -> 0.13 light, 0.16 -> 0.20
-     dark. Both still under 0.22a single-layer halo cap. */
+  /* Pass H1.7 + H9 + N progression: H1.7 boosted 0.06 -> 0.10 light /
+     0.10 -> 0.16 dark. H9 took one more step toward hero-parity within
+     canon: 0.10 -> 0.13 light, 0.16 -> 0.20 dark. Pass N (2026-05-04)
+     completes the Pass M lift pattern by bumping LIGHT 0.13 -> 0.18
+     to address owner's zoomed-out screenshot wash thinness signal in
+     light-mode landing. Dark unchanged (still 0.20). All still under
+     0.22a single-layer halo cap. */
   background: radial-gradient(
     ellipse 80% 100% at 50% 0%,
-    rgba(196, 144, 65, 0.13),
+    rgba(196, 144, 65, 0.18),
     transparent 70%
   );
 }
