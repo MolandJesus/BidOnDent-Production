@@ -83,7 +83,7 @@ export default function WhoWeServeSection({
   return (
     <section
       id="who-we-serve"
-      className="py-8 sm:py-12 md:py-16 relative overflow-hidden"
+      className="py-4 sm:py-8 md:py-10 relative overflow-hidden"
       style={{
         background: isLightAppearance
           ? "linear-gradient(178deg, #f2f8ff 0%, #eaf3ff 35%, #e4efff 70%, #dde9ff 100%)"

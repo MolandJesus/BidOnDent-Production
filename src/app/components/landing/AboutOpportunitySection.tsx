@@ -37,7 +37,7 @@ export default function AboutOpportunitySection({
   return (
     <section
       id="about-opportunity"
-      className={`py-8 sm:py-12 md:py-16 relative overflow-hidden ${isLightAppearance ? "" : "dark"}`}
+      className={`py-4 sm:py-8 md:py-10 relative overflow-hidden ${isLightAppearance ? "" : "dark"}`}
       style={{
         background: isLightAppearance
           ? "linear-gradient(180deg, #f2f8ff 0%, #eaf3ff 35%, #e4efff 70%, #dde9ff 100%)"

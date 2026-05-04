@@ -19,7 +19,7 @@ export default function CTASection({
 
   return (
     <section
-      className="py-8 sm:py-12 md:py-16 lg:py-20 relative overflow-hidden"
+      className="py-4 sm:py-8 md:py-10 lg:py-12 relative overflow-hidden"
       style={{
         background: isLightAppearance
           ? "linear-gradient(180deg, #e8f1fc 0%, #ddeaf9 40%, #d5e5f8 70%, #cde0f7 100%)"

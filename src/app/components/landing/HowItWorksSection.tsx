@@ -41,7 +41,7 @@ export default function HowItWorksSection({
   return (
     <section
       id="how-it-works"
-      className="py-8 sm:py-12 md:py-16 relative overflow-hidden"
+      className="py-4 sm:py-8 md:py-10 relative overflow-hidden"
       style={{
         background: isLightAppearance
           ? "linear-gradient(175deg, #eef5ff 0%, #e8f1fd 45%, #e3edfc 100%)"
