@@ -758,6 +758,19 @@
 - **Hard stops respected:** 0.22a cap NOT exceeded (alphas unchanged). HeroSection UNTOUCHED. Pass K spacing UNTOUCHED (`py-4 sm:py-8 md:py-10` preserved). Locked Premium Gold Palette only. No new utilities. `pointer-events: none` preserved (no click interception). `position: relative; z-index: 1;` preserved (renders above sections in stacking context). Build clean (3817.64 KiB precache stable). Branch-aware forbidden grep ZERO.
 - **Skill:** `bd-design-identity`. Pre-existing IDE diagnostics at L453/L483/L2555/L2685 UNCHANGED — documented in audit, not caused by this edit.
 
+### KI-105: F-15 — Landing hero demo map renders too pale in light mode
+
+- **Impact:** Audit AI F-15 (P4-UX, cosmetic): the landing hero demo map (mobile + desktop variants) used `#eef4fb` base tile + `#cbd5e1`/`#dde6f0` road strokes in light mode. Tile vs stroke luminance delta was ~32 — too small to give the map a confident, premium reading. Dark-mode equivalent has ~40 luminance delta with rich navy `#0d1d3a` + slate-700 `#334155` strokes; light mode trailed in visual impact.
+- **Location:** [src/app/components/landing/HeroSection.tsx](src/app/components/landing/HeroSection.tsx) — 14 occurrences across mobile (L585-712) + desktop (L840-910) hero map layers.
+- **Fix direction:** Single-axis palette saturation shift, dark mode UNCHANGED.
+  - Tile base: `#eef4fb` → `#dbe7f5` (slightly deeper cool blue, still light/airy — 6 occurrences)
+  - Primary roads: `#cbd5e1` → `#94a3b8` (slate-400, more visible — 6 occurrences)
+  - Secondary roads: `#dde6f0` → `#a8b8cb` (between slate-300 and slate-400 — 4 occurrences)
+  - New light luminance delta: ~68 (primary) / ~46 (secondary) — matches or exceeds dark-mode contrast ratio.
+- **Status:** RESOLVED 2026-05-05 (commit pending — added in this commit alongside this KI entry).
+- **Hard stops respected:** Cool blue identity preserved (no warm encroachment). LAW Light-Mode Surface Rule respected (no pure-white). No structural change to map layers (route lines, pin pulse, gold flow, contour grid all UNCHANGED). Dark-mode tile + stroke colors UNCHANGED (`#0d1d3a`, `#334155`, `#293449` preserved). Build clean (3817.64 KiB precache stable). Branch-aware forbidden grep ZERO.
+- **Skill:** `bd-design-identity`.
+
 ### KI-101: F-01 — "Toyoto" misspelled vehicle make persisted in DB (P6-SPELL — owner action)
 
 - **Impact:** Audit AI F-01 (P6-SPELL): the 2021 Toyota Camry vehicle record was saved with the make field as "Toyoto" (misspelled). Propagates to every display of this vehicle/report — dashboard "Your Reports" h3 (`2021 Toyoto Camry`), Account tab Vehicles list, Report creation flow Step 1 vehicle selector, Make field pre-fill. Visible typo on production-facing content. Make input placeholder correctly shows "Toyota" — so the field hint is correct but there's no enforcement.

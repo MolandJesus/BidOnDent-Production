@@ -587,7 +587,7 @@ export default function HeroSection({
               style={{
                 transitionDelay: "1.05s",
                 height: "200px",
-                background: isLightAppearance ? "#eef4fb" : "#0d1d3a",
+                background: isLightAppearance ? "#dbe7f5" : "#0d1d3a",
                 boxShadow: isLightAppearance
                   ? "0 14px 40px rgba(15, 30, 60, 0.10), 0 40px 90px rgba(15, 30, 60, 0.08), 0 0 50px rgba(37, 99, 235, 0.06), inset 0 1px 0 rgba(255,255,255,0.55), inset 0 0 0 1px rgba(190,210,235,0.22), inset 0 -1px 0 rgba(140,82,22,0.20), 0 0 80px rgba(196,130,45,0.05)"
                   : "0 16px 48px rgba(2, 6, 23, 0.40), 0 50px 110px rgba(2, 6, 23, 0.18), 0 0 60px rgba(37, 99, 235, 0.12), inset 0 1px 0 rgba(196, 144, 65,0.20), inset 0 0 0 1px rgba(96, 165, 250, 0.14), inset 0 -1px 0 rgba(196, 144, 65,0.16), 0 0 100px rgba(196, 130, 45, 0.08)",
@@ -625,31 +625,31 @@ export default function HeroSection({
                 viewBox="0 0 600 200"
                 preserveAspectRatio="xMidYMid slice"
               >
-                <rect width="600" height="200" fill={isLightAppearance ? "#eef4fb" : "#0d1d3a"} />
+                <rect width="600" height="200" fill={isLightAppearance ? "#dbe7f5" : "#0d1d3a"} />
                 <path
                   d="M 0,80 Q 150,90 300,75 T 600,90"
-                  stroke={isLightAppearance ? "#cbd5e1" : "#334155"}
+                  stroke={isLightAppearance ? "#94a3b8" : "#334155"}
                   strokeWidth="2.5"
                   fill="none"
                   opacity="0.85"
                 />
                 <path
                   d="M 0,140 Q 200,120 400,135 T 600,130"
-                  stroke={isLightAppearance ? "#cbd5e1" : "#334155"}
+                  stroke={isLightAppearance ? "#94a3b8" : "#334155"}
                   strokeWidth="2"
                   fill="none"
                   opacity="0.65"
                 />
                 <path
                   d="M 160,0 Q 175,100 165,200"
-                  stroke={isLightAppearance ? "#dde6f0" : "#293449"}
+                  stroke={isLightAppearance ? "#a8b8cb" : "#293449"}
                   strokeWidth="1.5"
                   fill="none"
                   opacity="0.55"
                 />
                 <path
                   d="M 440,0 Q 460,110 435,200"
-                  stroke={isLightAppearance ? "#dde6f0" : "#293449"}
+                  stroke={isLightAppearance ? "#a8b8cb" : "#293449"}
                   strokeWidth="1.5"
                   fill="none"
                   opacity="0.5"
@@ -844,7 +844,7 @@ export default function HeroSection({
                 style={{
                   aspectRatio: "16/10",
                   maxHeight: "520px",
-                  background: isLightAppearance ? "#eef4fb" : "#0d1d3a",
+                  background: isLightAppearance ? "#dbe7f5" : "#0d1d3a",
                   boxShadow: isLightAppearance
                     ? "0 18px 60px rgba(15, 30, 60, 0.10), 0 0 80px rgba(37, 99, 235, 0.10), 0 0 140px rgba(196, 144, 65,0.08), inset 0 1px 0 rgba(255,255,255,0.62), inset 0 -1px 0 rgba(196, 144, 65,0.18), inset 0 2px 12px rgba(255,255,255,0.20)"
                     : "0 22px 70px rgba(2, 6, 23, 0.42), 0 0 90px rgba(37, 99, 235, 0.14), 0 0 160px rgba(196, 144, 65,0.10), inset 0 1px 0 rgba(196, 144, 65,0.18), inset 0 -1px 0 rgba(196, 144, 65,0.16), inset 0 2px 12px rgba(96, 165, 250, 0.10)",
@@ -861,18 +861,18 @@ export default function HeroSection({
                   preserveAspectRatio="xMidYMid slice"
                   aria-hidden="true"
                 >
-                  <rect width="800" height="500" fill={isLightAppearance ? "#eef4fb" : "#0d1d3a"} />
+                  <rect width="800" height="500" fill={isLightAppearance ? "#dbe7f5" : "#0d1d3a"} />
                   {/* Major arteries */}
                   <path
                     d="M 0,180 Q 200,200 400,170 T 800,200"
-                    stroke={isLightAppearance ? "#cbd5e1" : "#334155"}
+                    stroke={isLightAppearance ? "#94a3b8" : "#334155"}
                     strokeWidth="3.5"
                     fill="none"
                     opacity="0.85"
                   />
                   <path
                     d="M 0,330 Q 250,290 500,320 T 800,310"
-                    stroke={isLightAppearance ? "#cbd5e1" : "#334155"}
+                    stroke={isLightAppearance ? "#94a3b8" : "#334155"}
                     strokeWidth="3"
                     fill="none"
                     opacity="0.7"
@@ -880,14 +880,14 @@ export default function HeroSection({
                   {/* Vertical secondary roads */}
                   <path
                     d="M 200,0 Q 230,200 210,500"
-                    stroke={isLightAppearance ? "#dde6f0" : "#293449"}
+                    stroke={isLightAppearance ? "#a8b8cb" : "#293449"}
                     strokeWidth="2"
                     fill="none"
                     opacity="0.6"
                   />
                   <path
                     d="M 580,0 Q 620,250 560,500"
-                    stroke={isLightAppearance ? "#dde6f0" : "#293449"}
+                    stroke={isLightAppearance ? "#a8b8cb" : "#293449"}
                     strokeWidth="2"
                     fill="none"
                     opacity="0.55"
@@ -895,14 +895,14 @@ export default function HeroSection({
                   {/* Small connector accents */}
                   <path
                     d="M 380,80 Q 420,90 470,75"
-                    stroke={isLightAppearance ? "#cbd5e1" : "#334155"}
+                    stroke={isLightAppearance ? "#94a3b8" : "#334155"}
                     strokeWidth="1.5"
                     fill="none"
                     opacity="0.4"
                   />
                   <path
                     d="M 100,420 Q 140,410 180,425"
-                    stroke={isLightAppearance ? "#cbd5e1" : "#334155"}
+                    stroke={isLightAppearance ? "#94a3b8" : "#334155"}
                     strokeWidth="1.5"
                     fill="none"
                     opacity="0.4"
