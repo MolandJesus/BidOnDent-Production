@@ -337,7 +337,7 @@ export function MapPaneSearchPills({
           } ${
             isDark
               ? "border-blue-200/16 bg-[linear-gradient(180deg,rgba(15,23,42,0.82),rgba(30,41,59,0.74))] text-slate-100 hover:-translate-y-0.5 hover:bg-[linear-gradient(180deg,rgba(30,58,138,0.38),rgba(30,41,59,0.82))] hover:text-white"
-              : "border-slate-200/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.76),rgba(241,245,249,0.72))] text-slate-700 shadow-[0_8px_20px_rgba(15,23,42,0.08)] hover:-translate-y-0.5 hover:bg-white/90 hover:text-slate-950"
+              : "border-[rgba(140,82,22,0.26)] bg-[linear-gradient(180deg,rgba(247,232,194,0.82),rgba(232,238,248,0.74))] text-slate-700 shadow-[inset_0_1px_0_rgba(252,240,208,0.78),0_8px_20px_rgba(15,23,42,0.10)] hover:-translate-y-0.5 hover:bg-[linear-gradient(180deg,rgba(247,232,194,0.94),rgba(232,238,248,0.88))] hover:text-slate-950"
           }`}
         >
           <Search className="h-3 w-3" />

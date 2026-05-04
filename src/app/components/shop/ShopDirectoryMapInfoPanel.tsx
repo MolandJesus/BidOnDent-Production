@@ -65,8 +65,8 @@ export default function ShopDirectoryMapInfoPanel({
   }, [shop]);
 
   const panelBg = isDark
-    ? "border-blue-400/[0.14] bg-[linear-gradient(180deg,rgba(30,58,138,0.22)_0%,rgba(12,25,41,0.85)_100%)] backdrop-blur-xl shadow-[0_10px_40px_rgba(2,6,23,0.45),0_0_20px_rgba(37,99,235,0.06)]"
-    : "border-black/8 bg-white/92 backdrop-blur-xl";
+    ? "border-[rgba(96,165,250,0.22)] bg-[linear-gradient(180deg,rgba(30,58,138,0.24)_0%,rgba(12,25,41,0.86)_100%)] backdrop-blur-xl shadow-[inset_0_1px_0_rgba(196,144,65,0.22),inset_0_-1px_0_rgba(140,82,22,0.20),0_0_0_1px_rgba(96,165,250,0.18),0_22px_52px_rgba(2,6,23,0.46),0_0_56px_rgba(196,130,45,0.14)]"
+    : "border-[rgba(140,82,22,0.28)] bg-[linear-gradient(180deg,rgba(247,232,194,0.92),rgba(232,238,248,0.86))] backdrop-blur-xl shadow-[inset_0_1px_0_rgba(252,240,208,0.85),0_18px_46px_rgba(15,23,42,0.14),0_0_0_1px_rgba(140,82,22,0.18)]";
   const titleCls = isDark ? "text-slate-100" : "text-slate-800";
   const subCls = isDark ? "text-slate-400" : "text-slate-500";
 
@@ -142,7 +142,7 @@ export default function ShopDirectoryMapInfoPanel({
         <button
           type="button"
           onClick={() => setMinimized(false)}
-          className={`inline-flex min-h-[44px] items-center gap-2 rounded-2xl border px-3 py-2 shadow-2xl transition-colors ${panelBg} ${isDark ? "hover:bg-slate-900/95" : "hover:bg-white/98"}`}
+          className={`inline-flex min-h-[44px] items-center gap-2 rounded-2xl border px-3 py-2 transition-colors ${panelBg} ${isDark ? "hover:bg-[linear-gradient(180deg,rgba(30,58,138,0.32)_0%,rgba(12,25,41,0.94)_100%)]" : "hover:bg-[linear-gradient(180deg,rgba(247,232,194,0.96),rgba(232,238,248,0.92))]"}`}
           aria-label={`Expand ${shop.name} info`}
         >
           <MapPin className={`h-4 w-4 shrink-0 ${isDark ? "text-blue-400" : "text-blue-600"}`} />

@@ -81,7 +81,7 @@ export function MapLoadingSkeleton({
                   className={`min-h-[40px] rounded-full border px-4 py-2 text-xs font-semibold transition-colors ${
                     isDark
                       ? "border-white/20 bg-slate-800/80 text-white/85 hover:bg-slate-700/90"
-                      : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+                      : "border-[rgba(140,82,22,0.28)] bg-[linear-gradient(180deg,rgba(247,232,194,0.86),rgba(232,238,248,0.80))] text-slate-700 shadow-[inset_0_1px_0_rgba(252,240,208,0.78)] hover:bg-[linear-gradient(180deg,rgba(247,232,194,0.94),rgba(232,238,248,0.88))]"
                   }`}
                 >
                   Use list mode
@@ -125,7 +125,7 @@ export function MapTilePicker({
         } ${
           isDark
             ? "border-blue-300/20 bg-[linear-gradient(180deg,rgba(15,23,42,0.86),rgba(15,23,42,0.8))]"
-            : "border-slate-200/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.72),rgba(241,245,249,0.7))]"
+            : "border-[rgba(140,82,22,0.26)] bg-[linear-gradient(180deg,rgba(247,232,194,0.78),rgba(232,238,248,0.72))] shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]"
         }`}
       >
         {modes.map(({ key, label, Icon }) => (
@@ -197,7 +197,7 @@ export function GeoErrorToast({
         className={`pointer-events-auto rounded-xl border px-3 py-2 shadow-lg backdrop-blur-2xl ${
           isDark
             ? "border-amber-400/30 bg-slate-900/90"
-            : "border-amber-300/60 bg-white/90 shadow-[0_8px_20px_rgba(15,23,42,0.08)]"
+            : "border-amber-300/60 bg-[linear-gradient(180deg,rgba(247,232,194,0.92),rgba(232,238,248,0.84))] shadow-[inset_0_1px_0_rgba(252,240,208,0.82),0_8px_20px_rgba(15,23,42,0.10)]"
         }`}
       >
         <p className={`text-xs font-medium ${isDark ? "text-amber-300" : "text-amber-700"}`}>

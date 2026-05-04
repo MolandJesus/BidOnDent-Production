@@ -105,11 +105,11 @@ export default function ShopDirectoryMapOverlays({
   const isCompactDensity = density === "compact";
 
   const glassPanel = isDark
-    ? "border-blue-400/20 bg-[linear-gradient(180deg,rgba(30,58,138,0.20)_0%,rgba(12,25,41,0.84)_100%)] backdrop-blur-xl text-white shadow-[0_8px_32px_rgba(2,6,23,0.40),0_0_20px_rgba(37,99,235,0.06)]"
-    : "border-black/8 bg-white/88 backdrop-blur-md text-slate-800";
+    ? "border-[rgba(96,165,250,0.22)] bg-[linear-gradient(180deg,rgba(30,58,138,0.22)_0%,rgba(12,25,41,0.86)_100%)] backdrop-blur-xl text-white shadow-[inset_0_1px_0_rgba(196,144,65,0.22),inset_0_-1px_0_rgba(140,82,22,0.20),0_0_0_1px_rgba(96,165,250,0.16),0_8px_32px_rgba(2,6,23,0.42),0_0_44px_rgba(196,130,45,0.14)]"
+    : "border-[rgba(140,82,22,0.26)] bg-[linear-gradient(180deg,rgba(247,232,194,0.86),rgba(232,238,248,0.80))] backdrop-blur-md text-slate-800 shadow-[inset_0_1px_0_rgba(252,240,208,0.78),0_8px_22px_rgba(15,23,42,0.10)]";
   const glassChip = isDark
-    ? "border-blue-400/[0.18] bg-[rgba(12,25,41,0.82)] text-white backdrop-blur-xl hover:bg-[rgba(12,25,41,0.92)] shadow-[0_4px_20px_rgba(2,6,23,0.45),0_0_12px_rgba(37,99,235,0.06)]"
-    : "border-black/8 bg-white/85 text-slate-700 backdrop-blur-md hover:bg-white/95";
+    ? "border-[rgba(96,165,250,0.20)] bg-[linear-gradient(180deg,rgba(12,25,41,0.84),rgba(8,16,33,0.78))] text-white backdrop-blur-xl shadow-[inset_0_1px_0_rgba(196,144,65,0.18),inset_0_-1px_0_rgba(140,82,22,0.16),0_4px_20px_rgba(2,6,23,0.46),0_0_18px_rgba(196,130,45,0.10)] hover:bg-[linear-gradient(180deg,rgba(12,25,41,0.94),rgba(8,16,33,0.86))]"
+    : "border-[rgba(140,82,22,0.26)] bg-[linear-gradient(180deg,rgba(247,232,194,0.84),rgba(232,238,248,0.78))] text-slate-700 backdrop-blur-md shadow-[inset_0_1px_0_rgba(252,240,208,0.78),0_4px_14px_rgba(15,23,42,0.08)] hover:bg-[linear-gradient(180deg,rgba(247,232,194,0.94),rgba(232,238,248,0.88))]";
   const secondaryText = isDark ? "text-white/60" : "text-slate-500";
   let distanceLabel = "";
   let etaLabel = "";
