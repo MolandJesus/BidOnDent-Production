@@ -108,11 +108,14 @@ export default function NotificationCenter({
           document.body
         )
       : null;
+  // KI-067: on mobile, anchor the panel near the bottom of the viewport
+  // (with safe-area padding) so it lands within thumb-reach on tall phones.
+  // Desktop position unchanged — still drops below the trigger.
   const panelPositionStyle =
     anchorRect && typeof window !== "undefined"
       ? isMobile
         ? {
-            top: anchorRect.bottom + 10,
+            bottom: "calc(env(safe-area-inset-bottom, 0px) + 12px)",
             left: 8,
             right: 8,
           }
@@ -122,7 +125,7 @@ export default function NotificationCenter({
           }
       : isMobile
         ? {
-            top: 72,
+            bottom: "calc(env(safe-area-inset-bottom, 0px) + 12px)",
             left: 8,
             right: 8,
           }
@@ -186,6 +189,22 @@ export default function NotificationCenter({
                   : "blur(28px) saturate(1.5)",
               }}
             >
+              {/* ── Mobile drag-handle (KI-067 reachability affordance) ── */}
+              {isMobile ? (
+                <div
+                  aria-hidden="true"
+                  className="flex items-center justify-center pt-2 pb-1"
+                >
+                  <span
+                    className={`block h-1 w-9 rounded-full ${
+                      isLightAppearance
+                        ? "bg-[rgba(140,82,22,0.32)]"
+                        : "bg-[rgba(196,144,65,0.34)]"
+                    }`}
+                  />
+                </div>
+              ) : null}
+
               {/* ── Header ── */}
               <div
                 className={`px-4 py-3 ${

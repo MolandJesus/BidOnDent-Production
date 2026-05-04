@@ -137,10 +137,12 @@ export default function ProfileDropdown({
     }
   };
 
+  // KI-067: popover variant on mobile anchors near the bottom of the viewport
+  // (with safe-area padding) for thumb-reach on tall phones. Desktop unchanged.
   const containerClasses =
     variant === "embedded"
       ? `w-full bd-glass-card${isLightAppearance ? " bd-light-surface" : ""}`
-      : `absolute right-0 mt-2 w-80 bd-glass-floating z-50${isLightAppearance ? " bd-light-surface" : ""}`;
+      : `absolute right-0 mt-2 w-80 max-md:fixed max-md:right-2 max-md:left-2 max-md:bottom-[max(env(safe-area-inset-bottom),12px)] max-md:top-auto max-md:mt-0 max-md:w-auto max-md:max-h-[80vh] max-md:overflow-y-auto bd-glass-floating z-50${isLightAppearance ? " bd-light-surface" : ""}`;
 
   return (
     <div
@@ -175,6 +177,22 @@ export default function ProfileDropdown({
             "0 24px 56px rgba(2, 6, 23, 0.52), 0 4px 12px rgba(2, 6, 23, 0.32), 0 0 0 1px rgba(96, 165, 250, 0.20), inset 0 1px 0 rgba(196, 144, 65, 0.24), inset 0 -1px 0 rgba(140, 82, 22, 0.34), 0 0 36px rgba(37, 99, 235, 0.12), 0 0 50px rgba(196, 130, 45, 0.18)",
       }}
     >
+      {/* Mobile drag-handle (KI-067 reachability affordance, popover variant only) */}
+      {variant === "popover" ? (
+        <div
+          aria-hidden="true"
+          className="hidden max-md:flex items-center justify-center pt-2 pb-1"
+        >
+          <span
+            className={`block h-1 w-9 rounded-full ${
+              isLightAppearance
+                ? "bg-[rgba(140,82,22,0.32)]"
+                : "bg-[rgba(196,144,65,0.34)]"
+            }`}
+          />
+        </div>
+      ) : null}
+
       {/* Profile Header */}
       <div
         className={`p-4 border-b ${isLightAppearance ? "border-blue-200/35" : "border-blue-400/15"}`}
