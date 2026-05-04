@@ -109,7 +109,7 @@ export default function CustomerMapWidget({
   ];
 
   return (
-    <section className="overflow-hidden">
+    <section className="overflow-hidden rounded-2xl ring-1 ring-[rgba(96,165,250,0.18)] ring-inset">
       {/* Embedded mini-map with click-through overlay */}
       <div
         className="bd-dashboard-panel bd-dashboard-panel--deep group relative h-[200px] cursor-pointer overflow-hidden rounded-2xl md:h-[220px]"

@@ -114,8 +114,9 @@ export default function ShopMapWidget({
 
   return (
     <section className="bd-dashboard-panel bd-dashboard-panel--accent-blue overflow-hidden">
-      {/* Embedded mini-map */}
-      <div className="relative h-[180px] md:h-[200px]">
+      {/* Embedded mini-map — Bucket 1.3 (KI-074 partial): inner-glass bezel
+          ring eliminates the flat seam between panel chrome and map canvas. */}
+      <div className="relative h-[180px] md:h-[200px] rounded-xl ring-1 ring-[rgba(96,165,250,0.16)] ring-inset overflow-hidden">
         <DashboardMapPreview
           shops={partnerShops}
           reportPins={reportPins}
