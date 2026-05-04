@@ -122,7 +122,7 @@ export default function NavigationDeviationPrompt({
 
       {/* Dismiss */}
       <button
-        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full transition-colors ${
+        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-colors ${
           isDark ? "text-slate-500 hover:text-slate-300" : "text-slate-400 hover:text-slate-600"
         }`}
         onClick={handleDismiss}
