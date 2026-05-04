@@ -1944,8 +1944,8 @@ body {
 [data-appearance-mode="light"] .bd-glass-floating {
   border-color: rgba(147, 197, 253, 0.36);
   background:
-    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(196, 144, 65, 0.16), transparent 70%),
-    linear-gradient(180deg, rgba(244, 250, 254, 0.94) 0%, rgba(226, 238, 252, 0.88) 100%);
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(196, 144, 65, 0.05), transparent 70%),
+    linear-gradient(180deg, rgba(244, 250, 254, 0.84) 0%, rgba(226, 238, 252, 0.76) 100%);
   color: #1e293b;
   backdrop-filter: blur(28px) saturate(1.5);
   -webkit-backdrop-filter: blur(28px) saturate(1.5);
@@ -2104,8 +2104,8 @@ body {
     inset 0 -1px 0 rgba(202, 138, 47, 0.3), 0 0 0 1px rgba(202, 138, 47, 0.24),
     0 0 36px rgba(196, 130, 45, 0.22);
   --bd-report-panel-bg:
-    radial-gradient(ellipse 90% 60% at 50% 0%, rgba(196, 144, 65, 0.12), transparent 65%),
-    linear-gradient(180deg, rgba(254, 247, 230, 0.9) 0%, rgba(247, 235, 210, 0.8) 100%);
+    radial-gradient(ellipse 90% 60% at 50% 0%, rgba(196, 144, 65, 0.05), transparent 65%),
+    linear-gradient(180deg, rgba(254, 247, 230, 0.84) 0%, rgba(247, 235, 210, 0.76) 100%);
   --bd-report-panel-border: rgba(202, 138, 47, 0.3);
   --bd-report-panel-shadow:
     0 16px 34px rgba(120, 78, 18, 0.12), inset 0 1px 0 rgba(254, 247, 232, 0.88),
@@ -2899,9 +2899,9 @@ body {
    canvas and reads as lit-from-above premium glass. */
 [data-appearance-mode="light"] .bd-dashboard-panel--deep {
   background:
-    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(196, 144, 65, 0.2), transparent 70%),
+    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(196, 144, 65, 0.05), transparent 70%),
     radial-gradient(ellipse 80% 60% at 50% 0%, rgba(96, 165, 250, 0.1), transparent 70%),
-    linear-gradient(180deg, rgba(232, 242, 254, 0.94) 0%, rgba(204, 222, 246, 0.88) 100%);
+    linear-gradient(180deg, rgba(232, 242, 254, 0.84) 0%, rgba(204, 222, 246, 0.76) 100%);
   border-color: rgba(140, 82, 22, 0.44);
   box-shadow:
     0 1px 2px rgba(15, 30, 60, 0.1),
@@ -2921,9 +2921,9 @@ body {
    Map widgets, cards with teal identity. */
 [data-appearance-mode="light"] .bd-dashboard-panel--accent-cyan {
   background:
-    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(196, 144, 65, 0.2), transparent 70%),
+    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(196, 144, 65, 0.05), transparent 70%),
     radial-gradient(ellipse 80% 60% at 50% 0%, rgba(34, 211, 238, 0.12), transparent 70%),
-    linear-gradient(180deg, rgba(220, 240, 246, 0.94) 0%, rgba(190, 226, 238, 0.88) 100%);
+    linear-gradient(180deg, rgba(220, 240, 246, 0.84) 0%, rgba(190, 226, 238, 0.76) 100%);
   border-color: rgba(140, 82, 22, 0.42);
   box-shadow:
     0 1px 2px rgba(8, 51, 68, 0.12),
@@ -2943,9 +2943,9 @@ body {
    lamp. Used on Repair Activity, Help & Support, anything needing depth. */
 [data-appearance-mode="light"] .bd-dashboard-panel--accent-indigo {
   background:
-    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(196, 144, 65, 0.22), transparent 70%),
+    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(196, 144, 65, 0.05), transparent 70%),
     radial-gradient(ellipse 80% 60% at 50% 0%, rgba(99, 102, 241, 0.16), transparent 70%),
-    linear-gradient(180deg, rgba(212, 222, 246, 0.94) 0%, rgba(184, 198, 238, 0.88) 100%);
+    linear-gradient(180deg, rgba(212, 222, 246, 0.84) 0%, rgba(184, 198, 238, 0.76) 100%);
   border-color: rgba(140, 82, 22, 0.46);
   box-shadow:
     0 1px 2px rgba(28, 25, 80, 0.14),
@@ -3080,8 +3080,8 @@ body {
 /* deep — neutral ivory liquid glass with premium gold lamp */
 [data-appearance-mode="light"] .bd-dashboard-section--deep {
   background:
-    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(196, 144, 65, 0.18), transparent 70%),
-    linear-gradient(180deg, rgba(238, 246, 254, 0.94) 0%, rgba(216, 230, 248, 0.86) 100%);
+    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(196, 144, 65, 0.05), transparent 70%),
+    linear-gradient(180deg, rgba(238, 246, 254, 0.84) 0%, rgba(216, 230, 248, 0.76) 100%);
   border-color: rgba(140, 82, 22, 0.38);
   box-shadow:
     0 1px 2px rgba(15, 30, 60, 0.08),
