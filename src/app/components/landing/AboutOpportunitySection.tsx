@@ -77,13 +77,14 @@ export default function AboutOpportunitySection({
         />
         {isLightAppearance ? (
           <>
-            {/* Subtle diagonal stripe texture */}
-            <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_49px,rgba(200,170,110,0.05)_49px,rgba(200,170,110,0.05)_50px)] opacity-80" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_30%_-10%,rgba(210,180,130,0.18),transparent_60%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_50%_at_75%_90%,rgba(200,165,100,0.14),transparent_55%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_55%_40%,rgba(220,185,115,0.14),transparent_50%)]" />
+            {/* Pass I — diagonal stripe + radials canon-swapped at
+                SAME alpha. Pre-canon goldenrod -> canon champagne. */}
+            <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_49px,rgba(196,144,65,0.05)_49px,rgba(196,144,65,0.05)_50px)] opacity-80" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_30%_-10%,rgba(196,144,65,0.18),transparent_60%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_50%_at_75%_90%,rgba(196,144,65,0.14),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_55%_40%,rgba(196,144,65,0.14),transparent_50%)]" />
             <div className="absolute top-0 left-[25%] w-64 h-64 bg-[rgba(196,144,65,0.18)] rounded-full blur-[110px]" />
-            <div className="absolute bottom-0 right-[15%] w-48 h-48 bg-amber-100/[0.14] rounded-full blur-[120px]" />
+            <div className="absolute bottom-0 right-[15%] w-48 h-48 bg-[rgba(196,144,65,0.14)] rounded-full blur-[120px]" />
           </>
         ) : (
           <>
@@ -110,10 +111,10 @@ export default function AboutOpportunitySection({
         style={{ animationDelay: "1s" }}
       >
         <div
-          className={`w-5 h-5 rounded-full ${isLightAppearance ? "bg-amber-400/[0.12]" : "bg-blue-400/50"}`}
+          className={`w-5 h-5 rounded-full ${isLightAppearance ? "bg-[rgba(196,144,65,0.12)]" : "bg-blue-400/50"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 30px 10px rgba(200,165,100,0.14)"
+              ? "0 0 30px 10px rgba(196,144,65,0.14)"
               : "0 0 30px 10px rgba(59,130,246,0.26)",
           }}
         />
@@ -126,7 +127,7 @@ export default function AboutOpportunitySection({
           className={`w-9 h-9 rounded-[1rem] flex items-center justify-center ${isLightAppearance ? "bg-[rgba(255,251,245,0.45)] border border-[rgba(200,180,150,0.22)] backdrop-blur-sm" : "bg-blue-500/15 border border-blue-400/20"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 20px rgba(200,165,100,0.10), inset 0 1px 0 rgba(255,250,240,0.7)"
+              ? "0 0 20px rgba(196,144,65,0.10), inset 0 1px 0 rgba(255,250,240,0.7)"
               : "0 0 18px rgba(59,130,246,0.12)",
           }}
         >
