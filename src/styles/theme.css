@@ -3760,6 +3760,46 @@ body {
     );
 }
 
+/* Pass G (KI-090, 2026-05-05) — landing cool-section directional top-cast
+   champagne lamp. Per REF_VISUAL_SYSTEM.md §4b future direction +
+   LAW_PROJECT_RULES.md § Premium Glass Body Opacity + Directional
+   Backlight Canon: cool landing sections (Who We Serve, Opportunity
+   Through Transparency) need atmospheric gold lighting BEHIND the cards
+   so they read as lit-from-page-atmosphere, not edge-trimmed. Owner
+   verbatim 2026-05-04: "for future landing page design updates,
+   sections still need work as well as more gold areas and lighting
+   prmium." This is the structural primitive (Item 1 of Codex's prompt
+   bundle); items 2-5 (eyebrow chip glow, CTA pill glow, list
+   checkmarks, divider tint) deferred until owner verifies this primitive
+   reads correctly. Section-LEVEL canon — extends the directional triad
+   from cards to section backgrounds. */
+.bd-landing-section-toplamp {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 280px;
+  pointer-events: none;
+  z-index: 0;
+  /* Light: subtle warm wash (canon body opacity 0.05 territory — same
+     ceiling as light card internal radials per LAW canon). */
+  background: radial-gradient(
+    ellipse 80% 100% at 50% 0%,
+    rgba(196, 144, 65, 0.06),
+    transparent 70%
+  );
+}
+[data-theme="dark"] .bd-landing-section-toplamp,
+.dark .bd-landing-section-toplamp {
+  /* Dark: stronger lamp visibility (still under the 0.22 single-layer
+     halo cap — actual visible alpha 0.10 within canon range). */
+  background: radial-gradient(
+    ellipse 80% 100% at 50% 0%,
+    rgba(196, 144, 65, 0.10),
+    transparent 70%
+  );
+}
+
 /* Bucket 5.9 (KI-074): map canvas edge sheen — 1px cream catchlight at the
    top edge + 1px bronze rim at the bottom edge. Mimics light catching the
    curved glass of a premium display containing a lit map. Applied as a

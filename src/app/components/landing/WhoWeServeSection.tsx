@@ -91,6 +91,9 @@ export default function WhoWeServeSection({
       }}
       ref={sectionRef}
     >
+      {/* Pass G (KI-090) — section-level directional top-cast champagne
+          lamp. LAW canon extension from cards to section backgrounds. */}
+      <div className="bd-landing-section-toplamp" aria-hidden="true" />
       {/* Edge blend */}
       <div
         className="absolute -top-px left-0 right-0 h-px"
@@ -355,9 +358,11 @@ export default function WhoWeServeSection({
           ))}
         </div>
       </div>
-      {/* Bottom transition — blends into About pure-white */}
+      {/* Bottom transition — blends into adjacent cool section.
+          Pass G (KI-090): #ffffff target replaced with cool blue-gray
+          per LAW Light-Mode Surface Rule (no pure-white fades). */}
       <div
-        className={`absolute bottom-0 left-0 right-0 h-32 pointer-events-none ${isLightAppearance ? "bg-gradient-to-b from-transparent to-[#ffffff]" : "bg-gradient-to-b from-transparent to-[#081834]"}`}
+        className={`absolute bottom-0 left-0 right-0 h-32 pointer-events-none ${isLightAppearance ? "bg-gradient-to-b from-transparent to-[#dde9ff]" : "bg-gradient-to-b from-transparent to-[#081834]"}`}
       />
     </section>
   );

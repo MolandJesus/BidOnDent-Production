@@ -40,11 +40,14 @@ export default function AboutOpportunitySection({
       className={`py-12 sm:py-16 md:py-20 relative overflow-hidden ${isLightAppearance ? "" : "dark"}`}
       style={{
         background: isLightAppearance
-          ? "linear-gradient(180deg, #ffffff 0%, #fdfcfb 40%, #f9f8f7 70%, #f5f4f2 100%)"
+          ? "linear-gradient(180deg, #f2f8ff 0%, #eaf3ff 35%, #e4efff 70%, #dde9ff 100%)"
           : "linear-gradient(180deg, #081834 0%, #0c2040 50%, #071630 100%)",
       }}
       ref={sectionRef}
     >
+      {/* Pass G (KI-090) — section-level directional top-cast champagne
+          lamp. LAW canon extension from cards to section backgrounds. */}
+      <div className="bd-landing-section-toplamp" aria-hidden="true" />
       {/* Edge blend — light keeps amber thread; dark gets a subtle gold
           whisper at center to thread the gold identity through the cool
           register. Owner: "bring subtle dashboard gold trims to landing
