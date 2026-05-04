@@ -1,8 +1,9 @@
 # BidOnDent Docs Operating Index
 
-**Last updated:** 2026-05-03
+**Last updated:** 2026-05-04
 **Status:** Active documentation operating index
 **Current phase:** Soft Launch Hardening (edge functions v50, `verify_jwt: false`, storage pointer pattern)
+**Current handoff master prompt:** [`HANDOFF_MASTER_PROMPT_2026-05-04_CODEBASE_CLEAN_AND_POLISH.md`](HANDOFF_MASTER_PROMPT_2026-05-04_CODEBASE_CLEAN_AND_POLISH.md)
 
 BidOnDent is a **geo-native, map-first automotive repair marketplace**. Three user types (customer, shop, insurer) interact through a spatial bidding loop backed by Supabase and PostGIS.
 
@@ -113,7 +114,14 @@ Project-specific patterns that future projects can reuse live under `~/.claude/s
 
 Everything under [`docs/archive/`](archive/) is historical reference, retained for traceability. Not active operating surface.
 
-Most recent archive moves (2026-05-03):
+Most recent archive moves (2026-05-04):
+
+- `PASS_H_2026-05-05_REPORT.md` → archive — KI-091/092 RESOLVED.
+- `PASS_I_J_2026-05-05_REPORT.md` → archive — KI-091/092/093/094 RESOLVED.
+- `SHOP_AUDIT_REPORT_2026-04-29.md` → archive — pre-Pass-A era; findings folded into KI ledger.
+- 14 obsolete archived prompts + sprint reports DELETED (old AI prompts superseded by REF_AI_COLLABORATION_PROTOCOL.md + HANDOFF system; old GREEN_PATH/PASS_3X verification reports superseded by KI ledger). DUAL_AI_COORDINATION.md kept per LAW_HARDENING_PLAN.md L89.
+
+Earlier archive moves (2026-05-03):
 
 - `2026-05-03-visual-handoffs/` — superseded Sonnet audit prep/prompt/report and earlier Opus visual handoff docs. Current visual handoff is `HANDOFF_VISUAL_MASTER_PROMPT_OPUS_4_7_2026-05-03.md`.
 - `PLAN_LANDING_REDESIGN.md` → archive — 16-pass landing redesign, STATUS COMPLETE 2026-05-02.
