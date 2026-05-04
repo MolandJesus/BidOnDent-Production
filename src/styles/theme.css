@@ -2470,12 +2470,16 @@ body {
   /* Bucket 6 (KI-072): far-drop softened (0 32px 80px -> 0 22px 56px, 0 12px 24px
      -> 0 8px 18px) + asymmetric downward bronze halo (0 24px 60px) so glow biases
      below the panel instead of colliding with adjacent panel halos in stacked
-     layouts. Symmetric halos (0 0 60px / 0 0 110px) stay for ambient lift. */
+     layouts. Symmetric halos (0 0 60px / 0 0 110px) stay for ambient lift.
+     Bucket 2.3 (depth bar criterion 7): edge catchlights — left brighter than
+     right (lamp from upper-left convention). Mimics light catching the curved
+     glass edges of a premium glass panel. Locks 6->8 criteria of the depth bar. */
   --bd-dashboard-panel-shadow:
     0 22px 56px rgba(2, 6, 23, 0.36), 0 8px 18px rgba(2, 6, 23, 0.24),
     inset 0 1px 0 rgba(196, 144, 65, 0.22), inset 0 -1px 0 rgba(140, 82, 22, 0.22),
     0 0 0 1px rgba(96, 165, 250, 0.18), 0 24px 60px rgba(196, 130, 45, 0.10),
-    0 0 60px rgba(196, 130, 45, 0.14), 0 0 110px rgba(196, 130, 45, 0.08);
+    0 0 60px rgba(196, 130, 45, 0.14), 0 0 110px rgba(196, 130, 45, 0.08),
+    inset 1px 0 0 rgba(252, 240, 208, 0.10), inset -1px 0 0 rgba(252, 240, 208, 0.06);
   --bd-dashboard-section-bg: linear-gradient(
     180deg,
     rgba(16, 31, 60, 0.88) 0%,
@@ -2484,12 +2488,16 @@ body {
   --bd-dashboard-section-border: rgba(96, 165, 250, 0.20);
   /* Bucket 6 (KI-072): far-drop softened (0 22px 56px -> 0 16px 40px, 0 8px 18px
      -> 0 6px 14px). NO asymmetric bias — sections sit inside panels, not as the
-     stack. Symmetric halos preserved. */
+     stack. Symmetric halos preserved.
+     Bucket 2.3 (depth bar criterion 7): edge catchlights at lower alpha than
+     panel — sections nest inside panels and over-bright edges would compete
+     with the panel's own catchlight. */
   --bd-dashboard-section-shadow:
     0 16px 40px rgba(2, 6, 23, 0.34), 0 6px 14px rgba(2, 6, 23, 0.22),
     inset 0 1px 0 rgba(196, 144, 65, 0.18), inset 0 -1px 0 rgba(140, 82, 22, 0.18),
     0 0 0 1px rgba(96, 165, 250, 0.14), 0 0 44px rgba(196, 130, 45, 0.12),
-    0 0 90px rgba(196, 130, 45, 0.06);
+    0 0 90px rgba(196, 130, 45, 0.06),
+    inset 1px 0 0 rgba(252, 240, 208, 0.08), inset -1px 0 0 rgba(252, 240, 208, 0.05);
   --bd-dashboard-section-hover-shadow:
     0 28px 64px rgba(2, 6, 23, 0.40), 0 10px 22px rgba(2, 6, 23, 0.26),
     inset 0 1px 0 rgba(196, 144, 65, 0.28), inset 0 -1px 0 rgba(140, 82, 22, 0.24),
