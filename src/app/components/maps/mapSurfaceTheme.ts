@@ -91,24 +91,31 @@ const toneThemes: Record<MapSurfaceTone, MapSurfaceToneVariant> = {
       "border-sky-300/60 bg-[linear-gradient(180deg,rgba(239,246,255,0.92),rgba(219,234,254,0.82))] shadow-[0_20px_44px_rgba(37,99,235,0.12)]",
   },
   dark: {
-    /* Premium gold lamp + navy dominant, locked 2026-05-03. Dark dialog
-       shell now matches the dashboard's navy-lit-by-gold-lamp identity:
-       gold halo from the top, bronze trim, soft atmospheric falloff. */
+    /* Premium gold lamp + navy dominant, locked 2026-05-03 (KI-066/069).
+       Dark dialog shell matches the dashboard's navy-lit-by-gold-lamp
+       identity. Depth bar applied: gold lamp top bevel rgba(196,144,65),
+       bronze rim rgba(140,82,22), cool blue 1px structural ring
+       rgba(96,165,250), bronze atmospheric halo rgba(196,130,45). The
+       legacy warm-yellow register (rgba(228,140,55), rgba(228,175,100),
+       rgba(255,228,175)) is forbidden. */
     ambientOverlayClassName:
-      "bg-[radial-gradient(circle_at_top,rgba(228,140,55,0.22),transparent_36%),radial-gradient(circle_at_18%_18%,rgba(59,130,246,0.26),transparent_28%),radial-gradient(circle_at_78%_12%,rgba(37,99,235,0.22),transparent_24%),linear-gradient(180deg,rgba(30,58,138,0.18),rgba(2,6,23,0.42))]",
+      "bg-[radial-gradient(circle_at_top,rgba(196,130,45,0.22),transparent_36%),radial-gradient(circle_at_18%_18%,rgba(59,130,246,0.26),transparent_28%),radial-gradient(circle_at_78%_12%,rgba(37,99,235,0.22),transparent_24%),linear-gradient(180deg,rgba(30,58,138,0.18),rgba(2,6,23,0.42))]",
     shellToneClassName:
-      "border-[rgba(228,175,100,0.22)] bg-[radial-gradient(ellipse_90%_50%_at_50%_0%,rgba(228,140,55,0.20),transparent_60%),linear-gradient(180deg,rgba(16,32,62,0.92),rgba(6,14,32,0.96))] shadow-[0_36px_96px_rgba(2,6,23,0.48),0_70px_180px_rgba(2,6,23,0.20),0_0_0_1px_rgba(228,175,100,0.16),inset_0_1px_0_rgba(255,228,175,0.18),0_0_44px_rgba(228,140,55,0.22),0_0_140px_rgba(228,140,55,0.10)]",
+      "border-[rgba(96,165,250,0.22)] bg-[radial-gradient(ellipse_90%_50%_at_50%_0%,rgba(196,130,45,0.20),transparent_60%),linear-gradient(180deg,rgba(16,32,62,0.92),rgba(6,14,32,0.96))] shadow-[0_36px_96px_rgba(2,6,23,0.48),0_70px_180px_rgba(2,6,23,0.20),inset_0_1px_0_rgba(196,144,65,0.22),inset_0_-1px_0_rgba(140,82,22,0.22),0_0_0_1px_rgba(96,165,250,0.18),0_0_64px_rgba(196,130,45,0.16),0_0_140px_rgba(196,130,45,0.08)]",
     immersiveShellToneClassName:
-      "border-[rgba(228,175,100,0.20)] bg-[radial-gradient(ellipse_95%_55%_at_50%_0%,rgba(228,140,55,0.20),transparent_60%),radial-gradient(circle_at_top,rgba(59,130,246,0.20),rgba(15,23,42,0.92)_30%,rgba(2,6,23,0.96)_100%)] shadow-[0_44px_116px_rgba(2,6,23,0.54),0_80px_200px_rgba(2,6,23,0.22),0_0_0_1px_rgba(228,175,100,0.14),inset_0_1px_0_rgba(255,228,175,0.16),0_0_60px_rgba(228,140,55,0.22),0_0_160px_rgba(228,140,55,0.10)]",
+      "border-[rgba(96,165,250,0.22)] bg-[radial-gradient(ellipse_95%_55%_at_50%_0%,rgba(196,130,45,0.22),transparent_60%),radial-gradient(circle_at_top,rgba(59,130,246,0.20),rgba(15,23,42,0.92)_30%,rgba(2,6,23,0.96)_100%)] shadow-[0_44px_116px_rgba(2,6,23,0.54),0_80px_200px_rgba(2,6,23,0.22),inset_0_1px_0_rgba(196,144,65,0.22),inset_0_-1px_0_rgba(140,82,22,0.22),0_0_0_1px_rgba(96,165,250,0.18),0_0_80px_rgba(196,130,45,0.16),0_0_160px_rgba(196,130,45,0.08)]",
     mapCanvasClassName: "bg-slate-950",
     /* Side panels inside the dark map dialog — navy glass with gold lamp
-       halo + bronze trim, matching the dashboard panel system. */
+       halo + bronze trim, depth-bar compliant. */
     panelToneClassName:
-      "border-[rgba(228,175,100,0.22)] bg-[radial-gradient(ellipse_90%_50%_at_50%_0%,rgba(228,140,55,0.16),transparent_70%),linear-gradient(180deg,rgba(15,23,42,0.84),rgba(8,16,33,0.80))]",
+      "border-[rgba(96,165,250,0.20)] bg-[radial-gradient(ellipse_90%_50%_at_50%_0%,rgba(196,130,45,0.16),transparent_70%),linear-gradient(180deg,rgba(15,23,42,0.84),rgba(8,16,33,0.80))] shadow-[inset_0_1px_0_rgba(196,144,65,0.20),inset_0_-1px_0_rgba(140,82,22,0.20),0_0_0_1px_rgba(96,165,250,0.16),0_22px_56px_rgba(2,6,23,0.36),0_0_44px_rgba(196,130,45,0.10)]",
+    /* A2 — Coverage Command Center sticky header card emphasis. Stronger
+       top lamp halo (radial pulled up + intensified) + deeper corner lamp
+       reads as the primary container of the immersive shell. */
     panelStrongToneClassName:
-      "border-[rgba(228,175,100,0.28)] bg-[radial-gradient(ellipse_90%_50%_at_50%_0%,rgba(228,140,55,0.20),transparent_70%),linear-gradient(180deg,rgba(20,38,72,0.84),rgba(10,22,45,0.86))]",
+      "border-[rgba(96,165,250,0.30)] bg-[radial-gradient(ellipse_100%_60%_at_50%_-10%,rgba(196,144,65,0.30),transparent_72%),radial-gradient(circle_at_88%_-12%,rgba(196,130,45,0.32),transparent_44%),linear-gradient(180deg,rgba(20,38,72,0.86),rgba(10,22,45,0.88))] shadow-[inset_0_1px_0_rgba(196,144,65,0.28),inset_0_-1px_0_rgba(140,82,22,0.24),0_0_0_1px_rgba(96,165,250,0.22),0_28px_64px_rgba(2,6,23,0.42),0_0_72px_rgba(196,130,45,0.18)]",
     accentPanelToneClassName:
-      "border-[rgba(228,175,100,0.36)] bg-[radial-gradient(ellipse_90%_50%_at_50%_0%,rgba(228,140,55,0.26),transparent_70%),linear-gradient(180deg,rgba(34,58,118,0.50),rgba(15,30,60,0.84))]",
+      "border-[rgba(96,165,250,0.32)] bg-[radial-gradient(ellipse_90%_50%_at_50%_0%,rgba(196,130,45,0.26),transparent_70%),linear-gradient(180deg,rgba(34,58,118,0.50),rgba(15,30,60,0.84))] shadow-[inset_0_1px_0_rgba(196,144,65,0.26),inset_0_-1px_0_rgba(140,82,22,0.24),0_0_0_1px_rgba(96,165,250,0.22),0_24px_60px_rgba(2,6,23,0.40),0_0_60px_rgba(196,130,45,0.16)]",
     segmentedToneClassName:
       "border-blue-300/20 bg-[linear-gradient(180deg,rgba(15,23,42,0.86),rgba(15,23,42,0.8))]",
     activeSegmentClassName:

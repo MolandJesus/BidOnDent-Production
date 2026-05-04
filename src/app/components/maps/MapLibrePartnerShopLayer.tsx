@@ -166,10 +166,10 @@ export default function MapLibrePartnerShopLayer({
         >
           <div
             style={{ margin: 0 }}
-            className={`w-[264px] overflow-hidden rounded-2xl backdrop-blur-2xl ${
+            className={`w-[264px] overflow-hidden rounded-2xl border backdrop-blur-2xl ${
               isLight
-                ? "shadow-[0_20px_56px_rgba(15,23,42,0.14),0_6px_18px_rgba(15,23,42,0.08)]"
-                : "shadow-[0_20px_56px_rgba(2,6,23,0.32),0_6px_18px_rgba(2,6,23,0.18)]"
+                ? "border-[rgba(140,82,22,0.24)] shadow-[0_20px_56px_rgba(15,23,42,0.14),0_6px_18px_rgba(15,23,42,0.08),inset_0_1px_0_rgba(252,240,208,0.78),0_0_0_1px_rgba(140,82,22,0.16),0_0_44px_rgba(196,130,45,0.10)]"
+                : "border-[rgba(96,165,250,0.20)] shadow-[inset_0_1px_0_rgba(196,144,65,0.22),inset_0_-1px_0_rgba(140,82,22,0.20),0_0_0_1px_rgba(96,165,250,0.18),0_22px_56px_rgba(2,6,23,0.42),0_0_56px_rgba(196,130,45,0.14)]"
             }`}
           >
             {/* Header */}

@@ -254,7 +254,30 @@ export default function OperatingRegionsSection({
                       </p>
                     </div>
 
-                    <div className="flex flex-wrap items-start content-start self-start gap-2 lg:max-w-[18rem] lg:justify-end">
+                    {/* C2 — Mode badges row spine: thin glass strip backing
+                         the 3 chips so they read as one unit instead of three
+                         loose pills. Light = bronze trim + cool blue-cream glass;
+                         dark = cool blue trim + navy glass with gold lamp inset. */}
+                    <div
+                      className="inline-flex flex-wrap items-center gap-1 self-start rounded-full border p-1 backdrop-blur-md lg:justify-end"
+                      style={
+                        isLightAppearance
+                          ? {
+                              borderColor: "rgba(140, 82, 22, 0.22)",
+                              background:
+                                "linear-gradient(180deg, rgba(247,232,194,0.55) 0%, rgba(232,238,248,0.45) 100%)",
+                              boxShadow:
+                                "inset 0 1px 0 rgba(252,240,208,0.78), 0 6px 18px rgba(140,82,22,0.10)",
+                            }
+                          : {
+                              borderColor: "rgba(96, 165, 250, 0.18)",
+                              background:
+                                "linear-gradient(180deg, rgba(11,23,47,0.58) 0%, rgba(8,18,38,0.46) 100%)",
+                              boxShadow:
+                                "inset 0 1px 0 rgba(196,144,65,0.18), 0 6px 18px rgba(2,6,23,0.34)",
+                            }
+                      }
+                    >
                       <span
                         className={cn(
                           "rounded-full px-2.5 py-1 text-[11px] font-semibold",
