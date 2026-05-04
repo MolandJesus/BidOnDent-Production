@@ -771,18 +771,11 @@
 
 ### KI-097: F-16 follow-up — `LandingPageHeader.tsx:313` fire-and-forget signOut (P7-TECHDEBT)
 
-- **Impact:** During F-16 diagnose (KI-096), a secondary code-quality issue surfaced at [src/app/components/landing/LandingPageHeader.tsx:313](src/app/components/landing/LandingPageHeader.tsx#L313): `signOut({ redirectUrl: "/" })` is invoked fire-and-forget (no `await`, no `void` annotation). After F-16 fix added provider-level `afterSignOutUrl`, the explicit `redirectUrl` is redundant and the unawaited promise is a code-quality smell — but logout works correctly post-F-16, so this is non-urgent.
-- **Location:** [src/app/components/landing/LandingPageHeader.tsx:313](src/app/components/landing/LandingPageHeader.tsx#L313) — `onClick` handler in mobile menu Sign Out button.
-- **Fix direction (deferred):** Convert click handler to `async` and `await signOut()`. Drop the redundant `{ redirectUrl: "/" }` since provider-level config handles it. Suggested:
-  ```tsx
-  onClick={async () => {
-    setMobileMenuOpen(false);
-    setShowProfileMenu(false);
-    await signOut();
-  }}
-  ```
-- **Status:** **OPEN** — DOCUMENT-ONLY (intentional defer per "one bug, one commit" discipline; F-16 commit was scope-locked to App.tsx + REF_KNOWN_ISSUES.md). Pick up in a P7-TECHDEBT sweep or whenever LandingPageHeader.tsx is otherwise edited.
-- **Skill note:** Per the same "one bug, one commit" discipline owner reinforced 2026-05-05 — "while I'm here" cleanup riding on bugfix commits is an anti-pattern.
+- **Impact:** During F-16 diagnose (KI-096), a secondary code-quality issue surfaced at [src/app/components/landing/LandingPageHeader.tsx](src/app/components/landing/LandingPageHeader.tsx): `signOut({ redirectUrl: "/" })` was invoked fire-and-forget (no `await`, no `void` annotation). After F-16 fix added provider-level `afterSignOutUrl`, the explicit `redirectUrl` was redundant and the unawaited promise was a code-quality smell — but logout worked correctly post-F-16, so this was non-urgent.
+- **Location:** [src/app/components/landing/LandingPageHeader.tsx](src/app/components/landing/LandingPageHeader.tsx) — `onClick` handler in mobile menu Sign Out button.
+- **Fix direction:** Convert click handler to `async` and `await signOut()`. Drop the redundant `{ redirectUrl: "/" }` since provider-level config (KI-096) now handles it.
+- **Status:** RESOLVED 2026-05-05 (commit pending — added in this commit alongside this KI status update). Click handler now `async` + `await signOut()`. Comment in the code points back at KI-097 + KI-096 for institutional memory.
+- **Skill note:** P7-TECHDEBT cleanup picked up in autopilot sustained pass after F-24 mitigation completed — small enough to ship as its own commit without violating "one bug, one commit" discipline.
 
 ### KI-089: Dead storage adapter direct-upload path (architectural observation — no fix needed)
 

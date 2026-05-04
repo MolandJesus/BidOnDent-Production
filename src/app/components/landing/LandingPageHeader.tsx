@@ -307,10 +307,14 @@ export default function LandingPageHeader({
                     </button>
                     <button
                       role="menuitem"
-                      onClick={() => {
+                      onClick={async () => {
                         setMobileMenuOpen(false);
                         setShowProfileMenu(false);
-                        signOut({ redirectUrl: "/" });
+                        // KI-097: await signOut so the Promise can settle before
+                        // re-renders. ClerkProvider's afterSignOutUrl="/" (KI-096)
+                        // handles the hard navigation, so no per-call redirectUrl
+                        // needed here.
+                        await signOut();
                       }}
                       className={`w-full text-left px-3 py-2.5 text-sm flex items-center gap-2.5 transition-colors border-t ${isLightAppearance ? "text-rose-600 hover:bg-rose-50/60 border-[rgba(200,180,150,0.22)]" : "text-rose-400 hover:bg-rose-500/10 border-blue-400/15"}`}
                       type="button"
