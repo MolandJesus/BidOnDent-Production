@@ -2860,6 +2860,13 @@ body {
     0 0 44px rgba(196, 130, 45, 0.10);
 }
 
+/* Pass 3 (KI-078): cool accent variants get a slight bronze atmospheric halo
+   bump in dark mode (0.10-0.12 -> 0.14-0.16) so cool tiles next to warm pop
+   tiles (--accent-gold 0.26, --accent-champagne 0.20) read as deliberate
+   hierarchy rather than broken sibling pair. Warm pop tiles unchanged --
+   asymmetry preserved per LAW Light-Mode Surface Rule + champagne pop tile
+   identity. Per cohesion overlay: borrow landing's "richer atmospheric
+   layering" technique into dashboard atmosphere only (not panel paint). */
 .bd-dashboard-section--accent-blue {
   background: linear-gradient(180deg, rgba(16, 42, 84, 0.92) 0%, rgba(11, 29, 59, 0.88) 100%);
   border-color: rgba(96, 165, 250, 0.24);
@@ -2869,7 +2876,7 @@ body {
     inset 0 1px 0 rgba(196, 144, 65, 0.20),
     inset 0 -1px 0 rgba(140, 82, 22, 0.20),
     0 0 0 1px rgba(96, 165, 250, 0.18),
-    0 0 44px rgba(196, 130, 45, 0.12),
+    0 0 44px rgba(196, 130, 45, 0.16),
     0 0 18px rgba(96, 165, 250, 0.10);
 }
 
@@ -2882,7 +2889,7 @@ body {
     inset 0 1px 0 rgba(196, 144, 65, 0.20),
     inset 0 -1px 0 rgba(140, 82, 22, 0.18),
     0 0 0 1px rgba(96, 165, 250, 0.16),
-    0 0 44px rgba(196, 130, 45, 0.10),
+    0 0 44px rgba(196, 130, 45, 0.14),
     0 0 18px rgba(34, 211, 238, 0.10);
 }
 
@@ -2895,7 +2902,7 @@ body {
     inset 0 1px 0 rgba(196, 144, 65, 0.20),
     inset 0 -1px 0 rgba(140, 82, 22, 0.18),
     0 0 0 1px rgba(96, 165, 250, 0.16),
-    0 0 44px rgba(196, 130, 45, 0.10),
+    0 0 44px rgba(196, 130, 45, 0.14),
     0 0 18px rgba(129, 140, 248, 0.10);
 }
 
@@ -2908,7 +2915,7 @@ body {
     inset 0 1px 0 rgba(196, 144, 65, 0.18),
     inset 0 -1px 0 rgba(140, 82, 22, 0.18),
     0 0 0 1px rgba(96, 165, 250, 0.16),
-    0 0 44px rgba(196, 130, 45, 0.10),
+    0 0 44px rgba(196, 130, 45, 0.14),
     0 0 18px rgba(244, 63, 94, 0.10);
 }
 
