@@ -309,9 +309,10 @@ export default function CoverageBrowseExperience({
     />
   );
 
-  const routeMinutes = navigation.routePreview
-    ? Math.max(1, Math.round(navigation.routePreview.durationSeconds / 60))
-    : null;
+  const routeMinutes =
+    navigation.routePreview && navigation.routePreview.durationSeconds >= 30
+      ? Math.round(navigation.routePreview.durationSeconds / 60)
+      : null;
   const routeMiles = navigation.routePreview
     ? (navigation.routePreview.distanceMeters / 1609.34).toFixed(1)
     : null;
