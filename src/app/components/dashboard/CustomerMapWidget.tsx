@@ -209,7 +209,9 @@ export default function CustomerMapWidget({
           </div>
           <span
             className={`bd-dashboard-chip shrink-0 px-2.5 py-1 text-[11px] font-medium ${
-              isLight ? "bg-[rgba(238,247,255,0.92)] text-cyan-700" : "border-cyan-200/18 bg-white/10 text-cyan-50"
+              isLight
+                ? "bg-[rgba(238,247,255,0.92)] text-cyan-700"
+                : "border-cyan-200/18 bg-white/10 text-cyan-50"
             }`}
           >
             {capabilities.length} tools
@@ -236,7 +238,9 @@ export default function CustomerMapWidget({
             >
               <div
                 className={`flex h-8 w-8 items-center justify-center rounded-lg ${
-                  isLight ? "bg-[rgba(238,247,255,0.88)] text-blue-700" : "bg-white/10 text-blue-100"
+                  isLight
+                    ? "bg-[rgba(238,247,255,0.88)] text-blue-700"
+                    : "bg-white/10 text-blue-100"
                 }`}
               >
                 <Icon className="h-4 w-4" />
@@ -267,7 +271,9 @@ export default function CustomerMapWidget({
           </div>
           <span
             className={`bd-dashboard-chip shrink-0 px-2.5 py-1 text-[11px] font-medium ${
-              isLight ? "bg-[rgba(238,247,255,0.92)] text-blue-700" : "border-blue-200/18 bg-white/10 text-blue-50"
+              isLight
+                ? "bg-[rgba(238,247,255,0.92)] text-blue-700"
+                : "border-blue-200/18 bg-white/10 text-blue-50"
             }`}
           >
             {isLoadingShops ? "Loading" : `${compactShops.length || displayShops.length} shown`}
@@ -286,7 +292,9 @@ export default function CustomerMapWidget({
               >
                 <div
                   className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${
-                    isLight ? "bg-[rgba(238,247,255,0.88)] text-blue-700" : "bg-white/10 text-blue-100"
+                    isLight
+                      ? "bg-[rgba(238,247,255,0.88)] text-blue-700"
+                      : "bg-white/10 text-blue-100"
                   }`}
                 >
                   <Store className="h-3.5 w-3.5" />

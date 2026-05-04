@@ -121,7 +121,9 @@ export default function ShopDirectoryIntelligencePanel({
             </div>
             <div
               className={`rounded-[22px] px-4 py-3.5 ${
-                isLight ? "bg-[linear-gradient(180deg,rgba(247,232,194,0.78),rgba(232,238,248,0.72))] border border-[rgba(140,82,22,0.24)] shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]" : "bd-glass-card"
+                isLight
+                  ? "bg-[linear-gradient(180deg,rgba(247,232,194,0.78),rgba(232,238,248,0.72))] border border-[rgba(140,82,22,0.24)] shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]"
+                  : "bd-glass-card"
               }`}
             >
               <p

@@ -185,9 +185,7 @@ export default function ProfileDropdown({
         >
           <span
             className={`block h-1 w-9 rounded-full ${
-              isLightAppearance
-                ? "bg-[rgba(140,82,22,0.32)]"
-                : "bg-[rgba(196,144,65,0.34)]"
+              isLightAppearance ? "bg-[rgba(140,82,22,0.32)]" : "bg-[rgba(196,144,65,0.34)]"
             }`}
           />
         </div>

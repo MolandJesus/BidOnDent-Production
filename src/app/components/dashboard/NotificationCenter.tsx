@@ -191,15 +191,10 @@ export default function NotificationCenter({
             >
               {/* ── Mobile drag-handle (KI-067 reachability affordance) ── */}
               {isMobile ? (
-                <div
-                  aria-hidden="true"
-                  className="flex items-center justify-center pt-2 pb-1"
-                >
+                <div aria-hidden="true" className="flex items-center justify-center pt-2 pb-1">
                   <span
                     className={`block h-1 w-9 rounded-full ${
-                      isLightAppearance
-                        ? "bg-[rgba(140,82,22,0.32)]"
-                        : "bg-[rgba(196,144,65,0.34)]"
+                      isLightAppearance ? "bg-[rgba(140,82,22,0.32)]" : "bg-[rgba(196,144,65,0.34)]"
                     }`}
                   />
                 </div>

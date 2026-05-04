@@ -46,7 +46,9 @@ export default function ShopDirectoryHero({
     return (
       <div
         className={`${
-          isLight ? "bg-[linear-gradient(180deg,rgba(247,232,194,0.92),rgba(232,238,248,0.86))] border-b border-[rgba(140,82,22,0.24)] shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]" : "bd-glass-panel"
+          isLight
+            ? "bg-[linear-gradient(180deg,rgba(247,232,194,0.92),rgba(232,238,248,0.86))] border-b border-[rgba(140,82,22,0.24)] shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]"
+            : "bd-glass-panel"
         } flex flex-wrap items-center justify-between gap-2 px-3 py-2 sm:px-4 sm:py-3`}
       >
         <div className="flex items-center gap-2">
@@ -86,7 +88,9 @@ export default function ShopDirectoryHero({
   return (
     <section
       className={`${
-        isLight ? "bg-[linear-gradient(180deg,rgba(247,232,194,0.92),rgba(232,238,248,0.86))] border-b border-[rgba(140,82,22,0.24)] shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]" : "bd-glass-panel"
+        isLight
+          ? "bg-[linear-gradient(180deg,rgba(247,232,194,0.92),rgba(232,238,248,0.86))] border-b border-[rgba(140,82,22,0.24)] shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]"
+          : "bd-glass-panel"
       } p-5 md:p-6`}
     >
       <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
@@ -133,7 +137,9 @@ export default function ShopDirectoryHero({
               <div
                 key={metric.label}
                 className={`${
-                  isLight ? "bg-[linear-gradient(180deg,rgba(247,232,194,0.78),rgba(232,238,248,0.72))] border border-[rgba(140,82,22,0.24)] rounded-2xl shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]" : "bd-glass-card"
+                  isLight
+                    ? "bg-[linear-gradient(180deg,rgba(247,232,194,0.78),rgba(232,238,248,0.72))] border border-[rgba(140,82,22,0.24)] rounded-2xl shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]"
+                    : "bd-glass-card"
                 } px-4 py-4`}
               >
                 <p
@@ -168,7 +174,9 @@ export default function ShopDirectoryHero({
         <div className="grid gap-3 xl:w-[420px]">
           <div
             className={`${
-              isLight ? "bg-[linear-gradient(180deg,rgba(247,232,194,0.78),rgba(232,238,248,0.72))] border border-[rgba(140,82,22,0.24)] rounded-2xl shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]" : "bd-glass-card"
+              isLight
+                ? "bg-[linear-gradient(180deg,rgba(247,232,194,0.78),rgba(232,238,248,0.72))] border border-[rgba(140,82,22,0.24)] rounded-2xl shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]"
+                : "bd-glass-card"
             } p-4`}
           >
             <div
@@ -206,7 +214,9 @@ export default function ShopDirectoryHero({
 
           <div
             className={`${
-              isLight ? "bg-[linear-gradient(180deg,rgba(247,232,194,0.78),rgba(232,238,248,0.72))] border border-[rgba(140,82,22,0.24)] rounded-2xl shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]" : "bd-glass-card"
+              isLight
+                ? "bg-[linear-gradient(180deg,rgba(247,232,194,0.78),rgba(232,238,248,0.72))] border border-[rgba(140,82,22,0.24)] rounded-2xl shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]"
+                : "bd-glass-card"
             } p-4`}
           >
             <div

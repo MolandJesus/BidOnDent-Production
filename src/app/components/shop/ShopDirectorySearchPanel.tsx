@@ -219,7 +219,9 @@ export default function ShopDirectorySearchPanel({
           <div className="space-y-1.5">
             <div
               className={`inline-flex w-full ${isStage ? "rounded-[1.1rem] p-1" : "rounded-xl p-0.5"} border ${
-                isLight ? "border-[rgba(140,82,22,0.24)] bg-[linear-gradient(180deg,rgba(247,232,194,0.78),rgba(232,238,248,0.72))] shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]" : "border-white/[0.10] bg-white/[0.04]"
+                isLight
+                  ? "border-[rgba(140,82,22,0.24)] bg-[linear-gradient(180deg,rgba(247,232,194,0.78),rgba(232,238,248,0.72))] shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]"
+                  : "border-white/[0.10] bg-white/[0.04]"
               }`}
             >
               {VIEW_MODE_OPTIONS.map((option) => (
@@ -339,7 +341,9 @@ export default function ShopDirectorySearchPanel({
       {!showMapPane && (
         <div
           className={`mt-3 ${
-            isLight ? "bg-[linear-gradient(180deg,rgba(247,232,194,0.78),rgba(232,238,248,0.72))] border border-[rgba(140,82,22,0.24)] rounded-2xl shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]" : "bd-glass-card"
+            isLight
+              ? "bg-[linear-gradient(180deg,rgba(247,232,194,0.78),rgba(232,238,248,0.72))] border border-[rgba(140,82,22,0.24)] rounded-2xl shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]"
+              : "bd-glass-card"
           } p-3 sm:p-4`}
         >
           <div
