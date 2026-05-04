@@ -177,27 +177,31 @@ export default function CTASection({
             style={{ transitionDelay: "0.45s" }}
           >
             {isSignedIn ? (
-              <button
-                onClick={onNavigateToDashboard}
-                className="bd-dashboard-primary-button px-6 sm:px-8 py-3 sm:py-3.5 text-white font-semibold text-base sm:text-lg leading-none inline-flex items-center min-h-[48px]"
-                style={{
-                  background: `linear-gradient(180deg, rgba(37, 99, 235, 0.98) 0%, rgba(30, 64, 175, 0.98) 100%)`,
-                }}
-              >
-                Go to Dashboard
-                <ChevronRight className="ml-2 w-5 h-5" />
-              </button>
-            ) : (
-              <SignUpButton mode="modal">
+              <span className="bd-landing-cta-glow">
                 <button
+                  onClick={onNavigateToDashboard}
                   className="bd-dashboard-primary-button px-6 sm:px-8 py-3 sm:py-3.5 text-white font-semibold text-base sm:text-lg leading-none inline-flex items-center min-h-[48px]"
                   style={{
                     background: `linear-gradient(180deg, rgba(37, 99, 235, 0.98) 0%, rgba(30, 64, 175, 0.98) 100%)`,
                   }}
                 >
-                  Get Started Now
+                  Go to Dashboard
                   <ChevronRight className="ml-2 w-5 h-5" />
                 </button>
+              </span>
+            ) : (
+              <SignUpButton mode="modal">
+                <span className="bd-landing-cta-glow">
+                  <button
+                    className="bd-dashboard-primary-button px-6 sm:px-8 py-3 sm:py-3.5 text-white font-semibold text-base sm:text-lg leading-none inline-flex items-center min-h-[48px]"
+                    style={{
+                      background: `linear-gradient(180deg, rgba(37, 99, 235, 0.98) 0%, rgba(30, 64, 175, 0.98) 100%)`,
+                    }}
+                  >
+                    Get Started Now
+                    <ChevronRight className="ml-2 w-5 h-5" />
+                  </button>
+                </span>
               </SignUpButton>
             )}
           </div>

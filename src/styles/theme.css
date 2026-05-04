@@ -3889,6 +3889,44 @@ body {
   );
 }
 
+/* Pass H7 (KI-091): landing CTA pill atmospheric glow. Applied to the
+   wrapping div around primary CTA buttons in landing sections (CTASection,
+   BusinessInquirySection, hero CTA wrapper). Creates a backing radial
+   champagne aura so the action pill reads as sitting IN the lit page
+   atmosphere rather than as a flat button on a dark plane. Button itself
+   remains untouched (.bd-dashboard-primary-button is shared with dashboard
+   — modifying it would bleed dashboard styling). z-index:0 + ::before at
+   z-index:-1 places the glow BEHIND the button without intercepting clicks. */
+.bd-landing-cta-glow {
+  position: relative;
+  z-index: 0;
+  display: inline-block;
+}
+.bd-landing-cta-glow::before {
+  content: "";
+  position: absolute;
+  inset: -36px -56px;
+  background: radial-gradient(
+    ellipse 70% 65% at 50% 50%,
+    rgba(196, 144, 65, 0.16) 0%,
+    rgba(196, 130, 45, 0.06) 45%,
+    transparent 75%
+  );
+  pointer-events: none;
+  z-index: -1;
+  filter: blur(14px);
+  border-radius: 999px;
+}
+[data-theme="dark"] .bd-landing-cta-glow::before,
+.dark .bd-landing-cta-glow::before {
+  background: radial-gradient(
+    ellipse 70% 65% at 50% 50%,
+    rgba(196, 144, 65, 0.22) 0%,
+    rgba(196, 130, 45, 0.10) 45%,
+    transparent 75%
+  );
+}
+
 /* Bucket 5.9 (KI-074): map canvas edge sheen — 1px cream catchlight at the
    top edge + 1px bronze rim at the bottom edge. Mimics light catching the
    curved glass of a premium display containing a lit map. Applied as a
