@@ -673,6 +673,30 @@
 - **Status:** RESOLVED 2026-05-05 (commit `897259ab`). Pairs with Pass I canon foundation to deliver "more atmospheric and more premium" feel — atmospheric richness from canon swap + tighter rhythm from spacing trim.
 - **Result:** Layout/structure UNCHANGED (only `mb` values trimmed); typography sizes/weights UNCHANGED; mobile-first responsive structure preserved. Build clean; forbidden grep ZERO. Skills: `bd-design-identity`, `mola-ai-relay-protocol`.
 
+### KI-096: F-16 — Clerk session persists after Log Out (afterSignOutUrl missing on ClerkProvider)
+
+- **Impact:** Audit AI F-16 (P1-RUNTIME, `AUDIT_FULL_2026-05-04_SONNET.md`): user clicks Log Out via dashboard dropdown → app navigates to landing in apparent logged-out state → user clicks appearance toggle → authenticated state restored without re-entering credentials. Trust + security perception issue, especially on shared devices. Read-only F-16 diagnose pass identified H3 as primary cause: `<ClerkProvider>` at [src/app/App.tsx:465](src/app/App.tsx#L465) was configured with only `publishableKey` + `appearance` — no `afterSignOutUrl`. Without provider-level redirect config AND without `redirectUrl` passed to `signOut()` calls, no hard browser navigation occurs on logout. The app's React state navigation (`navigation.setShowLandingPage(true)`) renders the landing UI but in-memory state, contexts, and Clerk's internal session cache persist. On next re-render (e.g. appearance toggle), Clerk's `useUser()` re-hydrates from the still-present session token.
+- **Location:** [src/app/App.tsx:465](src/app/App.tsx#L465) — `<ClerkProvider>` config.
+- **Fix direction:** Add `afterSignOutUrl="/"` to `<ClerkProvider>`. One-line provider config change. Per `@clerk/clerk-react` v5.61.5 type definitions in `node_modules/@clerk/shared/dist/types/index.d.ts`: "Configure `afterSignOutUrl` as a global configuration, either in `<ClerkProvider/>` or in `await Clerk.load()`" — canonical Clerk v5 pattern. Provider-level config applies to every `signOut()` call regardless of whether the call site passes `redirectUrl`.
+- **Status:** RESOLVED (code) 2026-05-05 (commit pending — added in this commit alongside this KI entry). Owner browser smoke test pending: log in → click Log Out from dashboard dropdown → verify hard navigation to `/` (URL bar reloads, not just SPA route change) → verify clicking around landing does not restore session.
+- **Hard stops respected:** No edge function touched, no JWT verification path touched, `verify_jwt: false` preserved, `requireClerkSession()` unchanged, no Clerk SDK version bump, no env var change, no JWT template change. Single file (App.tsx) plus this doc entry. Per `supabase-clerk-edge-function` skill (no auth verification pattern change — this is session lifecycle, not session verification).
+- **Result:** Clerk's `signOut()` now performs a hard browser navigation to `/` after clearing the session, forcing a full document reload that clears all in-memory React state and gives Clerk a clean slate to verify the now-cleared session token. Both call sites benefit: dashboard `handleLogout` (`src/app/hooks/useAppHandlers.ts:40`) gets the hard nav for free; `LandingPageHeader.tsx:313`'s explicit `redirectUrl: "/"` becomes redundant but harmless.
+
+### KI-097: F-16 follow-up — `LandingPageHeader.tsx:313` fire-and-forget signOut (P7-TECHDEBT)
+
+- **Impact:** During F-16 diagnose (KI-096), a secondary code-quality issue surfaced at [src/app/components/landing/LandingPageHeader.tsx:313](src/app/components/landing/LandingPageHeader.tsx#L313): `signOut({ redirectUrl: "/" })` is invoked fire-and-forget (no `await`, no `void` annotation). After F-16 fix added provider-level `afterSignOutUrl`, the explicit `redirectUrl` is redundant and the unawaited promise is a code-quality smell — but logout works correctly post-F-16, so this is non-urgent.
+- **Location:** [src/app/components/landing/LandingPageHeader.tsx:313](src/app/components/landing/LandingPageHeader.tsx#L313) — `onClick` handler in mobile menu Sign Out button.
+- **Fix direction (deferred):** Convert click handler to `async` and `await signOut()`. Drop the redundant `{ redirectUrl: "/" }` since provider-level config handles it. Suggested:
+  ```tsx
+  onClick={async () => {
+    setMobileMenuOpen(false);
+    setShowProfileMenu(false);
+    await signOut();
+  }}
+  ```
+- **Status:** **OPEN** — DOCUMENT-ONLY (intentional defer per "one bug, one commit" discipline; F-16 commit was scope-locked to App.tsx + REF_KNOWN_ISSUES.md). Pick up in a P7-TECHDEBT sweep or whenever LandingPageHeader.tsx is otherwise edited.
+- **Skill note:** Per the same "one bug, one commit" discipline owner reinforced 2026-05-05 — "while I'm here" cleanup riding on bugfix commits is an anti-pattern.
+
 ### KI-089: Dead storage adapter direct-upload path (architectural observation — no fix needed)
 
 - **Impact:** Phase 0 audit (Section D4) found `src/app/services/storage/SupabaseStorageAdapter.ts:102` direct-upload fallback path uses `getPublicUrl()` — would return a non-functional public URL since LAW says all buckets are private. Production code never calls this path: production uploads go through the edge function via `services/supabase/storage.ts:handleUploadPhoto` which correctly returns `storage://` pointers. The entire `StorageService` + `SupabaseStorageAdapter` direct-upload abstraction layer is dead but harmless.
