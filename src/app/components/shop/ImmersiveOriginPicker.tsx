@@ -52,19 +52,19 @@ export default function ImmersiveOriginPicker({
   const quickOrigins = suggestedOrigins.slice(0, 4);
 
   const panelBg = isDark
-    ? "border-white/12 bg-slate-950/88 backdrop-blur-xl shadow-2xl"
-    : "border-black/8 bg-white/92 backdrop-blur-xl shadow-2xl";
+    ? "border-[rgba(96,165,250,0.20)] bg-[linear-gradient(180deg,rgba(15,23,42,0.90),rgba(2,6,23,0.94))] backdrop-blur-xl shadow-[inset_0_1px_0_rgba(196,144,65,0.22),inset_0_-1px_0_rgba(140,82,22,0.20),0_0_0_1px_rgba(96,165,250,0.16),0_-22px_56px_rgba(2,6,23,0.46),0_0_56px_rgba(196,130,45,0.14)]"
+    : "border-[rgba(140,82,22,0.28)] bg-[linear-gradient(180deg,rgba(247,232,194,0.92),rgba(232,238,248,0.88))] backdrop-blur-xl shadow-[inset_0_1px_0_rgba(252,240,208,0.85),0_-18px_46px_rgba(15,23,42,0.14),0_0_0_1px_rgba(140,82,22,0.18)]";
   const headingColor = isDark ? "text-white" : "text-slate-800";
   const subColor = isDark ? "text-slate-400" : "text-slate-500";
   const chipBase = isDark
     ? "border-white/12 bg-white/[0.06] text-slate-200 hover:bg-white/[0.10]"
-    : "border-slate-200 bg-white text-slate-600 hover:bg-blue-50 shadow-sm";
+    : "border-[rgba(140,82,22,0.26)] bg-[linear-gradient(180deg,rgba(247,232,194,0.84),rgba(232,238,248,0.78))] text-slate-600 shadow-[inset_0_1px_0_rgba(252,240,208,0.78),0_4px_10px_rgba(15,23,42,0.08)] hover:bg-[linear-gradient(180deg,rgba(247,232,194,0.94),rgba(232,238,248,0.88))]";
   const chipActive = isDark
     ? "border-blue-400/60 bg-blue-500/20 text-white"
     : "border-blue-400 bg-blue-50 text-blue-700 shadow-sm";
   const inputStyle = isDark
     ? "border-white/12 bg-white/[0.06] text-white placeholder:text-slate-400/70 focus:border-blue-400/40"
-    : "border-slate-200/80 bg-white/90 text-slate-800 placeholder:text-slate-400 focus:border-blue-400/60 shadow-sm";
+    : "border-[rgba(140,82,22,0.28)] bg-[linear-gradient(180deg,rgba(232,238,248,0.90),rgba(247,232,194,0.84))] text-slate-800 placeholder:text-slate-400 shadow-[inset_0_1px_0_rgba(252,240,208,0.78)] focus:border-blue-500/60";
 
   return (
     <div
@@ -126,7 +126,7 @@ export default function ImmersiveOriginPicker({
           className={`mt-1 flex min-h-[44px] w-full items-center gap-2 rounded-full border px-3 py-2.5 text-sm transition-colors ${
             isDark
               ? "border-white/12 bg-white/[0.04] text-slate-400 hover:bg-white/[0.06]"
-              : "border-slate-200/80 bg-slate-50/80 text-slate-400 hover:bg-white shadow-sm"
+              : "border-[rgba(140,82,22,0.24)] bg-[linear-gradient(180deg,rgba(247,232,194,0.78),rgba(232,238,248,0.74))] text-slate-500 shadow-[inset_0_1px_0_rgba(252,240,208,0.78)] hover:bg-[linear-gradient(180deg,rgba(247,232,194,0.92),rgba(232,238,248,0.86))]"
           }`}
           onClick={() => setSearchExpanded(true)}
           type="button"
@@ -154,7 +154,7 @@ export default function ImmersiveOriginPicker({
               className={`min-h-[36px] rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
                 isDark
                   ? "border-white/12 bg-white/[0.04] text-slate-200 hover:bg-white/[0.08]"
-                  : "border-slate-200 bg-white text-slate-700 hover:border-blue-300 hover:bg-blue-50 shadow-sm"
+                  : "border-[rgba(140,82,22,0.28)] bg-[linear-gradient(180deg,rgba(247,232,194,0.86),rgba(232,238,248,0.80))] text-slate-700 shadow-[inset_0_1px_0_rgba(252,240,208,0.78),0_4px_10px_rgba(15,23,42,0.08)] hover:border-blue-300 hover:bg-[linear-gradient(180deg,rgba(247,232,194,0.94),rgba(232,238,248,0.88))]"
               }`}
               onClick={() => {
                 void onSearchOrigin();
@@ -170,7 +170,7 @@ export default function ImmersiveOriginPicker({
               className={`max-h-48 overflow-y-auto rounded-2xl border ${
                 isDark
                   ? "border-white/10 bg-slate-950/72 backdrop-blur-md"
-                  : "border-slate-200/80 bg-white/90 shadow-sm"
+                  : "border-[rgba(140,82,22,0.26)] bg-[linear-gradient(180deg,rgba(247,232,194,0.88),rgba(232,238,248,0.82))] shadow-[inset_0_1px_0_rgba(252,240,208,0.78),0_8px_20px_rgba(15,23,42,0.10)]"
               }`}
             >
               {originCandidates.slice(0, 5).map((candidate) => {

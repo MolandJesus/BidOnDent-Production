@@ -91,11 +91,11 @@ export default function ShopDirectoryHybridStage({
         : "Auto tiles";
 
   const stageShellClassName = isLight
-    ? "border-slate-200/74 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.96),rgba(239,246,255,0.9)_28%,rgba(226,232,240,0.8)_100%)] shadow-[0_36px_100px_rgba(15,23,42,0.12)]"
-    : "border-blue-300/14 bg-[radial-gradient(circle_at_top,rgba(37,99,235,0.2),rgba(8,16,32,0.92)_34%,rgba(2,6,23,0.98)_100%)] shadow-[0_34px_90px_rgba(2,6,23,0.42)]";
+    ? "border-[rgba(140,82,22,0.28)] bg-[radial-gradient(ellipse_90%_55%_at_50%_0%,rgba(196,144,65,0.20),transparent_60%),radial-gradient(circle_at_top,rgba(232,242,254,0.92),rgba(214,230,248,0.86)_28%,rgba(226,232,240,0.80)_100%)] shadow-[0_40px_100px_rgba(15,30,60,0.18),inset_0_1px_0_rgba(252,240,208,0.78),inset_0_-1px_0_rgba(140,82,22,0.30),0_0_0_1px_rgba(140,82,22,0.20),0_0_64px_rgba(196,130,45,0.10)]"
+    : "border-[rgba(96,165,250,0.20)] bg-[radial-gradient(ellipse_90%_55%_at_50%_0%,rgba(196,130,45,0.20),transparent_60%),radial-gradient(circle_at_top,rgba(37,99,235,0.20),rgba(8,16,32,0.92)_34%,rgba(2,6,23,0.98)_100%)] shadow-[0_36px_96px_rgba(2,6,23,0.46),inset_0_1px_0_rgba(196,144,65,0.22),inset_0_-1px_0_rgba(140,82,22,0.20),0_0_0_1px_rgba(96,165,250,0.16),0_0_72px_rgba(196,130,45,0.16)]";
   const stagePanelClassName = isLight
-    ? "border-white/74 bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(241,245,249,0.82))]"
-    : "border-white/[0.08] bg-[linear-gradient(180deg,rgba(9,18,36,0.84),rgba(6,13,26,0.92))]";
+    ? "border-[rgba(140,82,22,0.24)] bg-[linear-gradient(180deg,rgba(232,238,248,0.90),rgba(247,232,194,0.84))] shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]"
+    : "border-[rgba(96,165,250,0.16)] bg-[linear-gradient(180deg,rgba(9,18,36,0.84),rgba(6,13,26,0.92))] shadow-[inset_0_1px_0_rgba(196,144,65,0.18),inset_0_-1px_0_rgba(140,82,22,0.18)]";
   const stageSummaryText = session.selectedShop
     ? `Focused on ${session.selectedShop.name}. The map stays live while the strongest recommended shops stay below for easy comparison.`
     : session.selectedOrigin

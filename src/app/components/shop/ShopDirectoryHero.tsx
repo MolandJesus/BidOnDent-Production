@@ -46,14 +46,14 @@ export default function ShopDirectoryHero({
     return (
       <div
         className={`${
-          isLight ? "bg-white/95 border-b border-slate-200/60" : "bd-glass-panel"
+          isLight ? "bg-[linear-gradient(180deg,rgba(247,232,194,0.92),rgba(232,238,248,0.86))] border-b border-[rgba(140,82,22,0.24)] shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]" : "bd-glass-panel"
         } flex flex-wrap items-center justify-between gap-2 px-3 py-2 sm:px-4 sm:py-3`}
       >
         <div className="flex items-center gap-2">
           <button
             className={`inline-flex h-9 items-center justify-center gap-1.5 rounded-lg border px-2.5 transition-colors ${
               isLight
-                ? "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 shadow-sm"
+                ? "border-[rgba(140,82,22,0.28)] bg-[linear-gradient(180deg,rgba(247,232,194,0.86),rgba(232,238,248,0.80))] text-slate-600 hover:bg-[linear-gradient(180deg,rgba(247,232,194,0.94),rgba(232,238,248,0.88))] shadow-[inset_0_1px_0_rgba(252,240,208,0.78),0_4px_10px_rgba(15,23,42,0.08)]"
                 : "bd-glass-control text-slate-100"
             }`}
             onClick={onBack}
@@ -86,7 +86,7 @@ export default function ShopDirectoryHero({
   return (
     <section
       className={`${
-        isLight ? "bg-white/95 border-b border-slate-200/60" : "bd-glass-panel"
+        isLight ? "bg-[linear-gradient(180deg,rgba(247,232,194,0.92),rgba(232,238,248,0.86))] border-b border-[rgba(140,82,22,0.24)] shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]" : "bd-glass-panel"
       } p-5 md:p-6`}
     >
       <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
@@ -95,7 +95,7 @@ export default function ShopDirectoryHero({
             <button
               className={`inline-flex h-11 w-11 items-center justify-center rounded-xl border transition-colors ${
                 isLight
-                  ? "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 shadow-sm"
+                  ? "border-[rgba(140,82,22,0.28)] bg-[linear-gradient(180deg,rgba(247,232,194,0.86),rgba(232,238,248,0.80))] text-slate-600 hover:bg-[linear-gradient(180deg,rgba(247,232,194,0.94),rgba(232,238,248,0.88))] shadow-[inset_0_1px_0_rgba(252,240,208,0.78),0_4px_10px_rgba(15,23,42,0.08)]"
                   : "bd-glass-control"
               }`}
               onClick={onBack}
@@ -133,7 +133,7 @@ export default function ShopDirectoryHero({
               <div
                 key={metric.label}
                 className={`${
-                  isLight ? "bg-white/80 border border-slate-200/60 rounded-2xl" : "bd-glass-card"
+                  isLight ? "bg-[linear-gradient(180deg,rgba(247,232,194,0.78),rgba(232,238,248,0.72))] border border-[rgba(140,82,22,0.24)] rounded-2xl shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]" : "bd-glass-card"
                 } px-4 py-4`}
               >
                 <p
@@ -168,7 +168,7 @@ export default function ShopDirectoryHero({
         <div className="grid gap-3 xl:w-[420px]">
           <div
             className={`${
-              isLight ? "bg-white/80 border border-slate-200/60 rounded-2xl" : "bd-glass-card"
+              isLight ? "bg-[linear-gradient(180deg,rgba(247,232,194,0.78),rgba(232,238,248,0.72))] border border-[rgba(140,82,22,0.24)] rounded-2xl shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]" : "bd-glass-card"
             } p-4`}
           >
             <div
@@ -206,7 +206,7 @@ export default function ShopDirectoryHero({
 
           <div
             className={`${
-              isLight ? "bg-white/80 border border-slate-200/60 rounded-2xl" : "bd-glass-card"
+              isLight ? "bg-[linear-gradient(180deg,rgba(247,232,194,0.78),rgba(232,238,248,0.72))] border border-[rgba(140,82,22,0.24)] rounded-2xl shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]" : "bd-glass-card"
             } p-4`}
           >
             <div

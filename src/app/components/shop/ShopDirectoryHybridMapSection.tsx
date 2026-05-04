@@ -54,7 +54,7 @@ export default function ShopDirectoryHybridMapSection({
     ? "border-blue-200/80 bg-blue-50 text-blue-700"
     : "border-blue-400/30 bg-blue-500/15 text-blue-200";
   const badgeClassName = isLight
-    ? "border-slate-200/80 bg-white/90 text-slate-600"
+    ? "border-[rgba(140,82,22,0.24)] bg-[linear-gradient(180deg,rgba(247,232,194,0.86),rgba(232,238,248,0.80))] text-slate-600 shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]"
     : "border-white/[0.10] bg-white/[0.05] text-slate-300";
 
   const onSwitchToListMode = useCallback(
