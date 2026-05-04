@@ -197,9 +197,12 @@ export function HomeReportsList({
                         : "bg-[linear-gradient(135deg,rgba(15,30,55,0.85)_0%,rgba(8,16,32,0.85)_100%)]"
                     }`}
                     style={{
+                      // Aligned to locked 2026-05-03 premium gold palette
+                      // (KI-066): top inset uses corner-lamp gold (196,144,65)
+                      // in both modes; cool-blue rings + dark bottom inset preserved.
                       boxShadow: isLightAppearance
-                        ? "inset 0 1px 0 rgba(220,165,90,0.18), inset 0 0 0 1px rgba(147,197,253,0.30), inset 0 -1px 0 rgba(2,6,23,0.06), 0 1px 2px rgba(2,6,23,0.04)"
-                        : "inset 0 1px 0 rgba(220,165,90,0.20), inset 0 0 0 1px rgba(96,165,250,0.18), inset 0 -1px 0 rgba(0,0,0,0.20), 0 1px 2px rgba(0,0,0,0.20)",
+                        ? "inset 0 1px 0 rgba(196,144,65,0.20), inset 0 0 0 1px rgba(147,197,253,0.30), inset 0 -1px 0 rgba(2,6,23,0.06), 0 1px 2px rgba(2,6,23,0.04)"
+                        : "inset 0 1px 0 rgba(196,144,65,0.22), inset 0 0 0 1px rgba(96,165,250,0.18), inset 0 -1px 0 rgba(0,0,0,0.20), 0 1px 2px rgba(0,0,0,0.20)",
                     }}
                   >
                     {hasPhoto ? (

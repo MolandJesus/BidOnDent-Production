@@ -233,9 +233,11 @@ export function HomeQuickActions({
             background: isLight
               ? "linear-gradient(to left, rgba(244,250,254,0.96), rgba(244,250,254,0.85) 35%, transparent)"
               : "linear-gradient(to left, rgba(8,18,38,0.96), rgba(8,18,38,0.85) 35%, transparent)",
+            // Aligned to locked 2026-05-03 premium gold palette (KI-066):
+            // edge sheen uses corner-lamp gold (196,144,65), not legacy yellow-amber.
             boxShadow: isLight
-              ? "inset 1px 0 0 rgba(220,165,90,0.20)"
-              : "inset 1px 0 0 rgba(220,165,90,0.24)",
+              ? "inset 1px 0 0 rgba(196,144,65,0.22)"
+              : "inset 1px 0 0 rgba(196,144,65,0.26)",
           }}
         />
       </div>

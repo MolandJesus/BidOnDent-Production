@@ -28,8 +28,11 @@ export default function ImageWithFallback(props: ImageWithFallbackProps) {
         }`}
         style={{
           ...style,
+          // Aligned to locked 2026-05-03 premium gold palette (KI-066):
+          // top inset uses corner-lamp gold (196,144,65); cool blue ring + dark
+          // bottom inset preserved.
           boxShadow:
-            "inset 0 1px 0 rgba(220,165,90,0.14), inset 0 0 0 1px rgba(96,165,250,0.10), inset 0 -1px 0 rgba(2,6,23,0.06)",
+            "inset 0 1px 0 rgba(196,144,65,0.14), inset 0 0 0 1px rgba(96,165,250,0.10), inset 0 -1px 0 rgba(2,6,23,0.06)",
         }}
         data-original-url={typeof src === "string" ? src : undefined}
         aria-label={alt}
