@@ -251,14 +251,21 @@ DIRECTIONAL       0 -28 to -44px    blur 70-130px    spread -14 to -22px    ≤ 
 - `.bd-dashboard-panel-shadow` (light base CSS var) + `.bd-dashboard-panel--deep` / `--accent-cyan` / `--accent-indigo` (light) + `.bd-dashboard-section-shadow` (light base) + `.bd-dashboard-section--deep` (light) — directional top-cast champagne lamp added/bumped per H1.6 (premium gold restored via canon means after T1.1 paint demote)
 - `MapBidSheet` body (light + dark) — full LAW canon (body in canon range + directional top-cast + cream highlight + backdrop-filter) per H1
 - `CoverageSearchPanel` light shell (`mapSurfaceTheme.panelToneClassName` + `panelStrongToneClassName`) — full LAW canon (internal radial demoted 0.16/0.20 → 0.05, body 0.92/0.86 → 0.84/0.76, directional top-cast + cream inset added) per H2 KI-091
+- `.bd-report-input` focus state (light + dark) — micro-triad directional top-cast (negative-Y) + canon palette swap on focus ring/halo per H3 KI-091
+- `MobileBottomNav` light background — body opacity in canon (0.84/0.76), bronze trim, cream highlight, canon micro top-cast champagne lamp per H4 KI-091; dark register untouched per Pass F-fix lock
+- `DashboardHeader` (`.bd-shell-header--light`) — canon micro top-cast champagne lamp appended to existing canon stack per H5 KI-091; dark register untouched
+- `.bd-section-eyebrow` (light + dark base) — canon champagne backing glow inherited by ~14 existing eyebrows without per-call-site edits per H6 KI-091
+- `.bd-landing-cta-glow` utility (NEW Pass H 2026-05-05) — backing radial champagne aura behind landing CTA pills; applied to `CTASection` closing CTA per H7 KI-091
+- Landing list markers (5 locations: `WhoWeServeSection` 12 instances, `AboutOpp`/`HowItWorks`/`BusinessInquiry`/`Benefits`/`TrustStats` 1 each) + 4 flanking-accent gradient strands swapped to canon palette per H8 KI-091
+- `.bd-landing-section-toplamp` alpha bumped 0.10/0.16 → 0.13/0.20 per H9 (still under 0.22a halo cap)
+- `.bd-landing-section-bottomwash` utility (NEW Pass H 2026-05-05) — companion cool-blue depth wash from section bottom; applied to all 6 cool sections per H9 KI-091
+- 6 cool-section atmospheric warm blobs (`HowItWorks`, `WhoWeServe`, `AboutOpp`, `BusinessInquiry`, `CTA`, `OperatingRegions`) canon-swapped from `bg-amber-200` → canon champagne per H9 KI-091
+- 5 cool-section atmospheric mesh + radial decorations canon-swapped from pre-canon goldenrod (`rgba(210,180,130)` / `rgba(220,185,115)` / `rgba(200,170,110)` / `rgba(200,165,100)` / `amber-100`) → canon champagne `rgba(196,144,65)` at SAME alpha per Pass I KI-092 (5 commits, atomic palette swap, no structural change)
+- Landing heading-area spacing trimmed across 7 sections (eyebrow→heading mb-6→mb-4; heading→content mb-8 md:mb-12 → mb-6 md:mb-8) per Pass J — addresses owner's "many gapping issues with spacing" directive
 
-Pending canon adoption (Pass H queue, in flight):
-- `.bd-input` family focus state — micro-triad scaled down (H3, in flight)
-- `MobileBottomNav` light background — canon harmony, dark untouched per Pass F-fix lock (H4)
-- `DashboardHeader` top bar light background — same (H5)
-- `.bd-section-eyebrow-glow` utility — backing radial under section eyebrow chips (H6)
-- Landing CTA pill atmospheric glow (H7)
-- List-marker champagne tint on landing benefit lists (H8)
+KI-091 RESOLVED 2026-05-05 (Pass H, 12 commits, range `91147e12 → a7e1d274`).
+KI-092 RESOLVED 2026-05-05 (Pass I, 5 commits, range `1afea721 → 10644ada`).
+KI-093 (Pass J spacing trim) shipped 2026-05-05 (commit `897259ab`).
 
 ### Future: Landing sections — more gold areas + premium lighting (planned, not yet implemented)
 
