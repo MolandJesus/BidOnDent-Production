@@ -111,7 +111,7 @@ export default function NavigationVoiceControlsSheet({
                       ? "bg-blue-50 text-slate-950"
                       : "bg-cyan-400/12 text-white"
                     : tone === "light"
-                      ? "bg-white/60 text-slate-800 hover:bg-white/90"
+                      ? "bg-[linear-gradient(180deg,rgba(247,232,194,0.62),rgba(232,238,248,0.58))] text-slate-800 hover:bg-[linear-gradient(180deg,rgba(247,232,194,0.86),rgba(232,238,248,0.82))]"
                       : "bg-white/4 text-slate-100 hover:bg-white/8"
                 )}
               >

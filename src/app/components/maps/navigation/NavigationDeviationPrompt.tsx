@@ -79,7 +79,7 @@ export default function NavigationDeviationPrompt({
       className={`animate-in fade-in slide-in-from-top-2 mx-auto flex max-w-2xl items-center gap-4 rounded-2xl border px-5 py-3.5 shadow-xl backdrop-blur-xl duration-300 ${
         isDark
           ? "border-white/[0.12] bg-slate-950/80 text-white"
-          : "border-slate-200/80 bg-white/90 text-slate-900 shadow-lg"
+          : "border-[rgba(140,82,22,0.30)] bg-[linear-gradient(180deg,rgba(247,232,194,0.86),rgba(232,238,248,0.80))] text-slate-900 shadow-[0_14px_34px_rgba(15,23,42,0.14),inset_0_1px_0_rgba(252,240,208,0.85),0_0_0_1px_rgba(196,144,65,0.20)]"
       }`}
       role="status"
       aria-live="polite"

@@ -41,7 +41,7 @@ function ToggleRow({
             ? "bg-blue-50 text-slate-950"
             : "bg-cyan-400/12 text-white"
           : tone === "light"
-            ? "bg-white/50 text-slate-500 hover:bg-white/80"
+            ? "bg-[linear-gradient(180deg,rgba(247,232,194,0.52),rgba(232,238,248,0.50))] text-slate-500 hover:bg-[linear-gradient(180deg,rgba(247,232,194,0.78),rgba(232,238,248,0.74))]"
             : "bg-white/4 text-slate-400 hover:bg-white/8"
       )}
     >

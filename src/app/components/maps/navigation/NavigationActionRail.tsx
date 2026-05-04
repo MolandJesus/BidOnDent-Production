@@ -18,12 +18,12 @@ type NavigationActionRailProps = {
 function actionButtonClassName(tone: MapSurfaceTone, active: boolean) {
   if (active) {
     return tone === "light"
-      ? "map-nav-icon-ring-pulse border-sky-300/85 bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(224,242,254,0.92))] text-sky-700 shadow-[0_18px_34px_rgba(14,165,233,0.18)]"
+      ? "map-nav-icon-ring-pulse border-sky-300/85 bg-[linear-gradient(180deg,rgba(247,232,194,0.92),rgba(224,242,254,0.92))] text-sky-700 shadow-[0_18px_34px_rgba(14,165,233,0.18),inset_0_1px_0_rgba(252,240,208,0.85),0_0_0_1px_rgba(196,144,65,0.18)]"
       : "map-nav-icon-ring-pulse border-cyan-300/35 bg-[linear-gradient(180deg,rgba(15,23,42,0.96),rgba(8,47,73,0.92))] text-cyan-100 shadow-[0_18px_36px_rgba(2,6,23,0.36)]";
   }
 
   return tone === "light"
-    ? "border-white/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(241,245,249,0.86))] text-slate-700 shadow-[0_18px_34px_rgba(15,23,42,0.16)]"
+    ? "border-[rgba(140,82,22,0.30)] bg-[linear-gradient(180deg,rgba(247,232,194,0.86),rgba(232,238,248,0.82))] text-slate-700 shadow-[0_18px_34px_rgba(15,23,42,0.14),inset_0_1px_0_rgba(252,240,208,0.78)]"
     : "border-white/12 bg-[linear-gradient(180deg,rgba(15,23,42,0.92),rgba(2,6,23,0.84))] text-slate-100 shadow-[0_18px_36px_rgba(2,6,23,0.38)]";
 }
 
@@ -41,7 +41,7 @@ export default function NavigationActionRail({
 }: NavigationActionRailProps) {
   const railShellClassName =
     tone === "light"
-      ? "border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.9),rgba(241,245,249,0.76))]"
+      ? "border-[rgba(140,82,22,0.28)] bg-[linear-gradient(180deg,rgba(247,232,194,0.78),rgba(232,238,248,0.72))]"
       : "border-white/15 bg-[linear-gradient(180deg,rgba(15,23,42,0.82),rgba(30,41,59,0.68))]";
 
   return (

@@ -32,7 +32,7 @@ export default function CurrentSpeedBadge({
   return (
     <div
       className={cn(
-        "map-ui-enter min-w-[88px] rounded-[1.25rem] border px-3 py-2 shadow-[0_22px_52px_rgba(15,23,42,0.18),inset_0_1px_0_rgba(255,255,255,0.36)] backdrop-blur-2xl transition-colors sm:min-w-[112px] sm:rounded-[1.5rem] sm:px-4 sm:py-3",
+        "map-ui-enter min-w-[88px] rounded-[1.25rem] border px-3 py-2 shadow-[0_22px_52px_rgba(15,23,42,0.18),inset_0_1px_0_rgba(252,240,208,0.42)] backdrop-blur-2xl transition-colors sm:min-w-[112px] sm:rounded-[1.5rem] sm:px-4 sm:py-3",
         isSevereWarning
           ? "border-rose-500 bg-rose-500 text-white"
           : isOverLimit
@@ -40,7 +40,7 @@ export default function CurrentSpeedBadge({
               ? "border-amber-300 bg-amber-50/95 text-amber-950"
               : "border-amber-300/50 bg-amber-500/18 text-amber-50"
             : tone === "light"
-              ? "border-white/85 bg-white/92 text-slate-950"
+              ? "border-[rgba(140,82,22,0.32)] bg-[linear-gradient(180deg,rgba(247,232,194,0.86),rgba(232,238,248,0.84))] text-slate-950"
               : "border-white/12 bg-slate-950/82 text-white"
       )}
     >
