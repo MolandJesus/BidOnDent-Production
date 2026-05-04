@@ -1070,25 +1070,26 @@ body {
    --landing (no premium-marketing-anchor energy). Smaller hover lift (2px vs 6px)
    because workspace cards are not marketing CTAs. Dark variant lives in dark block. */
 .bd-glass-card--dashboard {
-  /* D4 (final v3.2) + D6 crispness: soft off-white liquid glass + more gold +
-     slightly tighter edge definition (border 0.46 → 0.54, blue ring 0.24 → 0.30,
-     deeper drop shadow), so light-mode cards stop reading washy without darkening.
-     V3 (2026-05-03): position:relative + overflow:hidden enable a hover sheen
-     pseudo-element shared with landing cards. backdrop-filter inherits the
-     saturate boost from .bd-glass-card. */
+  /* Pass G + Pass F-fix: LAW pure-white inset fix (KI-086) + body opacity
+     calibrated to refined invariant 0.84/0.76 (was 0.74/0.62 mid-flight,
+     too washy per owner feedback; was 0.94/0.86 pre-canon, paint not
+     glass). 0.84/0.76 is the verified balance: panel contained, page
+     atmosphere subtly bleeds through. Close warm halo demoted (0.28 ->
+     0.18) and directional top-cast champagne lamp added. */
   position: relative;
   overflow: hidden;
   border-color: rgba(147, 197, 253, 0.54);
-  background: linear-gradient(180deg, rgba(244, 250, 254, 0.94) 0%, rgba(226, 238, 252, 0.86) 100%);
+  background: linear-gradient(180deg, rgba(244, 250, 254, 0.84) 0%, rgba(226, 238, 252, 0.76) 100%);
   box-shadow:
     0 22px 52px rgba(15, 42, 92, 0.16),
     0 6px 14px rgba(30, 58, 138, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 1),
-    inset 0 -1px 0 rgba(196, 144, 65, 0.3),
-    0 0 0 1px rgba(196, 144, 65, 0.22),
+    inset 0 1px 0 rgba(252, 240, 208, 0.92),
+    inset 0 -1px 0 rgba(196, 144, 65, 0.28),
+    0 0 0 1px rgba(196, 144, 65, 0.18),
     0 0 0 1px rgba(191, 219, 254, 0.3),
-    0 0 28px rgba(59, 130, 246, 0.1),
-    0 0 44px rgba(196, 130, 45, 0.28);
+    0 0 28px rgba(59, 130, 246, 0.10),
+    0 0 44px rgba(196, 130, 45, 0.18),
+    0 -30px 80px -16px rgba(196, 144, 65, 0.12);
 }
 
 .bd-glass-card--dashboard::before {
@@ -1297,6 +1298,11 @@ body {
      instead of hiding behind a near-opaque card). Saturate boost added to the
      backdrop-filter so the warm dashboard atmosphere reads through with full
      champagne color, not desaturated. Top inset highlight added for thickness. */
+  /* Pass G (KI-086, canon adoption): LAW pure-white inset rgba(255,255,255,
+     0.85) -> locked premium gold cream rgba(252,240,208,0.85). Body opacity
+     0.86/0.78 already in canon range (0.62-0.78), preserved. Close warm
+     halo demoted (0.18 -> 0.14) and scaled directional top-cast champagne
+     lamp added (smaller scale than panel since floating is smaller). */
   border: 1px solid rgba(191, 219, 254, 0.5);
   background: linear-gradient(180deg, rgba(248, 252, 255, 0.86) 0%, rgba(240, 248, 255, 0.78) 100%);
   color: #0f172a;
@@ -1306,10 +1312,11 @@ body {
   box-shadow:
     var(--bd-glass-shadow-floating),
     var(--bd-glow-medium),
-    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    inset 0 1px 0 rgba(252, 240, 208, 0.85),
     inset 0 -1px 0 rgba(196, 144, 65, 0.22),
     0 0 0 1px rgba(196, 144, 65, 0.14),
-    0 0 36px rgba(196, 130, 45, 0.18);
+    0 0 36px rgba(196, 130, 45, 0.14),
+    0 -24px 60px -12px rgba(196, 144, 65, 0.12);
   transition:
     transform 300ms cubic-bezier(0.4, 0, 0.2, 1),
     box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -2638,15 +2645,16 @@ body {
      forbidden. Shadows are NAVY-COOL so warm cream lifts off the cool
      canvas; halos stay tight because cream-on-cream halos disappear. See
      LAW_PROJECT_RULES.md § Light-Mode Surface Rule. */
-  /* Pass F (KI-085): light blush fix — internal warm radial (was the gold
-     PAINT stacking with cream body to create peach blush) drastically
-     reduced 0.16 -> 0.05; body opacity dropped 0.94/0.86 -> 0.74/0.62 so
-     page atmosphere bleeds through the translucent glass. Result: cool-
-     cream body that LETS the page gold lamps show through, instead of
-     cream + gold paint = peach blush. */
+  /* Pass F-fix (KI-086, owner verification feedback 2026-05-04): Pass F's
+     light body opacity 0.74/0.62 was TOO aggressive — Smart Map Tools +
+     Nearby Matches + Report panels read as washed-out (lost panel
+     containment). Body opacity rolled back 0.74/0.62 -> 0.84/0.76 so panels
+     still feel CONTAINED while keeping enough translucency for page
+     atmosphere to subtly show through. Internal radial held at 0.05 (the
+     blush kill remains). */
   --bd-dashboard-panel-bg:
     radial-gradient(ellipse 90% 50% at 50% 0%, rgba(196, 144, 65, 0.05), transparent 70%),
-    linear-gradient(180deg, rgba(254, 248, 232, 0.74) 0%, rgba(248, 238, 215, 0.62) 100%);
+    linear-gradient(180deg, rgba(254, 248, 232, 0.84) 0%, rgba(248, 238, 215, 0.76) 100%);
   --bd-dashboard-panel-border: rgba(140, 82, 22, 0.46);
   /* Bucket 6 (KI-072): light-mode far-drop softened (0 26px 56px -> 0 18px 42px,
      0 56px 110px -> 0 36px 80px) so cool-shadow stacking on light dashboard
@@ -2665,12 +2673,13 @@ body {
     inset 0 1px 0 rgba(254, 247, 232, 0.88), inset 0 -1px 0 rgba(140, 82, 22, 0.30),
     0 0 18px rgba(196, 130, 45, 0.10),
     0 -32px 80px -16px rgba(196, 144, 65, 0.12);
-  /* Pass F: light section body opacity dropped 0.94/0.84 -> 0.74/0.62 so
-     page atmosphere bleeds through. */
+  /* Pass F-fix (KI-086): section body 0.74/0.62 -> 0.82/0.74 — preserves
+     translucency for page-atmosphere bleed-through but restores enough
+     opacity for clear panel containment per owner verification feedback. */
   --bd-dashboard-section-bg: linear-gradient(
     180deg,
-    rgba(254, 247, 230, 0.74) 0%,
-    rgba(247, 235, 210, 0.62) 100%
+    rgba(254, 247, 230, 0.82) 0%,
+    rgba(247, 235, 210, 0.74) 100%
   );
   --bd-dashboard-section-border: rgba(140, 82, 22, 0.4);
   /* Pass F (KI-085): light section omni far-ambients REMOVED (blush cause).
