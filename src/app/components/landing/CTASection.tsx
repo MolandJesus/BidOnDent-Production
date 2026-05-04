@@ -126,7 +126,7 @@ export default function CTASection({
             }}
           />
           <div
-            className={`mb-6 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+            className={`mb-4 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
           >
             <span className="inline-flex items-center px-4 py-2 rounded-full text-sm md:text-base font-semibold bd-glass-badge">
               <Sparkles className="w-4 h-4 mr-2" />
@@ -170,7 +170,7 @@ export default function CTASection({
             />
           </div>
           <p
-            className={`mx-auto max-w-2xl text-base sm:text-lg md:text-xl leading-relaxed mb-8 transition-all duration-700 text-blue-100/75 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+            className={`mx-auto max-w-2xl text-base sm:text-lg md:text-xl leading-relaxed mb-6 transition-all duration-700 text-blue-100/75 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
             style={{ transitionDelay: "0.3s" }}
           >
             No fees. No phone tag. Just transparent bids from trusted shops — compared and

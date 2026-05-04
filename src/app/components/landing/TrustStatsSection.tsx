@@ -145,7 +145,7 @@ export default function TrustStatsSection({
 
       <div className="container mx-auto px-4 max-w-7xl relative">
         {/* Section header */}
-        <div className="text-center mb-8 sm:mb-10">
+        <div className="text-center mb-6 sm:mb-8">
           <span
             className={`inline-flex items-center px-4 py-1.5 rounded-full backdrop-blur-sm text-sm font-medium mb-5 ${
               isLightAppearance
