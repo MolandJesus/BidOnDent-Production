@@ -742,6 +742,22 @@
 - **Status:** **OPEN** — DEFERRED (intentional defer per autopilot scope discipline). Owner directive 2026-05-05 authorized F-24 mitigation pass; full swap requires explicit second authorization given the scope.
 - **Skill:** `supabase-clerk-edge-function` (any new shop-fetch handler will follow this pattern).
 
+### KI-104: Pass L — visible "darker stripe" border at landing section transitions (Pass K residual)
+
+- **Impact:** Owner directive 2026-05-05 (re-authorized autopilot block): even after Pass K (KI-094) trimmed seam-fade height + bumped alphas to address F-12, a visible darker horizontal stripe persisted at landing section transitions, especially in dark mode. Owner reading this as a "border line." Light mode less visible but still subtly present.
+- **Location:** [src/styles/theme.css](src/styles/theme.css) `.bd-landing-seam-fade` utility (~L3793-L3856).
+- **Diagnose findings:** Two compounding root causes (hypothesis #2 + #4 from owner brief, plus a self-inflicted darkening layer):
+  - **Hypothesis #4 confirmed** — `.bd-landing-seam-fade` is a SIBLING block element BETWEEN sections in [src/app/components/app/LandingPageLayout.tsx:160,172,176,180,184,191,195](src/app/components/app/LandingPageLayout.tsx#L160). It does NOT overlap into adjacent sections. Its gradient renders in empty layout space rather than bridging across the section boundary.
+  - **Hypothesis #2 confirmed** — adjacent section background gradients have mismatched endpoint colors. Worst case in dark mode: HowItWorks ends `#081e38` → Benefits starts warm-bronze (cool→warm DRAMATIC); Benefits→WhoWeServe (warm→cool); AboutOpp→TrustStats (cool→warm); TrustStats→OperatingRegions (warm→cool). Cool↔cool transitions less visible; warm↔cool transitions are where the "border" reads strongest.
+  - **Self-inflicted darkening layer** — the seam-fade had TWO gradient layers: gold radial (the actual bridge — works) AND a navy linear `rgba(8,16,32,0.38)` at center in dark / `rgba(15,30,60,0.12)` light. The navy linear's color (`#081020`) is DARKER than every section bg in dark mode. So the seam-fade was visibly DARKENING the boundary area below adjacent section colors, creating the "darker stripe = border" perception.
+  - **Hypothesis #1 ruled out** — no explicit `border-t/-b/-y` Tailwind classes on section wrappers. Verified clean across 8 section components.
+- **Fix direction:** Two-part structural fix in single coherent change.
+  - (a) **Negative-margin overlap** — added `margin-top: -36px; margin-bottom: -36px;` to `.bd-landing-seam-fade`. Seam now overlaps adjacent sections by 36px each side. Turns it from a between-band into a true bridge: gold radial center sits exactly at the section boundary, soft-lighting ACROSS rather than DARKENING BETWEEN.
+  - (b) **Drop the navy linear layer entirely** (light + dark register). The gold radial alone IS the bridge; navy darkening was an additive misfire. Gold radial alphas UNCHANGED from Pass K (0.13/0.04 light, 0.20/0.06 dark) — still well under 0.22a cap.
+- **Status:** RESOLVED 2026-05-05 (commit pending — added in this commit alongside this KI entry).
+- **Hard stops respected:** 0.22a cap NOT exceeded (alphas unchanged). HeroSection UNTOUCHED. Pass K spacing UNTOUCHED (`py-4 sm:py-8 md:py-10` preserved). Locked Premium Gold Palette only. No new utilities. `pointer-events: none` preserved (no click interception). `position: relative; z-index: 1;` preserved (renders above sections in stacking context). Build clean (3817.64 KiB precache stable). Branch-aware forbidden grep ZERO.
+- **Skill:** `bd-design-identity`. Pre-existing IDE diagnostics at L453/L483/L2555/L2685 UNCHANGED — documented in audit, not caused by this edit.
+
 ### KI-101: F-01 — "Toyoto" misspelled vehicle make persisted in DB (P6-SPELL — owner action)
 
 - **Impact:** Audit AI F-01 (P6-SPELL): the 2021 Toyota Camry vehicle record was saved with the make field as "Toyoto" (misspelled). Propagates to every display of this vehicle/report — dashboard "Your Reports" h3 (`2021 Toyoto Camry`), Account tab Vehicles list, Report creation flow Step 1 vehicle selector, Make field pre-fill. Visible typo on production-facing content. Make input placeholder correctly shows "Toyota" — so the field hint is correct but there's no enforcement.

@@ -3793,66 +3793,55 @@ body {
 .bd-landing-seam-fade {
   /* Pass H1.7 (2026-05-05): owner reported "landing space issues, take
      away space and better smoothly add atmospheric background with
-     future updated lighting to the different sections." Diagnosis from
-     screenshots: (1) sections have heavy py-12/16/20 padding creating
-     200-300px empty navy gaps between content and section edges; (2)
-     the H1.5 64px seam-fade was too small to bridge the perceived gap
-     and the alphas too subtle to read as continuous atmosphere; (3)
-     the landing's "lit room" feel never carried across section bounds.
-     Two-axis fix: trim section py + boost this utility into a real
-     atmospheric bridge that visually fills the inter-section space.
-     Now 112px tall with stronger alphas — reads as ambient lighting
-     thread, not as a thin divider line. */
-  /* Pass K (2026-05-05): owner directive "fix spacing issue on landing
-     page between sections." Audit AI F-12 confirmed hard section color
-     transitions remained. Two-axis fix: trim seam-fade height 112→72px
-     AND bump alphas to keep the bridge visually present at the smaller
-     height (gold 0.10→0.13, secondary 0.03→0.04; navy linear 0.08→0.12).
-     Net per-transition savings ~40px × 8 seams = ~320px scroll cut.
-     Section py also trimmed in same pass (py-8/12/16 → py-4/8/10). */
+     future updated lighting to the different sections." Boosted to a
+     112px atmospheric bridge.
+     Pass K (2026-05-05): trimmed height 112→72 + bumped alphas (gold
+     0.10→0.13, navy 0.08→0.12) for tighter rhythm + readable bridge.
+     Pass L (2026-05-05): owner reported a STILL-VISIBLE darker stripe
+     at section boundaries despite Pass K. Diagnose found two compounding
+     issues: (1) seam-fade is a SIBLING between sections — its gradient
+     sits in empty space rather than bridging across the boundary; (2)
+     the navy linear layer (rgba(8,16,32) at center in dark — DARKER
+     than every section bg) was visibly DARKENING the seam center,
+     creating the "border line" the owner saw.
+     Pass L fix is structural: (a) negative margin-top/bottom -36px so
+     the seam-fade OVERLAPS into adjacent sections by 36px each side,
+     turning it from a between-band into a true bridge; (b) drop the
+     navy linear layer entirely — gold radial alone IS the bridge;
+     darkening was an additive misfire. Visible "border" stripe gone;
+     section bodies flow into each other through the gold-light bridge. */
   height: 72px;
+  margin-top: -36px;
+  margin-bottom: -36px;
   pointer-events: none;
   position: relative;
   z-index: 1;
-  /* Light: 3-layer atmospheric bridge — 1) wide champagne lamp glow
-     (the canon's directional gold thread carried across sections);
-     2) cool-blue haze for "atmospheric depth" hint at center; 3)
-     soft fade at edges so adjacent section bodies remain dominant. */
-  background:
-    radial-gradient(
-      ellipse 70% 100% at 50% 50%,
-      rgba(196, 144, 65, 0.13) 0%,
-      rgba(196, 144, 65, 0.04) 50%,
-      rgba(196, 144, 65, 0) 100%
-    ),
-    linear-gradient(
-      to bottom,
-      rgba(15, 30, 60, 0) 0%,
-      rgba(15, 30, 60, 0.12) 50%,
-      rgba(15, 30, 60, 0) 100%
-    );
+  /* Light: gold radial atmospheric bridge — overlaid on adjacent section
+     content (via negative margins) so the gradient soft-lights across
+     the boundary instead of darkening an empty between-band. Alphas
+     unchanged from Pass K (0.13 / 0.04) — still well under the 0.22a
+     single-layer halo cap. Navy linear layer REMOVED. */
+  background: radial-gradient(
+    ellipse 70% 100% at 50% 50%,
+    rgba(196, 144, 65, 0.13) 0%,
+    rgba(196, 144, 65, 0.04) 50%,
+    rgba(196, 144, 65, 0) 100%
+  );
 }
 [data-theme="dark"] .bd-landing-seam-fade,
 .dark .bd-landing-seam-fade {
-  /* Pass K: dark variant matched — height 112→72, gold 0.16→0.20 (still
-     under the 0.22a single-layer halo cap), navy linear 0.32→0.38 to
-     keep the bridge readable against the deeper navy canvas. */
-  height: 72px;
-  /* Dark: wider champagne lamp ellipse + deeper navy bridge so the
-     thread reads as continuous gold lighting against navy canvas. */
-  background:
-    radial-gradient(
-      ellipse 70% 100% at 50% 50%,
-      rgba(196, 144, 65, 0.20) 0%,
-      rgba(196, 144, 65, 0.06) 50%,
-      rgba(196, 144, 65, 0) 100%
-    ),
-    linear-gradient(
-      to bottom,
-      rgba(8, 16, 32, 0) 0%,
-      rgba(8, 16, 32, 0.38) 50%,
-      rgba(8, 16, 32, 0) 100%
-    );
+  /* Pass L: dark variant matches the structural fix. Gold radial alphas
+     unchanged from Pass K (0.20 / 0.06) — still under 0.22a cap. The
+     navy linear layer that was darkening the seam center is REMOVED;
+     the seam now overlaps section bodies (via negative margins inherited
+     from base) so the gold thread soft-lights across the section
+     boundary instead of adding a darker between-stripe. */
+  background: radial-gradient(
+    ellipse 70% 100% at 50% 50%,
+    rgba(196, 144, 65, 0.20) 0%,
+    rgba(196, 144, 65, 0.06) 50%,
+    rgba(196, 144, 65, 0) 100%
+  );
 }
 
 /* Pass G (KI-090, 2026-05-05) — landing cool-section directional top-cast
