@@ -33,17 +33,25 @@ export default function MobileBottomNav({
       style={{
         paddingBottom: "env(safe-area-inset-bottom, 0px)",
         background: isLightAppearance
-          ? // LAW: bottom-nav body must not be pure white. Cool blue-gray
-            // canvas matching the sidebar light gradient (KI-066).
-            "linear-gradient(180deg, rgba(232, 242, 254, 0.92) 0%, rgba(214, 230, 248, 0.88) 100%)"
+          ? // Pass H4 (KI-091): canon adoption — body opacity to canon
+            // range (0.84/0.76 per LAW Premium Glass Body Opacity), cool
+            // ice gradient preserved, bronze trim + cream highlight + canon
+            // micro top-cast appended below.
+            "linear-gradient(180deg, rgba(232, 242, 254, 0.84) 0%, rgba(214, 230, 248, 0.76) 100%)"
           : "linear-gradient(180deg, rgba(8, 18, 38, 0.94) 0%, rgba(6, 13, 28, 0.92) 100%)",
         backdropFilter: "blur(24px) saturate(1.3)",
         WebkitBackdropFilter: "blur(24px) saturate(1.3)",
         borderTop: isLightAppearance
-          ? "1px solid rgba(148, 163, 184, 0.20)"
+          ? // Pass H4: cool slate -> canon bronze trim per LAW
+            "1px solid rgba(140, 82, 22, 0.22)"
           : "1px solid rgba(96, 165, 250, 0.18)",
         boxShadow: isLightAppearance
-          ? "0 -6px 20px rgba(37, 99, 235, 0.08)"
+          ? // Pass H4: scaled micro top-cast champagne lamp (lamp from
+            // ABOVE the nav since the nav sits at viewport bottom — gold
+            // appears to wash UPWARD onto the nav from off-screen "above"),
+            // plus close cool drop, plus cream highlight inset for
+            // canonical premium glass feel.
+            "0 -16px 40px -10px rgba(196, 144, 65, 0.12), 0 -6px 20px rgba(15, 30, 60, 0.10), inset 0 1px 0 rgba(252, 240, 208, 0.78)"
           : "0 -8px 28px rgba(3, 10, 24, 0.55), inset 0 1px 0 rgba(96, 165, 250, 0.14)",
       }}
     >
