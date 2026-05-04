@@ -65,8 +65,8 @@ export default function MobileBottomNav({
                 isActive
                   ? ""
                   : isLightAppearance
-                    ? "text-slate-400 hover:text-blue-600"
-                    : "text-blue-100/50 hover:text-blue-100/80"
+                    ? "text-slate-400 hover:text-blue-600 hover:bg-blue-500/[0.04]"
+                    : "text-slate-300 hover:text-slate-100 hover:bg-blue-400/[0.06]"
               }`}
               style={
                 isActive

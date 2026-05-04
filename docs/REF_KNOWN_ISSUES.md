@@ -553,3 +553,13 @@
   - Warm pop tiles (`--accent-gold` 0.26 + `--accent-champagne` 0.20) UNCHANGED — LAW pop tile identity preserved
   - Color-tinted hue halos (cool blue / cyan / indigo / rose color halos) UNCHANGED at 0.10 — these provide the cool-tile hue identity, separate from the bronze atmospheric layer
 - **Result:** Cool tiles now have a subtle warm wash that lifts them out of "broken/invisible" territory while warm pop tiles still pop noticeably stronger (0.20-0.26 vs 0.14-0.16). Quick Actions row reads as deliberate cool/warm/cool/warm rhythm. No body color changes — distinct character preserved (cool tiles stay cool, warm tiles stay warm). Single-layer halo cap of 0.22 not breached. Per cohesion overlay: borrowed landing's "richer atmospheric layering" technique into dashboard atmosphere ONLY (not panel paint). Skill: `bd-design-identity`.
+
+### KI-079: Bottom nav inactive tabs read too dim in dark mode (low contrast against dark navy background)
+
+- **Impact:** Owner-flagged via mobile screenshots 18 + 20. The MobileBottomNav active tab (Dashboard) shows a clear blue underline + blue label. Inactive tabs (Report / Bids / Account) used `text-blue-100/50` — 50% alpha against the dark navy nav background. On bright phones in real daylight, this would be borderline unreadable. Hover state `text-blue-100/80` was a small bump but no background affordance feedback. Reads as accidental dim, not deliberate hierarchy.
+- **Location:** `src/app/components/dashboard/MobileBottomNav.tsx` L64-70 — inline Tailwind className on the inactive button state.
+- **Fix direction:** Replace `text-blue-100/50` → `text-slate-300` (no alpha — solid color, slate hue desaturates the blue family slightly so inactive doesn't compete with active blue identity). Hover state `text-slate-100` (brighter on hover). Add `hover:bg-blue-400/[0.06]` for a 6% cool-blue background tint on hover/touch — provides affordance feedback without painting the nav.
+- **Status:** RESOLVED 2026-05-04 (Pass 4 of 2026-05-04 mobile + dark autopilot). Single edit:
+  - Dark inactive: `text-blue-100/50 hover:text-blue-100/80` → `text-slate-300 hover:text-slate-100 hover:bg-blue-400/[0.06]`
+  - Light inactive ALSO got a small affordance bump: `text-slate-400 hover:text-blue-600` → `text-slate-400 hover:text-blue-600 hover:bg-blue-500/[0.04]` (4% blue tint on hover, still well below LAW Light-Mode whitening threshold)
+- **Result:** Inactive labels now readable at 375px on a bright phone in real daylight. Hover state provides clear affordance feedback via subtle background tint. Active tab's blue underline + blue label still wins visually (deliberate hierarchy preserved). All four tabs now equally legible. Skill: `bd-design-identity`.
