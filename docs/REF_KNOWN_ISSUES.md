@@ -757,7 +757,7 @@
 - **Status:** RESOLVED 2026-05-05 (commit `6b96c22b`).
 - **Visual continuation:** Pass M (commit `e5937a27`) bumped this same primitive's light center alpha 0.13→0.18 / mid 0.04→0.06 in response to owner zoomed-out screenshot review. Pass N (commit `e5437355`) and Pass O (commit `c17a6c4c`) extended the alpha-lift pattern to `.bd-landing-section-toplamp` (light 0.13→0.18) and `.bd-landing-section-bottomwash` (light 0.10→0.14) — the M/N/O trilogy together completes the light-mode landing-atmosphere richness pass. All within Locked Premium Gold Palette + 0.22a halo cap. Dark mode untouched in all three.
 - **Hard stops respected:** 0.22a cap NOT exceeded (alphas unchanged). HeroSection UNTOUCHED. Pass K spacing UNTOUCHED (`py-4 sm:py-8 md:py-10` preserved). Locked Premium Gold Palette only. No new utilities. `pointer-events: none` preserved (no click interception). `position: relative; z-index: 1;` preserved (renders above sections in stacking context). Build clean (3817.64 KiB precache stable). Branch-aware forbidden grep ZERO.
-- **Skill:** `bd-design-identity`. Pre-existing IDE diagnostics at L453/L483/L2555/L2685 UNCHANGED — documented in audit, not caused by this edit.
+- **Skill:** `bd-design-identity`. Pre-existing IDE diagnostics at theme.css `:root` (L852) + `[data-appearance-mode="light"]` (L1833 + L2586 + L2714) UNCHANGED — these are intentional mode-override blocks misclassified as duplicate selectors by the IDE linter (per §1.2 diagnose finding in commit 4c154c66 — audit B2 false positive). Not caused by any landing-pass edit.
 
 ### KI-105: F-15 — Landing hero demo map renders too pale in light mode
 

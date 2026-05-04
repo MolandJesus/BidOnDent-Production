@@ -88,7 +88,6 @@ These are the primary governing documents. Always start here.
 ### Phase / Audit Docs (open-ended)
 
 - **[`PHASE_6_SMOKE_TEST_CHECKLIST.md`](PHASE_6_SMOKE_TEST_CHECKLIST.md)** — three-environment smoke test (Local Docker / Hosted Staging / Production). Hosted columns still partial.
-- **[`SHOP_AUDIT_REPORT_2026-04-29.md`](SHOP_AUDIT_REPORT_2026-04-29.md)** — Shop role audit. "Best Next Passes" outstanding.
 
 ### Setup & Operations
 
