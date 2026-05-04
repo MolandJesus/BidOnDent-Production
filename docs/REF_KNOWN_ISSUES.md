@@ -742,6 +742,33 @@
 - **Status:** **OPEN** — DEFERRED (intentional defer per autopilot scope discipline). Owner directive 2026-05-05 authorized F-24 mitigation pass; full swap requires explicit second authorization given the scope.
 - **Skill:** `supabase-clerk-edge-function` (any new shop-fetch handler will follow this pattern).
 
+### KI-101: F-01 — "Toyoto" misspelled vehicle make persisted in DB (P6-SPELL — owner action)
+
+- **Impact:** Audit AI F-01 (P6-SPELL): the 2021 Toyota Camry vehicle record was saved with the make field as "Toyoto" (misspelled). Propagates to every display of this vehicle/report — dashboard "Your Reports" h3 (`2021 Toyoto Camry`), Account tab Vehicles list, Report creation flow Step 1 vehicle selector, Make field pre-fill. Visible typo on production-facing content. Make input placeholder correctly shows "Toyota" — so the field hint is correct but there's no enforcement.
+- **Location:** `vehicles` table row for the affected user. Code-side: vehicle entry form has placeholder hint but no validation/autocorrect.
+- **Fix direction:** **Owner action:** UPDATE the `vehicles` table row to correct "Toyoto" → "Toyota" via Supabase Dashboard SQL Editor (single UPDATE statement). **Code improvement (deferred, optional):** add make validation/autocorrection against a canonical makes list in the vehicle entry form. Non-trivial — would touch the report wizard's vehicle step + account vehicle entry — not appropriate for autopilot ship without explicit go-ahead. Bigger value would be a future `vehicles` migration adding a CHECK constraint or normalized-makes lookup table.
+- **Status:** **OPEN** — owner DB action pending. Code improvement deferred.
+- **Skill:** None — pure data hygiene + future schema decision.
+
+### KI-102: F-03 — Cat photo as damage report thumbnail (P2-DATA — owner action)
+
+- **Impact:** Audit AI F-03 (P2-DATA, test data quality): the "2014 Mazda Mazda6" damage report (Mar 28, 2026, "Front bumper") displays an orange tabby cat photo as its thumbnail on dashboard "Your Reports" + full map experience popup when the report pin is opened. Owner test upload from development. `ImageWithFallback` renders it correctly — the issue is the data content, not the code. A body shop reviewing incoming customer reports would see a cat photo for a "front bumper" repair request. Undermines professional credibility.
+- **Location:** `damage_reports` table row for the Mazda6 record + associated `photo_urls` storage pointer.
+- **Fix direction:** **Owner action:** delete the offending photo from Supabase Storage + UPDATE the `damage_reports` row to clear/replace `photo_urls` for this report. OR delete the entire test report row. Per `supabase-storage-signed-urls` skill — storage refs are `storage://<bucket>/<path>` pointers; deletion needs both the storage object removal and the DB row update.
+- **Status:** **OPEN** — owner data hygiene action pending.
+- **Skill:** `supabase-storage-signed-urls`.
+
+### KI-103: F-14 — `bidondent@gmail.com` in landing footer (P4-UX — owner decision)
+
+- **Impact:** Audit AI F-14 (P4-UX, trust/credibility): the landing page footer displays `bidondent@gmail.com` as the primary contact email. For a professional auto repair marketplace claiming premium brand positioning, a Gmail address signals a pre-launch or hobby project rather than an established business.
+- **Location:** [src/app/components/landing/FooterSection.tsx](src/app/components/landing/FooterSection.tsx) (or wherever `bidondent@gmail.com` is hardcoded — confirm via grep).
+- **Fix direction:** Replace with domain-based email (e.g., `contact@bidondent.com` or `support@bidondent.com`) before soft-launch customer demos. **Cannot ship unilaterally** — routing emails to a non-existent mailbox is worse than the credibility hit. **Owner decision required:**
+  - (a) Owner sets up `contact@bidondent.com` domain mailbox first, then code change replaces the Gmail string. Recommended path.
+  - (b) Owner accepts Gmail through soft launch, defers fix until domain mail is provisioned.
+  - (c) Owner provides preferred replacement email; code change ships immediately against that.
+- **Status:** **OPEN** — owner decision pending.
+- **Skill:** None — owner business decision.
+
 ### KI-097: F-16 follow-up — `LandingPageHeader.tsx:313` fire-and-forget signOut (P7-TECHDEBT)
 
 - **Impact:** During F-16 diagnose (KI-096), a secondary code-quality issue surfaced at [src/app/components/landing/LandingPageHeader.tsx:313](src/app/components/landing/LandingPageHeader.tsx#L313): `signOut({ redirectUrl: "/" })` is invoked fire-and-forget (no `await`, no `void` annotation). After F-16 fix added provider-level `afterSignOutUrl`, the explicit `redirectUrl` is redundant and the unawaited promise is a code-quality smell — but logout works correctly post-F-16, so this is non-urgent.
