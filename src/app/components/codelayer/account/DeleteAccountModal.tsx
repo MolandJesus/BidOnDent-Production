@@ -119,7 +119,7 @@ export default function DeleteAccountModal({
               value={deleteConfirmText}
               onChange={(e) => onDeleteConfirmTextChange(e.target.value)}
               placeholder="Type DELETE here"
-              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent ${isLight ? "border-slate-200 bg-white text-slate-800" : "border-white/[0.12]"}`}
+              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent ${isLight ? "border-slate-200 bg-[#fffefa] text-slate-800" : "border-white/[0.12]"}`}
               disabled={isDeleting}
             />
           </div>
