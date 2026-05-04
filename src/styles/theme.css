@@ -936,58 +936,78 @@ body {
 .bd-glass-card--landing {
   /* D5 enhancement: cool blue body + subtle gold lamp trim so cool landing
      cards read as same family as warm cards and dashboard panels. Gold is
-     subtle here (0.12-0.14 vs dashboard's 0.20-0.26) — landing rhythm. */
+     subtle here (0.12-0.14 vs dashboard's 0.20-0.26) — landing rhythm.
+     Pass C (KI-082, 2026-05-04 site-wide light deepening on landing per
+     owner directive "landing page still need deep work in light mode"):
+       (1) LAW VIOLATION FIX -- pure-white inset rgba(255,255,255,0.95) ->
+           locked premium gold cream rgba(252,240,208,0.92) per
+           LAW_PROJECT_RULES.md § Light-Mode Surface Rule.
+       (2) Bronze rim deepening 0.14 -> 0.26 (premium gold trim line at
+           card bottom).
+       (3) Bronze ring deepening 0.10 -> 0.18 (premium gold material trim).
+       (4) Cool ring kept at 0.22 (cool action identity preserved).
+     Body kept cool ice/blue per landing identity (cool dominant). Touching
+     the body would shift hierarchy -- deferred to a future pass. */
   border-color: rgba(191, 219, 254, 0.7);
   background: linear-gradient(180deg, rgba(252, 253, 255, 0.9) 0%, rgba(241, 247, 255, 0.74) 100%);
   box-shadow:
     0 18px 48px rgba(15, 23, 42, 0.13),
     0 6px 16px rgba(30, 58, 138, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.95),
-    inset 0 -1px 0 rgba(196, 144, 65, 0.14),
-    0 0 0 1px rgba(196, 144, 65, 0.1),
+    inset 0 1px 0 rgba(252, 240, 208, 0.92),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.26),
+    0 0 0 1px rgba(140, 82, 22, 0.18),
     0 0 0 1px rgba(191, 219, 254, 0.22),
-    0 0 32px rgba(196, 130, 45, 0.12),
+    0 0 32px rgba(196, 130, 45, 0.16),
     var(--bd-glow-medium);
 }
 
 /* Warm variant — for warm-ivory and Direction B amber-black sections.
    Same heavy shadow + lift as --landing, but warm-cream tint on light and
    warm-amber tint on dark, so cards feel native to the section register.
-   Use on Benefits photo cards and TrustStats commitment cards (warm Direction B). */
+   Use on Benefits photo cards and TrustStats commitment cards (warm Direction B).
+   Pass C (KI-082): pure-white-leaning inset rgba(255,250,235,0.95) ->
+   rgba(252,240,208,0.94) (locked premium gold cream). Bronze rim 0.16 ->
+   0.30, bronze ring 0.22 -> 0.30 (locked bronze rgba(140,82,22) family).
+   Outer warm halo 0.10 -> 0.18 (within cap). */
 .bd-glass-card--landing-warm {
   border-color: rgba(220, 180, 110, 0.42);
   background: linear-gradient(180deg, rgba(255, 252, 245, 0.92) 0%, rgba(252, 246, 235, 0.78) 100%);
   box-shadow:
     0 18px 48px rgba(60, 40, 15, 0.13),
     0 6px 16px rgba(180, 130, 50, 0.1),
-    inset 0 1px 0 rgba(255, 250, 235, 0.95),
-    inset 0 -1px 0 rgba(220, 180, 110, 0.16),
-    0 0 0 1px rgba(220, 180, 110, 0.22),
-    0 0 36px rgba(196, 144, 65, 0.1);
+    inset 0 1px 0 rgba(252, 240, 208, 0.94),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.30),
+    0 0 0 1px rgba(140, 82, 22, 0.30),
+    0 0 36px rgba(196, 144, 65, 0.18);
 }
 
 .bd-glass-card--landing-warm:hover {
+  /* Pass C: pure-white-leaning hover inset rgba(255,252,240,1) ->
+     rgba(252,240,208,0.96). Bronze trim deepening proportional to idle. */
   transform: translateY(-6px);
   border-color: rgba(220, 180, 110, 0.65);
   box-shadow:
     0 28px 64px rgba(60, 40, 15, 0.18),
     0 10px 24px rgba(180, 130, 50, 0.14),
-    inset 0 1px 0 rgba(255, 252, 240, 1),
-    inset 0 -1px 0 rgba(220, 180, 110, 0.22),
-    0 0 0 1px rgba(220, 180, 110, 0.42),
-    0 0 56px rgba(196, 144, 65, 0.18);
+    inset 0 1px 0 rgba(252, 240, 208, 0.96),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.36),
+    0 0 0 1px rgba(140, 82, 22, 0.42),
+    0 0 56px rgba(196, 144, 65, 0.22);
 }
 
 .bd-glass-card--landing:hover {
+  /* Pass C: LAW pure-white inset rgba(255,255,255,1) -> warm cream
+     rgba(252,240,208,0.96). Bronze rim 0.20 -> 0.32, bronze ring 0.16
+     -> 0.22 (locked bronze family). Cool ring kept at 0.45. */
   transform: translateY(-6px);
   box-shadow:
     0 28px 64px rgba(15, 23, 42, 0.16),
     0 10px 24px rgba(30, 58, 138, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 1),
-    inset 0 -1px 0 rgba(196, 144, 65, 0.2),
-    0 0 0 1px rgba(196, 144, 65, 0.16),
+    inset 0 1px 0 rgba(252, 240, 208, 0.96),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.32),
+    0 0 0 1px rgba(140, 82, 22, 0.22),
     0 0 0 1px rgba(147, 197, 253, 0.45),
-    0 0 44px rgba(196, 130, 45, 0.18),
+    0 0 44px rgba(196, 130, 45, 0.22),
     var(--bd-glow-strong);
   border-color: rgba(147, 197, 253, 0.85);
 }
