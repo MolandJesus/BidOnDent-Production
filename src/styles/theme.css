@@ -2343,12 +2343,30 @@ body {
 .bd-report-input:focus,
 .bd-report-input:focus-visible {
   border-color: var(--bd-report-input-border-hover);
+  /* Pass H3 (KI-091): canon focus shadow — bronze ring (canon palette
+     swap from forbidden 200/140/60) + close warm halo (canon palette
+     swap from forbidden 180/120/40) + DIRECTIONAL micro-top-cast
+     champagne lamp (the canonical "lit from above" micro-scale).
+     Default values are dark register; light register overrides below. */
   box-shadow:
     var(--bd-report-input-shadow),
-    0 0 0 3px rgba(200, 140, 60, 0.18),
-    0 0 18px rgba(180, 120, 40, 0.09);
+    0 0 0 3px rgba(196, 144, 65, 0.18),
+    0 0 18px rgba(196, 130, 45, 0.10),
+    0 -8px 20px -4px rgba(196, 144, 65, 0.14);
   outline: none;
   transform: translateY(-1px);
+}
+
+[data-appearance-mode="light"] .bd-report-input:focus,
+[data-appearance-mode="light"] .bd-report-input:focus-visible {
+  /* Light register: scaled-down micro-top-cast alpha so the gold lamp
+     reads on cool-cream canvas without overwhelming. Per H3 brief
+     light 0.10 dark 0.14. */
+  box-shadow:
+    var(--bd-report-input-shadow),
+    0 0 0 3px rgba(196, 144, 65, 0.16),
+    0 0 18px rgba(196, 130, 45, 0.09),
+    0 -8px 20px -4px rgba(196, 144, 65, 0.10);
 }
 
 .bd-report-note {
