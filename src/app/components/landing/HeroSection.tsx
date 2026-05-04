@@ -557,17 +557,15 @@ export default function HeroSection({
               className={`flex flex-col gap-2 pt-1 transition-all duration-700 sm:flex-row sm:flex-wrap sm:items-center ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
               style={{ transitionDelay: "0.9s" }}
             >
-              {["Now available in NY", "Transparent bids", "Free for customers"].map(
-                (item) => (
-                  <span
-                    key={item}
-                    className={`inline-flex min-h-[40px] items-center justify-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium backdrop-blur-sm sm:justify-start sm:px-2.5 sm:py-1 sm:text-sm ${isLightAppearance ? "border-[rgba(140,82,22,0.28)] bg-[linear-gradient(180deg,rgba(247,232,194,0.78),rgba(232,238,248,0.74))] text-slate-700 shadow-[inset_0_1px_0_rgba(252,240,208,0.85)]" : "border-blue-400/20 bg-blue-500/10 text-blue-100/80"}`}
-                  >
-                    <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
-                    {item}
-                  </span>
-                )
-              )}
+              {["Now available in NY", "Transparent bids", "Free for customers"].map((item) => (
+                <span
+                  key={item}
+                  className={`inline-flex min-h-[40px] items-center justify-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium backdrop-blur-sm sm:justify-start sm:px-2.5 sm:py-1 sm:text-sm ${isLightAppearance ? "border-[rgba(140,82,22,0.28)] bg-[linear-gradient(180deg,rgba(247,232,194,0.78),rgba(232,238,248,0.74))] text-slate-700 shadow-[inset_0_1px_0_rgba(252,240,208,0.85)]" : "border-blue-400/20 bg-blue-500/10 text-blue-100/80"}`}
+                >
+                  <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
+                  {item}
+                </span>
+              ))}
             </div>
 
             {/* V2 — Mobile hero map intelligence strip.
