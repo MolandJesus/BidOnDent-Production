@@ -2,9 +2,13 @@ import { useEffect, useRef } from "react";
 import { Bookmark, Search } from "lucide-react";
 import ShopDirectoryRoutePanel from "./ShopDirectoryRoutePanel";
 import ShopDirectoryResultCard from "./ShopDirectoryResultCard";
+import PreviewDirectoryNotice from "./PreviewDirectoryNotice";
 import { getRoleCollectionActionLabels } from "../../services/intelligence/shopMapExperience";
 import type { ShopMapListing } from "../../services/intelligence/shopMapExperience";
-import type { MarketUserType } from "../../services/intelligence/marketIntelligence";
+import {
+  SHOP_DIRECTORY_IS_PREVIEW,
+  type MarketUserType,
+} from "../../services/intelligence/marketIntelligence";
 import type { NavigationSessionStatus } from "../../features/navigation";
 import type { useShopDirectorySession } from "../../hooks/useShopDirectorySession";
 import {
@@ -241,6 +245,14 @@ export default function ShopDirectoryListBody({
       <div
         className={isShowcase ? "bd-dashboard-panel bd-dashboard-panel--deep mb-4 p-4 sm:p-5" : ""}
       >
+        {/* F-24 (KI-099): preview-directory honesty banner shown when shops
+            come from marketSeedShops.ts. Removed when SHOP_DIRECTORY_IS_PREVIEW
+            flips to false (full Supabase swap — KI-100). */}
+        {SHOP_DIRECTORY_IS_PREVIEW && (
+          <div className="mb-3">
+            <PreviewDirectoryNotice />
+          </div>
+        )}
         <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-end sm:gap-3">
           <div>
             <p
