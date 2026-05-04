@@ -2,7 +2,7 @@
 
 **Authority level:** REFERENCE — describes the current system as it actually works. Not a vision doc. Not a roadmap.
 
-**Last updated:** 2026-05-03 (visual system pointer to `REF_VISUAL_SYSTEM.md`; superseded visual handoffs archived; active Opus master prompt + polish queue added; gold-lamp identity and mobile map-first doctrine locked)
+**Last updated:** 2026-05-04 (visual system pointer to `REF_VISUAL_SYSTEM.md`; ALL 2026-05-03 visual session docs now archived to `docs/archive/2026-05-03-visual-handoffs/`; active master prompt is `HANDOFF_MASTER_PROMPT_2026-05-04_CODEBASE_CLEAN_AND_POLISH.md`; gold-lamp identity + mobile map-first doctrine locked; KI-052 RESOLVED 2026-05-04 — map route presentation honest on zero-distance routes; mobile-ergonomics utility tier bumped 36→40 in `mapSurfaceTheme.compactButton`)
 
 **Build:** 0 TS errors, 568/568 tests passing, ~3.4s
 
