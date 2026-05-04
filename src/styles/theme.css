@@ -865,9 +865,9 @@ body {
      .bd-pin-pulse / .bd-bid-card-float / .bd-map-contour at end of file.
      Identity: cool blue is product/action; gold is atmosphere only.
      Alpha caps: 0.22 dark / 0.16 light so motion never out-shouts existing pools. */
-  --bd-liquid-gold-light: rgba(220, 165, 90, 0.16);
-  --bd-liquid-gold-light-soft: rgba(220, 165, 90, 0.08);
-  --bd-liquid-gold-light-edge: rgba(220, 165, 90, 0.04);
+  --bd-liquid-gold-light: rgba(196, 144, 65, 0.16);
+  --bd-liquid-gold-light-soft: rgba(196, 144, 65, 0.08);
+  --bd-liquid-gold-light-edge: rgba(196, 144, 65, 0.04);
   --bd-liquid-gold-dark: rgba(200, 140, 50, 0.22);
   --bd-liquid-gold-dark-soft: rgba(200, 140, 50, 0.12);
   --bd-liquid-gold-dark-edge: rgba(200, 140, 50, 0.06);
@@ -943,10 +943,10 @@ body {
     0 18px 48px rgba(15, 23, 42, 0.13),
     0 6px 16px rgba(30, 58, 138, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.95),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.14),
-    0 0 0 1px rgba(220, 165, 90, 0.1),
+    inset 0 -1px 0 rgba(196, 144, 65, 0.14),
+    0 0 0 1px rgba(196, 144, 65, 0.1),
     0 0 0 1px rgba(191, 219, 254, 0.22),
-    0 0 32px rgba(220, 140, 50, 0.12),
+    0 0 32px rgba(196, 130, 45, 0.12),
     var(--bd-glow-medium);
 }
 
@@ -963,7 +963,7 @@ body {
     inset 0 1px 0 rgba(255, 250, 235, 0.95),
     inset 0 -1px 0 rgba(220, 180, 110, 0.16),
     0 0 0 1px rgba(220, 180, 110, 0.22),
-    0 0 36px rgba(220, 165, 90, 0.1);
+    0 0 36px rgba(196, 144, 65, 0.1);
 }
 
 .bd-glass-card--landing-warm:hover {
@@ -975,7 +975,7 @@ body {
     inset 0 1px 0 rgba(255, 252, 240, 1),
     inset 0 -1px 0 rgba(220, 180, 110, 0.22),
     0 0 0 1px rgba(220, 180, 110, 0.42),
-    0 0 56px rgba(220, 165, 90, 0.18);
+    0 0 56px rgba(196, 144, 65, 0.18);
 }
 
 .bd-glass-card--landing:hover {
@@ -984,10 +984,10 @@ body {
     0 28px 64px rgba(15, 23, 42, 0.16),
     0 10px 24px rgba(30, 58, 138, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 1),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.2),
-    0 0 0 1px rgba(220, 165, 90, 0.16),
+    inset 0 -1px 0 rgba(196, 144, 65, 0.2),
+    0 0 0 1px rgba(196, 144, 65, 0.16),
     0 0 0 1px rgba(147, 197, 253, 0.45),
-    0 0 44px rgba(220, 140, 50, 0.18),
+    0 0 44px rgba(196, 130, 45, 0.18),
     var(--bd-glow-strong);
   border-color: rgba(147, 197, 253, 0.85);
 }
@@ -1015,9 +1015,9 @@ body {
   background: linear-gradient(
     115deg,
     transparent 30%,
-    rgba(220, 165, 90, 0.2) 48%,
+    rgba(196, 144, 65, 0.2) 48%,
     rgba(255, 235, 195, 0.3) 52%,
-    rgba(220, 165, 90, 0.2) 56%,
+    rgba(196, 144, 65, 0.2) 56%,
     transparent 74%
   );
   mix-blend-mode: screen;
@@ -1061,11 +1061,11 @@ body {
     0 22px 52px rgba(15, 42, 92, 0.16),
     0 6px 14px rgba(30, 58, 138, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 1),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.3),
-    0 0 0 1px rgba(220, 165, 90, 0.22),
+    inset 0 -1px 0 rgba(196, 144, 65, 0.3),
+    0 0 0 1px rgba(196, 144, 65, 0.22),
     0 0 0 1px rgba(191, 219, 254, 0.3),
     0 0 28px rgba(59, 130, 246, 0.1),
-    0 0 44px rgba(220, 140, 50, 0.28);
+    0 0 44px rgba(196, 130, 45, 0.28);
 }
 
 .bd-glass-card--dashboard::before {
@@ -1076,9 +1076,9 @@ body {
   background: linear-gradient(
     115deg,
     transparent 35%,
-    rgba(220, 165, 90, 0.16) 49%,
+    rgba(196, 144, 65, 0.16) 49%,
     rgba(255, 235, 195, 0.24) 52%,
-    rgba(220, 165, 90, 0.16) 55%,
+    rgba(196, 144, 65, 0.16) 55%,
     transparent 70%
   );
   mix-blend-mode: screen;
@@ -1108,11 +1108,11 @@ body {
     0 24px 52px rgba(15, 42, 92, 0.16),
     0 6px 16px rgba(30, 58, 138, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 1),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.32),
-    0 0 0 1px rgba(220, 165, 90, 0.28),
+    inset 0 -1px 0 rgba(196, 144, 65, 0.32),
+    0 0 0 1px rgba(196, 144, 65, 0.28),
     0 0 0 1px rgba(147, 197, 253, 0.42),
     0 0 36px rgba(59, 130, 246, 0.12),
-    0 0 52px rgba(220, 140, 50, 0.34);
+    0 0 52px rgba(196, 130, 45, 0.34);
 }
 
 /* Section eyebrow — small-caps tracked label for dashboard section anchors
@@ -1139,7 +1139,7 @@ body {
   /* D4 (final v3.2): stronger warm-amber lamp + side-bias bloom in light mode
      so the page feels lit from above by a gold lamp, like the dark mode does. */
   background:
-    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(220, 140, 50, 0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(196, 130, 45, 0.18) 0%, transparent 60%),
     radial-gradient(ellipse 60% 80% at 100% 50%, rgba(220, 150, 60, 0.1) 0%, transparent 70%),
     radial-gradient(ellipse 90% 55% at 50% 100%, rgba(96, 165, 250, 0.05) 0%, transparent 70%);
   z-index: 0;
@@ -1195,10 +1195,10 @@ body {
   -webkit-backdrop-filter: blur(10px);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.65),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.1),
+    inset 0 -1px 0 rgba(196, 144, 65, 0.1),
     0 0 18px rgba(59, 130, 246, 0.18),
     0 4px 14px rgba(59, 130, 246, 0.1),
-    0 0 14px rgba(220, 140, 50, 0.1);
+    0 0 14px rgba(196, 130, 45, 0.1);
 }
 
 .bd-glass-control {
@@ -1215,8 +1215,8 @@ body {
   box-shadow:
     0 2px 8px rgba(30, 58, 138, 0.1),
     0 1.5px 0.5px 0 rgba(255, 255, 255, 0.2) inset,
-    inset 0 -1px 0 rgba(220, 165, 90, 0.18),
-    0 0 18px rgba(220, 140, 50, 0.14);
+    inset 0 -1px 0 rgba(196, 144, 65, 0.18),
+    0 0 18px rgba(196, 130, 45, 0.14);
   position: relative;
   overflow: hidden;
   transition:
@@ -1246,8 +1246,8 @@ body {
   box-shadow:
     0 6px 18px rgba(30, 58, 138, 0.16),
     0 1.5px 0.5px 0 rgba(255, 255, 255, 0.2) inset,
-    inset 0 -1px 0 rgba(220, 165, 90, 0.22),
-    0 0 26px rgba(220, 140, 50, 0.2);
+    inset 0 -1px 0 rgba(196, 144, 65, 0.22),
+    0 0 26px rgba(196, 130, 45, 0.2);
   filter: none;
 }
 
@@ -1259,8 +1259,8 @@ body {
   box-shadow:
     0 1px 4px rgba(30, 58, 138, 0.1),
     0 0.5px 0.5px 0 rgba(255, 255, 255, 0.14) inset,
-    inset 0 -1px 0 rgba(220, 165, 90, 0.14),
-    0 0 12px rgba(220, 140, 50, 0.12);
+    inset 0 -1px 0 rgba(196, 144, 65, 0.14),
+    0 0 12px rgba(196, 130, 45, 0.12);
   filter: brightness(0.98);
   transform: scale(0.97);
 }
@@ -1284,9 +1284,9 @@ body {
     var(--bd-glass-shadow-floating),
     var(--bd-glow-medium),
     inset 0 1px 0 rgba(255, 255, 255, 0.85),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.22),
-    0 0 0 1px rgba(220, 165, 90, 0.14),
-    0 0 36px rgba(220, 140, 50, 0.18);
+    inset 0 -1px 0 rgba(196, 144, 65, 0.22),
+    0 0 0 1px rgba(196, 144, 65, 0.14),
+    0 0 36px rgba(196, 130, 45, 0.18);
   transition:
     transform 300ms cubic-bezier(0.4, 0, 0.2, 1),
     box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -1376,9 +1376,9 @@ body {
      on bottom edge + warm outer halo so navy reads as lit by gold lamp. */
   box-shadow:
     0 8px 28px rgba(2, 8, 24, 0.5),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.2),
-    0 0 0 1px rgba(220, 165, 90, 0.1),
-    0 0 40px rgba(220, 140, 50, 0.18);
+    inset 0 -1px 0 rgba(196, 144, 65, 0.2),
+    0 0 0 1px rgba(196, 144, 65, 0.1),
+    0 0 40px rgba(196, 130, 45, 0.18);
 }
 
 .bd-shell-header--dark::before {
@@ -1457,15 +1457,15 @@ body {
    Mirrors bd-glass-card--dashboard dark, premium-floating shadow tier. */
 .dark .bd-glass-floating,
 [data-theme="dark"] .bd-glass-floating {
-  border-color: rgba(220, 165, 90, 0.36);
+  border-color: rgba(196, 144, 65, 0.36);
   background: linear-gradient(180deg, rgba(11, 23, 47, 0.94) 0%, rgba(8, 18, 38, 0.9) 100%);
   box-shadow:
     0 24px 56px rgba(2, 6, 23, 0.5),
     0 4px 12px rgba(2, 6, 23, 0.28),
-    inset 0 1px 0 rgba(253, 220, 160, 0.2),
-    inset 0 -1px 0 rgba(180, 100, 30, 0.1),
-    0 0 0 1px rgba(220, 165, 90, 0.22),
-    0 0 44px rgba(220, 130, 50, 0.22);
+    inset 0 1px 0 rgba(252, 240, 208, 0.2),
+    inset 0 -1px 0 rgba(196, 130, 45, 0.1),
+    0 0 0 1px rgba(196, 144, 65, 0.22),
+    0 0 44px rgba(196, 130, 45, 0.22);
 }
 
 .dark .bd-glass-card,
@@ -1492,11 +1492,11 @@ body {
     0 18px 48px rgba(2, 6, 23, 0.5),
     0 6px 16px rgba(30, 58, 138, 0.32),
     inset 0 1px 0 rgba(147, 197, 253, 0.22),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.18),
-    0 0 0 1px rgba(220, 165, 90, 0.13),
+    inset 0 -1px 0 rgba(196, 144, 65, 0.18),
+    0 0 0 1px rgba(196, 144, 65, 0.13),
     0 0 0 1px rgba(96, 165, 250, 0.18),
     0 0 36px rgba(37, 99, 235, 0.18),
-    0 0 48px rgba(220, 140, 50, 0.2);
+    0 0 48px rgba(196, 130, 45, 0.2);
 }
 
 .dark .bd-glass-card--landing:hover,
@@ -1506,11 +1506,11 @@ body {
     0 28px 68px rgba(2, 6, 23, 0.62),
     0 10px 24px rgba(30, 58, 138, 0.38),
     inset 0 1px 0 rgba(147, 197, 253, 0.32),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.2),
-    0 0 0 1px rgba(220, 165, 90, 0.16),
+    inset 0 -1px 0 rgba(196, 144, 65, 0.2),
+    0 0 0 1px rgba(196, 144, 65, 0.16),
     0 0 0 1px rgba(147, 197, 253, 0.4),
     0 0 56px rgba(37, 99, 235, 0.28),
-    0 0 52px rgba(220, 140, 50, 0.22);
+    0 0 52px rgba(196, 130, 45, 0.22);
 }
 
 /* Warm variant — dark mode. Amber-tinted glass for Direction B sections.
@@ -1534,13 +1534,13 @@ body {
 
 .dark .bd-glass-card--landing-warm:hover,
 [data-theme="dark"] .bd-glass-card--landing-warm:hover {
-  border-color: rgba(255, 215, 150, 0.72);
+  border-color: rgba(252, 240, 208, 0.72);
   box-shadow:
     0 30px 72px rgba(2, 2, 2, 0.66),
     0 12px 26px rgba(140, 80, 25, 0.5),
     inset 0 1px 0 rgba(255, 232, 180, 0.42),
     inset 0 -1px 0 rgba(200, 115, 35, 0.22),
-    0 0 0 1px rgba(255, 215, 150, 0.55),
+    0 0 0 1px rgba(252, 240, 208, 0.55),
     0 0 72px rgba(240, 150, 60, 0.46);
 }
 
@@ -1551,26 +1551,26 @@ body {
    trim — so the card reads navy-glass-lit-by-gold-lamp like the landing register. */
 .dark .bd-glass-card--dashboard,
 [data-theme="dark"] .bd-glass-card--dashboard {
-  border-color: rgba(228, 175, 100, 0.5);
+  border-color: rgba(196, 144, 65, 0.5);
   background: linear-gradient(180deg, rgba(11, 23, 47, 0.86) 0%, rgba(8, 18, 38, 0.8) 100%);
   box-shadow:
     0 18px 40px rgba(2, 6, 23, 0.5),
-    inset 0 1px 0 rgba(255, 228, 175, 0.28),
+    inset 0 1px 0 rgba(252, 240, 208, 0.28),
     inset 0 -1px 0 rgba(190, 105, 35, 0.14),
-    0 0 0 1px rgba(228, 175, 100, 0.32),
-    0 0 44px rgba(228, 140, 55, 0.28);
+    0 0 0 1px rgba(196, 144, 65, 0.32),
+    0 0 44px rgba(196, 130, 45, 0.28);
 }
 
 .dark .bd-glass-card--dashboard:hover,
 [data-theme="dark"] .bd-glass-card--dashboard:hover {
   transform: translateY(-2px);
-  border-color: rgba(255, 215, 150, 0.68);
+  border-color: rgba(252, 240, 208, 0.68);
   box-shadow:
     0 24px 52px rgba(2, 6, 23, 0.58),
-    inset 0 1px 0 rgba(255, 230, 180, 0.36),
+    inset 0 1px 0 rgba(252, 240, 208, 0.36),
     inset 0 -1px 0 rgba(190, 105, 35, 0.18),
-    0 0 0 1px rgba(255, 215, 150, 0.52),
-    0 0 60px rgba(228, 140, 55, 0.4);
+    0 0 0 1px rgba(252, 240, 208, 0.52),
+    0 0 60px rgba(196, 130, 45, 0.4);
 }
 
 /* Section eyebrow — dark mode. Soft blue tint that reads against dark navy without
@@ -1890,18 +1890,18 @@ body {
 [data-appearance-mode="light"] .bd-glass-floating {
   border-color: rgba(147, 197, 253, 0.36);
   background:
-    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(220, 165, 90, 0.16), transparent 70%),
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(196, 144, 65, 0.16), transparent 70%),
     linear-gradient(180deg, rgba(244, 250, 254, 0.94) 0%, rgba(226, 238, 252, 0.88) 100%);
   color: #1e293b;
   backdrop-filter: blur(28px) saturate(1.5);
   -webkit-backdrop-filter: blur(28px) saturate(1.5);
   box-shadow:
     0 22px 60px rgba(15, 42, 92, 0.15),
-    0 0 0 1px rgba(220, 165, 90, 0.24),
+    0 0 0 1px rgba(196, 144, 65, 0.24),
     0 0 0 1px rgba(191, 219, 254, 0.22),
     inset 0 1px 0 rgba(255, 255, 255, 0.96),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.28),
-    0 0 52px rgba(220, 140, 50, 0.3);
+    inset 0 -1px 0 rgba(196, 144, 65, 0.28),
+    0 0 52px rgba(196, 130, 45, 0.3);
 }
 
 /* Frosted warm glow utilities */
@@ -1966,8 +1966,8 @@ body {
      identity. */
   --bd-report-shell-shadow:
     0 30px 80px rgba(2, 6, 23, 0.48), 0 0 0 1px rgba(59, 130, 246, 0.1),
-    inset 0 1px 0 rgba(253, 220, 160, 0.2), 0 0 40px rgba(37, 99, 235, 0.08),
-    0 0 0 1px rgba(220, 165, 90, 0.12), 0 0 36px rgba(220, 130, 50, 0.24);
+    inset 0 1px 0 rgba(252, 240, 208, 0.2), 0 0 40px rgba(37, 99, 235, 0.08),
+    0 0 0 1px rgba(196, 144, 65, 0.12), 0 0 36px rgba(196, 130, 45, 0.24);
   --bd-report-panel-bg: linear-gradient(
     180deg,
     rgba(18, 33, 65, 0.88) 0%,
@@ -1975,9 +1975,9 @@ body {
   );
   --bd-report-panel-border: rgba(96, 165, 250, 0.2);
   --bd-report-panel-shadow:
-    0 18px 36px rgba(2, 6, 23, 0.28), inset 0 1px 0 rgba(253, 220, 160, 0.16),
-    0 0 0 1px rgba(220, 165, 90, 0.1), 0 0 0 1px rgba(59, 130, 246, 0.04),
-    0 0 28px rgba(220, 130, 50, 0.2);
+    0 18px 36px rgba(2, 6, 23, 0.28), inset 0 1px 0 rgba(252, 240, 208, 0.16),
+    0 0 0 1px rgba(196, 144, 65, 0.1), 0 0 0 1px rgba(59, 130, 246, 0.04),
+    0 0 28px rgba(196, 130, 45, 0.2);
   --bd-report-input-bg: linear-gradient(
     180deg,
     rgba(7, 17, 35, 0.92) 0%,
@@ -2048,15 +2048,15 @@ body {
   --bd-report-shell-shadow:
     0 24px 56px rgba(120, 78, 18, 0.16), inset 0 1px 0 rgba(254, 247, 232, 0.92),
     inset 0 -1px 0 rgba(202, 138, 47, 0.3), 0 0 0 1px rgba(202, 138, 47, 0.24),
-    0 0 36px rgba(220, 140, 50, 0.22);
+    0 0 36px rgba(196, 130, 45, 0.22);
   --bd-report-panel-bg:
-    radial-gradient(ellipse 90% 60% at 50% 0%, rgba(220, 165, 90, 0.12), transparent 65%),
+    radial-gradient(ellipse 90% 60% at 50% 0%, rgba(196, 144, 65, 0.12), transparent 65%),
     linear-gradient(180deg, rgba(254, 247, 230, 0.9) 0%, rgba(247, 235, 210, 0.8) 100%);
   --bd-report-panel-border: rgba(202, 138, 47, 0.3);
   --bd-report-panel-shadow:
     0 16px 34px rgba(120, 78, 18, 0.12), inset 0 1px 0 rgba(254, 247, 232, 0.88),
     inset 0 -1px 0 rgba(202, 138, 47, 0.28), 0 0 0 1px rgba(202, 138, 47, 0.22),
-    0 0 32px rgba(220, 140, 50, 0.2);
+    0 0 32px rgba(196, 130, 45, 0.2);
   --bd-report-input-bg: linear-gradient(
     180deg,
     rgba(255, 254, 250, 0.96) 0%,
@@ -2123,7 +2123,7 @@ body {
   top: 0;
   height: 1px;
   /* D4 (final v2): warm-amber top highlight strip — matches dashboard gold lamp identity. */
-  background: linear-gradient(90deg, transparent, rgba(253, 200, 130, 0.62), transparent);
+  background: linear-gradient(90deg, transparent, rgba(196, 144, 65, 0.62), transparent);
   pointer-events: none;
 }
 
@@ -2139,7 +2139,7 @@ body {
   aspect-ratio: 1;
   border-radius: 999px;
   /* D4 (final v2): warm-amber corner lamp glow — matches dashboard gold halo. */
-  background: radial-gradient(circle, rgba(220, 140, 50, 0.22) 0%, transparent 72%);
+  background: radial-gradient(circle, rgba(196, 130, 45, 0.22) 0%, transparent 72%);
   pointer-events: none;
 }
 
@@ -2525,30 +2525,30 @@ body {
      canvas; halos stay tight because cream-on-cream halos disappear. See
      LAW_PROJECT_RULES.md § Light-Mode Surface Rule. */
   --bd-dashboard-panel-bg:
-    radial-gradient(ellipse 90% 60% at 50% 0%, rgba(220, 165, 90, 0.16), transparent 65%),
+    radial-gradient(ellipse 90% 60% at 50% 0%, rgba(196, 144, 65, 0.16), transparent 65%),
     linear-gradient(180deg, rgba(254, 248, 232, 0.94) 0%, rgba(248, 238, 215, 0.86) 100%);
-  --bd-dashboard-panel-border: rgba(160, 95, 25, 0.46);
+  --bd-dashboard-panel-border: rgba(140, 82, 22, 0.46);
   --bd-dashboard-panel-shadow:
     0 26px 56px rgba(15, 30, 60, 0.22), 0 56px 110px rgba(15, 30, 60, 0.1),
-    0 6px 14px rgba(15, 30, 60, 0.1), 0 0 0 1px rgba(160, 95, 25, 0.3),
-    inset 0 1px 0 rgba(254, 247, 232, 0.92), inset 0 -1px 0 rgba(160, 95, 25, 0.36),
-    0 0 18px rgba(180, 100, 30, 0.14), 0 0 80px rgba(180, 100, 30, 0.06);
+    0 6px 14px rgba(15, 30, 60, 0.1), 0 0 0 1px rgba(140, 82, 22, 0.3),
+    inset 0 1px 0 rgba(254, 247, 232, 0.92), inset 0 -1px 0 rgba(140, 82, 22, 0.36),
+    0 0 18px rgba(196, 130, 45, 0.14), 0 0 80px rgba(196, 130, 45, 0.06);
   --bd-dashboard-section-bg: linear-gradient(
     180deg,
     rgba(254, 247, 230, 0.94) 0%,
     rgba(247, 235, 210, 0.84) 100%
   );
-  --bd-dashboard-section-border: rgba(160, 95, 25, 0.4);
+  --bd-dashboard-section-border: rgba(140, 82, 22, 0.4);
   --bd-dashboard-section-shadow:
     0 16px 36px rgba(15, 30, 60, 0.18), 0 44px 90px rgba(15, 30, 60, 0.08),
-    0 0 0 1px rgba(160, 95, 25, 0.26), inset 0 1px 0 rgba(254, 247, 232, 0.88),
-    inset 0 -1px 0 rgba(160, 95, 25, 0.32), 0 0 14px rgba(180, 100, 30, 0.1),
-    0 0 60px rgba(180, 100, 30, 0.05);
+    0 0 0 1px rgba(140, 82, 22, 0.26), inset 0 1px 0 rgba(254, 247, 232, 0.88),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.32), 0 0 14px rgba(196, 130, 45, 0.1),
+    0 0 60px rgba(196, 130, 45, 0.05);
   --bd-dashboard-section-hover-shadow:
     0 22px 44px rgba(15, 30, 60, 0.22), 0 50px 100px rgba(15, 30, 60, 0.1),
-    0 0 0 1px rgba(160, 95, 25, 0.38), inset 0 1px 0 rgba(254, 247, 232, 0.92),
-    inset 0 -1px 0 rgba(160, 95, 25, 0.4), 0 0 18px rgba(180, 100, 30, 0.14),
-    0 0 70px rgba(180, 100, 30, 0.07);
+    0 0 0 1px rgba(140, 82, 22, 0.38), inset 0 1px 0 rgba(254, 247, 232, 0.92),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.4), 0 0 18px rgba(196, 130, 45, 0.14),
+    0 0 70px rgba(196, 130, 45, 0.07);
   --bd-dashboard-section-selected-bg: linear-gradient(
     180deg,
     rgba(224, 238, 255, 0.96) 0%,
@@ -2597,7 +2597,7 @@ body {
   height: 1px;
   /* D4 (final v2): warm top highlight line — the gold trim lamp. Aligned
      to locked 2026-05-03 premium gold palette (KI-066). Forbidden legacy:
-     rgba(253, 200, 130, 0.62). */
+     rgba(196, 144, 65, 0.62). */
   background: linear-gradient(90deg, transparent, rgba(196, 144, 65, 0.62), transparent);
   pointer-events: none;
 }
@@ -2612,7 +2612,7 @@ body {
   border-radius: 999px;
   /* D4 (final v2): stronger warm corner lamp glow over navy infill.
      Aligned to locked 2026-05-03 premium gold palette (KI-066) — top/corner
-     lamp uses rgba(196, 144, 65). Forbidden legacy: rgba(220, 140, 50). */
+     lamp uses rgba(196, 144, 65). Forbidden legacy: rgba(196, 130, 45). */
   background: radial-gradient(circle, rgba(196, 144, 65, 0.32) 0%, transparent 72%);
   pointer-events: none;
 }
@@ -2620,7 +2620,7 @@ body {
 /* Premium gold lamp identity — top trim + corner lamp blob in light.
    Tuned to the locked 2026-05-03 palette (LAW_PROJECT_RULES § Premium
    Gold Palette): top/corner lamp light = rgba(196, 144, 65, *). The
-   older yellow-amber register (rgba(220, 165, 90), rgba(220, 140, 50))
+   older yellow-amber register (rgba(196, 144, 65), rgba(196, 130, 45))
    is forbidden — see KI-066. */
 [data-appearance-mode="light"] .bd-dashboard-panel::before,
 [data-appearance-mode="light"] .bd-dashboard-section::before {
@@ -2997,10 +2997,10 @@ body {
   box-shadow:
     0 16px 36px rgba(80, 14, 36, 0.09),
     inset 0 1px 0 rgba(255, 255, 255, 0.94),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.24),
-    0 0 0 1px rgba(220, 165, 90, 0.18),
+    inset 0 -1px 0 rgba(196, 144, 65, 0.24),
+    0 0 0 1px rgba(196, 144, 65, 0.18),
     0 0 18px rgba(244, 63, 94, 0.08),
-    0 0 32px rgba(220, 140, 50, 0.22);
+    0 0 32px rgba(196, 130, 45, 0.22);
 }
 
 /* accent-gold — premium champagne liquid glass, warm pop tile */
@@ -3018,8 +3018,8 @@ body {
     inset 0 -2px 4px rgba(110, 70, 18, 0.12),
     inset 0 -1px 0 rgba(140, 82, 22, 0.48),
     0 0 0 1px rgba(140, 82, 22, 0.42),
-    0 0 22px rgba(170, 95, 28, 0.22),
-    0 0 70px rgba(170, 95, 28, 0.08);
+    0 0 22px rgba(140, 82, 22, 0.22),
+    0 0 70px rgba(140, 82, 22, 0.08);
 }
 
 /* accent-champagne — lighter premium champagne liquid glass, warm pop tile */
@@ -3037,8 +3037,8 @@ body {
     inset 0 -2px 4px rgba(110, 70, 18, 0.1),
     inset 0 -1px 0 rgba(140, 82, 22, 0.4),
     0 0 0 1px rgba(140, 82, 22, 0.32),
-    0 0 18px rgba(170, 95, 28, 0.18),
-    0 0 60px rgba(170, 95, 28, 0.07);
+    0 0 18px rgba(140, 82, 22, 0.18),
+    0 0 60px rgba(140, 82, 22, 0.07);
 }
 
 .bd-dashboard-section--interactive {
@@ -3156,8 +3156,8 @@ body {
     0 18px 34px rgba(2, 6, 23, 0.26),
     0 0 24px rgba(59, 130, 246, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.18),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.18),
-    0 0 22px rgba(220, 140, 50, 0.14);
+    inset 0 -1px 0 rgba(196, 144, 65, 0.18),
+    0 0 22px rgba(196, 130, 45, 0.14);
 }
 
 .bd-dashboard-secondary-button {
@@ -3170,8 +3170,8 @@ body {
   box-shadow:
     0 14px 28px rgba(2, 6, 23, 0.14),
     inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.12),
-    0 0 18px rgba(220, 140, 50, 0.1);
+    inset 0 -1px 0 rgba(196, 144, 65, 0.12),
+    0 0 18px rgba(196, 130, 45, 0.1);
 }
 
 .bd-dashboard-secondary-button--compact {
@@ -3218,8 +3218,8 @@ body {
     0 22px 40px rgba(2, 6, 23, 0.3),
     0 0 28px rgba(59, 130, 246, 0.16),
     inset 0 1px 0 rgba(255, 255, 255, 0.22),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.22),
-    0 0 32px rgba(220, 140, 50, 0.2);
+    inset 0 -1px 0 rgba(196, 144, 65, 0.22),
+    0 0 32px rgba(196, 130, 45, 0.2);
 }
 
 /* D10: pressed state — button sinks slightly + halo tightens, so the
@@ -3235,8 +3235,8 @@ body {
     0 10px 20px rgba(2, 6, 23, 0.3),
     0 0 16px rgba(59, 130, 246, 0.1),
     inset 0 1px 2px rgba(2, 6, 23, 0.18),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.16),
-    0 0 18px rgba(220, 140, 50, 0.12);
+    inset 0 -1px 0 rgba(196, 144, 65, 0.16),
+    0 0 18px rgba(196, 130, 45, 0.12);
 }
 
 .bd-dashboard-primary-button:focus-visible,
@@ -3249,7 +3249,7 @@ body {
   box-shadow:
     0 0 0 2px rgba(241, 245, 249, 0.95),
     0 0 0 5px rgba(59, 130, 246, 0.3),
-    0 0 28px rgba(220, 140, 50, 0.2);
+    0 0 28px rgba(196, 130, 45, 0.2);
 }
 
 .bd-dashboard-secondary-button:hover:not(:disabled),
@@ -3496,9 +3496,9 @@ body {
   background: linear-gradient(
     115deg,
     transparent 30%,
-    rgba(220, 165, 90, 0.32) 48%,
+    rgba(196, 144, 65, 0.32) 48%,
     rgba(255, 235, 195, 0.45) 52%,
-    rgba(220, 165, 90, 0.32) 56%,
+    rgba(196, 144, 65, 0.32) 56%,
     transparent 74%
   );
   mix-blend-mode: screen;
@@ -3516,8 +3516,8 @@ body {
   pointer-events: none;
   border-radius: inherit;
   box-shadow:
-    0 0 0 1px rgba(220, 165, 90, 0),
-    0 0 24px rgba(220, 165, 90, 0);
+    0 0 0 1px rgba(196, 144, 65, 0),
+    0 0 24px rgba(196, 144, 65, 0);
   transition:
     box-shadow 260ms ease-out,
     inset 260ms ease-out;
@@ -3535,8 +3535,8 @@ body {
 
 .bd-bid-card-float:hover::after {
   box-shadow:
-    0 0 0 1px rgba(220, 165, 90, 0.32),
-    0 0 26px rgba(220, 165, 90, 0.26);
+    0 0 0 1px rgba(196, 144, 65, 0.32),
+    0 0 26px rgba(196, 144, 65, 0.26);
 }
 
 /* Map contour — faint topographic-style line pattern.
