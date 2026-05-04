@@ -130,6 +130,15 @@ export default function CustomerMapWidget({
           onMapClick={() => onViewShops?.()}
         />
 
+        {/* Bucket 5.6 (KI-074 partial): top ambient gold lamp overlay — simulates
+            premium lamp light hitting the top edge of the map canvas. Pointer-
+            events-none so it never intercepts map interactions. Both modes
+            get the gold tint so the cohesion grammar reads in light + dark. */}
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-12 bg-gradient-to-b from-[rgba(196,144,65,0.06)] via-transparent to-transparent"
+          aria-hidden="true"
+        />
+
         {/* Bottom gradient overlay — "Explore" teaser */}
         <div
           className="absolute inset-x-0 bottom-0 z-10 flex items-end justify-center pb-3 pt-16 pointer-events-none transition-opacity group-hover:opacity-100 opacity-80"
