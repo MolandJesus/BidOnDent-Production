@@ -232,6 +232,30 @@ DIRECTIONAL       0 -28 to -44px    blur 70-130px    spread -14 to -22px    ≤ 
 
 **Body translucency invariant:** premium glass card bodies should sit between 0.62 and 0.78 opacity so the page DashboardAtmosphere lamps can show THROUGH the body. With `backdrop-filter: blur(20px) saturate(1.4) brightness(1.02)`, this creates real liquid-glass refraction. Bodies at 0.92+ are paint, not glass.
 
+### Surfaces following the canon (running list, updated as adoption spreads)
+
+- `.bd-dashboard-panel` (dark + light) — full triad shipped, body opacity within canon
+- `.bd-dashboard-section` (dark + light) — full triad shipped, body opacity within canon (button-tier sub-section variants exempt from canon body opacity per per-card-tier exception, KI-086 followup)
+- `.bd-dashboard-panel--deep` / `--accent-cyan` / `--accent-indigo` (light) — body opacity at canon range, internal gold radial demoted to ≤ 0.05α (KI-087 RESOLVED 2026-05-05)
+- `.bd-dashboard-panel--accent-blue` (light) — INTENTIONAL EXCEPTION: HERO panel, warm-dominant, body radial 0.24α and warm cream body intentional per LAW Page Hierarchy + Premium Gold Palette
+- `.bd-dashboard-section--deep` (light) — body opacity at canon range, internal gold radial demoted to ≤ 0.05α (KI-087)
+- `.bd-dashboard-section--accent-gold` / `--accent-champagne` (light) — INTENTIONAL EXCEPTION: warm pop tiles per LAW
+- `.bd-glass-card--landing` + `--landing-warm` (light + dark) — full triad shipped per KI-085 / Pass F
+- `.bd-glass-card--dashboard` (light) — directional top-cast + LAW pure-white inset fix shipped 2026-05-04
+- `.bd-glass-floating` (light) — directional top-cast + body opacity within canon + internal radial ≤ 0.05α + LAW pure-white inset fix shipped 2026-05-04 + 2026-05-05
+- `--bd-report-panel-bg` CSS var (light) — body opacity within canon, internal gold radial ≤ 0.05α (KI-087)
+- `ShopBidModal` light body — full canon (body opacity + directional top-cast + cream highlight inset + backdrop-filter), KI-088 RESOLVED 2026-05-05
+- `ShopOnboardingStep4` light toggles — canonical cool ice register + bronze trim + cream highlight inset, KI-088
+- `.bd-landing-section-toplamp` utility (NEW 2026-05-05) — section-level directional top-cast champagne lamp; applied to `WhoWeServeSection` + `AboutOpportunitySection` light + dark per KI-090
+
+Pending canon adoption (deferred until owner verifies prior cohort):
+- `MapBidSheet` body — dirent triad + body opacity (LAW canon already partially applied via cool ice gradient, KI-083; full triad not yet)
+- `CoverageSearchPanel` floating shell — same
+- `.bd-input` family focus state — micro-triad scaled down
+- `MobileBottomNav` background — verify harmony with canon
+- Top header bar background — same audit
+- Other landing sections (HowItWorks, OperatingRegions, BusinessInquiry, CTA) — apply `.bd-landing-section-toplamp` if owner confirms primitive looks right on Who We Serve + About first
+
 ### Future: Landing sections — more gold areas + premium lighting (planned, not yet implemented)
 
 Owner directive captured 2026-05-04: "for future landing page design updates, sections still need work as well as more gold areas and lighting prmium." Verified visually by 2026-05-04 evening screenshots showing the cool navy "Opportunity Through Transparency" section's three trust cards reading as cool-blue glass without the premium gold lighting that the warm bronze "Why Choose BidOnDent?" section carries.
