@@ -154,6 +154,11 @@ export default function LandingPageLayout({
         isLightAppearance={isLightAppearance}
       />
 
+      {/* Pass 6 (KI-080): seam-fade bridge between cool/warm landing sections
+          (dark-mode only via .bd-landing-seam-fade utility — light mode is a
+          transparent zero-cost spacer). */}
+      <div className="bd-landing-seam-fade" aria-hidden="true" />
+
       <BenefitsSection
         mechanicImage={mechanicImage}
         repairToolImage={repairToolImage}
@@ -164,18 +169,30 @@ export default function LandingPageLayout({
         isLightAppearance={isLightAppearance}
       />
 
+      <div className="bd-landing-seam-fade" aria-hidden="true" />
+
       <WhoWeServeSection primaryColor={primaryColor} isLightAppearance={isLightAppearance} />
+
+      <div className="bd-landing-seam-fade" aria-hidden="true" />
 
       <AboutOpportunitySection isLightAppearance={isLightAppearance} />
 
+      <div className="bd-landing-seam-fade" aria-hidden="true" />
+
       <TrustStatsSection isLightAppearance={isLightAppearance} />
+
+      <div className="bd-landing-seam-fade" aria-hidden="true" />
 
       <OperatingRegionsSection
         initialDiscoveryRole={initialDiscoveryRole}
         isLightAppearance={isLightAppearance}
       />
 
+      <div className="bd-landing-seam-fade" aria-hidden="true" />
+
       <BusinessInquirySection isLightAppearance={isLightAppearance} />
+
+      <div className="bd-landing-seam-fade" aria-hidden="true" />
 
       <CTASection
         primaryColor={primaryColor}
