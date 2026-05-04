@@ -45,7 +45,7 @@ export default function ShopOnboardingStep4({
       <div className="bd-report-section rounded-2xl p-4 sm:p-6 space-y-4">
         <label
           className={`flex items-center justify-between p-4 rounded-xl cursor-pointer border ${
-            isLight ? "border-slate-200/60 bg-white/60" : "border-white/[0.08] bg-white/[0.04]"
+            isLight ? "border-[rgba(140,82,22,0.22)] bg-[linear-gradient(180deg,rgba(238,247,255,0.78),rgba(219,234,254,0.70))] shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]" : "border-white/[0.08] bg-white/[0.04]"
           }`}
         >
           <div>
@@ -67,7 +67,7 @@ export default function ShopOnboardingStep4({
 
         <label
           className={`flex items-center justify-between p-4 rounded-xl cursor-pointer border ${
-            isLight ? "border-slate-200/60 bg-white/60" : "border-white/[0.08] bg-white/[0.04]"
+            isLight ? "border-[rgba(140,82,22,0.22)] bg-[linear-gradient(180deg,rgba(238,247,255,0.78),rgba(219,234,254,0.70))] shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]" : "border-white/[0.08] bg-white/[0.04]"
           }`}
         >
           <div>
