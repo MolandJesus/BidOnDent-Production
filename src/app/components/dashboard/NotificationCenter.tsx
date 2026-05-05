@@ -263,7 +263,7 @@ export default function NotificationCenter({
                     <button
                       type="button"
                       onClick={onClose}
-                      className={`flex h-7 w-7 items-center justify-center rounded-lg transition ${
+                      className={`flex h-10 w-10 min-h-[44px] min-w-[44px] items-center justify-center rounded-lg transition ${
                         isLightAppearance
                           ? "text-slate-400 hover:bg-slate-100 hover:text-slate-600"
                           : "text-slate-400 hover:bg-white/[0.06] hover:text-slate-200"
