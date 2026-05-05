@@ -153,7 +153,7 @@ export default function InsurerNewClaimScreen({
               onChange={(e) => setSearchQuery(e.target.value)}
               className={`w-full pl-10 pr-4 py-2 rounded-lg border ${
                 isLight
-                  ? "border-slate-200 bg-white text-slate-800 placeholder:text-slate-400 focus:border-blue-400/60"
+                  ? "border-slate-200 bg-[#fffefa] text-slate-800 placeholder:text-slate-400 focus:border-blue-400/60"
                   : "border-blue-300/20 bg-white/[0.08] text-slate-100 placeholder:text-blue-200/50 focus:border-blue-400/40 focus:ring-1 focus:ring-blue-400/20"
               }`}
             />
