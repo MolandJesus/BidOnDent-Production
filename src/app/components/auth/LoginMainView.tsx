@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { Car, Wrench, Shield, ChevronRight } from "lucide-react";
 import type { LoginView } from "../../types";
 
@@ -13,6 +13,7 @@ export function LoginMainView({
   onUserTypeSelect,
   onLoginViewChange,
 }: LoginMainViewProps) {
+  const reduceMotion = useReducedMotion();
   return (
     <div className="space-y-4">
       <p className="text-slate-300/80 mb-6">Choose how you want to use BidOnDent</p>
@@ -28,7 +29,7 @@ export function LoginMainView({
         whileHover={{ x: 4 }}
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.3, delay: 0.1 }}
+        transition={{ duration: reduceMotion ? 0 : 0.3, delay: 0.1 }}
       >
         <div className="flex items-center">
           <Car className="w-6 h-6 mr-3" style={{ color: primaryColor }} />
@@ -51,7 +52,7 @@ export function LoginMainView({
         whileHover={{ x: 4 }}
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.3, delay: 0.2 }}
+        transition={{ duration: reduceMotion ? 0 : 0.3, delay: 0.2 }}
       >
         <div className="flex items-center">
           <Wrench className="w-6 h-6 mr-3" style={{ color: primaryColor }} />
@@ -74,7 +75,7 @@ export function LoginMainView({
         whileHover={{ x: 4 }}
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.3, delay: 0.3 }}
+        transition={{ duration: reduceMotion ? 0 : 0.3, delay: 0.3 }}
       >
         <div className="flex items-center">
           <Shield className="w-6 h-6 mr-3" style={{ color: primaryColor }} />

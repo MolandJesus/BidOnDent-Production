@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { Mail, Lock, Eye, EyeOff, Phone, AlertCircle } from "lucide-react";
 import type { LoginView } from "../../types";
 import { formatPhoneNumber } from "../../utils/formatters";
@@ -40,6 +40,7 @@ export function LoginSignupView({
   onLoginViewChange,
   onSignup,
 }: LoginSignupViewProps) {
+  const reduceMotion = useReducedMotion();
   return (
     <div className="space-y-4">
       <div>
@@ -138,7 +139,7 @@ export function LoginSignupView({
         type="button"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: 0.1 }}
+        transition={{ duration: reduceMotion ? 0 : 0.3, delay: 0.1 }}
       >
         Create Account
       </motion.button>
