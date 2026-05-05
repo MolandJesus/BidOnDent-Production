@@ -1,5 +1,5 @@
-import { AnimatePresence, motion } from "motion/react";
-import { Suspense, useEffect } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { Suspense, useEffect, useMemo } from "react";
 import { ScreenErrorBoundary } from "../components/ScreenErrorBoundary";
 import { useBidsForReport } from "../hooks/useBidsForReport";
 import { useDashboardData } from "./useDashboardData";
@@ -27,12 +27,14 @@ import type { DashboardRouterProps } from "./dashboard-router-types";
 import DashboardSecondaryViews from "./DashboardSecondaryViews";
 import CustomerEstimateDetailSheet from "../components/dashboard/CustomerEstimateDetailSheet";
 
-const screenTransition = {
-  initial: { opacity: 0, x: -20 },
-  animate: { opacity: 1, x: 0 },
-  exit: { opacity: 0, x: 20 },
-  transition: { duration: 0.2 },
-};
+function makeScreenTransition(reduceMotion: boolean) {
+  return {
+    initial: { opacity: 0, x: -20 },
+    animate: { opacity: 1, x: 0 },
+    exit: { opacity: 0, x: 20 },
+    transition: { duration: reduceMotion ? 0 : 0.2 },
+  };
+}
 
 export default function DashboardRouter({
   viewMode,
@@ -88,6 +90,8 @@ export default function DashboardRouter({
   reportsLoading,
   reportsError,
 }: DashboardRouterProps) {
+  const reduceMotion = useReducedMotion();
+  const screenTransition = useMemo(() => makeScreenTransition(!!reduceMotion), [reduceMotion]);
   // Fetch live bids from Supabase for the selected report
   // Falls back to the customer's most recent report if no specific report is selected
   const bidsReportId =

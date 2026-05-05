@@ -6,7 +6,7 @@
  * match reasons, AI summary, category ratings, response time, pricing.
  */
 import { useCallback, useEffect, useRef } from "react";
-import { motion, AnimatePresence, type PanInfo } from "motion/react";
+import { motion, AnimatePresence, useReducedMotion, type PanInfo } from "motion/react";
 import {
   Award,
   Clock,
@@ -42,6 +42,7 @@ export default function ShopDetailSheet({
   onToggleSave,
   isDark = true,
 }: ShopDetailSheetProps) {
+  const reduceMotion = useReducedMotion();
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Reset scroll on shop change
@@ -82,7 +83,7 @@ export default function ShopDetailSheet({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: reduceMotion ? 0 : 0.2 }}
             onClick={onClose}
           />
           {/* Sheet */}

@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { BadgeCheck, Clock, DollarSign, MapPin, Navigation, Phone, Mail } from "lucide-react";
 import DashboardMapPreview from "../dashboard/MapLibreDashboardMapPreview";
 import type { CoveragePartnerShop } from "../maps/serviceCoverageMapTypes";
@@ -29,6 +29,7 @@ export default function AcceptedBidConfirmationSheet({
   onDismiss,
 }: AcceptedBidConfirmationSheetProps) {
   const isLight = appearanceMode === "light";
+  const reduceMotion = useReducedMotion();
 
   const shopPin: CoveragePartnerShop[] =
     bid?.shopLatitude && bid?.shopLongitude
@@ -56,7 +57,7 @@ export default function AcceptedBidConfirmationSheet({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: reduceMotion ? 0 : 0.2 }}
             className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
             onClick={onDismiss}
           />
