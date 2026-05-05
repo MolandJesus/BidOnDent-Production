@@ -2,7 +2,7 @@
 
 **Authority level:** REFERENCE — describes current known gaps, bugs, and structural issues.
 
-**Last updated:** 2026-05-05 (Phase 8 close — KI-109 RESOLVED via 512→468 LOC extraction of 6 pure derivation helpers; KI-110 RESOLVED-WITH-RESIDUAL via useShopMapListings hook + 3 substantive caller migrations; KI-108 partial closure via 4 hook surfaces with documented selectivity policy)
+**Last updated:** 2026-05-05 (Phase 7.6 close — KI-113 RESOLVED via 45-file reduced-motion sweep + MotionConfig wrap; closes Phase 7.5 falsification of S1 BidCardArticle hover + S3 DashboardRouter route transition under reduce. Prior same-day: Phase 8 close — KI-109 RESOLVED, KI-110 RESOLVED-WITH-RESIDUAL, KI-108 partial closure)
 
 **Update rules:**
 

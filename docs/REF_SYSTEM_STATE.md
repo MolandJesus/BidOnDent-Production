@@ -2,7 +2,7 @@
 
 **Authority level:** REFERENCE — describes the current system as it actually works. Not a vision doc. Not a roadmap.
 
-**Last updated:** 2026-05-04 (visual system pointer to `REF_VISUAL_SYSTEM.md`; ALL 2026-05-03 visual session docs now archived to `docs/archive/2026-05-03-visual-handoffs/`; active master prompt is `HANDOFF_MASTER_PROMPT_2026-05-04_CODEBASE_CLEAN_AND_POLISH.md`; gold-lamp identity + mobile map-first doctrine locked; KI-052 RESOLVED 2026-05-04 — map route presentation honest on zero-distance routes; mobile-ergonomics utility tier bumped 36→40 in `mapSurfaceTheme.compactButton`)
+**Last updated:** 2026-05-05 (Phase 7.6 close — KI-113 RESOLVED via 45-file `useReducedMotion()` sweep + `<MotionConfig reducedMotion="user">` wrap at app root. Phase 8 close — KI-109 RESOLVED via `useOperatingRegionsCoverage` 512→468 LOC helper extraction; KI-110 RESOLVED-WITH-RESIDUAL via `useShopMapListings` Y1-narrowed hook + 3 substantive caller migrations; KI-108 partial closure with documented selectivity policy. 4 new L3 hooks landed: `useGeoCoordinates`, `useHaversineDistance`, `useNavigationVoicePriming`, `useShopMapListings` + `useReportLayerData` relocation to `hooks/`. Pre-execution-audit pattern is now 8-for-8 across Phases 4 / 6 / 6.5 / 7 / 7.5 / 8 / 8.5 / KI-113. Visual system pointer to `REF_VISUAL_SYSTEM.md`; gold-lamp identity + mobile map-first doctrine locked.)
 
 **Build:** 0 TS errors, 568/568 tests passing, ~3.4s
 

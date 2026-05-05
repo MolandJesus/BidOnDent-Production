@@ -1,8 +1,8 @@
 # Section-Doc Index by Phase (PLAN)
 
-**Authority level:** PLAN — pre-declares the ~11 documentation artifacts that Phase 4 through Phase 8.5 of the v3.3 master plan will generate.
+**Authority level:** PLAN — pre-declares the documentation artifacts that Phase 4 through Phase 8.5 (and provisional Phase 7.6 / KI-113) of the v3.3 master plan will generate.
 
-**Last updated:** 2026-05-04
+**Last updated:** 2026-05-05 (Phase 7.6 / KI-113 row added + closed; Phase 8 + Phase 8.5 audit rows current; Phase 4 / 6 / 6.5 / 7 / 7.5 closure rows finalized).
 
 **Purpose:** Without this index, each Phase 4+ commit would invent its own doc filename and the tree would grow chaotically. This pre-declaration lets the owner see the entire doc-growth surface upfront and lets each phase commit land in a clean tree with a tier-consistent name.
 
