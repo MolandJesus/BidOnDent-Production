@@ -1,5 +1,6 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
+import { MotionConfig } from "motion/react";
 import App from "./app/App.tsx";
 import { initSentry } from "./app/services/sentryInit.ts";
 import { captureException } from "./app/services/errorReporting.ts";
@@ -134,7 +135,9 @@ class GlobalErrorBoundary extends Component<{ children: ReactNode }, GlobalError
 
 createRoot(document.getElementById("root")!).render(
   <GlobalErrorBoundary>
-    <App />
+    <MotionConfig reducedMotion="user">
+      <App />
+    </MotionConfig>
   </GlobalErrorBoundary>
 );
 
