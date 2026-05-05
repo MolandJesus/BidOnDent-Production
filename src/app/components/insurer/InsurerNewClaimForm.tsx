@@ -99,7 +99,7 @@ export default function InsurerNewClaimForm({
                 onChange={(e) => onUpdate({ ...claimFormData, policyNumber: e.target.value })}
                 className={`w-full px-4 py-2 border rounded-lg ${
                   isLight
-                    ? "border-slate-200 bg-white text-slate-800 placeholder:text-slate-400"
+                    ? "border-slate-200 bg-[#fffefa] text-slate-800 placeholder:text-slate-400"
                     : "border-blue-300/20 bg-white/[0.08] text-slate-100 placeholder:text-blue-200/40"
                 }`}
                 placeholder="e.g., POL-2024-0518"
@@ -118,7 +118,7 @@ export default function InsurerNewClaimForm({
                 onChange={(e) => onUpdate({ ...claimFormData, incidentDate: e.target.value })}
                 className={`w-full px-4 py-2 border rounded-lg ${
                   isLight
-                    ? "border-slate-200 bg-white text-slate-800"
+                    ? "border-slate-200 bg-[#fffefa] text-slate-800"
                     : "border-blue-300/20 bg-white/[0.08] text-slate-100"
                 }`}
               />
@@ -135,7 +135,7 @@ export default function InsurerNewClaimForm({
                 onChange={(e) => onUpdate({ ...claimFormData, damageDescription: e.target.value })}
                 className={`w-full px-4 py-2 border rounded-lg ${
                   isLight
-                    ? "border-slate-200 bg-white text-slate-800 placeholder:text-slate-400"
+                    ? "border-slate-200 bg-[#fffefa] text-slate-800 placeholder:text-slate-400"
                     : "border-blue-300/20 bg-white/[0.08] text-slate-100 placeholder:text-blue-200/40"
                 }`}
                 rows={4}
@@ -163,7 +163,7 @@ export default function InsurerNewClaimForm({
                   onChange={(e) => onUpdate({ ...claimFormData, estimatedAmount: e.target.value })}
                   className={`w-full pl-8 pr-4 py-2 border rounded-lg ${
                     isLight
-                      ? "border-slate-200 bg-white text-slate-800 placeholder:text-slate-400"
+                      ? "border-slate-200 bg-[#fffefa] text-slate-800 placeholder:text-slate-400"
                       : "border-blue-300/20 bg-white/[0.08] text-slate-100 placeholder:text-blue-200/40"
                   }`}
                   placeholder="0.00"
@@ -183,7 +183,7 @@ export default function InsurerNewClaimForm({
                 onChange={(e) => onUpdate({ ...claimFormData, priority: e.target.value })}
                 className={`w-full px-4 py-2 border rounded-lg ${
                   isLight
-                    ? "border-slate-200 bg-white text-slate-800"
+                    ? "border-slate-200 bg-[#fffefa] text-slate-800"
                     : "border-blue-300/20 bg-white/[0.08] text-slate-100"
                 }`}
               >
