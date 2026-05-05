@@ -12,7 +12,7 @@ import type { CoverageNavigationExperience } from "../../hooks/useCoverageNaviga
 import type { NavigationProvider } from "../../services/navigation/externalNavigation";
 import { X } from "lucide-react";
 import { getMapSurfaceTheme, resolveMapSurfaceTone } from "../maps/mapSurfaceTheme";
-import { primeVoiceEngine } from "../../services/navigation/voiceSupport";
+import { useNavigationVoicePriming } from "../../hooks/useNavigationVoicePriming";
 import type { ExternalNavigationSession } from "../../types/navigation";
 import type { NavigationDiscoveryRole } from "../../services/navigation/placeDiscovery";
 import { useNotifications } from "../../features/notifications";
@@ -103,6 +103,7 @@ export default function CoverageMapDialog({
 }: CoverageMapDialogProps) {
   const tone = resolveMapSurfaceTone(tileMode);
   const theme = getMapSurfaceTheme(tone, true);
+  const primeVoice = useNavigationVoicePriming();
   const notifications = useNotifications();
   const [presentationMode, setPresentationMode] =
     useState<CoverageMapDialogPresentationMode>("browse");
@@ -201,7 +202,7 @@ export default function CoverageMapDialog({
     }
 
     if (navigation.settings.voiceMode !== "muted") {
-      primeVoiceEngine();
+      primeVoice();
     }
 
     if (!navigation.settings.gpsTrackingEnabled) {

@@ -5,7 +5,7 @@ import {
   loadNavigationDiscoveryRole,
   saveNavigationDiscoveryRole,
 } from "../../services/navigation/discoveryPreferences";
-import { primeVoiceEngine } from "../../services/navigation/voiceSupport";
+import { useNavigationVoicePriming } from "../../hooks/useNavigationVoicePriming";
 import type { NavigationDiscoveryPlace } from "../../services/navigation/placeDiscovery";
 import type { NavigationDiscoveryRole } from "../../services/navigation/placeDiscovery";
 import ServiceCoverageMap from "../maps/MapLibreServiceCoverageMap";
@@ -60,6 +60,7 @@ export default function CoverageBrowseExperience({
   onCloseDialog,
 }: CoverageBrowseExperienceProps) {
   const theme = getMapSurfaceTheme(tone, true);
+  const primeVoice = useNavigationVoicePriming();
   const savedNavigation = useSavedNavigationLocations();
   const [selectedDiscoveryPlaceId, setSelectedDiscoveryPlaceId] = useState<string | null>(null);
   const [mapOverride, setMapOverride] = useState<{
@@ -195,7 +196,7 @@ export default function CoverageBrowseExperience({
 
   function handleStartShopRouteInApp(shop: CoveragePartnerShop) {
     if (navigation.settings.voiceMode !== "muted") {
-      primeVoiceEngine();
+      primeVoice();
     }
 
     setSelectedDiscoveryPlaceId(null);

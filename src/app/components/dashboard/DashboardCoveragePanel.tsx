@@ -9,7 +9,7 @@ import {
 } from "../../services/navigation/externalNavigation";
 import { markRecentNavigationLocation } from "../../services/navigation/savedLocations";
 import { loadNavigationSession } from "../../services/navigation/navigationSession";
-import { primeVoiceEngine } from "../../services/navigation/voiceSupport";
+import { useNavigationVoicePriming } from "../../hooks/useNavigationVoicePriming";
 import { haversineMiles } from "../../services/supabase/map";
 import type { ExternalNavigationSession } from "../../types/navigation";
 import CoverageMapDialog from "../landing/CoverageMapDialog";
@@ -39,6 +39,7 @@ export default function DashboardCoveragePanel({
   onOpenCoveragePage,
 }: DashboardCoveragePanelProps) {
   const isLight = appearanceMode === "light";
+  const primeVoice = useNavigationVoicePriming();
   const { partnerShops, isLoadingShops } = useCoveragePartnerShops();
   const [isMapExpanded, setIsMapExpanded] = useState(false);
   const [tileMode, setTileMode] = useState<MapTileMode>("roadmap");
@@ -150,7 +151,7 @@ export default function DashboardCoveragePanel({
       },
     });
     if (navigation.settings.voiceMode !== "muted") {
-      primeVoiceEngine();
+      primeVoice();
     }
     setIsMapExpanded(true);
     setNavigationStartRequestId((current) => current + 1);
