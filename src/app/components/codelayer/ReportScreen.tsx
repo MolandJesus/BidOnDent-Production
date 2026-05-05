@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import PhotoGuide from "../shop/PhotoGuide";
 import ReportAutoSaveIndicator from "./report/ReportAutoSaveIndicator";
 import ReportHeader from "./report/ReportHeader";
@@ -41,6 +41,7 @@ export default function ReportScreen({
   onSaveVehicle,
 }: ReportScreenProps) {
   const isLightAppearance = appearanceMode === "light";
+  const reduceMotion = useReducedMotion();
   const [showPhotoGuide, setShowPhotoGuide] = useState(false);
   const [hasSeenGuideThisSession, setHasSeenGuideThisSession] = useState(false);
   const reportStepShellRef = useRef<HTMLDivElement>(null);
@@ -287,7 +288,7 @@ export default function ReportScreen({
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.22 }}
+                transition={{ duration: reduceMotion ? 0 : 0.22 }}
               >
                 {renderStep() || (
                   <div className="px-4 py-5">

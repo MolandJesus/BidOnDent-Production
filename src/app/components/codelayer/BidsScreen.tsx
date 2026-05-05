@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { MapPin } from "lucide-react";
 import ShopRatingModal from "../shop/ShopRatingModal";
 import BidCardArticle from "./BidCardArticle";
@@ -32,6 +32,7 @@ export default function BidsScreen({
 }: BidsScreenProps) {
   const notifications = useNotifications();
   const isLight = appearanceMode === "light";
+  const reduceMotion = useReducedMotion();
   const [activeBid, setActiveBid] = useState<string | number | null>(null);
   const [acceptedBidId, setAcceptedBidId] = useState<string | number | null>(null);
   const [confirmedBid, setConfirmedBid] = useState<AcceptedBidInfo | null>(null);
@@ -233,7 +234,7 @@ export default function BidsScreen({
       <motion.section
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.25, delay: 0.05 }}
+        transition={{ duration: reduceMotion ? 0 : 0.25, delay: 0.05 }}
         className="bd-dashboard-panel bd-dashboard-panel--deep p-3"
       >
         <div className="mb-3 flex items-start justify-between gap-3 px-1">
@@ -353,7 +354,7 @@ export default function BidsScreen({
           <motion.section
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.15 }}
+            transition={{ duration: reduceMotion ? 0 : 0.3, delay: 0.15 }}
             className="bd-dashboard-panel bd-dashboard-panel--accent-indigo p-5 text-center"
           >
             <div className="bd-dashboard-note bd-dashboard-note--deep mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full">

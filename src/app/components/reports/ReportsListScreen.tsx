@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { ArrowLeft, Clock, DollarSign, ChevronRight, ZoomIn, MapPin, Wrench } from "lucide-react";
 import ImageWithFallback from "../codelayer/ImageWithFallback";
 import PhotoGalleryLightbox from "./PhotoGalleryLightbox";
@@ -32,6 +32,7 @@ export default function ReportsListScreen({
   onStartReport,
 }: ReportsListScreenProps) {
   const isLight = appearanceMode === "light";
+  const reduceMotion = useReducedMotion();
   const [filter, setFilter] = useState("all"); // all, pending, active, completed
   const [selectedPhotos, setSelectedPhotos] = useState<string[] | null>(null);
 
@@ -151,7 +152,7 @@ export default function ReportsListScreen({
           <motion.section
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.25, delay: 0.06 }}
+            transition={{ duration: reduceMotion ? 0 : 0.25, delay: 0.06 }}
             className="bd-dashboard-panel bd-dashboard-panel--accent-cyan overflow-hidden"
           >
             <div className="p-3">

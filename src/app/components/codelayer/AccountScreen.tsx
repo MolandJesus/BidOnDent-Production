@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { formatPhoneNumber, unformatPhoneNumber } from "../../utils/formatters";
 import { compressImage, blobToBase64, formatBytes } from "../../utils/imageCompression";
 import { uploadPhoto } from "../../services/supabaseService";
@@ -41,6 +41,7 @@ export default function AccountScreen({
 }: AccountScreenProps) {
   // Use default profile image if none provided
   const isLightAppearance = appearanceMode === "light";
+  const reduceMotion = useReducedMotion();
   const notifications = useNotifications();
   const [profileImage, setProfileImage] = useState<string | null>(
     initialProfileImage || LANDING_PAGE_IMAGES.DEFAULT_PROFILE
@@ -340,7 +341,7 @@ export default function AccountScreen({
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.25, delay: 0.02 }}
+          transition={{ duration: reduceMotion ? 0 : 0.25, delay: 0.02 }}
           className="grid gap-5"
         >
           <AccountInfoCard

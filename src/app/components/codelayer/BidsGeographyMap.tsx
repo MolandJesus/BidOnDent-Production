@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { MapPin } from "lucide-react";
 import DashboardMapPreview from "../dashboard/MapLibreDashboardMapPreview";
 import type { ReportPin } from "../dashboard/MapLibreDashboardMapPreview";
@@ -21,11 +21,13 @@ export default function BidsGeographyMap({
   bidMapCenter,
   onShopClick,
 }: BidsGeographyMapProps) {
+  const reduceMotion = useReducedMotion();
+
   return (
     <motion.section
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.25, delay: 0.08 }}
+      transition={{ duration: reduceMotion ? 0 : 0.25, delay: 0.08 }}
       className="bd-dashboard-panel overflow-hidden"
     >
       <div className="p-3">

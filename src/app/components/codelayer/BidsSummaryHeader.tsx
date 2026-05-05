@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { ArrowLeft, Sparkles } from "lucide-react";
 
 type BidsSummaryHeaderProps = {
@@ -20,6 +20,7 @@ export default function BidsSummaryHeader({
   fastestBidDays,
   onBack,
 }: BidsSummaryHeaderProps) {
+  const reduceMotion = useReducedMotion();
   const statToneClasses = [
     "bd-dashboard-section--accent-blue",
     "bd-dashboard-section--deep",
@@ -42,7 +43,7 @@ export default function BidsSummaryHeader({
     <motion.section
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: reduceMotion ? 0 : 0.3 }}
       className="bd-dashboard-panel bd-dashboard-panel--accent-blue relative overflow-hidden p-4 md:p-5"
     >
       <div

@@ -1,5 +1,5 @@
 import { AlertCircle, ArrowLeft, Camera } from "lucide-react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 
 type MissingReportStateProps = {
   primaryColor: string;
@@ -18,12 +18,14 @@ export default function MissingReportState({
   onAction,
   onBack,
 }: MissingReportStateProps) {
+  const reduceMotion = useReducedMotion();
+
   return (
     <div className="pb-20 px-4 md:px-6 py-4 md:py-5">
       <motion.section
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.25 }}
+        transition={{ duration: reduceMotion ? 0 : 0.25 }}
         className="bd-dashboard-panel overflow-hidden rounded-3xl"
       >
         <div className="border-b border-white/[0.08] px-5 py-4">
@@ -40,7 +42,7 @@ export default function MissingReportState({
         <div className="px-5 py-10 text-center">
           <motion.div
             animate={{ x: [0, -7, 7, -5, 5, 0] }}
-            transition={{ duration: 0.7, repeat: Infinity, repeatDelay: 3.6 }}
+            transition={{ duration: reduceMotion ? 0 : 0.7, repeat: Infinity, repeatDelay: 3.6 }}
             className="bd-dashboard-note mx-auto flex h-16 w-16 items-center justify-center rounded-3xl text-blue-600 shadow-sm"
           >
             <AlertCircle className="h-7 w-7" />
