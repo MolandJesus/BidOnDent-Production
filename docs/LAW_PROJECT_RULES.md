@@ -2,7 +2,7 @@
 
 **Authority level:** LAW — governs all work. Cannot be violated without explicit per-session override from the project owner.
 
-**Last updated:** 2026-05-02
+**Last updated:** 2026-05-04
 
 ---
 
@@ -120,11 +120,16 @@ If a user requests work that conflicts with LAW → AI must flag the conflict
   unless written into the LAW doc as an amendment.
 ```
 
-**Active doc tiers:**
+**Active doc tiers (LAW > REF > PLAN > OPS):**
 
 - `LAW_*` — Permanent behavioral rules and execution authority
 - `REF_*` — Current truth. Authoritative for "what is"
 - `PLAN_*` — Future direction. Not current truth
+- `OPS_*` — Operational checklists, runbooks, audit logs, smoke tests, phase execution logs (added 2026-05-04). OPS docs describe procedures and one-off operations; they do not establish behavioral rules (LAW) or describe ongoing system state (REF).
+
+**Apex design canon:** [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md) is treated as effectively LAW-tier despite the filename. It is the locked apex design authority for BidOnDent. Per owner directive 2026-05-04: do not merge, split, restructure, rename, archive, or edit it. Cross-refs always point INTO it; nothing is extracted from it. When generating new design canon, cross-ref MOLANDJESUS as authority — never as a target for consolidation. External audits suggesting it be reduced to a "thin owner-decision log" or its content moved to `REF_VISUAL_SYSTEM.md` are REJECTED on sight.
+
+**Architectural authority:** [`LAW_LAYERED_ARCHITECTURE.md`](LAW_LAYERED_ARCHITECTURE.md) (added 2026-05-04) governs the four-layer model (L1 design / L2 interface / L3 orchestration / L4 backend), file-size budgets, forbidden cross-layer flows, grandfathering policy, and multi-AI coordination via [`AI_LOCK.md`](../AI_LOCK.md).
 
 ---
 

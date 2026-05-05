@@ -2,7 +2,7 @@
 
 **Authority level:** REFERENCE — describes current known gaps, bugs, and structural issues.
 
-**Last updated:** 2026-05-04
+**Last updated:** 2026-05-04 (KI-107 added — HeroSection P3 reminder)
 
 **Update rules:**
 
@@ -827,3 +827,12 @@
 - **Location:** `src/app/services/storage/SupabaseStorageAdapter.ts`, `src/app/services/storage/StorageService.ts`, `src/app/services/storage/StorageService.test.ts`, `src/app/services/index.ts:85,87` re-exports.
 - **Fix direction (deferred):** Removal would touch 3+ files (delete StorageService.ts + SupabaseStorageAdapter.ts + StorageService.test.ts + edit services/index.ts) — exceeds the autopilot hard-stop budget (delete > 3 files in single commit) and risks breaking unknown consumers. Better handled in a dedicated cleanup pass post-launch when the entire `services/storage/` directory can be evaluated.
 - **Status:** **OPEN** — DOCUMENT-ONLY (intentional defer per autopilot hard-stop budget). Per Phase 0 audit task #4. Per `supabase-storage-signed-urls` skill (the canonical pattern uses pointers + edge function uploads, which IS the production path; the unused direct-upload abstraction is a pre-launch architectural artifact that doesn't violate the skill — it's just dead code).
+
+### KI-107: HeroSection.tsx is 1,110 lines — exceeds L2 hard limit (P3 reminder)
+
+- **Impact:** [src/app/components/landing/HeroSection.tsx](../src/app/components/landing/HeroSection.tsx) is the single largest source file in the codebase. Per [LAW_LAYERED_ARCHITECTURE.md](LAW_LAYERED_ARCHITECTURE.md) the L2 hard limit is 600 lines. HeroSection sits at 1,110 — nearly 2× over. It composes hero copy, sample-quote map preview, stats chips row, CTA dock, and an animated background layer all in one file.
+- **Location:** [src/app/components/landing/HeroSection.tsx](../src/app/components/landing/HeroSection.tsx)
+- **Why P3 (not OPEN bug):** The file works. There is no live regression. Refactoring it requires owner naming because the extraction seam choice is design-tied (which sub-components should exist, what their boundaries should be). Naming this here makes the future obligation visible without queueing the work.
+- **Fix direction (deferred):** Extract candidates: hero copy block, sample-quote map preview component, stats chips row, CTA dock, animated background layer. Target: hero shell ≤300 lines + 4–5 child components ≤200 each. The hero map preview extraction may also be a Phase 6 (landing + dashboard map redesign) target — see [LAW_LAYERED_ARCHITECTURE.md](LAW_LAYERED_ARCHITECTURE.md) "Known existing exceptions" and the v3.3 master plan Phase 6 / Phase 6.5 scope.
+- **Status:** **P3 reminder — grandfathered.** Refactor only on owner naming. No autopilot pass should opportunistically split this file as a side-effect of feature work.
+- **Related grandfathered exceeds-budget files (also P3):** OperatingRegionsSection.tsx (556), DashboardHeader.tsx (538), App.tsx (528), useOperatingRegionsCoverage.ts (512). Same rule — refactor only on owner naming.

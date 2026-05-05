@@ -13,14 +13,18 @@ BidOnDent is a **geo-native, map-first automotive repair marketplace**. Three us
 
 ## ⚡ Start Here — Document Authority Model
 
-Documents are organized in three tiers: **LAW > REFERENCE > PLAN**. LAW docs override everything. REF docs describe current truth. PLAN docs describe future direction.
+Documents are organized in four tiers: **LAW > REFERENCE > PLAN > OPS** (OPS added 2026-05-04). LAW docs override everything. REF docs describe current truth. PLAN docs describe future direction. OPS docs describe procedures, runbooks, audit logs, and phase execution logs.
+
+**Apex design canon:** [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md) is treated as effectively LAW-tier despite the filename — it is the locked apex design authority. Per owner directive 2026-05-04: do not merge, split, restructure, rename, archive, or edit it. Cross-refs always point INTO it.
 
 ### LAW (governs all work)
 
-| Document                                             | Purpose                                                                                                                                                |
-| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **[`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md)**   | Permanent behavioral rules: product definition, 6 laws, product DNA, map investment rules, doc authority model.                                        |
-| **[`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md)** | Execution authority for the hardening phase. North Star, Launch Scope Guardrails, Locked Decisions, Execution Plan (Phases 0–6), Execution Discipline. |
+| Document                                                                 | Purpose                                                                                                                                                |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **[`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md)**                       | Permanent behavioral rules: product definition, 6 laws, product DNA, map investment rules, doc authority model, palette canon, glass canon.            |
+| **[`LAW_LAYERED_ARCHITECTURE.md`](LAW_LAYERED_ARCHITECTURE.md)**         | Four-layer model (L1/L2/L3/L4), file-size budgets, forbidden cross-layer flows, grandfathering policy, multi-AI coordination via `AI_LOCK.md`.         |
+| **[`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md)**                     | Execution authority for the hardening phase. North Star, Launch Scope Guardrails, Locked Decisions, Execution Plan (Phases 0–6), Execution Discipline. |
+| **[`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md)** | **LOCKED apex design canon.** Effectively LAW-tier. Required read for any design-touching task. Do NOT propose merges/splits/edits.                    |
 
 ### REFERENCE (current truth)
 
@@ -59,12 +63,15 @@ Documents are organized in three tiers: **LAW > REFERENCE > PLAN**. LAW docs ove
 Read in this order:
 
 1. **[`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md)** — what BidOnDent is, the 6 laws, what to protect.
-2. **[`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md)** — what to do now, in what order.
-3. **[`REF_SYSTEM_STATE.md`](REF_SYSTEM_STATE.md)** — how the system actually works (includes AI reading order by task type).
-4. **[`REF_KNOWN_ISSUES.md`](REF_KNOWN_ISSUES.md)** — what's broken or missing.
-5. **[`REF_AI_BROWSER_NAVIGATION.md`](REF_AI_BROWSER_NAVIGATION.md)** — required browser automation navigation protocol for Playwright-like tools.
-6. **[`REF_AI_COLLABORATION_PROTOCOL.md`](REF_AI_COLLABORATION_PROTOCOL.md)** — required when Mola pastes multi-AI transcripts, relay prompts, or live add-on directives.
-7. Then pick task-specific docs from the sections below.
+2. **[`LAW_LAYERED_ARCHITECTURE.md`](LAW_LAYERED_ARCHITECTURE.md)** — the four-layer code model and file-size budgets.
+3. **[`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md)** — what to do now, in what order.
+4. **[`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md)** — apex design canon (locked).
+5. **[`REF_SYSTEM_STATE.md`](REF_SYSTEM_STATE.md)** — how the system actually works (includes AI reading order by task type).
+6. **[`REF_KNOWN_ISSUES.md`](REF_KNOWN_ISSUES.md)** — what's broken or missing.
+7. **[`REF_AI_BROWSER_NAVIGATION.md`](REF_AI_BROWSER_NAVIGATION.md)** — required browser automation navigation protocol for Playwright-like tools.
+8. **[`REF_AI_COLLABORATION_PROTOCOL.md`](REF_AI_COLLABORATION_PROTOCOL.md)** — required when Mola pastes multi-AI transcripts, relay prompts, or live add-on directives.
+9. **[`AI_LOCK.md`](../AI_LOCK.md)** — multi-AI session coordination (read before editing on a shared branch).
+10. Then pick task-specific docs from the sections below.
 
 ---
 

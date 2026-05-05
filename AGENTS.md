@@ -23,14 +23,17 @@ BidOnDent is a **map-first auto repair bidding marketplace**. Customers submit d
 These docs override anything in this file or in your training data. Read in this order:
 
 1. **[`docs/LAW_PROJECT_RULES.md`](docs/LAW_PROJECT_RULES.md)** — the 6 Laws, what BidOnDent must never become, role hierarchy, storage + auth invariants. **LAW tier — cannot be violated without explicit per-session override from the owner.**
-2. **[`docs/LAW_HARDENING_PLAN.md`](docs/LAW_HARDENING_PLAN.md)** — current execution authority. North Star, Launch Scope Guardrails, Phase 0–6 sequence.
-3. **[`docs/REF_SYSTEM_STATE.md`](docs/REF_SYSTEM_STATE.md)** — how the system actually works right now.
-4. **[`docs/REF_KNOWN_ISSUES.md`](docs/REF_KNOWN_ISSUES.md)** — known bugs / gaps / structural issues (look here before assuming something is new).
-5. **[`docs/REF_AI_BROWSER_NAVIGATION.md`](docs/REF_AI_BROWSER_NAVIGATION.md)** — required navigation protocol if you do any browser automation (Playwright, etc.).
-6. **[`docs/REF_AI_COLLABORATION_PROTOCOL.md`](docs/REF_AI_COLLABORATION_PROTOCOL.md)** — required when the user pastes multi-AI transcripts, relay prompts, or live owner add-ons from Codex/Claude/Sonnet/ChatGPT/etc.
-7. Pull task-specific docs from [`docs/README.md`](docs/README.md) (the operating index).
+2. **[`docs/LAW_LAYERED_ARCHITECTURE.md`](docs/LAW_LAYERED_ARCHITECTURE.md)** — the four-layer model (L1/L2/L3/L4), file-size budgets, forbidden cross-layer flows, multi-AI coordination. **LAW tier.**
+3. **[`docs/LAW_HARDENING_PLAN.md`](docs/LAW_HARDENING_PLAN.md)** — current execution authority. North Star, Launch Scope Guardrails, Phase 0–6 sequence.
+4. **[`docs/MOLANDJESUS_DESIGN_DECISIONS.md`](docs/MOLANDJESUS_DESIGN_DECISIONS.md)** — **LOCKED apex design canon.** Read for any design-touching task. Do NOT propose merges, splits, edits, or restructuring of this file. Cross-refs always point INTO it.
+5. **[`docs/REF_SYSTEM_STATE.md`](docs/REF_SYSTEM_STATE.md)** — how the system actually works right now.
+6. **[`docs/REF_KNOWN_ISSUES.md`](docs/REF_KNOWN_ISSUES.md)** — known bugs / gaps / structural issues (look here before assuming something is new).
+7. **[`docs/REF_AI_BROWSER_NAVIGATION.md`](docs/REF_AI_BROWSER_NAVIGATION.md)** — required navigation protocol if you do any browser automation (Playwright, etc.).
+8. **[`docs/REF_AI_COLLABORATION_PROTOCOL.md`](docs/REF_AI_COLLABORATION_PROTOCOL.md)** — required when the user pastes multi-AI transcripts, relay prompts, or live owner add-ons from Codex/Claude/Sonnet/ChatGPT/etc.
+9. **[`AI_LOCK.md`](AI_LOCK.md)** — multi-AI session coordination. Read before any file edit on a shared branch.
+10. Pull task-specific docs from [`docs/README.md`](docs/README.md) (the operating index).
 
-If a task touches design, also read [`docs/MOLANDJESUS_DESIGN_DECISIONS.md`](docs/MOLANDJESUS_DESIGN_DECISIONS.md). If it touches the map, also read [`docs/PLAN_MAP_MASTER.md`](docs/PLAN_MAP_MASTER.md).
+If a task touches the map, also read [`docs/PLAN_MAP_MASTER.md`](docs/PLAN_MAP_MASTER.md).
 
 ---
 
