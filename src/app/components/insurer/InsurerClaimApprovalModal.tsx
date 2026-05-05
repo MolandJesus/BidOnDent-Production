@@ -25,7 +25,7 @@ export default function InsurerClaimApprovalModal({
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-4">
       <div
         className={`rounded-t-2xl sm:rounded-2xl w-full max-w-md overflow-hidden border ${
-          isLight ? "bg-white border-slate-200/60 shadow-xl" : "border-blue-300/20"
+          isLight ? "bg-[#fffefa] border-slate-200/60 shadow-xl" : "border-blue-300/20"
         }`}
         style={
           isLight
@@ -38,28 +38,40 @@ export default function InsurerClaimApprovalModal({
         }
       >
         <div className="p-4 sm:p-6">
-          <h2 className="text-xl font-bold mb-2 text-slate-100">Review & Approve Claim</h2>
-          <p className="text-sm text-blue-100/75 mb-4">
+          <h2 className={`text-xl font-bold mb-2 ${isLight ? "text-slate-900" : "text-slate-100"}`}>
+            Review &amp; Approve Claim
+          </h2>
+          <p className={`text-sm mb-4 ${isLight ? "text-slate-600" : "text-blue-100/75"}`}>
             {selectedClaim.claimNumber} - {selectedClaim.customerName}
           </p>
 
-          <div className="mb-4 p-4 bg-white/5 rounded-xl border border-blue-300/15">
+          <div
+            className={`mb-4 p-4 rounded-xl border ${
+              isLight ? "bg-blue-50/60 border-blue-200/40" : "bg-white/5 border-blue-300/15"
+            }`}
+          >
             <div className="grid grid-cols-2 gap-3 text-sm">
               <div>
-                <p className="text-blue-200/60">Vehicle</p>
-                <p className="font-medium text-slate-200">{selectedClaim.vehicle}</p>
+                <p className={isLight ? "text-slate-500" : "text-blue-200/60"}>Vehicle</p>
+                <p className={`font-medium ${isLight ? "text-slate-900" : "text-slate-200"}`}>
+                  {selectedClaim.vehicle}
+                </p>
               </div>
               <div>
-                <p className="text-blue-200/60">Policy #</p>
-                <p className="font-medium text-slate-200">{selectedClaim.policyNumber}</p>
+                <p className={isLight ? "text-slate-500" : "text-blue-200/60"}>Policy #</p>
+                <p className={`font-medium ${isLight ? "text-slate-900" : "text-slate-200"}`}>
+                  {selectedClaim.policyNumber}
+                </p>
               </div>
               <div>
-                <p className="text-blue-200/60">Incident Date</p>
-                <p className="font-medium text-slate-200">{selectedClaim.incidentDate}</p>
+                <p className={isLight ? "text-slate-500" : "text-blue-200/60"}>Incident Date</p>
+                <p className={`font-medium ${isLight ? "text-slate-900" : "text-slate-200"}`}>
+                  {selectedClaim.incidentDate}
+                </p>
               </div>
               <div>
-                <p className="text-blue-200/60">Est. Damage</p>
-                <p className="font-medium text-slate-200">
+                <p className={isLight ? "text-slate-500" : "text-blue-200/60"}>Est. Damage</p>
+                <p className={`font-medium ${isLight ? "text-slate-900" : "text-slate-200"}`}>
                   ${selectedClaim.estimatedDamage.toLocaleString()}
                 </p>
               </div>
@@ -87,7 +99,7 @@ export default function InsurerClaimApprovalModal({
                 placeholder="0.00"
                 className={`w-full pl-8 pr-4 py-3 rounded-xl border text-lg outline-none transition-colors ${
                   isLight
-                    ? "border-slate-200 bg-white text-slate-800 placeholder:text-slate-400 focus:border-blue-400/60"
+                    ? "border-slate-200 bg-[#fffefa] text-slate-800 placeholder:text-slate-400 focus:border-blue-400/60"
                     : "border-blue-300/20 bg-white/[0.08] text-slate-100 placeholder:text-blue-200/40 focus:border-blue-400/40 focus:ring-1 focus:ring-blue-400/20"
                 }`}
                 step="0.01"
