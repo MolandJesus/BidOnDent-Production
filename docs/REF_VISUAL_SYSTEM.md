@@ -4,7 +4,7 @@
 **Last updated:** 2026-05-04
 **Supersedes:** `PLAN_LANDING_REDESIGN.md`, `PLAN_LANDING_LIQUID_MAP_INTELLIGENCE.md`, `PLAN_LANDING_BUTTON_SYSTEM_ADOPTION.md`, `PLAN_LANDING_DARK_MODE_PARITY.md` (all archived 2026-05-03 under `docs/archive/`).
 
-> Read this doc for any visual/design work. The long-form _philosophy_ still lives in `MOLANDJESUS_DESIGN_DECISIONS.md` — this doc is the operating snapshot of what's actually in the code.
+> **Defer to [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md) for canonical design rules.** That doc is the locked apex design canon (effectively LAW-tier per owner directive 2026-05-04). This doc covers component-level implementation details and operating snapshots only — it never overrides MOLANDJESUS.
 
 ---
 
