@@ -555,17 +555,19 @@ export default function HeroSection({
               </button>
             </div>
 
-            {/* Trust microcopy */}
+            {/* Trust microcopy — footnote tier (Pass 9 Polish #1: demoted below CTA hierarchy) */}
             <div
-              className={`flex flex-col gap-2 pt-1 transition-all duration-700 sm:flex-row sm:flex-wrap sm:items-center ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+              className={`flex flex-col gap-1.5 pt-2 transition-all duration-700 sm:flex-row sm:flex-wrap sm:items-center ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
               style={{ transitionDelay: "0.9s" }}
             >
               {["Now available in NY", "Transparent bids", "Free for customers"].map((item) => (
                 <span
                   key={item}
-                  className={`inline-flex min-h-[40px] items-center justify-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium backdrop-blur-sm sm:justify-start sm:px-2.5 sm:py-1 sm:text-sm ${isLightAppearance ? "border-[rgba(140,82,22,0.28)] bg-[linear-gradient(180deg,rgba(247,232,194,0.78),rgba(232,238,248,0.74))] text-slate-700 shadow-[inset_0_1px_0_rgba(252,240,208,0.85)]" : "border-blue-400/20 bg-blue-500/10 text-blue-100/80"}`}
+                  className={`inline-flex items-center justify-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-medium tracking-[0.005em] backdrop-blur-sm sm:justify-start sm:px-2.5 sm:py-1 sm:text-[11px] ${isLightAppearance ? "border-[rgba(140,82,22,0.16)] bg-[rgba(232,238,248,0.55)] text-slate-600" : "border-blue-400/12 bg-blue-500/[0.06] text-blue-100/65"}`}
                 >
-                  <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
+                  <CheckCircle
+                    className={`h-3 w-3 ${isLightAppearance ? "text-slate-500/60" : "text-blue-200/50"}`}
+                  />
                   {item}
                 </span>
               ))}
