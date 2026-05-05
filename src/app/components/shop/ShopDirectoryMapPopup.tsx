@@ -61,7 +61,7 @@ export default function ShopDirectoryMapPopup({
 }: ShopDirectoryMapPopupProps) {
   const isDark = mapTheme === "dark";
   const actionButtonClassName = compact
-    ? "inline-flex min-h-[36px] flex-1 items-center justify-center gap-1.5 rounded-xl border px-2 py-1.5 text-[11px] font-semibold transition-colors"
+    ? "inline-flex min-h-[44px] flex-1 items-center justify-center gap-1.5 rounded-xl border px-2 py-1.5 text-[11px] font-semibold transition-colors"
     : "inline-flex min-h-[44px] flex-1 items-center justify-center gap-1.5 rounded-xl border px-2 py-2 text-sm font-semibold transition-colors";
 
   /* ── Popup-specific derived state ─────────────────────────────────── */
@@ -181,14 +181,14 @@ export default function ShopDirectoryMapPopup({
           <button
             type="button"
             onClick={onClose}
-            className={`shrink-0 mt-0.5 rounded-lg p-1 transition-colors ${
+            className={`inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg transition-colors ${
               isDark
-                ? "text-white/30 hover:text-white/70 hover:bg-white/10"
+                ? "text-white/40 hover:text-white/80 hover:bg-white/10"
                 : "text-slate-400 hover:text-slate-600 hover:bg-slate-100"
             }`}
             aria-label="Close"
           >
-            <X className="h-3.5 w-3.5" />
+            <X className="h-4 w-4" />
           </button>
         </div>
         <div className="flex flex-wrap gap-1.5">
@@ -298,7 +298,7 @@ export default function ShopDirectoryMapPopup({
 
                 onOpenShopDirections(shopPopup.shop);
               }}
-              className={`${compact ? "inline-flex min-h-[38px] flex-1 items-center justify-center gap-1.5 rounded-xl border px-2.5 py-2 text-xs font-semibold transition-colors" : "inline-flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-xl border px-3 py-2 text-sm font-semibold transition-colors"} ${popupCta}`}
+              className={`${compact ? "inline-flex min-h-[44px] flex-1 items-center justify-center gap-1.5 rounded-xl border px-2.5 py-2 text-xs font-semibold transition-colors" : "inline-flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-xl border px-3 py-2 text-sm font-semibold transition-colors"} ${popupCta}`}
             >
               <Compass className="h-3.5 w-3.5" />
               {popupHasArrived ? "Start Again" : popupActionLabel}

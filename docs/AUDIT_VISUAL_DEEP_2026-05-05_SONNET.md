@@ -351,3 +351,64 @@ This pass closed the mobile-emulation gap noted in Pass 2 and produced the first
 - Real mobile UX foundation now solid: every primary CTA + nav + dialog close on Dashboard / Report / Bids / Account / Landing / Coverage map meets the 44×44 LAW touch-target contract at 457 px.
 - The Pass 2 "mobile @ 375 emulation unavailable" coverage gap is now empirically closed at 457 px (close enough to validate the contract; iPhone SE 1st-gen 320 px is the only common viewport still untested and sits 21 % below this).
 - Owner can now switch back to desktop confident that mobile is no longer a known-fail surface.
+
+---
+
+## Pass 4 — Desktop sweep @ 1637×1067 (signed-in, Opus, post-handoff)
+
+**HEAD at start:** `7a30b21a` · **Audit window:** 1637×1067 (Electron native)
+**Theme coverage:** light + map-dark · **Auth:** signed in as Molalign
+
+### Surfaces audited
+
+Dashboard, Report, Bids, Account, Smart Shop Map (fullscreen),
+Shop-detail map popup (Express Auto Body card via report card click).
+
+### Findings
+
+**V-016 (P3-UX) — `ShopDirectoryMapPopup` Close button: 22×22 → 44×44**
+
+The map popup Close button (`button[aria-label="Close"]` inside
+`.maplibregl-popup-content`) measured 22×22 px on desktop —
+substantially below the 44×44 LAW even allowing for desktop mouse
+precision tolerance. Padding `p-1` + `<X className="h-3.5 w-3.5" />`
+combined for 22×22 hit area.
+
+Fix: switched to explicit `inline-flex h-11 w-11 items-center
+justify-center rounded-lg` with bumped `<X className="h-4 w-4" />`.
+Hit area now 44×44, icon scales gracefully, popup composition
+preserved.
+
+**KI-114 partial (collateral, same file):**
+- compact `actionButtonClassName`: `min-h-[36px]` → `min-h-[44px]`
+- compact directions button: `min-h-[38px]` → `min-h-[44px]`
+
+These two were inside the same `ShopDirectoryMapPopup.tsx` file as
+V-016 — co-located, same component contract, single-file commit. Did
+NOT broad-sweep the other 17 KI-114 candidates in sibling shop files
+(parked per containment).
+
+### Live verification
+
+- Popup Close re-measured in dark theme after HMR reload: **44×44**, in popup, visible.
+- All other Bids surface action buttons (Call/Message/Visit/Rate shop, Go back, sort chips): all 44×44.
+- Light + dark sweeps across Dashboard/Report/Bids/Account/Smart Map: **0 forbidden whites, 0 forbidden golds, 0 hScroll**.
+- Depth bar `bd-dashboard-panel` in dark mode: gold lamp (196,144) + cool blue ring (96,165,250) tokens both present ✓.
+- Build: PASS 3.28s, 63 PWA precache.
+
+### Out of scope (this pass)
+
+- **Bid-accept confirmation overlay** — would require an unaccepted bid (Honda is already Accepted; Toyota dashboard click routes to Smart Map preview not bid list; Mazda has 0 bids). Logged for next session.
+- **Active navigation overlay** — geolocation override needed.
+- **Sub-44×44 desktop shell elements** (BidOnDent logo 148×40, top search input 260×37): NOT flagged as violations — desktop mouse precision allows under-44 hit areas; LAW applies to mobile.
+
+### Files touched (Pass 4)
+
+- `src/app/components/shop/ShopDirectoryMapPopup.tsx` (+5 −5: 1 Close button rewrite + 2 collateral min-h bumps)
+- `docs/AUDIT_VISUAL_DEEP_2026-05-05_SONNET.md` (Pass 4 append)
+- 11 new screenshots in `docs/audit-assets/{visual,map}-2026-05-05/`
+
+### What this unlocks
+
+- Map shop popup Close is now properly tappable on touch devices (popup opens on map pin click on mobile too).
+- KI-114 partial closure inside `ShopDirectoryMapPopup.tsx` reduces the deferred sweep from 6 → 4 instances elsewhere.
