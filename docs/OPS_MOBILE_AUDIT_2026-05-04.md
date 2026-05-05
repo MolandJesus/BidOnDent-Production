@@ -4,7 +4,7 @@
 
 **Last updated:** 2026-05-04
 
-**Status:** Active. Findings populated upfront from static code audit; updated as cluster fixes ship.
+**Status:** **COMPLETE 2026-05-04.** All findings shipped. Phase 4 closed; re-authorization gate now active for Phase 4.5+.
 
 **Scope contract:** [`PLAN_PHASE_4_MOBILE_SWEEP.md`](PLAN_PHASE_4_MOBILE_SWEEP.md)
 
@@ -94,14 +94,20 @@ The following patterns are consistently applied across the codebase. Documenting
 
 ---
 
-## Phase 4 fix execution
+## Phase 4 fix execution (COMPLETE)
 
-Two fix commits to ship under this audit:
+Two fix commits shipped under this audit:
 
-1. **Cluster B fix** — NotificationCenter close button h-7 → h-10 + min-h-[44px] min-w-[44px]
-2. **Cluster D fix** — ShopDirectoryHero h-9 chip → add min-h-[44px]
+1. **Cluster B fix — `e45bdf6b`** — NotificationCenter close button `h-7 w-7` → `h-10 w-10 min-h-[44px] min-w-[44px]`. Click region grows; inner X icon (`h-4 w-4`) visual unchanged.
+2. **Cluster D fix — `e91a61d5`** — ShopDirectoryHero chip button: added `min-h-[44px]` floor. Visual `h-9` preserved on desktop via Tailwind's box-model height clamping.
 
-After both ship, this doc gets a final "complete" marker and Phase 4 closes. No Cluster A / C / E commits — those clusters had no findings.
+Cluster A / C / E had no findings at audit time and shipped clean without commits.
+
+**Phase 4 total commit count: 4** (this audit + 2 fixes + this close update). Original 5-cluster cadence reduced because Clusters A/C/E were already compliant.
+
+**LAW promotion judgement (final):** No systemic pattern emerged that wasn't already shipped. The codebase was already mostly compliant; this phase brought 2 specific outliers to the established floor. **`LAW_MOBILE_VIEWPORT_DOCTRINE.md` is NOT being written.** If future audits find a systemic gap, the audit doc can flag it then. Current state holds.
+
+**Re-authorization gate active.** Phase 4.5 (animation pillar) requires separate explicit owner authorization per [`PLAN_PHASE_4_MOBILE_SWEEP.md`](PLAN_PHASE_4_MOBILE_SWEEP.md) §8. Parallel-AI work is now eligible per [`LAW_LAYERED_ARCHITECTURE.md`](LAW_LAYERED_ARCHITECTURE.md) — Phase 3 dry run + Phase 4 sequential execution both proved discipline holds.
 
 ---
 
