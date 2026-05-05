@@ -1769,12 +1769,18 @@ body {
 
 .dark .bd-glass-badge,
 [data-theme="dark"] .bd-glass-badge {
-  border-color: rgba(96, 165, 250, 0.28);
-  background: linear-gradient(180deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.14) 100%);
+  /* Pass 9 #5 — owner directive 2026-05-05: gold lift across dark mode.
+     Badges are tiny — they should TWINKLE with gold, not glow. Gold rim +
+     thin cream catch + faint bronze underline. Cool-blue body preserved.
+     Locked palette only (196,144,65 / 252,240,208 / 140,82,22). */
+  border-color: rgba(196, 144, 65, 0.36);
+  background: linear-gradient(180deg, rgba(59, 130, 246, 0.22) 0%, rgba(37, 99, 235, 0.16) 100%);
   color: var(--bd-royal-blue-soft);
   box-shadow:
-    0 0 8px rgba(59, 130, 246, 0.08),
-    inset 0 1px 0 rgba(147, 197, 253, 0.08);
+    0 0 10px rgba(59, 130, 246, 0.10),
+    0 0 14px rgba(196, 144, 65, 0.16),
+    inset 0 1px 0 rgba(252, 240, 208, 0.22),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.20);
 }
 
 /* Luminous glow utility — use on surfaces that float over the map or need extra radiance */

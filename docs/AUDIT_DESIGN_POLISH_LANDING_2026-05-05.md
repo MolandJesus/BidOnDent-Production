@@ -172,3 +172,27 @@ All values from the LOCKED Premium Gold Palette: `196,144,65` / `196,130,45` / `
 
 **Risk:** Low. Direct sibling of just-shipped #3 (which was runtime-verified). Same palette family, calmer alphas. Single CSS file.
 
+
+---
+
+## Pass 9 Polish #5 — Dark-mode gold lift on `.bd-glass-badge` (twinkle, not glow) (2026-05-05)
+
+**HEAD at start:** `6fe99249`
+
+**Polish target:** `.dark .bd-glass-badge` was the only remaining flat cool-blue, gold-less surface in the dark glass family after #3/#4. Badges are tiny — they should TWINKLE with gold rim + cream catch + bronze underline, not glow.
+
+**Change applied:** [`src/styles/theme.css:1770-1785`](../src/styles/theme.css)
+
+| Property | Before | After |
+| --- | --- | --- |
+| `border-color` | `rgba(96,165,250,0.28)` (cool blue) | `rgba(196,144,65,0.36)` (locked top-lamp, brighter alpha because micro-element) |
+| Top inset | `rgba(147,197,253,0.08)` (sky-blue, faint) | `rgba(252,240,208,0.22)` (locked cream-gold) |
+| Bottom inset | none | `rgba(140,82,22,0.20)` (locked bronze rim) |
+| Outer halo | `0 0 8px rgba(59,130,246,0.08)` | `0 0 10px rgba(59,130,246,0.10) + 0 0 14px rgba(196,144,65,0.16)` (cool + warm dual halo, tiny radius) |
+
+Cool-blue body + royal-blue text preserved (badge identity unchanged). Locked Premium Gold Palette only.
+
+**Validation:** Build ✓ clean, diagnostics 0, §9.1 forbidden-color 0 hits, §9.3 reduced-motion N/A (no motion changed), light mode untouched.
+
+**Note logged for follow-up (NOT fixed in this polish):** `.bd-dashboard-atmosphere` dark rule (line 1768) contains `rgba(220, 150, 60, 0.14)` — not on the explicit forbidden list, but drifting close to the banned `220,140,50`. Pre-existing, owner-tuned. Out of scope here; flag for a future palette-conformance pass.
+
