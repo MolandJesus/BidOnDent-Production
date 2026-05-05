@@ -3307,8 +3307,9 @@ body {
    per LAW_ANIMATION_AND_ATMOSPHERE.md §3 mandate. Surfaced by Sonnet v3.1 audit
    (BidCardArticle hover S1 measurement returned CSS transitionDuration: "0.15s"
    while WAAPI showed 0ms — the WAAPI-vs-CSS layering exposed this CSS-side gap).
-   See KI-114 for the broader CSS-side reduce-guard sweep across remaining
-   interactive-element transitions in theme.css. */
+   Broader CSS-side reduce-guard sweep across remaining interactive-element
+   transitions is intentionally out of scope per containment doctrine
+   (no follow-up KI created); revisit only if user-visible motion regresses. */
 @media (prefers-reduced-motion: reduce) {
   .bd-dashboard-section--interactive {
     transition: none;
