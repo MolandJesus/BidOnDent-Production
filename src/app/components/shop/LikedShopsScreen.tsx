@@ -7,7 +7,7 @@ import {
   loadWebsiteSessionMemory,
   updateWebsiteSessionMemory,
 } from "../../services/auth/websiteIdentity";
-import { buildShopMapListings } from "../../services/intelligence/shopMapExperience";
+import { useShopMapListings } from "../../hooks/useShopMapListings";
 import { useNetworkDirectory } from "../../hooks/useNetworkDirectory";
 import { useNotifications } from "../../features/notifications";
 import { defaultCoverageCenter } from "../landing/coverageData";
@@ -52,7 +52,7 @@ export default function LikedShopsScreen({
     );
   }, [identity, savedShopIds]);
 
-  const savedListings = buildShopMapListings({
+  const savedListings = useShopMapListings({
     connectedInsurerIds,
     directoryInsurers: inventory.insurers,
     directoryShops: inventory.shops,

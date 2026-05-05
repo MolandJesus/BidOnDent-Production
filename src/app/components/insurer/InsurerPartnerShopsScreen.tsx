@@ -6,7 +6,7 @@ import {
   loadWebsiteSessionMemory,
   updateWebsiteSessionMemory,
 } from "../../services/auth/websiteIdentity";
-import { buildShopMapListings } from "../../services/intelligence/shopMapExperience";
+import { useShopMapListings } from "../../hooks/useShopMapListings";
 import { useNetworkDirectory } from "../../hooks/useNetworkDirectory";
 import {
   navigationProviderOptions,
@@ -77,7 +77,7 @@ export default function InsurerPartnerShopsScreen({
     );
   }, [identity, shortlistIds]);
 
-  const mappedShops = buildShopMapListings({
+  const mappedShops = useShopMapListings({
     connectedInsurerIds,
     directoryInsurers: inventory.insurers,
     directoryShops: inventory.shops,

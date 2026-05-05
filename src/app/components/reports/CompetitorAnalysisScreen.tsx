@@ -7,10 +7,8 @@ import {
   loadWebsiteSessionMemory,
   updateWebsiteSessionMemory,
 } from "../../services/auth/websiteIdentity";
-import {
-  buildShopMapListings,
-  toggleRoleCollectionShopId,
-} from "../../services/intelligence/shopMapExperience";
+import { toggleRoleCollectionShopId } from "../../services/intelligence/shopMapExperience";
+import { useShopMapListings } from "../../hooks/useShopMapListings";
 import { useNetworkDirectory } from "../../hooks/useNetworkDirectory";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 import DashboardMapPreview from "../dashboard/MapLibreDashboardMapPreview";
@@ -102,7 +100,7 @@ export default function CompetitorAnalysisScreen({
     );
   }, [identity, watchlistIds]);
 
-  const marketListings = buildShopMapListings({
+  const marketListings = useShopMapListings({
     connectedInsurerIds,
     directoryInsurers: inventory.insurers,
     directoryShops: inventory.shops,
