@@ -1495,13 +1495,27 @@ body {
 /* Dark-tone variants — underwater royal navy atmosphere */
 .dark .bd-glass-panel,
 [data-theme="dark"] .bd-glass-panel {
-  border-color: rgba(96, 165, 250, 0.22);
+  /* Pass 9 #4 (KI-081 site-wide lift) — owner directive 2026-05-05:
+     "liquid gold glass cards everywhere." Sibling to .bd-glass-card lift
+     in #3. Panels are structural surfaces (larger than cards), so gold
+     trim is slightly quieter than the card variant — same locked-palette
+     grammar (196,144,65 / 196,130,45 / 140,82,22 / 252,240,208), just
+     calmer alphas so panels frame content instead of competing with the
+     cards inside them. Cool-blue body preserved per landing identity. */
+  border-color: rgba(196, 144, 65, 0.26);
   background: linear-gradient(180deg, rgba(15, 30, 51, 0.88) 0%, rgba(12, 25, 41, 0.82) 100%);
   box-shadow:
-    0 16px 40px rgba(2, 6, 23, 0.34),
-    0 0 1px rgba(96, 165, 250, 0.3),
-    inset 0 1px 0 rgba(147, 197, 253, 0.08),
-    0 0 24px rgba(37, 99, 235, 0.06);
+    0 18px 44px rgba(2, 6, 23, 0.42),
+    0 6px 14px rgba(2, 6, 23, 0.24),
+    inset 0 1px 0 rgba(252, 240, 208, 0.18),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.22),
+    0 0 0 1px rgba(196, 144, 65, 0.16),
+    0 0 0 1px rgba(96, 165, 250, 0.22),
+    0 0 28px rgba(37, 99, 235, 0.08),
+    0 0 40px rgba(196, 130, 45, 0.18),
+    0 -24px 70px -14px rgba(196, 144, 65, 0.12),
+    inset 1px 0 0 rgba(252, 240, 208, 0.08),
+    inset -1px 0 0 rgba(252, 240, 208, 0.05);
 }
 
 .dark .bd-glass-control,

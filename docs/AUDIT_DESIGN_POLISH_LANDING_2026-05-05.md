@@ -135,3 +135,40 @@ Light-mode text (`#7c4a16`), backgrounds, border, and inset/halo shadow stack: u
 
 **Risk:** Low. Locked palette only. Cool-blue body identity preserved (landing rule). Halo intensities at or below the established `--landing` precedent. Single CSS file.
 
+
+---
+
+## Pass 9 Polish #4 — Dark-mode liquid gold lift on `.bd-glass-panel` (sibling to #3) (2026-05-05)
+
+**HEAD at start:** `0a260fef`
+
+**Polish target:** `.dark .bd-glass-panel` (structural surface variant — used by dashboard header, sidebar, shop directory hero/search/intelligence panels, insurer new-claim screen, vehicle profile screen — 11 references across 7 files) had the same flat cool-blue treatment as the base card before #3. Owner directive: "liquid gold glass cards everywhere."
+
+**Change applied:** [`src/styles/theme.css:1496-1521`](../src/styles/theme.css)
+
+Same locked-palette grammar as #3, but with **calmer alphas** because panels frame content (cards) — they should not compete with the cards inside them:
+
+| Layer | Card variant (#3) | Panel variant (#4) |
+| --- | --- | --- |
+| border alpha | 0.32 | 0.26 |
+| top inset cream | 0.22 | 0.18 |
+| bottom bronze rim | 0.28 | 0.22 |
+| gold ring | 0.20 | 0.16 |
+| outer halo | 0.22 | 0.18 |
+| top-cast lamp | 0.14 | 0.12 |
+
+All values from the LOCKED Premium Gold Palette: `196,144,65` / `196,130,45` / `140,82,22` / `252,240,208`. Cool-blue body preserved (background gradient unchanged from previous panel rule).
+
+**Validation:**
+
+- Build: ✓ clean.
+- Diagnostics on `theme.css`: 0.
+- §9.1 forbidden-color sweep: 0 hits — only locked baseline + preserved cool-blue values.
+- §9.3 reduced-motion: no transform/animation added.
+- Light mode: untouched (`.dark`/`[data-theme="dark"]` scoped only).
+- Apex canon: unmodified.
+
+**Surface impact:** dashboard shell, sidebar, shop directory chrome, insurer/vehicle screens — all promoted from flat-blue to gold-trimmed liquid glass in one CSS block.
+
+**Risk:** Low. Direct sibling of just-shipped #3 (which was runtime-verified). Same palette family, calmer alphas. Single CSS file.
+
