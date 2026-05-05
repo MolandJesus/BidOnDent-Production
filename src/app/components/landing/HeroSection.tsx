@@ -1015,7 +1015,7 @@ export default function HeroSection({
                     borderColor: isLightAppearance
                       ? "rgba(140,82,22,0.32)"
                       : "rgba(196,144,65,0.36)",
-                    color: isLightAppearance ? "#7c4a16" : "#fde6c0",
+                    color: isLightAppearance ? "#7c4a16" : "#fcefd0",
                     boxShadow: isLightAppearance
                       ? "inset 0 1px 0 rgba(252,240,212,0.92), 0 2px 10px rgba(15,30,60,0.10)"
                       : "inset 0 1px 0 rgba(196, 144, 65, 0.22), inset 0 -1px 0 rgba(140, 82, 22, 0.22), 0 0 0 1px rgba(96, 165, 250, 0.18), 0 16px 32px rgba(2, 6, 23, 0.30), 0 4px 12px rgba(2, 6, 23, 0.22), 0 0 60px rgba(196, 130, 45, 0.12)",

@@ -59,3 +59,36 @@
 - Hero map preview card weight balance vs left column copy — feels visually balanced but could be tested with a slight scale-down.
 - Hero → How-It-Works section seam (visible band of color shift around y≈900px in light mode).
 - "Now serving New York · Free for customers" pill at top of hero — slightly redundant with bottom trust pills. Possible consolidation candidate but copy-touch risk; surface to owner before acting.
+
+---
+
+## Pass 9 Polish #2 — Hero map "Double-tap for full map" badge: dark text into locked palette range (2026-05-05)
+
+**HEAD at start:** `e6fbe25e`
+
+**Polish target (one sentence):** The "DOUBLE-TAP FOR FULL MAP" hint pill at the top-right of the hero's map preview rendered its dark-mode label as `rgb(253, 230, 192)` (`#fde6c0`) — outside the locked Premium Gold cream-inset range (`rgba(252, 238–240, 204–208)`) on both green and blue channels — a quiet palette drift that needs to come back into family without changing the badge's role.
+
+**Discovery:** Runtime DOM inspection of all elements containing "DOUBLE-TAP" found the actual hint pill (uppercase, top-3 right-3) using `color: rgb(253, 230, 192)`. Source grep (`fde6c0`) located a single hit at [`HeroSection.tsx:1018`](../src/app/components/landing/HeroSection.tsx). No other instances of `#fde6c0` anywhere in `src/`.
+
+**Change applied:** [`src/app/components/landing/HeroSection.tsx:1018`](../src/app/components/landing/HeroSection.tsx)
+
+| Property                | Before                | After                                                          |
+| ----------------------- | --------------------- | -------------------------------------------------------------- |
+| Dark-mode text color    | `#fde6c0` (253,230,192) — outside locked range | `#fcefd0` (252,239,208) — inside locked `252,238–240,204–208`  |
+
+Light-mode text (`#7c4a16`), backgrounds, border, and inset/halo shadow stack: unchanged. Border was already `rgba(196,144,65,0.36)` (locked top/corner-lamp value). Inset/outer shadows were already in-family (`rgba(196, 144, 65, 0.22)` / `rgba(140, 82, 22, 0.22)` / `rgba(196, 130, 45, 0.12)`).
+
+**Validation:**
+
+- Build: ✓ 3.66s clean.
+- Diagnostics on `HeroSection.tsx`: 0.
+- Runtime re-check post-edit: badge color now `rgb(252, 239, 208)` ✓ in-range.
+- Cross-file sweep for `fde6c0`: 0 remaining hits.
+- §9.3 reduced-motion: no motion changed.
+- Apex canon: unmodified.
+
+**Files touched:** 1 (`HeroSection.tsx` — single-character-class swap, no line-count change).
+
+**Out-of-scope items observed but deferred:**
+
+- Same badge's light-mode text color `#7c4a16` (124,74,22) is darker than locked bronze-trim baseline `rgba(140, 82, 22)`. Locked palette doesn't define a "text-on-cream" tier; this is plausibly intentional for AA contrast. **Not regressed in this polish.** If a "text-on-cream" tier gets added to the locked palette, revisit then.
