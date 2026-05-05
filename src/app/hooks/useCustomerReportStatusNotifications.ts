@@ -64,33 +64,46 @@ export function useCustomerReportStatusNotifications({
   useEffect(() => {
     if (userType !== "customer" || reportIdSet.current.size === 0) return;
 
-    const unsub = realtimeReportService.subscribeToReportUpdates(
-      (report: RealtimeReportPayload) => {
-        // Only care about this customer's reports
-        if (!reportIdSet.current.has(report.id)) return;
+    let mounted = true;
+    let currentUnsubscribe: (() => void) | null = null;
 
-        const status = report.status ?? "";
-        const labels = STATUS_LABELS[status];
-        if (!labels) return; // Don't notify for unknown/unchanged statuses
+    function doSubscribe() {
+      // StrictMode-safe: defer subscribe by one microtask + `mounted` short-circuit.
+      // See useBidsForReport.ts for full mechanism + KI-057.
+      if (!mounted) return;
+      currentUnsubscribe = realtimeReportService.subscribeToReportUpdates(
+        (report: RealtimeReportPayload) => {
+          // Only care about this customer's reports
+          if (!reportIdSet.current.has(report.id)) return;
 
-        const vehicle = [report.vehicleYear, report.vehicleMake, report.vehicleModel]
-          .filter(Boolean)
-          .join(" ");
+          const status = report.status ?? "";
+          const labels = STATUS_LABELS[status];
+          if (!labels) return; // Don't notify for unknown/unchanged statuses
 
-        notifications.push({
-          category: "report",
-          title: labels.title,
-          body: vehicle ? `${vehicle} — ${labels.body}` : labels.body,
-          payload: { reportId: report.id, status },
-          userId: "",
-          deepLink: { screen: "report", reportId: report.id },
-          priority: status === "active" || status === "completed" ? "high" : "normal",
-        });
+          const vehicle = [report.vehicleYear, report.vehicleMake, report.vehicleModel]
+            .filter(Boolean)
+            .join(" ");
 
-        onChangeRef.current?.();
-      }
-    );
+          notifications.push({
+            category: "report",
+            title: labels.title,
+            body: vehicle ? `${vehicle} — ${labels.body}` : labels.body,
+            payload: { reportId: report.id, status },
+            userId: "",
+            deepLink: { screen: "report", reportId: report.id },
+            priority: status === "active" || status === "completed" ? "high" : "normal",
+          });
 
-    return unsub;
+          onChangeRef.current?.();
+        }
+      );
+    }
+
+    queueMicrotask(doSubscribe);
+
+    return () => {
+      mounted = false;
+      if (currentUnsubscribe) currentUnsubscribe();
+    };
   }, [userType, notifications]);
 }

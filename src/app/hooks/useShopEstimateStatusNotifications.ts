@@ -32,6 +32,9 @@ export function useShopEstimateStatusNotifications({
   useEffect(() => {
     if (userType !== "shop") return;
 
+    let mounted = true;
+    let unsubscribe: (() => void) | null = null;
+
     const handleEstimateUpdate = (estimate: RealtimeEstimatePayload) => {
       if (estimate.status !== "accepted" && estimate.status !== "declined") return;
 
@@ -55,10 +58,18 @@ export function useShopEstimateStatusNotifications({
       onChangeRef.current?.();
     };
 
-    const unsubscribe = realtimeEstimateService.subscribeToUpdates(handleEstimateUpdate);
+    function doSubscribe() {
+      // StrictMode-safe: defer subscribe by one microtask + `mounted` short-circuit.
+      // See useBidsForReport.ts for full mechanism + KI-057.
+      if (!mounted) return;
+      unsubscribe = realtimeEstimateService.subscribeToUpdates(handleEstimateUpdate);
+    }
+
+    queueMicrotask(doSubscribe);
 
     return () => {
-      unsubscribe();
+      mounted = false;
+      if (unsubscribe) unsubscribe();
     };
   }, [userType, notifications]);
 }

@@ -75,20 +75,32 @@ export function useReportLayerData({
   // Uses a dedicated channel name to avoid conflicting with useShopNearbyReportNotifications.
   useEffect(() => {
     if (initialReports) return; // Parent manages data — no subscription needed
+    let mounted = true;
     let refreshTimer: ReturnType<typeof setTimeout> | null = null;
-    const channel = supabase
-      .channel("map-report-layer-changes")
-      .on("postgres_changes", { event: "*", schema: "public", table: "damage_reports" }, () => {
-        // Debounce: wait 1.5 s before re-fetching in case of rapid successive changes
-        if (refreshTimer) clearTimeout(refreshTimer);
-        refreshTimer = setTimeout(() => {
-          void fetchReports();
-        }, 1500);
-      })
-      .subscribe();
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+
+    function doSubscribe() {
+      // StrictMode-safe: defer subscribe by one microtask + `mounted` short-circuit.
+      // See useBidsForReport.ts for full mechanism + KI-057.
+      if (!mounted) return;
+      channel = supabase
+        .channel("map-report-layer-changes")
+        .on("postgres_changes", { event: "*", schema: "public", table: "damage_reports" }, () => {
+          // Debounce: wait 1.5 s before re-fetching in case of rapid successive changes
+          if (refreshTimer) clearTimeout(refreshTimer);
+          refreshTimer = setTimeout(() => {
+            void fetchReports();
+          }, 1500);
+        })
+        .subscribe();
+    }
+
+    queueMicrotask(doSubscribe);
+
     return () => {
+      mounted = false;
       if (refreshTimer) clearTimeout(refreshTimer);
-      void supabase.removeChannel(channel);
+      if (channel) void supabase.removeChannel(channel);
     };
   }, [initialReports, fetchReports]);
 
@@ -96,19 +108,31 @@ export function useReportLayerData({
   // Triggers a full re-fetch so the bid counter on each report pin stays accurate.
   useEffect(() => {
     if (initialReports) return; // Parent manages data — no subscription needed
+    let mounted = true;
     let bidTimer: ReturnType<typeof setTimeout> | null = null;
-    const bidChannel = supabase
-      .channel("map-report-bid-updates")
-      .on("postgres_changes", { event: "*", schema: "public", table: "bids" }, () => {
-        if (bidTimer) clearTimeout(bidTimer);
-        bidTimer = setTimeout(() => {
-          void fetchReports();
-        }, 1500);
-      })
-      .subscribe();
+    let bidChannel: ReturnType<typeof supabase.channel> | null = null;
+
+    function doSubscribe() {
+      // StrictMode-safe: defer subscribe by one microtask + `mounted` short-circuit.
+      // See useBidsForReport.ts for full mechanism + KI-057.
+      if (!mounted) return;
+      bidChannel = supabase
+        .channel("map-report-bid-updates")
+        .on("postgres_changes", { event: "*", schema: "public", table: "bids" }, () => {
+          if (bidTimer) clearTimeout(bidTimer);
+          bidTimer = setTimeout(() => {
+            void fetchReports();
+          }, 1500);
+        })
+        .subscribe();
+    }
+
+    queueMicrotask(doSubscribe);
+
     return () => {
+      mounted = false;
       if (bidTimer) clearTimeout(bidTimer);
-      void supabase.removeChannel(bidChannel);
+      if (bidChannel) void supabase.removeChannel(bidChannel);
     };
   }, [initialReports, fetchReports]);
 

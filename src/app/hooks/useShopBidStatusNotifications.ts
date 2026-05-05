@@ -34,35 +34,48 @@ export function useShopBidStatusNotifications({
   useEffect(() => {
     if (userType !== "shop" || !providerUserId) return;
 
-    const unsub = realtimeBidService.subscribeToAllBids(
-      undefined, // onNewBid — shops don't need INSERT notifications here
-      (bid: Bid) => {
-        // Only care about bids this shop submitted
-        if (bid.shopId !== providerUserId) return;
-        // Only notify for terminal status changes
-        if (bid.status !== "accepted" && bid.status !== "rejected") return;
+    let mounted = true;
+    let currentUnsubscribe: (() => void) | null = null;
 
-        const amount = bid.amount ? `$${bid.amount.toLocaleString()}` : "Your bid";
-        const isAccepted = bid.status === "accepted";
+    function doSubscribe() {
+      // StrictMode-safe: defer subscribe by one microtask + `mounted` short-circuit.
+      // See useBidsForReport.ts for full mechanism + KI-057.
+      if (!mounted) return;
+      currentUnsubscribe = realtimeBidService.subscribeToAllBids(
+        undefined, // onNewBid — shops don't need INSERT notifications here
+        (bid: Bid) => {
+          // Only care about bids this shop submitted
+          if (bid.shopId !== providerUserId) return;
+          // Only notify for terminal status changes
+          if (bid.status !== "accepted" && bid.status !== "rejected") return;
 
-        notifications.push({
-          category: "bid",
-          title: isAccepted ? "Bid accepted!" : "Bid not selected",
-          body: isAccepted
-            ? `${amount} was accepted for a repair request. Check your active jobs.`
-            : `${amount} was not selected for this repair request.`,
-          payload: { bidId: bid.id, reportId: bid.reportId, status: bid.status },
-          userId: providerUserId,
-          deepLink: isAccepted
-            ? { screen: "dashboard" as const }
-            : { screen: "bid" as const, bidId: bid.id, reportId: bid.reportId },
-          priority: isAccepted ? "high" : "low",
-        });
+          const amount = bid.amount ? `$${bid.amount.toLocaleString()}` : "Your bid";
+          const isAccepted = bid.status === "accepted";
 
-        onChangeRef.current?.();
-      }
-    );
+          notifications.push({
+            category: "bid",
+            title: isAccepted ? "Bid accepted!" : "Bid not selected",
+            body: isAccepted
+              ? `${amount} was accepted for a repair request. Check your active jobs.`
+              : `${amount} was not selected for this repair request.`,
+            payload: { bidId: bid.id, reportId: bid.reportId, status: bid.status },
+            userId: providerUserId,
+            deepLink: isAccepted
+              ? { screen: "dashboard" as const }
+              : { screen: "bid" as const, bidId: bid.id, reportId: bid.reportId },
+            priority: isAccepted ? "high" : "low",
+          });
 
-    return unsub;
+          onChangeRef.current?.();
+        }
+      );
+    }
+
+    queueMicrotask(doSubscribe);
+
+    return () => {
+      mounted = false;
+      if (currentUnsubscribe) currentUnsubscribe();
+    };
   }, [userType, providerUserId, notifications]);
 }
