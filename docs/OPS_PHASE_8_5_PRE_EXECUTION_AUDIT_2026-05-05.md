@@ -4,7 +4,7 @@
 
 **Last updated:** 2026-05-05
 
-**Status:** **COMPLETE.** Phase 8.5 has real aesthetic-addition work — 5 of 7 map-specific keyframes are defined but unconsumed by map surfaces. All findings are **P7-TECHDEBT (KI-112 family)**, not defensive. **0 P0/P1/P2/P3 findings.** Recommendation: Path Y (docs-only close; fold into KI-112 extension) unless owner wants the aesthetic polish shipped pre-launch as Path A (~3-4 commits).
+**Status:** **CLOSED via Path Y 2026-05-05.** Phase 8.5 has real aesthetic-addition work — 5 of 7 map-specific keyframes are defined but unconsumed by map surfaces. All findings are **P7-TECHDEBT (KI-112 family)**, not defensive. **0 P0/P1/P2/P3 findings.** Closed via Path Y (docs-only close + KI-112 extension); F1 + F2 + F4 folded into KI-112 as F4 + F5 + F6 (audit F3 maps to existing KI-112 F2). Path A (3-4 aesthetic execution commits) remains available as a post-launch aesthetic pass or owner-driven phase. See §9 close footer below.
 
 **Phase context:** Authorized as the natural next step after Phase 8 close (commit `f484019c`) under owner authorization "go full auto on code work doc work and design work for hours after." Mirrors Phase 6 / 6.5 / 7 / 7.5 / 8 audit pattern; output style is **findings-style** (per the original Phase 8.5 charter "route preview draw-on, pin pulse, camera idle drift, liquid sheen extension"), not scope-contract-style (Phase 8.5 work is keyframe wiring, not architectural lift).
 
@@ -211,3 +211,38 @@ If **Path A**:
 - [`PLAN_DOC_INDEX_BY_PHASE.md`](PLAN_DOC_INDEX_BY_PHASE.md) — Phase 8.5 row updated this commit
 - [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md) — apex design canon (LOCKED; not touched)
 - [`REF_KNOWN_ISSUES.md`](REF_KNOWN_ISSUES.md) — KI-112 (atmosphere/idle motion gap family); KI-113 (reduced-motion sweep — interaction risk if Path A)
+
+---
+
+## §9. Phase 8.5 close (2026-05-05) — PATH Y SHIPPED
+
+Phase 8.5 closed via **Path Y** (docs-only close + KI-112 extension), per audit recommendation in §5 + close-commit shape in §8.
+
+**Decision rationale:** Under owner autopilot authorization with no explicit Path A directive, Path Y is the audit's default recommendation and matches the established Phase 6.5 (Path B) + Phase 7.5 (Path Y) close patterns for atmosphere-audit phases with all-P7-TECHDEBT findings. KI-113 reduced-motion contract is now resolved (commits `b1fea150` → `bb20f554`), so Path A is mechanically unblocked and remains available as a post-launch aesthetic pass or owner-driven phase if the visual polish is wanted before launch.
+
+**What this close commit ships:**
+
+- KI-112 extension in [`REF_KNOWN_ISSUES.md`](REF_KNOWN_ISSUES.md): 3 new sub-fix entries — **F4** (map route preview draw-on, audit F1) + **F5** (map pin pulse on MapLibre canvas, audit F2) + **F6** (liquid sheen extension to map frames, audit F4). Audit F3 (camera idle drift) maps to existing KI-112 F2 (dashboard atmosphere mini-map idle drift) — no duplicate created.
+- KI-112 title updated to "+ map ambient surfaces".
+- KI-112 scope-extended note appended with Phase 8.5 entry.
+- KI-112 Impact, Location, Evidence, Fix direction, and Status sections all extended for F4/F5/F6.
+- KI-112 Fix direction updated to clarify mechanical-inheritance for motion/react surfaces (root MotionConfig + useReducedMotion already in place from Phase 7.6) vs CSS-keyframe surfaces (must author own `@media (prefers-reduced-motion: reduce)` per LAW §3).
+- This audit doc: §9 close footer (this section) + §0 Status updated to CLOSED.
+- [`PLAN_DOC_INDEX_BY_PHASE.md`](PLAN_DOC_INDEX_BY_PHASE.md): Phase 8.5 audit row → SHIPPED + CLOSED via Path Y; OPS_MAP_AMBIENT_MOTION_LOG row → NOT WRITTEN (Path Y).
+- [`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md): new session log entry "v3.3 master-plan Phase 8.5 close (2026-05-05)".
+- 0 code edits.
+
+**What this close does NOT do (deliberately, under autopilot):**
+
+- No Path A execution (3-4 aesthetic commits would have shipped pin-pulse / route-shimmer / liquid-sheen-extension activations; awaits owner taste decisions).
+- No new KI created (audit F3 folded; F1/F2/F4 folded; no KI-114/115).
+- No status change to KI-112 (stays OPEN — P7-TECHDEBT).
+- No charter amendments (LAW_ANIMATION_AND_ATMOSPHERE not touched).
+- No MOLANDJESUS touch (structural lock holds).
+- No `OPS_MAP_AMBIENT_MOTION_LOG.md` write (conditional on Path A; not written).
+- No new audit framework (per containment doctrine).
+- No scope expansion beyond audit findings.
+
+**Cumulative audit pattern:** Pre-execution-audit pattern is now **8-for-8** (Phases 4 / 6 / 6.5 / 7 / 7.5 / 7.6 / 8 / 8.5 all delivered tight scope-or-defer outcomes).
+
+**Status:** **CLOSED via Path Y 2026-05-05.**
