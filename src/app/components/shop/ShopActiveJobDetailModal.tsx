@@ -46,6 +46,7 @@ export default function ShopActiveJobDetailModal({
             </div>
             <button
               onClick={onClose}
+              aria-label="Close job details"
               className={`transition-colors ${isLight ? "text-slate-400 hover:text-slate-700" : "text-blue-200/60 hover:text-slate-100"}`}
             >
               <X className="w-6 h-6" />

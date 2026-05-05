@@ -72,7 +72,12 @@ export default function NavigationVoiceControlsSheet({
                 : "Speech synthesis is not available in this browser."}
             </div>
           </div>
-          <button type="button" onClick={onClose} className={theme.iconButtonClassName}>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close voice controls"
+            className={theme.iconButtonClassName}
+          >
             <X className="h-4 w-4" />
           </button>
         </div>

@@ -77,6 +77,7 @@ export default function EstimateRequestSheet({
           <button
             type="button"
             onClick={onClose}
+            aria-label="Close estimate request"
             className={cn(
               "rounded-full p-2 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center",
               isDark

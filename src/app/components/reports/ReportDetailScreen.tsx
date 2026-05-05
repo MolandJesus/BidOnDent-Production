@@ -116,6 +116,7 @@ export default function ReportDetailScreen({
           <div className="flex items-center">
             <button
               onClick={onBack}
+              aria-label="Back"
               className="bd-dashboard-secondary-button mr-3 flex h-11 w-11 items-center justify-center rounded-lg"
             >
               <ArrowLeft className="w-5 h-5" />

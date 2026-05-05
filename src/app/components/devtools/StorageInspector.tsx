@@ -127,7 +127,11 @@ export default function StorageInspector({ onClose, userEmail }: StorageInspecto
             <Database className="w-6 h-6" />
             <h2 className="text-xl font-bold">Storage Inspector</h2>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-lg">
+          <button
+            onClick={onClose}
+            aria-label="Close storage inspector"
+            className="p-2 hover:bg-white/10 rounded-lg"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>

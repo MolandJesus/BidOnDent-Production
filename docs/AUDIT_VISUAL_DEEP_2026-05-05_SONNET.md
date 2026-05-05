@@ -575,3 +575,68 @@ trigger an address geocode on landing to see V-021 in flow; trigger a shop
 fetch failure (offline mode) to see V-022; click a customer report marker
 on the dashboard map to see V-024. Document any layout shifts the +4 px
 caused (none expected — buttons are flex children, parent grows).
+
+---
+
+## Pass 7 — Aria-label sweep across icon-only buttons (2026-05-05)
+
+**Pass chosen and why:** Planner-ranked option 1 of 3 (highest impact). After Pass 6 closed the touch-target sweep, the next a11y axis is accessible-name coverage on icon-only buttons (close X, back arrow, password-toggle eye, camera/edit). Screen readers announce these as "button" with no purpose, and Lighthouse / axe-core flag them as critical findings.
+
+**Method:**
+
+1. Runtime OPS §9.5 sweep on `/dashboard` at 1637×1067 → 0 findings (clean for that surface).
+2. Source-truth audit script (Node, `/tmp/aria_audit.cjs`) walking every `.tsx` in `src/app`, finding every `<button>` element with no aria-label / aria-labelledby / title AND no text content AND containing an icon (capitalized JSX tag, `<svg>`, or `<img>`).
+3. Filter to canonical icon-only patterns: `<X .../></button>`, `<ArrowLeft .../></button>`, `<EyeOff/Eye .../></button>`, `<Camera .../></button>`.
+4. Triage 48 raw findings → 22 confirmed icon-only buttons across 22 files. Remaining 26 have text content via JSX expressions (`{label}`, `{action.title}`, `Submit`, `Save`, etc.) and were correctly excluded.
+
+**V-025..V-046 — 22 icon-only buttons missing accessible name (P3-A11Y):**
+
+| ID    | File                                                                                                                                        | Button purpose         | Aria-label added                         |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- | ---------------------------------------- |
+| V-025 | [`auth/LoginLoginView.tsx:69`](../src/app/components/auth/LoginLoginView.tsx)                                                               | Password show/hide     | `{showPassword ? "Hide" : "Show"} password` |
+| V-026 | [`auth/LoginSignupView.tsx:103`](../src/app/components/auth/LoginSignupView.tsx)                                                            | Password show/hide     | `{showPassword ? "Hide" : "Show"} password` |
+| V-027 | [`auth/LoginModal.tsx:115`](../src/app/components/auth/LoginModal.tsx)                                                                      | Close login modal      | `"Close login"`                          |
+| V-028 | [`app/DashboardHeader.tsx:294`](../src/app/components/app/DashboardHeader.tsx)                                                              | Close header search    | `"Close search"`                         |
+| V-029 | [`codelayer/account/EditProfileModal.tsx:143`](../src/app/components/codelayer/account/EditProfileModal.tsx)                                | Change profile photo   | `"Change profile photo"`                 |
+| V-030 | [`codelayer/account/ServiceAreaEditorModal.tsx:175`](../src/app/components/codelayer/account/ServiceAreaEditorModal.tsx)                    | Close editor           | `"Close service area editor"`            |
+| V-031 | [`devtools/StorageInspector.tsx:130`](../src/app/components/devtools/StorageInspector.tsx)                                                  | Close devtool          | `"Close storage inspector"`              |
+| V-032 | [`insurer/InsuranceCompaniesScreen.tsx:51`](../src/app/components/insurer/InsuranceCompaniesScreen.tsx)                                     | Back navigation        | `"Back"`                                 |
+| V-033 | [`insurer/InsurerConnectionScreen.tsx:130`](../src/app/components/insurer/InsurerConnectionScreen.tsx)                                      | Back navigation        | `"Back"`                                 |
+| V-034 | [`insurer/InsurerNewClaimScreen.tsx:100`](../src/app/components/insurer/InsurerNewClaimScreen.tsx)                                          | Back navigation        | `"Back"`                                 |
+| V-035 | [`maps/MapBidSheet.tsx:111`](../src/app/components/maps/MapBidSheet.tsx)                                                                    | Close bid sheet        | `"Close bid sheet"`                      |
+| V-036 | [`maps/navigation/NavigationSettingsSheet.tsx:132`](../src/app/components/maps/navigation/NavigationSettingsSheet.tsx)                      | Close nav settings     | `"Close navigation settings"`            |
+| V-037 | [`maps/navigation/NavigationTurnListSheet.tsx:47`](../src/app/components/maps/navigation/NavigationTurnListSheet.tsx)                       | Close turn list        | `"Close turn list"`                      |
+| V-038 | [`maps/navigation/NavigationVoiceControlsSheet.tsx:75`](../src/app/components/maps/navigation/NavigationVoiceControlsSheet.tsx)             | Close voice controls   | `"Close voice controls"`                 |
+| V-039 | [`reports/CompetitorAnalysisScreen.tsx:201`](../src/app/components/reports/CompetitorAnalysisScreen.tsx)                                    | Back navigation        | `"Back"`                                 |
+| V-040 | [`reports/PhotoGalleryLightbox.tsx:30`](../src/app/components/reports/PhotoGalleryLightbox.tsx)                                             | Close gallery          | `"Close photo gallery"`                  |
+| V-041 | [`reports/ReportDetailScreen.tsx:117`](../src/app/components/reports/ReportDetailScreen.tsx)                                                | Back navigation        | `"Back"`                                 |
+| V-042 | [`reports/ReportsListScreen.tsx:105`](../src/app/components/reports/ReportsListScreen.tsx)                                                  | Back navigation        | `"Back"`                                 |
+| V-043 | [`shop/EstimateRequestSheet.tsx:77`](../src/app/components/shop/EstimateRequestSheet.tsx)                                                   | Close estimate request | `"Close estimate request"`               |
+| V-044 | [`shop/LikedShopsScreen.tsx:122`](../src/app/components/shop/LikedShopsScreen.tsx)                                                          | Back navigation        | `"Back"`                                 |
+| V-045 | [`shop/ShopActiveJobDetailModal.tsx:47`](../src/app/components/shop/ShopActiveJobDetailModal.tsx)                                           | Close job details      | `"Close job details"`                    |
+| V-046 | [`shop/ShopRatingModal.tsx:93`](../src/app/components/shop/ShopRatingModal.tsx)                                                             | Close rating           | `"Close rating"`                         |
+
+**Why dynamic label on V-025/V-026:** the password-toggle button changes meaning every press; static label would be incorrect for screen-reader users. Dynamic `{showPassword ? "Hide password" : "Show password"}` matches the visual icon swap (Eye ↔ EyeOff).
+
+**Validation:**
+
+- Source audit re-run: 0 findings on canonical icon-only pattern (was 9 before, +13 not previously caught by the canonical filter).
+- Build: `✓ built in 3.76s` (no source bundle regression).
+- Diagnostics: 0 errors across all 22 touched files.
+- No layout / behavior changes — `aria-label` is presentational metadata only.
+
+**Discoveries (informational, NOT in scope of Pass 7):**
+
+- 26 of the 48 raw findings were false positives — buttons that have visible text via JSX expressions (`{label}`, `{action.title}`, "Submit", "Save", "Cancel", "Continue", "Get Started", "Find Shops", "Create"). These were correctly excluded.
+- A handful of ambiguous buttons in `shop/ShopDirectory*` (origin search, hero) and `shop/ImmersiveOriginPicker.tsx:89` use complex conditional content (`{selectedOrigin ? <X/> : <Plus/>}` with a label). They have visible text in some states but icon-only in others. Defer until owner reports a real screen-reader miss.
+- The `codelayer/HomeScreen.tsx:180` and `codelayer/HomeScreenSections.tsx:196` matches were primary CTAs with text content — false positives.
+
+**Problem taxonomy:** P3-A11Y: 22 found / 22 fixed / 0 remaining in canonical icon-only scope.
+
+**Architecture decisions:** None. Aria-label is presentational; no new abstractions introduced.
+
+**Doc updates:** This audit append. KI-115 entry will be added to `REF_KNOWN_ISSUES.md` in the same commit as Pass 7. OPS prompt §9.5 already documents the runtime audit method; no update needed.
+
+**What this unlocks:** Lighthouse / axe-core baseline gets cleaner. Future a11y phases can pivot to color-contrast, focus-visible, and form-label sweeps without being noisy from icon-only baseline misses.
+
+**Best next pass:** Owner-direction — pick from planner's options 2 (reduced-motion regression check post-MotionConfig) or 3 (coverage-dialog forbidden-color sweep). Both are fresh signal axes.

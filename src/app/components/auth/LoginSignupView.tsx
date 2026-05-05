@@ -103,6 +103,7 @@ export function LoginSignupView({
           <button
             type="button"
             onClick={onShowPasswordToggle}
+            aria-label={showPassword ? "Hide password" : "Show password"}
             className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400"
           >
             {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}

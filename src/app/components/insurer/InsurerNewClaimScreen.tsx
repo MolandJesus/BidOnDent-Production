@@ -97,7 +97,7 @@ export default function InsurerNewClaimScreen({
         <div className="px-4 py-4">
           <div className="flex items-center mb-4">
             {onBack && (
-              <button onClick={onBack} className="mr-3 p-1" type="button">
+              <button onClick={onBack} aria-label="Back" className="mr-3 p-1" type="button">
                 <ArrowLeft className="w-6 h-6" style={{ color: primaryColor }} />
               </button>
             )}

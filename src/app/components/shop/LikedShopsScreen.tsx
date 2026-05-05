@@ -121,6 +121,7 @@ export default function LikedShopsScreen({
           <div className="flex items-center gap-3">
             <button
               onClick={onBack}
+              aria-label="Back"
               className={`inline-flex h-11 w-11 items-center justify-center rounded-2xl transition-colors ${
                 isLight ? "bg-slate-100 hover:bg-slate-200" : "bg-white/10 hover:bg-white/20"
               }`}

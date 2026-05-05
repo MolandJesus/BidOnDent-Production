@@ -142,6 +142,7 @@ export default function EditProfileModal({
               </div>
               <button
                 type="button"
+                aria-label="Change profile photo"
                 className="absolute bottom-0 right-0 rounded-full p-1.5 shadow-lg hover:shadow-xl transition-all"
                 style={{ backgroundColor: primaryColor }}
                 onClick={onImageClick}

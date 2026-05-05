@@ -294,6 +294,7 @@ export default function DashboardHeader({
                     <button
                       type="button"
                       onClick={closeSearch}
+                      aria-label="Close search"
                       className={`shrink-0 ${isLightAppearance ? "text-slate-400 hover:text-slate-600" : "text-blue-200/60 hover:text-blue-100"}`}
                     >
                       <X className="w-4 h-4" />

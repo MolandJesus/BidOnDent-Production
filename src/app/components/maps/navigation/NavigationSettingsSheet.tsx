@@ -129,7 +129,12 @@ export default function NavigationSettingsSheet({
               Settings
             </div>
           </div>
-          <button type="button" onClick={onClose} className={theme.iconButtonClassName}>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close navigation settings"
+            className={theme.iconButtonClassName}
+          >
             <X className="h-4 w-4" />
           </button>
         </div>

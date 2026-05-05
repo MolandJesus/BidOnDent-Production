@@ -175,6 +175,7 @@ export default function ServiceAreaEditorModal({
           <button
             onClick={onClose}
             disabled={saving}
+            aria-label="Close service area editor"
             className={`p-1.5 rounded-lg hover:bg-slate-700/50 ${textMuted}`}
           >
             <X size={18} />
