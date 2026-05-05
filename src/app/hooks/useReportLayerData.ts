@@ -4,11 +4,11 @@
  * enforce file-size limits and separation of data vs rendering.
  */
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { getAllDamageReports } from "../../services/supabase/reports";
-import { supabase } from "../../services/supabaseService";
-import { getBidsForReport } from "../../services/supabase/bids";
-import { zipToCoordinates, geocodeAddress } from "../../services/supabase/map";
-import type { DamageReport } from "../../types";
+import { getAllDamageReports } from "../services/supabase/reports";
+import { supabase } from "../services/supabaseService";
+import { getBidsForReport } from "../services/supabase/bids";
+import { zipToCoordinates, geocodeAddress } from "../services/supabase/map";
+import type { DamageReport } from "../types";
 
 type UseReportLayerDataParams = {
   initialReports?: DamageReport[];

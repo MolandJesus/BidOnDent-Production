@@ -3,7 +3,7 @@ import { Source, Layer, useMap } from "react-map-gl/maplibre";
 import type { MapLayerMouseEvent } from "react-map-gl/maplibre";
 import { ReportDetailDrawer } from "./ReportDetailDrawer";
 import ReportLayerPopup from "./ReportLayerPopup";
-import { useReportLayerData } from "./useReportLayerData";
+import { useReportLayerData } from "../../hooks/useReportLayerData";
 import type { DamageReport } from "../../types";
 import type { MarketUserType } from "../../services/intelligence/marketIntelligence";
 import type { MapTheme } from "../../types/mapDomain";
