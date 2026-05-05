@@ -772,7 +772,13 @@ export default function HeroSection({
                 removed; replaced with a champagne top bezel + amber
                 bottom-edge lamp inset that catches the hero's gold-from-
                 above wash. */}
-            <div className="relative" aria-hidden="true">
+            <div className="relative">
+              {/* Wrapper aria-hidden removed (V-007 fix, 2026-05-05): this
+                  wrapper contains the focusable double-tap target button.
+                  aria-hidden on a focused-element ancestor blocks AT exposure
+                  AND triggers a Chrome focus-management warning. Decorative
+                  child layers below carry their own aria-hidden as needed.
+                  See docs/AUDIT_VISUAL_DEEP_2026-05-05_SONNET.md V-007. */}
               {/* Hero polish 2026-05-03 — outer bloom expanded so the map
                   card dissolves into the hero atmosphere instead of reading
                   as a discrete rectangle pasted on top. Three layers now:

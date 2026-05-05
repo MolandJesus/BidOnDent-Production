@@ -758,6 +758,24 @@ body {
   }
 }
 
+/* KI-113 closure-proof — reduced-motion contract for the .bd-glass-card family.
+   LAW_ANIMATION_AND_ATMOSPHERE §3 forbids CSS transform transitions
+   under reduce. Source-of-truth fix for the entire family in one place
+   so siblings (--landing, --landing-warm, --dashboard) cannot regress. */
+@media (prefers-reduced-motion: reduce) {
+  .bd-glass-card,
+  .bd-glass-card:hover,
+  .bd-glass-card--landing,
+  .bd-glass-card--landing:hover,
+  .bd-glass-card--landing-warm,
+  .bd-glass-card--landing-warm:hover,
+  .bd-glass-card--dashboard,
+  .bd-glass-card--dashboard:hover {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
 /* Mobile viewport safety — prevent popup from overflowing screen edges */
 @media (max-width: 420px) {
   .maplibregl-popup {
