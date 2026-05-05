@@ -111,6 +111,39 @@ Repeating "do not refactor / do not optimize / do not chain" 6+ times causes sat
 
 ---
 
+## Reusable Patterns Observed (apply when applicable)
+
+Positive-side catalog symmetric to anti-patterns. Each pattern surfaced from concrete in-session events; cite anchors are real commits so future sessions can verify the pattern was load-bearing.
+
+### Pattern 1: Multi-source reconciliation — third-variable rule
+
+**Rule:** When two trustworthy sources disagree, the answer is usually a third variable neither sees. Do not pick one source — find what's outside both.
+
+**Why:** Two-source disagreement looks like a binary truth question ("which is right?"), but the failure mode for autonomous agents is picking one and acting on it. Both can be locally accurate while the system is in a state neither describes.
+
+**Worked examples (BidOnDent autopilot session 2026-05-05):**
+
+- Dependabot triage sweep: [`OPS_DEPENDABOT_TRIAGE_2026-05-04.md`](OPS_DEPENDABOT_TRIAGE_2026-05-04.md) reported `COMPLETE — 0 vulnerabilities`. GitHub Dependabot showed 3 OPEN alerts. Naive picks (dismiss alerts as fixed; re-run patches on the working branch) both wrong. Third variable: branch divergence. `BidOnDent-Horizon-Beta` had patches; `main` did not. Each source was accurate about its own scope. Resolution: document, defer to merge, ship 0 code. Commit `40cc5b4e`.
+- Self-source drift catch (same session): the planner-AI wrote a Builder prompt asserting Phase 8.5 was "partially closed via §9 footer; this finishes the phase status itself." Builder grepped and found Phase 8.5 was already **CLOSED via Path Y** across all four load-bearing locations ([`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md) session log, audit header, audit §9, [`PLAN_DOC_INDEX_BY_PHASE.md`](PLAN_DOC_INDEX_BY_PHASE.md) row) as of commit `baee9966`. Third variable: what shipped ~30 minutes earlier vs the planner's stale cache. Prompt withdrawn before send.
+
+**How to apply:** When two authoritative sources contradict, the first move is to enumerate each source's scope and grep for variables outside both — *not* to pick one. Especially load-bearing when one source is "this session's prior commits" and the other is a stale doc, an external system, or a planner cache. Self-source drift is a real failure mode; the third-variable test catches it before action.
+
+### Pattern 2: Audit pre-staging legalizes autopilot under hard-stop conditions
+
+**Rule:** Pre-execution audits that name Path A (execute) / Path B (defer-with-annotation) / Path Y (docs-only) close-commit shapes AND explicitly default-recommend one path collapse the owner decision to "was there an explicit override?" — a check the agent can satisfy locally. Without that framing, the same close is a hard-stop awaiting owner pick.
+
+**Why:** Owner-pick decisions are normally hard-stops for autopilot ("don't proceed without re-confirmation"). Audits that pre-stage paths convert a strategic decision into a constraint-satisfiable execution. The audit *converts* a soft preference into a binary override-check.
+
+**Worked example:**
+
+- Phase 8.5 close 2026-05-05: [`OPS_PHASE_8_5_PRE_EXECUTION_AUDIT_2026-05-05.md`](OPS_PHASE_8_5_PRE_EXECUTION_AUDIT_2026-05-05.md) §5 default-recommended Path Y; §8 enumerated close-commit shapes for both Path A and Path Y. Under autopilot directive with no explicit Path-A override, autopilot legally executed Path Y — folded findings F1+F2+F4 into KI-112 as F4+F5+F6 (audit F3 maps to existing KI-112 F2), 0 code edits. Commit `baee9966`. Without the audit's pre-staging, this would have been an owner-pick hard-stop.
+
+**Counter-example (no pre-staging is correct here):** KI-112 sub-fix activation has no Path A/B/Y framing. Its fix-direction reads *"Owner taste decisions required before any sub-fix activation."* Autopilot cannot activate F1–F6 — there is no pre-staged default. This is the structural absence of the pattern, and it is correct: pre-staging only works when there's an autopilot-legal default. Pre-staging owner-taste decisions falsely implies the agent can execute without taste input.
+
+**How to apply:** When designing a pre-execution audit, enumerate Path A/B/Y close-commit shapes and explicitly mark one as default-recommended. The default may legitimately be "defer" — that is a valid path. Do **not** pre-stage paths whose execution requires owner taste; the absence of a default is the correct posture in those cases. Pattern 2 is a tool for collapsing decisions agents can make, not a license to collapse decisions they can't.
+
+---
+
 ## Pipeline Template (copy-adapt for next relay)
 
 ```
@@ -179,6 +212,7 @@ These are tracked here so the next iteration of any execution-grade prompt can f
 Update this doc when:
 
 - A new failure mode is observed in a relay prompt (add to anti-pattern table)
+- A new positive pattern is observed across ≥2 relay events with concrete cite anchors (add to reusable-patterns section)
 - A new rule proves necessary across ≥2 relay prompts (promote to kernel rule)
 - An "open hardening" item is applied (move out of deferred list)
 - The pipeline template gains or loses a stage
