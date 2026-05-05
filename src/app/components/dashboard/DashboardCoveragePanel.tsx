@@ -21,10 +21,12 @@ import type {
   MapTileMode,
 } from "../maps/serviceCoverageMapTypes";
 import type { NavigationDiscoveryRole } from "../../services/navigation/placeDiscovery";
+import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 
 type DashboardCoveragePanelProps = {
   primaryColor: string;
   secondaryColor: string;
+  appearanceMode?: DashboardAppearanceMode;
   userType?: NavigationDiscoveryRole;
   onOpenCoveragePage?: () => void;
 };
@@ -32,9 +34,11 @@ type DashboardCoveragePanelProps = {
 export default function DashboardCoveragePanel({
   primaryColor,
   secondaryColor,
+  appearanceMode = "map-dark",
   userType,
   onOpenCoveragePage,
 }: DashboardCoveragePanelProps) {
+  const isLight = appearanceMode === "light";
   const { partnerShops, isLoadingShops } = useCoveragePartnerShops();
   const [isMapExpanded, setIsMapExpanded] = useState(false);
   const [tileMode, setTileMode] = useState<MapTileMode>("roadmap");
@@ -161,8 +165,12 @@ export default function DashboardCoveragePanel({
               <Radar className="w-3.5 h-3.5" />
               Coverage
             </div>
-            <h2 className="mt-3 text-2xl font-semibold text-slate-100">Coverage command center</h2>
-            <p className="mt-2 text-sm text-slate-300/80">
+            <h2
+              className={`mt-3 text-2xl font-semibold ${isLight ? "text-slate-900" : "text-slate-100"}`}
+            >
+              Coverage command center
+            </h2>
+            <p className={`mt-2 text-sm ${isLight ? "text-slate-700" : "text-slate-300/80"}`}>
               Open the NY coverage map from the dashboard, review partner density as the network
               grows, and jump to the full search flow when you need ZIP and radius lookup.
             </p>
@@ -180,22 +188,38 @@ export default function DashboardCoveragePanel({
 
         <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
           <div className="bd-dashboard-section p-4">
-            <div className="text-xs uppercase tracking-[0.24em] text-slate-400/85">
+            <div
+              className={`text-xs uppercase tracking-[0.24em] ${isLight ? "text-slate-500" : "text-slate-400/85"}`}
+            >
               Live Regions
             </div>
-            <div className="mt-2 text-2xl font-semibold text-slate-100">
+            <div
+              className={`mt-2 text-2xl font-semibold ${isLight ? "text-slate-900" : "text-slate-100"}`}
+            >
               {operatingRegions.length}
             </div>
           </div>
           <div className="bd-dashboard-section p-4">
-            <div className="text-xs uppercase tracking-[0.24em] text-slate-400/85">
+            <div
+              className={`text-xs uppercase tracking-[0.24em] ${isLight ? "text-slate-500" : "text-slate-400/85"}`}
+            >
               Partner Markers
             </div>
-            <div className="mt-2 text-2xl font-semibold text-slate-100">{partnerShops.length}</div>
+            <div
+              className={`mt-2 text-2xl font-semibold ${isLight ? "text-slate-900" : "text-slate-100"}`}
+            >
+              {partnerShops.length}
+            </div>
           </div>
           <div className="bd-dashboard-section p-4">
-            <div className="text-xs uppercase tracking-[0.24em] text-slate-400/85">View Mode</div>
-            <div className="mt-2 text-2xl font-semibold text-slate-100">
+            <div
+              className={`text-xs uppercase tracking-[0.24em] ${isLight ? "text-slate-500" : "text-slate-400/85"}`}
+            >
+              View Mode
+            </div>
+            <div
+              className={`mt-2 text-2xl font-semibold ${isLight ? "text-slate-900" : "text-slate-100"}`}
+            >
               {mapLibreTileLabels[tileMode]}
             </div>
           </div>
@@ -205,7 +229,7 @@ export default function DashboardCoveragePanel({
           {operatingRegions.slice(0, 4).map((region) => (
             <span
               key={region}
-              className="bd-dashboard-chip rounded-full px-3 py-1 text-sm text-slate-300"
+              className={`bd-dashboard-chip rounded-full px-3 py-1 text-sm ${isLight ? "text-slate-700" : "text-slate-300"}`}
             >
               {region}
             </span>
@@ -238,7 +262,7 @@ export default function DashboardCoveragePanel({
         </div>
 
         {isLoadingShops ? (
-          <p className="mt-3 text-xs text-slate-500">
+          <p className={`mt-3 text-xs ${isLight ? "text-slate-600" : "text-slate-500"}`}>
             Syncing partner shop markers for the command center...
           </p>
         ) : null}

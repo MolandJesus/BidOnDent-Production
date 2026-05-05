@@ -1,10 +1,16 @@
 # Phase 6 — Landing + Dashboard Map Redesign Scope Contract (PLAN)
 
-**Authority level:** PLAN — execution scope contract for Phase 6 of the v3.3 master plan.
+> **STATUS: SUPERSEDED 2026-05-04 by [`OPS_PHASE_6_PRE_EXECUTION_AUDIT_2026-05-04.md`](OPS_PHASE_6_PRE_EXECUTION_AUDIT_2026-05-04.md).**
+>
+> This scope contract was written against a partially-wrong premise and is preserved as historical reference. Phase 6 closed via **Path A** (run only the DashboardCoveragePanel light-mode defensive fix + close commit). Re-scope details: [`OPS_PHASE_6_PRE_EXECUTION_AUDIT_2026-05-04.md`](OPS_PHASE_6_PRE_EXECUTION_AUDIT_2026-05-04.md).
+>
+> **What this doc got wrong (1-paragraph retrospective):** The scope contract assumed Phase 6 had substantial visual lift work across 5 clusters (8–11 commits estimated). The pre-execution audit revealed prior sweeps had already shipped most of it — Pass C 2026-05-03 (hero map preview pair, Liquid Map Intelligence scene), Pass H 2026-05-05 (KI-091 mapSurfaceTheme canon adoption, body opacity 0.84/0.76, directional top-cast champagne lamp), and the dashboard widget pattern (Customer/Shop/Insurer all canon-applied with isLight gating + bd-\* utility usage). Cluster 6A's premise specifically conflated the decorative blueprint SVG accent at HeroSection.tsx L178 (`hidden md:block`) with the actual sample-quote map preview pair at L580 (mobile) + L762 (desktop) — both already on canon. The §1–§8 sections below remain useful as a reference for what a Phase scope contract should look like; the specific decisions in §6 are obsolete.
+
+**Authority level:** PLAN — execution scope contract for Phase 6 of the v3.3 master plan. **HISTORICAL — see banner above.**
 
 **Last updated:** 2026-05-04
 
-**Status:** **PRE-EXECUTION — AWAITING OWNER GREENLIGHT.** No code touched. Owner reads this contract end-to-end, answers the decision-point questions in §6, then either authorizes execution or sends the contract back for revision.
+**Status:** **SUPERSEDED 2026-05-04** — Phase 6 closed via Path A. See banner.
 
 **Phase context:** [`PLAN_DOC_INDEX_BY_PHASE.md`](PLAN_DOC_INDEX_BY_PHASE.md) Phase 6 row. Largest visual scope on the v3.3 roadmap; needs an explicit scope contract before any code lands (mirrors the Phase 4 pattern in [`PLAN_PHASE_4_MOBILE_SWEEP.md`](PLAN_PHASE_4_MOBILE_SWEEP.md)).
 

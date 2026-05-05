@@ -886,3 +886,24 @@ Local read-only visual + functional audit by secondary AI (GPT-5.4-high). Read t
 - `REF_SYSTEM_STATE.md` Auth Flow + Storage URL Pattern updated; production env table refreshed to v50/Micro.
 - `REF_KNOWN_ISSUES.md` KI-058/059/060/061 added.
 - `MOLANDJEUS_DESIGN_DECISIONS.md` renamed to `MOLANDJESUS_DESIGN_DECISIONS.md` (typo fix); `MolandJeus` → `MolandJesus` in active prose.
+
+### v3.3 master-plan Phase 6 close (2026-05-04)
+
+> **Disambiguation:** The v3.3 master plan's "Phase 6" (landing + dashboard map redesign) is **separate from** this doc's "Phase 6 — Pre-launch Verification Gate" (§ Phase 6 above, lines 584+). The hardening-plan Phase 6 remains active as the pre-launch verification checkpoint. This session entry records only the v3.3 master plan phase closure.
+
+**Outcome:** v3.3 master-plan Phase 6 closed via Path A — single defensive commit on `DashboardCoveragePanel.tsx` (light-mode text-color gating per the Phase 2 `InsurerClaimApprovalModal` pattern). Majority of the originally-scoped Phase 6 work (8–11 commits estimated) was subsumed by prior sweeps:
+
+- **Pass C 2026-05-03** — Liquid Map Intelligence scene shipped both mobile + desktop hero map preview variants in `HeroSection.tsx`
+- **Pass H 2026-05-05 (KI-091)** — `mapSurfaceTheme.ts` canon adoption (body opacity 0.84/0.76 within range, directional top-cast champagne lamp added, internal gold radial reduced to 0.05)
+- Customer/Shop/Insurer dashboard map widgets — all canon-applied via `bd-dashboard-section--accent-{cyan,blue,indigo,deep}` utilities with `isLight` gating from inception of the dashboard widget pattern
+
+Cluster 6A halt revealed the v3.3 Phase 6 scope contract was built on a partially-wrong premise (decorative blueprint SVG conflated with sample-quote map preview pair). Pre-execution audit then verified Clusters 6B/6C/6D/6E and concluded 3 of 5 clusters had 0 findings. Cluster 6E's defensive fix shipped as the only Phase 6 code change.
+
+**Process update — standing rule going forward:** every remaining v3.3 master-plan phase gets a **read-only pre-execution audit** before charter execution. Phase 4 demonstrated the value (3 of 5 clusters compliant at audit time); Phase 6 confirmed it (4 of 5 clusters needed nothing). Phase 6.5 / 7 / 7.5 / 8 / 8.5 each ship a pre-execution audit doc as their first commit; the audit's findings table dictates whether (and at what scope) the phase's charter executes. This rule is now binding for v3.3 master-plan phase work.
+
+**Docs shipped this session:**
+
+- `docs/PLAN_PHASE_6_SCOPE.md` — superseded banner + retrospective (preserved as historical reference).
+- `docs/OPS_PHASE_6_PRE_EXECUTION_AUDIT_2026-05-04.md` — read-only audit findings.
+- `docs/PLAN_DOC_INDEX_BY_PHASE.md` — Phase 6 row marked CLOSED with Path A annotation.
+- `src/app/components/dashboard/DashboardCoveragePanel.tsx` — `appearanceMode` prop added, 8 hardcoded text colors gated behind `isLight` ternary per Phase 2 `InsurerClaimApprovalModal` pattern.
