@@ -504,3 +504,43 @@ If owner picks **batched commit shape (3/2 gate cadence like Phase 8 useShopMapL
 **No new KI created (deliberate, per advisor framing).** No `v3.2` prompt created (deliberate). v3.1 receives a single delta-rule patch — see `PROMPT_SONNET_MASTER_VISUAL_AUDIT_v3-1.md` §12.
 
 **Re-run expectation:** Sonnet v3.1 protocol re-run on the surfaces this commit fixed should now yield `VERDICT: CLEAN`.
+
+---
+
+### §9 Closure-proof runtime verification (added 2026-05-05)
+
+**Tool:** `run_playwright_code` (Playwright MCP). Branch: `BidOnDent-Horizon-Beta`, HEAD `8eb54b9c`. Measurement spec: v3.1 §4 + §12 dual-capture — `getComputedStyle(el).transitionDuration` AND `el.getAnimations().filter(a => a instanceof Animation && !(a instanceof CSSTransition))`. `emulateMedia({ reducedMotion: 'reduce' })` active throughout.
+
+**S1 — BidCardArticle hover under reduce:** PASS — `transitionDuration: "0s"`, `transitionProperty: "none"`, `waapiAnimations: []` (Phase 7.5 original FAIL@200ms; closure proven)
+
+**S3 — DashboardRouter route transition under reduce:** PASS — `transitionDuration: "0s"`, `waapiAnimations: []` (WAAPI `duration: 0` by `MotionConfig reducedMotion="user"` propagating to `motion.div` in `DashboardRouter.tsx`; Phase 7.5 original FAIL inferred; closure proven via direct measurement)
+
+**Recovery (emulation off — `no-preference`):**
+- S1 → `transitionDuration: "0.18s, 0.18s, 0.18s"` (`transform, box-shadow, border-color`) — non-zero, restores correctly ✅
+- S3 → WAAPI `duration: 200ms` captured in-flight at 80ms into the transition — non-zero, reduce-only behavior confirmed ✅
+
+**Bucket C (MotionConfig coverage):** AccountAdminOverlay, MobileBottomNav, ImmersiveMapResultsDrawer, PhotoGuide — all PASS. `MotionConfig reducedMotion="user"` exists exactly once at `src/main.tsx:138`, wrapping the full React tree. No nested `MotionConfig` override found anywhere in `src/`. All `motion.*` elements on all 4 surfaces inherit root reduce config.
+
+**Visual Integrity:** 4/4 PASS
+- Mount check: `main` rendered with content, no flash ✅
+- BD canon intact: 37 `bd-*` elements present; 0 forbidden inline styles (`rgba(220,165,90)`, `rgba(254,248,220)`, `rgba(160,95,25)`) ✅
+- Hover feedback preserved: `.bd-dashboard-section--interactive:hover` state active under reduce (instant, no animation) ✅
+- No layout shift or white-out observed on navigated surfaces ✅
+
+**Console + network:** 0 hydration mismatches, 0 React console errors on migrated surfaces (DashboardRouter home → Bids → Account). Expected 500/401 `EdgeFunctionError: Invalid Clerk token issuer` errors are demo-mode artifact (known, unrelated to motion).
+
+**PART C — Doctrine landmine:** CLEAN — `grep -rn "KI-114" src/ docs/` → exit code 1, zero matches. `theme.css ~L3311` reads "intentionally out of scope per containment doctrine (no follow-up KI created); revisit only if user-visible motion regresses."
+
+---
+
+**Residual inventory snapshot (PART B — informational only; no action per containment doctrine; no follow-up KI created):**
+
+| Category | Count | Notes |
+|---|---|---|
+| GUARDED | 9 | `.bd-dashboard-section--interactive` (×2), `.bd-dashboard-filter-button`, `.bd-report-input`, `.bd-report-secondary-button`, `.bd-bid-card-float`, `.bd-bloom-atmosphere` (×3), `.bd-glass-control` (base, ×2 definitions) |
+| INTERACTIVE-UNGUARDED | 5 | `.bd-glass-control--secondary` (L72), `.bd-glass-control--utility` (L102), `.bd-glass-control--destructive` (L131), `.bd-glass-card` (L947), `.bd-report-choice` (L2356) |
+| DECORATIVE-UNGUARDED | 5 | `.maplibregl-ctrl-group button` (L473), `.maplibregl-popup-close-button` (L780), `.shop-directory-map[data-map-theme="dark"]` (L809), `.bd-glass-floating` (L1361), `.bd-bid-card-float::after` (L3789) |
+
+The 5 interactive-unguarded selectors (glass-control variants + report-choice) are out of scope per the tight forensic-pass containment discipline established by the ChatGPT advisor. They produce non-zero CSS `transitionDuration` under reduce but none caused a Phase 7.5-style WAAPI FAIL. No follow-up KI created.
+
+**KI-113 closure is now runtime-proven, not just static-substring-proven.**
