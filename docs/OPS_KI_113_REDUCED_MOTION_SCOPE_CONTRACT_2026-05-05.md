@@ -466,17 +466,17 @@ If owner picks **batched commit shape (3/2 gate cadence like Phase 8 useShopMapL
 
 **Commit chain (branch `BidOnDent-Horizon-Beta`):**
 
-| # | SHA | Description |
-|---|-----|-------------|
-| 1 | `b1fea150` | `MotionConfig reducedMotion="user"` wrap at `src/main.tsx` |
-| 2 | `b07f7dd3` | fix(a11y): KI-113 admin/auth/devtools (D+E) — 11 files |
-| 3 | `1d55f035` | fix(a11y): KI-113 auth flows — 4 files |
-| 4 | `9eaee53e` | fix(a11y): KI-113 codelayer + reports + demo — 10 files |
-| 5 | `f53ab7da` | fix(a11y): KI-113 codelayer/account + report step + competitor — 5 files |
-| 6 | `77205da5` | fix(a11y): KI-113 insurer screens — 3 files |
-| 7 | `982dbae4` | fix(a11y): KI-113 shop screens — 8 files |
-| 8 | `099b3742` | fix(a11y): KI-113 dashboard routers + overlay sheets — 4 files |
-| 9 | *(this commit)* | docs(a11y): KI-113 Phase 7.6 close — reduced motion complete |
+| #   | SHA             | Description                                                              |
+| --- | --------------- | ------------------------------------------------------------------------ |
+| 1   | `b1fea150`      | `MotionConfig reducedMotion="user"` wrap at `src/main.tsx`               |
+| 2   | `b07f7dd3`      | fix(a11y): KI-113 admin/auth/devtools (D+E) — 11 files                   |
+| 3   | `1d55f035`      | fix(a11y): KI-113 auth flows — 4 files                                   |
+| 4   | `9eaee53e`      | fix(a11y): KI-113 codelayer + reports + demo — 10 files                  |
+| 5   | `f53ab7da`      | fix(a11y): KI-113 codelayer/account + report step + competitor — 5 files |
+| 6   | `77205da5`      | fix(a11y): KI-113 insurer screens — 3 files                              |
+| 7   | `982dbae4`      | fix(a11y): KI-113 shop screens — 8 files                                 |
+| 8   | `099b3742`      | fix(a11y): KI-113 dashboard routers + overlay sheets — 4 files           |
+| 9   | _(this commit)_ | docs(a11y): KI-113 Phase 7.6 close — reduced motion complete             |
 
 **Auditor VERDICT: CLEAN.** 45 files with `useReducedMotion`, 62 wrapped sites, 0 missed plain durations, Bucket B springs untouched, all original numeric values preserved verbatim in non-reduce branches. Build: `✓ 2920 modules`.
 

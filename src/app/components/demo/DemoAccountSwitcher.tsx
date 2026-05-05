@@ -41,7 +41,11 @@ const cardContainer = {
 function makeCardItem(reduceMotion: boolean) {
   return {
     hidden: { opacity: 0, y: 14 },
-    show: { opacity: 1, y: 0, transition: { duration: reduceMotion ? 0 : 0.35, ease: "easeOut" as const } },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: reduceMotion ? 0 : 0.35, ease: "easeOut" as const },
+    },
   };
 }
 
