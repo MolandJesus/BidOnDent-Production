@@ -102,6 +102,9 @@ These are the primary governing documents. Always start here.
 
 - **[`OPS_DEVELOPER_SETUP.md`](OPS_DEVELOPER_SETUP.md)** — local setup, first run, Google OAuth provider configuration. Supersedes `GETTING_STARTED.md` + `GOOGLE_OAUTH_SETUP.md` (both archived 2026-05-04 under `docs/archive/`).
 - **[`OPS_PHASE_6_SMOKE_TEST.md`](OPS_PHASE_6_SMOKE_TEST.md)** — three-environment smoke test (Local Docker / Hosted Staging / Production). Renamed 2026-05-04 from `PHASE_6_SMOKE_TEST_CHECKLIST.md` for tier consistency.
+- **[`OPS_MOBILE_AUDIT_2026-05-04.md`](OPS_MOBILE_AUDIT_2026-05-04.md)** — Phase 4 mobile audit findings (5 clusters audited, 2 fixes shipped: NotificationCenter close button + ShopDirectoryHero chip). 0 LAW promotions warranted. Status: COMPLETE.
+- **[`OPS_DEPENDABOT_TRIAGE_2026-05-04.md`](OPS_DEPENDABOT_TRIAGE_2026-05-04.md)** — Phase 3.6 dependabot triage snapshot. 3 vulnerabilities classified + patched (Clerk 5.61.5→5.61.6 high, postcss 8.5.6→8.5.14 moderate via override). `npm audit` final: 0 vulnerabilities.
+- **[`OPS_MAP_ARCHITECTURE_DIAGNOSE_2026-05-04.md`](OPS_MAP_ARCHITECTURE_DIAGNOSE_2026-05-04.md)** — Phase 5 read-only architectural audit of the map system. 4 findings (2 P3 grandfathered, 1 P5, 1 P6). 0 P0/P1/P2. Map system shippable as-is. Phase 8 = cleanup, not rescue.
 
 ### Setup & Operations (Supabase platform contract)
 
