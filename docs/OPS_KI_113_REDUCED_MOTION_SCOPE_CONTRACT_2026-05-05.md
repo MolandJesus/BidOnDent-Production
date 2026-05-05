@@ -452,6 +452,32 @@ If owner picks **batched commit shape (3/2 gate cadence like Phase 8 useShopMapL
 - [`REF_KNOWN_ISSUES.md`](REF_KNOWN_ISSUES.md) — KI-113 (parked durable scope contract this concretizes) + KI-112 (downstream-blocked by KI-113 closure)
 - [`OPS_PHASE_8_SCOPE_CONTRACT_2026-05-05.md`](OPS_PHASE_8_SCOPE_CONTRACT_2026-05-05.md) — sister scope contract; same OPS shape for execution-authority planning
 - [`OPS_PHASE_8_5_PRE_EXECUTION_AUDIT_2026-05-05.md`](OPS_PHASE_8_5_PRE_EXECUTION_AUDIT_2026-05-05.md) — sister atmosphere audit; flagged KI-113 as precondition for any Path A motion shipping
-- [`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md) — v3.3 master plan; Phase 7.6 (provisional) close session entry will be added at Commit 9
-- [`PLAN_DOC_INDEX_BY_PHASE.md`](PLAN_DOC_INDEX_BY_PHASE.md) — Phase 7.6 row added this commit
+- [`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md) — v3.3 master plan; Phase 7.6 close session entry added at Commit 9 (this close)
+- [`PLAN_DOC_INDEX_BY_PHASE.md`](PLAN_DOC_INDEX_BY_PHASE.md) — Phase 7.6 row marked CLOSED at Commit 9
 - [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md) — apex visual canon (LOCKED; not touched)
+
+---
+
+## Close footer — Phase 7.6 / KI-113 (2026-05-05)
+
+**VERDICT: CLOSED.**
+
+**Execution pipeline:** Sonnet 3-prompt (Executor → Auditor → Finalizer), owner "go full auto" authorization.
+
+**Commit chain (branch `BidOnDent-Horizon-Beta`):**
+
+| # | SHA | Description |
+|---|-----|-------------|
+| 1 | `b1fea150` | `MotionConfig reducedMotion="user"` wrap at `src/main.tsx` |
+| 2 | `b07f7dd3` | fix(a11y): KI-113 admin/auth/devtools (D+E) — 11 files |
+| 3 | `1d55f035` | fix(a11y): KI-113 auth flows — 4 files |
+| 4 | `9eaee53e` | fix(a11y): KI-113 codelayer + reports + demo — 10 files |
+| 5 | `f53ab7da` | fix(a11y): KI-113 codelayer/account + report step + competitor — 5 files |
+| 6 | `77205da5` | fix(a11y): KI-113 insurer screens — 3 files |
+| 7 | `982dbae4` | fix(a11y): KI-113 shop screens — 8 files |
+| 8 | `099b3742` | fix(a11y): KI-113 dashboard routers + overlay sheets — 4 files |
+| 9 | *(this commit)* | docs(a11y): KI-113 Phase 7.6 close — reduced motion complete |
+
+**Auditor VERDICT: CLEAN.** 45 files with `useReducedMotion`, 62 wrapped sites, 0 missed plain durations, Bucket B springs untouched, all original numeric values preserved verbatim in non-reduce branches. Build: `✓ 2920 modules`.
+
+**KI-113: RESOLVED.** **KI-112 close + Phase 8.5 Path A: UNBLOCKED.**
