@@ -412,3 +412,75 @@ NOT broad-sweep the other 17 KI-114 candidates in sibling shop files
 
 - Map shop popup Close is now properly tappable on touch devices (popup opens on map pin click on mobile too).
 - KI-114 partial closure inside `ShopDirectoryMapPopup.tsx` reduces the deferred sweep from 6 → 4 instances elsewhere.
+
+---
+
+## Pass 5 — Landing signed-out audit + 3 CTA touch-target fixes (2026-05-05)
+
+**HEAD at start:** `8f166632` · **Audit window:** 1637×1067 (Electron native)
+**Theme coverage:** light + map-dark · **Auth:** signed out (`window.Clerk.signOut() + storage clear`)
+
+### Surfaces audited
+
+Landing page (signed-out, fullpage scroll), Coverage Search Panel, Operating
+Regions section, Sign-in modal entry-point. Both light + dark themes.
+
+### Findings
+
+**Light + dark palette / hScroll sweep:** clean across landing.
+`{whites:[], golds:[], hScroll:0}` for both themes.
+
+**V-017 (P3-UX) — `CoverageSearchPanel.tsx` "Find Shops" submit: 41.3 → 44 px**
+
+`min-h-[40px]` on the primary search submit (`Find Shops` / `Searching...`).
+2.7 px below LAW. Bumped to `min-h-[44px]`.
+
+**V-018 (P3-UX) — `CoverageSearchPanel.tsx` `actionButtonClassName` (My Location + Center Map): 42 → 44 px**
+
+Single shared className constant (`!min-h-[42px]`) drives both compact location
+buttons in the coverage origin sub-grid. 2 px below LAW. Bumped constant to
+`!min-h-[44px]` — single edit clears both buttons.
+
+**V-019 (P3-UX) — `OperatingRegionsSection.tsx` "Open Full Map" CTA: 35.2 → 44 px**
+
+Pill button (`px-4 py-2 text-[12px]`) had no min-h enforcement. 8.8 px below
+LAW — most significant landing finding this pass. Added `min-h-[44px]` to
+className.
+
+### Live verification
+
+Re-measured at `/landing` light mode after build + reload:
+
+```
+findShops:   {txt:"Find Shops",   w:130.1, h:44}
+myLocation:  {txt:"My Location",  w:248,   h:44}
+centerMap:   {txt:"Center Map",   w:248,   h:44}
+openFullMap: {txt:"Open Full Map", w:137.5, h:44}
+```
+
+All 4 buttons at exactly 44 px tall. Build PASS 3.42s.
+
+### Out of scope (this pass)
+
+- **Top-nav sub-44 chrome (How It Works 36, Who We Serve 36, About 36, Login 36):**
+  desktop-only persistent shell chrome — LAW desktop exception applies (mouse
+  precision). NOT flagged as violations. Will be re-evaluated on a true mobile
+  pass below 566 px.
+- **MapLibre default chrome (zoom in/out 29×29, OSM attribution 78×12):**
+  third-party map provider chrome, accept as-is.
+- **Sign-in modal (Clerk-rendered):** all inputs measured 44 tall, "Continue
+  with Google" 322×44, social-auth icons all 44×44 — clean. (Modal click chain
+  navigated to external Google OAuth chooser; not a BidOnDent surface.)
+
+### Files touched (Pass 5)
+
+- `src/app/components/landing/CoverageSearchPanel.tsx` (+2 −2: V-017 + V-018)
+- `src/app/components/landing/OperatingRegionsSection.tsx` (+1 −1: V-019)
+- `docs/AUDIT_VISUAL_DEEP_2026-05-05_SONNET.md` (Pass 5 append)
+- 5 new screenshots in `docs/audit-assets/visual-2026-05-05/`
+
+### What this unlocks
+
+- Landing page is now mobile-touchable on all 4 primary coverage CTAs.
+- KI-114 partial closure further extended (3 more sites in coverage shell).
+- Sign-in entry chrome confirmed clean — no further work needed on Clerk-rendered surfaces.

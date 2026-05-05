@@ -473,7 +473,7 @@ export default function OperatingRegionsSection({
                         <button
                           onClick={() => coverage.setIsMapExpanded(true)}
                           className={cn(
-                            "inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-[12px] font-semibold transition-all hover:-translate-y-0.5 active:scale-[0.97]",
+                            "inline-flex min-h-[44px] items-center gap-1.5 rounded-full border px-4 py-2 text-[12px] font-semibold transition-all hover:-translate-y-0.5 active:scale-[0.97]",
                             isLightAppearance
                               ? "border-blue-300/50 bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-[0_6px_20px_rgba(37,99,235,0.32)] hover:shadow-[0_10px_28px_rgba(37,99,235,0.42)]"
                               : "border-blue-300/30 bg-blue-300 text-slate-950 shadow-[0_6px_18px_rgba(59,130,246,0.24)] hover:bg-blue-200"
