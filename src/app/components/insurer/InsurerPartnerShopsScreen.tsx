@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { MapPin, Plus, Search } from "lucide-react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import type { WebsiteIdentity } from "../../services/auth/websiteIdentity";
 import {
   loadWebsiteSessionMemory,
@@ -45,6 +45,7 @@ export default function InsurerPartnerShopsScreen({
   appearanceMode = "map-dark",
 }: InsurerPartnerShopsScreenProps) {
   const isLight = appearanceMode === "light";
+  const reduceMotion = useReducedMotion();
   const { inventory } = useNetworkDirectory();
   const memory = loadWebsiteSessionMemory(identity);
   const [searchQuery, setSearchQuery] = useState("");
@@ -332,7 +333,7 @@ export default function InsurerPartnerShopsScreen({
         <motion.section
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35, ease: "easeOut" }}
+          transition={{ duration: reduceMotion ? 0 : 0.35, ease: "easeOut" }}
           className={`mx-4 mt-4 overflow-hidden rounded-[28px] ${isLight ? "bg-white/80 border border-slate-200/60 shadow-sm" : "bd-glass-card"}`}
         >
           <div className="flex items-center justify-between px-4 pt-3 pb-1">
