@@ -262,5 +262,11 @@ Following the established A/B/C template:
 - [`OPS_MAP_ARCHITECTURE_DIAGNOSE_2026-05-04.md`](OPS_MAP_ARCHITECTURE_DIAGNOSE_2026-05-04.md) — Phase 5 diagnose; KI-108/109/110/111 inventories verified against this audit
 - [`PLAN_DOC_INDEX_BY_PHASE.md`](PLAN_DOC_INDEX_BY_PHASE.md) — Phase 7 row updated this commit
 - [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md) — apex design canon (LOCKED; not touched by this audit)
-- [`REF_KNOWN_ISSUES.md`](REF_KNOWN_ISSUES.md) — KI-108/109/110/111/112 (all verified this audit)
+- [`REF_KNOWN_ISSUES.md`](REF_KNOWN_ISSUES.md) — KI-108/109/110/111/112 (all verified this audit; **KI-111 is the durable home for the deferred shop/ sub-folder split** per Phase 7 close)
 - [`PLAN_MAP_MASTER.md`](PLAN_MAP_MASTER.md) — map strategy + product law
+
+---
+
+## Footer note (added 2026-05-04 at Phase 7 close)
+
+**PHASE 7 CLOSED 2026-05-04 via Path B.** No new KI created — the `shop/` sub-folder split candidate surfaced in §1.3 + §6 is already tracked as **KI-111 P6** in `REF_KNOWN_ISSUES.md`. KI-111 remains the durable home for that deferred work. `OPS_BIDS_REPORT_SHOP_INSURER_MAP_LOG.md` was not written (Path B; this audit doc + KI-111 are the durable record). Owner-named only if discoverability friction surfaces.
