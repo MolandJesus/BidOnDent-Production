@@ -83,6 +83,7 @@
   },
   "overrides": {
     "lodash": "^4.18.0",
+    "postcss": "^8.5.10",
     "protocol-buffers-schema": "3.6.1",
     "serialize-javascript": "^7.0.5"
   },
