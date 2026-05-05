@@ -516,12 +516,14 @@ If owner picks **batched commit shape (3/2 gate cadence like Phase 8 useShopMapL
 **S3 — DashboardRouter route transition under reduce:** PASS — `transitionDuration: "0s"`, `waapiAnimations: []` (WAAPI `duration: 0` by `MotionConfig reducedMotion="user"` propagating to `motion.div` in `DashboardRouter.tsx`; Phase 7.5 original FAIL inferred; closure proven via direct measurement)
 
 **Recovery (emulation off — `no-preference`):**
+
 - S1 → `transitionDuration: "0.18s, 0.18s, 0.18s"` (`transform, box-shadow, border-color`) — non-zero, restores correctly ✅
 - S3 → WAAPI `duration: 200ms` captured in-flight at 80ms into the transition — non-zero, reduce-only behavior confirmed ✅
 
 **Bucket C (MotionConfig coverage):** AccountAdminOverlay, MobileBottomNav, ImmersiveMapResultsDrawer, PhotoGuide — all PASS. `MotionConfig reducedMotion="user"` exists exactly once at `src/main.tsx:138`, wrapping the full React tree. No nested `MotionConfig` override found anywhere in `src/`. All `motion.*` elements on all 4 surfaces inherit root reduce config.
 
 **Visual Integrity:** 4/4 PASS
+
 - Mount check: `main` rendered with content, no flash ✅
 - BD canon intact: 37 `bd-*` elements present; 0 forbidden inline styles (`rgba(220,165,90)`, `rgba(254,248,220)`, `rgba(160,95,25)`) ✅
 - Hover feedback preserved: `.bd-dashboard-section--interactive:hover` state active under reduce (instant, no animation) ✅
@@ -535,11 +537,11 @@ If owner picks **batched commit shape (3/2 gate cadence like Phase 8 useShopMapL
 
 **Residual inventory snapshot (PART B — informational only; no action per containment doctrine; no follow-up KI created):**
 
-| Category | Count | Notes |
-|---|---|---|
-| GUARDED | 9 | `.bd-dashboard-section--interactive` (×2), `.bd-dashboard-filter-button`, `.bd-report-input`, `.bd-report-secondary-button`, `.bd-bid-card-float`, `.bd-bloom-atmosphere` (×3), `.bd-glass-control` (base, ×2 definitions) |
-| INTERACTIVE-UNGUARDED | 5 | `.bd-glass-control--secondary` (L72), `.bd-glass-control--utility` (L102), `.bd-glass-control--destructive` (L131), `.bd-glass-card` (L947), `.bd-report-choice` (L2356) |
-| DECORATIVE-UNGUARDED | 5 | `.maplibregl-ctrl-group button` (L473), `.maplibregl-popup-close-button` (L780), `.shop-directory-map[data-map-theme="dark"]` (L809), `.bd-glass-floating` (L1361), `.bd-bid-card-float::after` (L3789) |
+| Category              | Count | Notes                                                                                                                                                                                                                      |
+| --------------------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GUARDED               | 9     | `.bd-dashboard-section--interactive` (×2), `.bd-dashboard-filter-button`, `.bd-report-input`, `.bd-report-secondary-button`, `.bd-bid-card-float`, `.bd-bloom-atmosphere` (×3), `.bd-glass-control` (base, ×2 definitions) |
+| INTERACTIVE-UNGUARDED | 5     | `.bd-glass-control--secondary` (L72), `.bd-glass-control--utility` (L102), `.bd-glass-control--destructive` (L131), `.bd-glass-card` (L947), `.bd-report-choice` (L2356)                                                   |
+| DECORATIVE-UNGUARDED  | 5     | `.maplibregl-ctrl-group button` (L473), `.maplibregl-popup-close-button` (L780), `.shop-directory-map[data-map-theme="dark"]` (L809), `.bd-glass-floating` (L1361), `.bd-bid-card-float::after` (L3789)                    |
 
 The 5 interactive-unguarded selectors (glass-control variants + report-choice) are out of scope per the tight forensic-pass containment discipline established by the ChatGPT advisor. They produce non-zero CSS `transitionDuration` under reduce but none caused a Phase 7.5-style WAAPI FAIL. No follow-up KI created.
 
