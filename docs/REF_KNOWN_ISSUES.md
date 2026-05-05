@@ -2,7 +2,7 @@
 
 **Authority level:** REFERENCE — describes current known gaps, bugs, and structural issues.
 
-**Last updated:** 2026-05-05 (Phase 7.6 close — KI-113 RESOLVED via 45-file reduced-motion sweep + MotionConfig wrap; closes Phase 7.5 falsification of S1 BidCardArticle hover + S3 DashboardRouter route transition under reduce. Prior same-day: Phase 8 close — KI-109 RESOLVED, KI-110 RESOLVED-WITH-RESIDUAL, KI-108 partial closure)
+**Last updated:** 2026-05-05 (KI-057 RESOLVED — `queueMicrotask` defer + `mounted` short-circuit in `useBidsForReport.ts` eliminates StrictMode dev `phx_join → phx_leave → phx_join` cycling. Prior same-day: Phase 7.6 close — KI-113 RESOLVED via 45-file reduced-motion sweep + MotionConfig wrap; closes Phase 7.5 falsification of S1 BidCardArticle hover + S3 DashboardRouter route transition under reduce. Phase 8 close — KI-109 RESOLVED, KI-110 RESOLVED-WITH-RESIDUAL, KI-108 partial closure)
 
 **Update rules:**
 
@@ -303,7 +303,8 @@
 - **Current reality:** Cosmetic in dev. StrictMode is disabled in production builds (Vite's `npm run build` removes double-invoke behavior). Phase 3 live test (2026-04-30) confirmed channels reach `SUBSCRIBED` state and receive INSERT events in production-equivalent conditions. No fix needed for prod.
 - **Fix direction:** If dev DX becomes painful, add an unmount guard using `AbortController` or move subscription to a non-StrictMode-affected location. Not worth the complexity until it causes a real dev workflow issue.
 - **Note:** A near-expiry JWT at channel-creation time can cause the first join to use the anon role. The 50s `refreshRealtimeAuth()` interval mitigates this — calling `rt.setAuth(freshToken)` updates all channel auth and delivers any queued events.
-- **Status:** Open — P7 (tech debt, cosmetic in dev, non-blocking in production)
+- **Fix (2026-05-05):** Two-line patch to `src/app/hooks/useBidsForReport.ts` realtime effect (lines 112–159). (1) Wrapped `doSubscribe()` call in `queueMicrotask(doSubscribe)` to defer the actual `subscribeToReportBids()` invocation by one microtask. (2) Added `if (!mounted) return;` short-circuit at the top of `doSubscribe`. Mechanism: React 18 StrictMode invokes mount → cleanup → mount synchronously within one render task; the cleanup sets `mounted = false` before any microtask fires, so the first invocation's deferred subscribe is short-circuited. Only the second (real) mount's `queueMicrotask` actually opens a channel. Eliminates `phx_join → phx_leave → phx_join` cycling and the "WebSocket closed before connection established" console warning on every Bids tab open in dev. Production behavior unchanged (one-tick delay is imperceptible; channel-creation path identical). Verified: `npm run typecheck` clean, `npm run build` green (3.32s, ✓ all chunks). Reused existing `mounted` flag rather than introducing `AbortController` — smaller diff, no new state.
+- **Status:** RESOLVED 2026-05-05 (Phase 7.7 / KI-057 close).
 
 ### KI-047: Supabase security advisor flagged public tables in staging and leads projects
 
