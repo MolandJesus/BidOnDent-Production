@@ -210,7 +210,7 @@ REDUNDANT (merge candidates): <docs>
 DRIFTING: <docs with stale-line description>
 ACTION PLAN (proposal only): archive / merge / update lists
 LOCKED — do not classify as anything but ACTIVE: MOLANDJESUS_DESIGN_DECISIONS.md, all LAW_*.md, README.md, ATTRIBUTIONS.md
-OWNER-DECISION (flag, do not propose action): PLAN_DASHBOARD_REDESIGN.md, OPS_PHASE_6_SMOKE_TEST.md, OPS_AI_AGENT_PROMPT_DESIGN_KERNEL.md
+OWNER-DECISION (flag, do not propose action): OPS_AI_AGENT_PROMPT_DESIGN_KERNEL.md (PLAN_DASHBOARD_REDESIGN + OPS_PHASE_6_SMOKE_TEST archived 2026-05-05; no longer in active docs/)
 
 VERDICT: <CLEAN | MINOR_DRIFT | MAJOR_DRIFT | BLOCKED>
 ```

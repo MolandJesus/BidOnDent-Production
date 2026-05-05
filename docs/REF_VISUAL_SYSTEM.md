@@ -304,7 +304,7 @@ This subsection is intentionally documented BEFORE the technique is built so whe
 
 ## 5. What this doc does NOT cover
 
-- Dashboard premium-lift roadmap (D1–D12) — see `PLAN_DASHBOARD_REDESIGN.md`.
+- Dashboard premium-lift roadmap (D1–D12) — SHIPPED via Pass D4 final v2 (navy-lit-by-gold-lamp identity); MOLANDJESUS §9 amended; historical record at `archive/PLAN_DASHBOARD_REDESIGN_archived_2026-05-05.md`.
 - Long-form design philosophy + historical decisions — see `MOLANDJESUS_DESIGN_DECISIONS.md`.
 - Map-product strategy — see `PLAN_MAP_MASTER.md`.
 - Rules about what BidOnDent must never become — see `LAW_PROJECT_RULES.md`.
