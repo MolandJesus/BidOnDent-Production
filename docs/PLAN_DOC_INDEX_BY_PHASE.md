@@ -32,6 +32,12 @@ Date-suffixed audit/log docs use the format `OPS_<TOPIC>_YYYY-MM-DD.md` (e.g. `O
 
 ## Pre-declared docs by phase
 
+### Phase 3.6 — Dependabot triage (added 2026-05-04 mid-execution)
+
+| Doc                                   | Tier | Purpose                                                                                                                                               | Notes                                                                                                              |
+| ------------------------------------- | ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `OPS_DEPENDABOT_TRIAGE_2026-05-04.md` | OPS  | Snapshot of `npm audit` triage executed in Phase 3.6. Classification (runtime/build-only/framework-pinned), bump scope, hard-stop check, build state. | **SHIPPED 2026-05-04** alongside the Clerk + postcss patch commits (`9b11bb9b`, `df122c25`). All 3 vulns resolved. |
+
 ### Phase 4 — Mobile audit doc + sweep
 
 | Doc                               | Tier | Purpose                                                                                                                                    | Notes                                                                                              |
