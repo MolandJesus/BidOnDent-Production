@@ -2,7 +2,7 @@
 
 **Authority level:** REFERENCE — describes current known gaps, bugs, and structural issues.
 
-**Last updated:** 2026-05-04 (KI-107 added — HeroSection P3 reminder)
+**Last updated:** 2026-05-04 (KI-108–111 added — Phase 5 map architecture diagnose findings; KI-107 unchanged)
 
 **Update rules:**
 
@@ -837,3 +837,68 @@
 - **Fix direction (deferred):** Extract candidates: hero copy block, sample-quote map preview component, stats chips row, CTA dock, animated background layer. Target: hero shell ≤300 lines + 4–5 child components ≤200 each. The hero map preview extraction may also be a Phase 6 (landing + dashboard map redesign) target — see [LAW_LAYERED_ARCHITECTURE.md](LAW_LAYERED_ARCHITECTURE.md) "Known existing exceptions" and the v3.3 master plan Phase 6 / Phase 6.5 scope.
 - **Status:** **P3 reminder — grandfathered.** Refactor only on owner naming. No autopilot pass should opportunistically split this file as a side-effect of feature work.
 - **Related grandfathered exceeds-budget files (also P3):** OperatingRegionsSection.tsx (556), DashboardHeader.tsx (538), App.tsx (528), useOperatingRegionsCoverage.ts (512). Same rule — refactor only on owner naming.
+
+### KI-108: L2 → L4 systemic direct-import pattern across map system (P3, grandfathered)
+
+- **Impact:** ~30 L2 surfaces (components/maps/, components/dashboard/, components/shop/, components/insurer/, components/landing/) import from L4 services directly (`services/supabase/*`, `services/navigation/*`, `services/intelligence/*`), bypassing the L3 orchestration layer that [`LAW_LAYERED_ARCHITECTURE.md`](LAW_LAYERED_ARCHITECTURE.md) requires. This is architectural drift from the charter, not a runtime bug.
+- **Severity:** Architectural drift. **NOT a runtime regression.** Code works. Strongly typed. Refactoring is mechanical, not perilous.
+- **Location:** Highest-density violations:
+  - [src/app/components/maps/useReportLayerData.ts](../src/app/components/maps/useReportLayerData.ts) — 4 service imports (reports, bids, supabaseService, map)
+  - [src/app/components/dashboard/DashboardCoveragePanel.tsx](../src/app/components/dashboard/DashboardCoveragePanel.tsx) — 4 navigation services
+  - 3 dashboard MapWidget components (Customer/Shop/Insurer) — `services/supabase/map`
+  - 6+ shop screens — `services/intelligence/shopMapExperience`, `services/supabase/map`, `services/supabaseService`
+  - 5+ landing surfaces (Coverage*, Business*, Waitlist*) — `services/navigation/*`, `services/supabase/\*`
+- **Evidence:** [`OPS_MAP_ARCHITECTURE_DIAGNOSE_2026-05-04.md`](OPS_MAP_ARCHITECTURE_DIAGNOSE_2026-05-04.md) "Cross-layer flow audit" section — full file-by-file enumeration with line-level imports.
+- **Fix direction:** Phase 8 L3 hook extraction. Concrete proposals from the diagnose:
+  - `useGeoCoordinates(zip)` wraps `zipToCoordinates` + cache
+  - `useHaversineDistance(originLat, originLng, destLat, destLng)` wraps `haversineMiles`
+  - `useShopMapListings(role)` wraps `buildShopMapListings` + `getRoleCollectionActionLabels` + `getDefaultMapCenter` (closes the highest-coupling site, see KI-110)
+  - `useNavigationVoicePriming()` wraps `primeVoiceEngine` + handles autoplay-policy
+  - Move `useReportLayerData.ts` from `components/maps/` → `hooks/` so its L4 imports happen at the proper layer
+    These ~5 hooks would shrink the L2 → L4 surface from ~30 to ~5 (the hooks themselves).
+- **Removal trigger:** Phase 8 (Map L3/L4 + provider boundary) execution. Charter explicitly grandfathered existing files; refactor is part of Phase 8's scope, not an opportunistic touch during Phase 6/6.5/7/7.5.
+- **Next review:** Phase 8 kickoff (owner-named go).
+- **Status:** **OPEN — P3 grandfathered.** Tracked here so the law-vs-reality gap doesn't get stranded in the snapshot diagnose.
+
+### KI-109: `useOperatingRegionsCoverage.ts` exceeds L3 hard limit (P3, grandfathered)
+
+- **Impact:** [src/app/hooks/useOperatingRegionsCoverage.ts](../src/app/hooks/useOperatingRegionsCoverage.ts) sits at 512 LOC. Per [`LAW_LAYERED_ARCHITECTURE.md`](LAW_LAYERED_ARCHITECTURE.md) the L3 hard limit is 500. This is the only L3 file in the map system over the hard limit (all other map-relevant hooks under 500).
+- **Severity:** Architectural budget breach. Not a runtime issue.
+- **Location:** [src/app/hooks/useOperatingRegionsCoverage.ts](../src/app/hooks/useOperatingRegionsCoverage.ts)
+- **Cross-ref:** Already named in [`LAW_LAYERED_ARCHITECTURE.md`](LAW_LAYERED_ARCHITECTURE.md) "Known existing exceptions" + [`OPS_MAP_ARCHITECTURE_DIAGNOSE_2026-05-04.md`](OPS_MAP_ARCHITECTURE_DIAGNOSE_2026-05-04.md) "File-size budget audit." This KI registers it in the living ledger so the next reviewer doesn't have to triangulate across docs.
+- **Fix direction (deferred):** Hook extraction along clean state boundaries — e.g. derive a smaller `useOperatingRegionsList` for the simple list case + keep `useOperatingRegionsCoverage` for the coverage-computation case. Owner-named only.
+- **Removal trigger:** Phase 8 hook extraction (alongside KI-108 work) OR independent owner-named refactor. Hard-stop discipline: do not touch this file outside an explicit phase that targets it.
+- **Next review:** Phase 8 kickoff.
+- **Status:** **OPEN — P3 grandfathered.**
+
+### KI-110: `services/intelligence/shopMapExperience` direct-import coupling (P5)
+
+- **Impact:** `services/intelligence/shopMapExperience.ts` exposes business logic (role-aware shop ranking, role collection title/labels, default map center) consumed directly by 6+ L2 surfaces. Higher coupling than the rest of the L2→L4 pattern in KI-108 because this module has _behavior_ (role-scoped ranking) that L2 cannot test or swap without touching production callers.
+- **Severity:** P5. Behavior-coupling smell, not a budget or correctness issue. Subset of KI-108 but called out separately because the fix has higher leverage.
+- **Location:** Direct callers:
+  - [src/app/components/shop/ImmersiveMapResultsDrawer.tsx](../src/app/components/shop/ImmersiveMapResultsDrawer.tsx)
+  - [src/app/components/shop/ShopDirectoryListBody.tsx](../src/app/components/shop/ShopDirectoryListBody.tsx)
+  - [src/app/components/shop/LikedShopsScreen.tsx](../src/app/components/shop/LikedShopsScreen.tsx)
+  - [src/app/components/shop/ShopDirectorySearchPanel.tsx](../src/app/components/shop/ShopDirectorySearchPanel.tsx)
+  - [src/app/components/shop/ShopDirectoryHybridMapSection.tsx](../src/app/components/shop/ShopDirectoryHybridMapSection.tsx)
+  - [src/app/components/insurer/InsurerPartnerShopCard.tsx](../src/app/components/insurer/InsurerPartnerShopCard.tsx)
+  - [src/app/components/insurer/InsurerPartnerShopsScreen.tsx](../src/app/components/insurer/InsurerPartnerShopsScreen.tsx)
+- **Evidence:** [`OPS_MAP_ARCHITECTURE_DIAGNOSE_2026-05-04.md`](OPS_MAP_ARCHITECTURE_DIAGNOSE_2026-05-04.md) "L3 hook coverage gap" + findings table row 3.
+- **Fix direction:** Wrap in `useShopMapListings(role)` L3 hook (proposal #3 from KI-108 fix list). Each caller imports `useShopMapListings` instead of the three named exports. Single L3 site to test, swap, or evolve role-scoping logic.
+- **Removal trigger:** Phase 8 — replace with role-scoped L3 hook alongside KI-108 work. Strongly recommended to fix simultaneously since the surfaces overlap.
+- **Next review:** Phase 8 kickoff.
+- **Status:** **OPEN — P5.**
+
+### KI-111: `command-center/` and `navigation/` subtrees growing toward sub-folder discipline threshold (P6)
+
+- **Impact:** [src/app/components/maps/command-center/](../src/app/components/maps/command-center/) is at 8 files; [src/app/components/maps/navigation/](../src/app/components/maps/navigation/) is at 7+ files. Same monolithic-by-convention pattern is emerging in `components/shop/` (80 files, 17,462 LOC concentrated). Without a sub-folder discipline check, these subtrees grow until they're hard to navigate.
+- **Severity:** P6. Discoverability smell, not a structural issue. No file-size violations within the subtrees.
+- **Location:** Two subtrees flagged this audit:
+  - [src/app/components/maps/command-center/](../src/app/components/maps/command-center/) — Coverage* + Planner* files
+  - [src/app/components/maps/navigation/](../src/app/components/maps/navigation/) — Navigation\* sheets/panels
+  - Adjacent risk: `src/app/components/shop/` has long been over the discoverability threshold; Phase 7 is the natural place to consider sub-folder split (e.g. `shop/directory/`, `shop/jobs/`, `shop/profile/`, `shop/onboarding/`).
+- **Evidence:** [`OPS_MAP_ARCHITECTURE_DIAGNOSE_2026-05-04.md`](OPS_MAP_ARCHITECTURE_DIAGNOSE_2026-05-04.md) findings table row 4 + inventory section.
+- **Fix direction:** Owner-named decision during Phase 7 (Bids/Report/Shop/Insurer map redesign) on whether to introduce sub-folder convention. NOT urgent. NOT a refactor target during 6.5/7.5/8.5 atmosphere phases. Likely candidate: introduce sub-folders only when adding a third-tier of file (so a Phase 7 commit that creates a 9th file in `command-center/` could trigger the split).
+- **Removal trigger:** Phase 7 subtree review (not a hard requirement; review only).
+- **Next review:** Phase 7 kickoff.
+- **Status:** **OPEN — P6.**
