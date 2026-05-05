@@ -467,14 +467,17 @@ export default function HeroSection({
                     <span>{statement}</span>
                   </p>
                 ))}
-                {/* Carousel dots — Pass 8 polish: larger, glow on active, clearer affordance */}
+                {/* Carousel dots — Pass 8 polish: larger, glow on active, clearer affordance.
+                    Pass 3 (mobile audit 2026-05-05): bumped tap target from h-10 w-8
+                    (40×32) → h-11 w-11 (44×44) for LAW touch-target compliance. The
+                    inner 8px/24px dot stays the same — only the invisible hit area grows. */}
                 <div className="absolute bottom-0 left-8 flex gap-1.5">
                   {VALUE_STATEMENTS.map((_, i) => (
                     <button
                       key={i}
                       type="button"
                       aria-label={`Value ${i + 1}`}
-                      className="flex h-10 w-8 items-center justify-center"
+                      className="flex h-11 w-11 items-center justify-center"
                       onClick={() => setActiveValue(i)}
                     >
                       <span

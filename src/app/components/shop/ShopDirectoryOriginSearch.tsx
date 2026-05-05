@@ -70,7 +70,7 @@ export default function ShopDirectoryOriginSearch({
         </div>
         {selectedOrigin && (
           <button
-            className={`min-h-[36px] rounded-full px-2.5 py-1.5 text-xs font-medium transition-colors ${
+            className={`min-h-[44px] rounded-full px-2.5 py-1.5 text-xs font-medium transition-colors ${
               isLight
                 ? "text-slate-500 hover:text-slate-700 hover:bg-slate-100"
                 : "text-slate-400 hover:text-slate-200"
@@ -103,7 +103,7 @@ export default function ShopDirectoryOriginSearch({
           />
         </div>
         <button
-          className={`min-h-[36px] rounded-full border px-2.5 py-1.5 text-xs font-medium transition-colors ${
+          className={`min-h-[44px] rounded-full border px-2.5 py-1.5 text-xs font-medium transition-colors ${
             isLight
               ? "border-[rgba(140,82,22,0.26)] bg-[linear-gradient(180deg,rgba(247,232,194,0.84),rgba(232,238,248,0.78))] text-slate-700 shadow-[inset_0_1px_0_rgba(252,240,208,0.78)] hover:border-blue-300 hover:bg-[linear-gradient(180deg,rgba(232,238,248,0.92),rgba(219,234,254,0.86))]"
               : "border-white/[0.10] bg-white/[0.04] text-slate-200 hover:bg-white/[0.08]"
@@ -165,7 +165,7 @@ export default function ShopDirectoryOriginSearch({
       <div className="flex flex-wrap gap-1.5 pb-1">
         {onUseMyLocation && (
           <button
-            className={`shrink-0 inline-flex min-h-[36px] items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-xs font-medium transition-colors ${
+            className={`shrink-0 inline-flex min-h-[44px] items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-xs font-medium transition-colors ${
               locationError
                 ? isLight
                   ? "border-amber-300 bg-amber-50 text-amber-700 hover:bg-amber-100 shadow-sm"
@@ -193,7 +193,7 @@ export default function ShopDirectoryOriginSearch({
           return (
             <button
               key={origin.placeId || origin.name}
-              className={`shrink-0 min-h-[36px] rounded-full border px-2.5 py-1.5 text-xs font-medium transition-colors ${
+              className={`shrink-0 min-h-[44px] rounded-full border px-2.5 py-1.5 text-xs font-medium transition-colors ${
                 isActive
                   ? isLight
                     ? "border-blue-400 bg-blue-50 text-blue-700 shadow-sm"
@@ -232,7 +232,7 @@ export default function ShopDirectoryOriginSearch({
 
       <div className="flex flex-wrap items-center gap-1.5">
         <button
-          className={`inline-flex min-h-[36px] items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-xs font-medium transition-colors ${
+          className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-xs font-medium transition-colors ${
             selectedOrigin
               ? isLight
                 ? "border-slate-200 bg-white text-slate-600 hover:border-blue-300 hover:bg-blue-50 shadow-sm"

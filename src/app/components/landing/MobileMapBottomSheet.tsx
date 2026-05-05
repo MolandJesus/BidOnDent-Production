@@ -108,7 +108,7 @@ export default function MobileMapBottomSheet({
                 onClick={onCloseMap}
                 aria-label="Close map"
                 className={cn(
-                  "absolute right-4 top-1/2 -translate-y-1/2 inline-flex h-10 w-10 items-center justify-center rounded-full border backdrop-blur-xl transition-all hover:scale-105 active:scale-95",
+                  "absolute right-4 top-1/2 -translate-y-1/2 inline-flex h-11 w-11 items-center justify-center rounded-full border backdrop-blur-xl transition-all hover:scale-105 active:scale-95",
                   tone === "light"
                     ? "border-white/80 bg-white/95 text-slate-700 shadow-[0_6px_18px_rgba(15,23,42,0.18)]"
                     : "border-white/15 bg-slate-950/85 text-white shadow-[0_6px_18px_rgba(2,6,23,0.42)]"
