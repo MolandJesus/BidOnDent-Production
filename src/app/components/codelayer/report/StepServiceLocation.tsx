@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, MapPin } from "lucide-react";
-import { zipToCoordinates, geocodeAddress } from "../../../services/supabase/map";
+import { geocodeAddress } from "../../../services/supabase/map";
+import { useGeoCoordinates } from "../../../hooks/useGeoCoordinates";
 import DashboardMapPreview from "../../dashboard/MapLibreDashboardMapPreview";
 import type { ReportPin } from "../../dashboard/MapLibreDashboardMapPreview";
 import type { DashboardAppearanceMode } from "../../../routers/dashboard-router-types";
@@ -30,10 +31,8 @@ export default function StepServiceLocation({
 }: StepServiceLocationProps) {
   const isLightAppearance = appearanceMode === "light";
 
-  const resolvedCoords = useMemo(() => {
-    if (zipCode.length !== 5) return null;
-    return zipToCoordinates(zipCode);
-  }, [zipCode]);
+  const zipForLookup = zipCode.length === 5 ? zipCode : undefined;
+  const resolvedCoords = useGeoCoordinates(zipForLookup);
 
   // Refine with geocoded address when available
   const [geocodedCoords, setGeocodedCoords] = useState<{ lat: number; lng: number } | null>(null);

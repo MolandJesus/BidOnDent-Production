@@ -5,7 +5,7 @@ import ReportDetailInterestedShops from "./ReportDetailInterestedShops";
 import RepairLifecycleTimeline from "../workflow/RepairLifecycleTimeline";
 import { customerLifecycle } from "../workflow/lifecycle-presets";
 import { LANDING_PAGE_IMAGES } from "../../constants";
-import { zipToCoordinates } from "../../services/supabase/map";
+import { useGeoCoordinates } from "../../hooks/useGeoCoordinates";
 import DashboardMapPreview from "../dashboard/MapLibreDashboardMapPreview";
 import type { ReportPin } from "../dashboard/MapLibreDashboardMapPreview";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
@@ -73,13 +73,15 @@ export default function ReportDetailScreen({
     shopLongitude: bid.shopLongitude ?? null,
   }));
 
+  const zipFallbackCoords = useGeoCoordinates(report.zipCode);
+
   /** Report location for the mini-map — prefer stored coordinates, fall back to ZIP */
   const reportCoords = useMemo(() => {
     if (report.latitude != null && report.longitude != null) {
       return { lat: report.latitude, lng: report.longitude };
     }
-    return zipToCoordinates(report.zipCode);
-  }, [report.latitude, report.longitude, report.zipCode]);
+    return zipFallbackCoords;
+  }, [report.latitude, report.longitude, zipFallbackCoords]);
 
   /** Report pin for the map */
   const reportPins = useMemo<ReportPin[]>(() => {

@@ -5,7 +5,7 @@ import ShopRatingModal from "../shop/ShopRatingModal";
 import BidCardArticle from "./BidCardArticle";
 import AcceptedBidConfirmationSheet from "./AcceptedBidConfirmationSheet";
 import type { AcceptedBidInfo } from "./AcceptedBidConfirmationSheet";
-import { zipToCoordinates } from "../../services/supabase/map";
+import { useGeoCoordinates } from "../../hooks/useGeoCoordinates";
 import { defaultCoverageCenter } from "../landing/coverageData";
 import type { ReportPin } from "../dashboard/MapLibreDashboardMapPreview";
 import BidsEmptyState from "./BidsEmptyState";
@@ -63,6 +63,8 @@ export default function BidsScreen({
     return reports.find((report) => report.id === liveBids[0].reportId) || null;
   }, [liveBids, reports]);
 
+  const zipFallbackCoords = useGeoCoordinates(selectedReport?.zipCode);
+
   const reportCoords = useMemo(() => {
     if (!selectedReport) {
       return null;
@@ -70,8 +72,8 @@ export default function BidsScreen({
     if (selectedReport.latitude != null && selectedReport.longitude != null) {
       return { lat: selectedReport.latitude, lng: selectedReport.longitude };
     }
-    return zipToCoordinates(selectedReport.zipCode);
-  }, [selectedReport]);
+    return zipFallbackCoords;
+  }, [selectedReport, zipFallbackCoords]);
 
   const reportPins = useMemo<ReportPin[]>(() => {
     if (!selectedReport || !reportCoords) {
