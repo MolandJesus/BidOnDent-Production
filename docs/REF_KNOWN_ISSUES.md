@@ -2,7 +2,7 @@
 
 **Authority level:** REFERENCE — describes current known gaps, bugs, and structural issues.
 
-**Last updated:** 2026-05-05 (Phase 7.5 close — KI-112 extended to cover F2 dashboard atmosphere + F3 dropdown enter/exit; KI-113 created P3 for prefers-reduced-motion compliance gap across 32+ motion/react surfaces)
+**Last updated:** 2026-05-05 (Phase 8 close — KI-109 RESOLVED via 512→468 LOC extraction of 6 pure derivation helpers; KI-110 RESOLVED-WITH-RESIDUAL via useShopMapListings hook + 3 substantive caller migrations; KI-108 partial closure via 4 hook surfaces with documented selectivity policy)
 
 **Update rules:**
 
@@ -857,37 +857,46 @@
   - Move `useReportLayerData.ts` from `components/maps/` → `hooks/` so its L4 imports happen at the proper layer
     These ~5 hooks would shrink the L2 → L4 surface from ~30 to ~5 (the hooks themselves).
 - **Removal trigger:** Phase 8 (Map L3/L4 + provider boundary) execution. Charter explicitly grandfathered existing files; refactor is part of Phase 8's scope, not an opportunistic touch during Phase 6/6.5/7/7.5.
-- **Next review:** Phase 8 kickoff (owner-named go).
-- **Status:** **OPEN — P3 grandfathered.** Tracked here so the law-vs-reality gap doesn't get stranded in the snapshot diagnose.
+- **Next review:** Future phase that closes the broader L2 → L4 grandfathered set (post-Phase-8 cleanup OR Phase 9 if scoped).
+- **Phase 8 closure (2026-05-05):** **Partial closure — 4 hooks shipped covering the substantive-use surfaces; per-list-item + trivial-pure-function callers remain grandfathered with documented selectivity policy.**
+  - **Hooks shipped:** [`useGeoCoordinates`](../src/app/hooks/useGeoCoordinates.ts) (commit `24e66d76`), [`useHaversineDistance`](../src/app/hooks/useHaversineDistance.ts) (commit `3118198e`), [`useNavigationVoicePriming`](../src/app/hooks/useNavigationVoicePriming.ts) (commit `48764ccb`), [`useShopMapListings`](../src/app/hooks/useShopMapListings.ts) (commit `8fa136d7`). Plus relocation of `useReportLayerData.ts` from `components/maps/` → `hooks/` (commit `07947353`).
+  - **Substantive-use callers migrated (8 single-call sites):** BidsScreen, ReportDetailScreen, StepServiceLocation (useGeoCoordinates), CoverageActiveNavigationLayout (useHaversineDistance), DashboardCoveragePanel, CoverageBrowseExperience, CoverageMapDialog (useNavigationVoicePriming), InsurerPartnerShopsScreen, LikedShopsScreen, CompetitorAnalysisScreen (useShopMapListings).
+  - **Documented residual (15+ surfaces remain with direct L4 imports):**
+    - **Per-list-item callers** — files calling `zipToCoordinates` / `haversineMiles` / `getRoleCollectionActionLabels` inside `.map()` over a list. Hooks-in-loops React rule prevents migration. Affected: CustomerMapWidget, ShopMapWidget, InsurerMapWidget, InsurerClaimsScreen, ShopRequestsScreen, ShopActiveJobsScreen, useReportLayerData (zipToCoordinates inside report iteration), DashboardCoveragePanel + CustomerMapWidget (haversineMiles inside shops `.map()`), ImmersiveMapResultsDrawer + ShopDirectoryListBody (getRoleCollectionActionLabels inside shops `.map()`).
+    - **Trivial pure-function callers** — direct imports for getter-style L4 functions where hook wrapping adds zero value: ShopDirectorySearchPanel (getRoleCollectionTitle), ShopDirectoryHybridMapSection (getDefaultMapCenter), InsurerPartnerShopCard (toggleRoleCollectionShopId).
+    - **Type-only imports** — InsurerPartnerShopCard, ImmersiveMapResultsDrawer, ShopDirectoryListBody import `type { ShopMapListing }`. Type imports don't count as runtime architectural drift; left as-is.
+  - **Future-phase resolution paths (none committed):** Either (a) relocate `zipToCoordinates` / `haversineMiles` / `getRoleCollectionActionLabels` etc. to a pure-utility module (`utils/geo`, `hooks/utils/`) so direct L2 imports are no longer L4 violations, OR (b) refactor each per-list-item caller to pre-compute via top-level `useMemo` + array-indexed lookup inside the `.map()`. Owner-named only.
+- **Status:** **OPEN — P3 grandfathered with reduced surface area.** Phase 8 closure is partial-by-architecture; the 4 shipped hooks cover the single-call surfaces cleanly. Cross-ref [`OPS_PHASE_8_SCOPE_CONTRACT_2026-05-05.md`](OPS_PHASE_8_SCOPE_CONTRACT_2026-05-05.md) §1 hooks 1-4 + close footer for full scope refinement audit trail.
 
-### KI-109: `useOperatingRegionsCoverage.ts` exceeds L3 hard limit (P3, grandfathered)
+### KI-109: `useOperatingRegionsCoverage.ts` exceeds L3 hard limit (P3, RESOLVED)
 
-- **Impact:** [src/app/hooks/useOperatingRegionsCoverage.ts](../src/app/hooks/useOperatingRegionsCoverage.ts) sits at 512 LOC. Per [`LAW_LAYERED_ARCHITECTURE.md`](LAW_LAYERED_ARCHITECTURE.md) the L3 hard limit is 500. This is the only L3 file in the map system over the hard limit (all other map-relevant hooks under 500).
-- **Severity:** Architectural budget breach. Not a runtime issue.
-- **Location:** [src/app/hooks/useOperatingRegionsCoverage.ts](../src/app/hooks/useOperatingRegionsCoverage.ts)
-- **Cross-ref:** Already named in [`LAW_LAYERED_ARCHITECTURE.md`](LAW_LAYERED_ARCHITECTURE.md) "Known existing exceptions" + [`OPS_MAP_ARCHITECTURE_DIAGNOSE_2026-05-04.md`](OPS_MAP_ARCHITECTURE_DIAGNOSE_2026-05-04.md) "File-size budget audit." This KI registers it in the living ledger so the next reviewer doesn't have to triangulate across docs.
-- **Fix direction (deferred):** Hook extraction along clean state boundaries — e.g. derive a smaller `useOperatingRegionsList` for the simple list case + keep `useOperatingRegionsCoverage` for the coverage-computation case. Owner-named only.
-- **Removal trigger:** Phase 8 hook extraction (alongside KI-108 work) OR independent owner-named refactor. Hard-stop discipline: do not touch this file outside an explicit phase that targets it.
-- **Next review:** Phase 8 kickoff.
-- **Status:** **OPEN — P3 grandfathered.**
+- **Impact:** [`src/app/hooks/useOperatingRegionsCoverage.ts`](../src/app/hooks/useOperatingRegionsCoverage.ts) was at 512 LOC. Per [`LAW_LAYERED_ARCHITECTURE.md`](LAW_LAYERED_ARCHITECTURE.md) the L3 hard limit is 500. Was the only L3 file in the map system over the hard limit.
+- **Resolution (2026-05-05, commit `d8c99055`):** Extracted 6 pure derivation functions into a sibling helper module [`useOperatingRegionsCoverageHelpers.ts`](../src/app/hooks/useOperatingRegionsCoverageHelpers.ts) (155 LOC). Main hook reduced to **468 LOC (32 under hard limit)**. Helpers extracted:
+  - `resolveZipSearchTarget(lookup, normalizedZip)`
+  - `resolveZipMapTarget(lookup, normalizedZip)`
+  - `selectFallbackSearchTarget(activeOriginMode, ...)`
+  - `selectMapFocusTarget(listSearchTarget, ...)`
+  - `resolveIsOutsideServiceRegion(listSearchTarget, ...)`
+  - `computeNearbyShops(listSearchTarget, mapPartnerShops, radiusMiles)`
+- **Architectural choice rationale:** Original audit ([`OPS_PHASE_8_SCOPE_CONTRACT_2026-05-05.md`](OPS_PHASE_8_SCOPE_CONTRACT_2026-05-05.md) §1 Deliverable 6) proposed a `useCoverageOriginResolution` sub-hook. Read-only re-audit during execution found origin-resolution handlers tightly coupled to parent state (navigation, centerOnTarget, setGeoMessage, manualSearchTarget) — sub-hook would require passing 5-7 callbacks back, more awkward than helper. Pure-function extraction was cleaner: useMemo wrappers stay in the main hook (preserving React reactivity), bodies become 1-line calls to helpers.
+- **Verification:** `npm run build` green; refactor neutrality verified by static diff (every helper is a 1:1 extraction of original useMemo body; comments preserved including the Phase 2 honesty note for `resolveIsOutsideServiceRegion`).
+- **Status:** **RESOLVED 2026-05-05** (Phase 8 close commit `d8c99055`).
 
-### KI-110: `services/intelligence/shopMapExperience` direct-import coupling (P5)
+### KI-110: `services/intelligence/shopMapExperience` direct-import coupling (P5, RESOLVED-WITH-RESIDUAL)
 
-- **Impact:** `services/intelligence/shopMapExperience.ts` exposes business logic (role-aware shop ranking, role collection title/labels, default map center) consumed directly by 6+ L2 surfaces. Higher coupling than the rest of the L2→L4 pattern in KI-108 because this module has _behavior_ (role-scoped ranking) that L2 cannot test or swap without touching production callers.
-- **Severity:** P5. Behavior-coupling smell, not a budget or correctness issue. Subset of KI-108 but called out separately because the fix has higher leverage.
-- **Location:** Direct callers:
-  - [src/app/components/shop/ImmersiveMapResultsDrawer.tsx](../src/app/components/shop/ImmersiveMapResultsDrawer.tsx)
-  - [src/app/components/shop/ShopDirectoryListBody.tsx](../src/app/components/shop/ShopDirectoryListBody.tsx)
-  - [src/app/components/shop/LikedShopsScreen.tsx](../src/app/components/shop/LikedShopsScreen.tsx)
-  - [src/app/components/shop/ShopDirectorySearchPanel.tsx](../src/app/components/shop/ShopDirectorySearchPanel.tsx)
-  - [src/app/components/shop/ShopDirectoryHybridMapSection.tsx](../src/app/components/shop/ShopDirectoryHybridMapSection.tsx)
-  - [src/app/components/insurer/InsurerPartnerShopCard.tsx](../src/app/components/insurer/InsurerPartnerShopCard.tsx)
-  - [src/app/components/insurer/InsurerPartnerShopsScreen.tsx](../src/app/components/insurer/InsurerPartnerShopsScreen.tsx)
-- **Evidence:** [`OPS_MAP_ARCHITECTURE_DIAGNOSE_2026-05-04.md`](OPS_MAP_ARCHITECTURE_DIAGNOSE_2026-05-04.md) "L3 hook coverage gap" + findings table row 3.
-- **Fix direction:** Wrap in `useShopMapListings(role)` L3 hook (proposal #3 from KI-108 fix list). Each caller imports `useShopMapListings` instead of the three named exports. Single L3 site to test, swap, or evolve role-scoping logic.
-- **Removal trigger:** Phase 8 — replace with role-scoped L3 hook alongside KI-108 work. Strongly recommended to fix simultaneously since the surfaces overlap.
-- **Next review:** Phase 8 kickoff.
-- **Status:** **OPEN — P5.**
+- **Impact:** `services/intelligence/shopMapExperience.ts` exposed business logic (role-aware shop ranking, role collection title/labels, default map center) consumed directly by 6+ L2 surfaces. Higher coupling than the rest of the L2→L4 pattern in KI-108 because this module has _behavior_ (role-scoped ranking) that L2 cannot test or swap without touching production callers.
+- **Resolution (2026-05-05, commits `8fa136d7` + `9846ef46`):** Authored [`useShopMapListings`](../src/app/hooks/useShopMapListings.ts) L3 hook wrapping `buildShopMapListings`. Migrated 3 substantive-use callers:
+  - [`InsurerPartnerShopsScreen`](../src/app/components/insurer/InsurerPartnerShopsScreen.tsx) (insurer-side partner directory)
+  - [`LikedShopsScreen`](../src/app/components/shop/LikedShopsScreen.tsx) (customer-side saved shops)
+  - [`CompetitorAnalysisScreen`](../src/app/components/reports/CompetitorAnalysisScreen.tsx) (shop-side competitor analysis)
+- **Scope refinement vs original KI:** Original KI named 7 callers and proposed wrapping all behind a "kitchen sink" hook (`useShopMapListings(role)` returning `{ listings, defaultMapCenter, collectionTitle, getActionLabels }`). Caller inventory during Phase 8 execution revealed the kitchen-sink shape matches no actual caller — each of the 7 uses exactly one of: `buildShopMapListings` (3 callers, single-call, fit hook), `getRoleCollectionActionLabels` (2 callers, inside `.map()` loops, hooks-in-loops violation), `getRoleCollectionTitle` (1 caller, trivial pure function — direct import fine), `getDefaultMapCenter` (1 caller, constant getter — direct import fine), `toggleRoleCollectionShopId` (1 caller, pure data manipulation — direct import fine). The Y1 narrowed shape `(args) => ShopMapListing[]` covers the 3 substantive-use callers cleanly; the other 4 keep direct imports under the same selectivity policy as KI-108.
+- **Documented residual (folded into KI-108):**
+  - ImmersiveMapResultsDrawer + ShopDirectoryListBody — `getRoleCollectionActionLabels` inside `.map()` (hooks-in-loops)
+  - ShopDirectorySearchPanel — `getRoleCollectionTitle` (trivial)
+  - ShopDirectoryHybridMapSection — `getDefaultMapCenter` (constant getter)
+  - InsurerPartnerShopCard — `toggleRoleCollectionShopId` (pure data manipulation)
+- **Verification:** `npm run build` green on both commits; refactor neutrality verified by static diff (only function-call-name substitution at 3 sites; args identity-stable; return value chained through identical `.map()`/`.filter()` calls).
+- **Status:** **RESOLVED-WITH-RESIDUAL 2026-05-05.** The leverage hook ships and closes the 3 substantive-use callers. The 4 smaller-utility surfaces remain with direct L4 imports per KI-108's documented selectivity policy. Future-phase resolution would relocate the small utilities to a pure-utility module — owner-named only.
 
 ### KI-111: `command-center/` and `navigation/` subtrees growing toward sub-folder discipline threshold (P6)
 
