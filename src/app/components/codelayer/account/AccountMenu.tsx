@@ -11,7 +11,7 @@ import {
   CheckSquare,
   type LucideIcon,
 } from "lucide-react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import type { DashboardAppearanceMode } from "../../../routers/dashboard-router-types";
 
 type RowTone = "deep" | "blue" | "cyan" | "indigo" | "rose";
@@ -57,6 +57,7 @@ export default function AccountMenu({
   onViewVehicles,
 }: AccountMenuProps) {
   const isLight = appearanceMode === "light";
+  const reduceMotion = useReducedMotion();
 
   const rowBaseClass =
     "bd-dashboard-section bd-dashboard-section--interactive flex w-full items-center justify-between rounded-xl px-4 py-3.5 text-left transition-colors";
@@ -240,7 +241,7 @@ export default function AccountMenu({
       aria-label="Account quick actions"
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.25, delay: 0.1 }}
+      transition={{ duration: reduceMotion ? 0 : 0.25, delay: 0.1 }}
       className="bd-dashboard-panel bd-dashboard-panel--deep relative overflow-hidden rounded-2xl p-4 md:p-5"
     >
       <div

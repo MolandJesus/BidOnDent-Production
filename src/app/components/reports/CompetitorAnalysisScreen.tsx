@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, MapPin, Search } from "lucide-react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import CompetitorShopCard from "./CompetitorShopCard";
 import type { WebsiteIdentity } from "../../services/auth/websiteIdentity";
 import {
@@ -71,6 +71,7 @@ export default function CompetitorAnalysisScreen({
   appearanceMode = "map-dark",
 }: CompetitorAnalysisScreenProps) {
   const isLight = appearanceMode === "light";
+  const reduceMotion = useReducedMotion();
   const { inventory } = useNetworkDirectory();
   const memory = loadWebsiteSessionMemory(identity);
   const [searchQuery, setSearchQuery] = useState("");
@@ -304,7 +305,7 @@ export default function CompetitorAnalysisScreen({
         <motion.section
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35, ease: "easeOut" }}
+          transition={{ duration: reduceMotion ? 0 : 0.35, ease: "easeOut" }}
           className="bd-dashboard-panel mx-4 mt-4 overflow-hidden rounded-[28px]"
         >
           <div className="flex items-center justify-between px-4 pt-3 pb-1">
