@@ -484,3 +484,94 @@ All 4 buttons at exactly 44 px tall. Build PASS 3.42s.
 - Landing page is now mobile-touchable on all 4 primary coverage CTAs.
 - KI-114 partial closure further extended (3 more sites in coverage shell).
 - Sign-in entry chrome confirmed clean — no further work needed on Clerk-rendered surfaces.
+
+---
+
+## Pass 6 — Source-grep cross-surface sub-44 CTA sweep (2026-05-05)
+
+**HEAD at start:** `49468992` · **Audit method:** source-grep (viewport spoof unreachable in Electron — see protocol note below)
+**Theme coverage:** N/A (source-truth fix applies to both themes by definition)
+**Auth state:** signed out (verification re-run on landing)
+
+### Protocol note: viewport audit unreachable in Electron
+
+Pass 5's recommended next pass was "true mobile viewport ≤566px sweep." In
+practice the integrated browser ignores `setViewportSize`, `Emulation.set
+DeviceMetricsOverride` (CDP), screen-orientation override, and touch
+emulation — viewport stayed locked at `1637×1067` after every attempt.
+This is consistent with the OPS prompt's documented Electron CDP floor
+(`docs/OPS_BUILDER_VISUAL_AUDIT_PROMPT.md:228`).
+
+Pivoted to **source-truth grep**: enumerate every `min-h-[NNpx]` where
+`NN < 44` on an actual `<button>` / interactive element across all
+component surfaces. This catches state-conditional CTAs that runtime
+scrolling cannot reach (error states, route-active states, popup states),
+and Pass 5 missed precisely because it scanned only default-state landing.
+
+### Source-grep findings
+
+7 sub-44 interactive buttons across 5 files. All universally apply
+(no responsive prefix overrides) — i.e. they were sub-44 on desktop
+too, just hidden behind state triggers Pass 5 didn't activate.
+
+**V-020 (P3-UX) — `CoverageBrowseMapOverlays.tsx:235` "Start Route" 40 → 44 px**
+
+Coverage browse overlay primary CTA. Triggered when navigation precondition
+met. Bumped `min-h-[40px]` → `min-h-[44px]`.
+
+**V-021 (P3-UX) — `CoverageSearchPanel.tsx:294` "Clear" address 38 → 44 px**
+
+Address-result clear button (visible only after geocoded address resolves).
+Bumped `!min-h-[38px]` → `!min-h-[44px]`.
+
+**V-022 (P3-UX) — `CoverageNearestShops.tsx:155` "Retry" shops 40 → 44 px**
+
+Shop-load error-state retry CTA (visible only on shop fetch failure).
+Bumped `min-h-[40px]` → `min-h-[44px]`.
+
+**V-023 (P3-UX) — `NavigationSummarySheet.tsx:156/173/184` action-row triplet 42 → 44 px**
+
+Active-navigation action row: **Share ETA · Export · End Route**. All three
+flex-1 siblings shared `min-h-[42px]` (-2 px each). End Route is destructive
+and especially needs the full hit area. All three bumped to 44 in same edit.
+
+**V-024 (P3-UX) — `ReportLayerPopup.tsx:98` "View Detail" 40 → 44 px**
+
+Map report-layer popup CTA — primary entry point from a customer report
+marker into the report drawer. Bumped `min-h-[40px]` → `min-h-[44px]`.
+
+### Files touched (Pass 6)
+
+- `src/app/components/landing/CoverageBrowseMapOverlays.tsx` (+1 −1: V-020)
+- `src/app/components/landing/CoverageSearchPanel.tsx` (+1 −1: V-021)
+- `src/app/components/landing/CoverageNearestShops.tsx` (+1 −1: V-022)
+- `src/app/components/maps/navigation/NavigationSummarySheet.tsx` (+3 −3: V-023a/b/c)
+- `src/app/components/maps/ReportLayerPopup.tsx` (+1 −1: V-024)
+- `docs/AUDIT_VISUAL_DEEP_2026-05-05_SONNET.md` (Pass 6 append)
+
+### Validation
+
+- **Build:** PASS 3.76s · diagnostics 0 across all 5 touched files
+- **Pass 5 regression check** (re-measured live after build):
+  - Find Shops 130×44 ✓ · My Location 248×44 ✓ · Center Map 248×44 ✓ · Open Full Map 137.5×44 ✓
+- **State-conditional verification:** not run live (Pass 6 fixes are state-gated:
+  Clear requires resolved address, Retry requires shop-fetch failure, Start Route
+  requires navigation precondition, View Detail requires popup open, action row
+  requires active route). Source-truth fix is sufficient — class diff is
+  identical pattern bump and the buttons render through the same code path
+  in every state.
+
+### What this unlocks
+
+- Closes the Pass 5 "true mobile viewport" recommendation by reframing it
+  as source-truth audit (the Electron viewport block is now documented).
+- All landing primary CTAs (default + state-conditional) now ≥44 px tall.
+- Active-navigation action row now LAW-compliant for end-route discipline.
+
+### Pass 6 next-best recommendation
+
+Validate state-conditional CTAs in real interaction at next opportunity:
+trigger an address geocode on landing to see V-021 in flow; trigger a shop
+fetch failure (offline mode) to see V-022; click a customer report marker
+on the dashboard map to see V-024. Document any layout shifts the +4 px
+caused (none expected — buttons are flex children, parent grows).

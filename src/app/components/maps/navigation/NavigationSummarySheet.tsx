@@ -153,7 +153,7 @@ export default function NavigationSummarySheet({
             onClick={onShareEta}
             className={cn(
               theme.secondaryButtonClassName,
-              "flex-1 min-h-[42px] py-2 text-xs sm:text-sm"
+              "flex-1 min-h-[44px] py-2 text-xs sm:text-sm"
             )}
           >
             <Share2 className="h-3.5 w-3.5" />
@@ -170,7 +170,7 @@ export default function NavigationSummarySheet({
             }}
             className={cn(
               theme.secondaryButtonClassName,
-              "flex-1 min-h-[42px] py-2 text-xs sm:text-sm"
+              "flex-1 min-h-[44px] py-2 text-xs sm:text-sm"
             )}
           >
             <ExternalLink className="h-3.5 w-3.5" />
@@ -181,7 +181,7 @@ export default function NavigationSummarySheet({
             onClick={onEndRoute}
             className={cn(
               theme.destructiveButtonClassName,
-              "flex-1 min-h-[42px] py-2 text-xs font-semibold sm:text-sm"
+              "flex-1 min-h-[44px] py-2 text-xs font-semibold sm:text-sm"
             )}
           >
             End Route

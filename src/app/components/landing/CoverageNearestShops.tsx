@@ -152,7 +152,7 @@ export default function CoverageNearestShops({
               type="button"
               onClick={onRetryShops}
               className={cn(
-                "inline-flex min-h-[40px] shrink-0 items-center justify-center gap-1.5 rounded-full px-3 py-2 text-xs font-semibold transition-colors",
+                "inline-flex min-h-[44px] shrink-0 items-center justify-center gap-1.5 rounded-full px-3 py-2 text-xs font-semibold transition-colors",
                 tone === "light"
                   ? "bg-rose-100 text-rose-800 hover:bg-rose-200"
                   : "bg-white/10 text-white hover:bg-white/15"
