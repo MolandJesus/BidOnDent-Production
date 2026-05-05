@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import {
   Inbox,
   Clock,
@@ -25,6 +25,7 @@ export default function ShopEstimateInboxScreen({
   onUpdateStatus,
 }: ShopEstimateInboxScreenProps) {
   const isLight = appearanceMode === "light";
+  const reduceMotion = useReducedMotion();
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState<
     "all" | "pending" | "viewed" | "responded" | "declined" | "accepted"
@@ -214,7 +215,7 @@ export default function ShopEstimateInboxScreen({
                 key={req.id ?? i}
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.03, duration: 0.2 }}
+                transition={{ delay: i * 0.03, duration: reduceMotion ? 0 : 0.2 }}
               >
                 <button
                   type="button"

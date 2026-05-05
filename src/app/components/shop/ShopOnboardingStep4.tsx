@@ -1,5 +1,5 @@
 import { Check } from "lucide-react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import type { ShopOnboardingFormData } from "../../types";
 
 type ShopOnboardingStep4Props = {
@@ -23,6 +23,8 @@ export default function ShopOnboardingStep4({
   onBack,
   onComplete,
 }: ShopOnboardingStep4Props) {
+  const reduceMotion = useReducedMotion();
+
   return (
     <div>
       <div className="mb-6">
@@ -111,7 +113,7 @@ export default function ShopOnboardingStep4({
           style={{ background: primaryColor }}
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.3, delay: 0.15 }}
+          transition={{ duration: reduceMotion ? 0 : 0.3, delay: 0.15 }}
         >
           {isSubmitting ? "Saving..." : "Complete Setup"}
           <Check className="w-5 h-5 ml-2" />

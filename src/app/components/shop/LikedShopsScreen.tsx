@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, Heart, MapPin, Search } from "lucide-react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import DashboardMapPreview from "../dashboard/MapLibreDashboardMapPreview";
 import type { CoveragePartnerShop } from "../maps/serviceCoverageMapTypes";
 import {
@@ -23,6 +23,7 @@ export default function LikedShopsScreen({
   appearanceMode = "map-dark",
 }: LikedShopsScreenProps) {
   const isLight = appearanceMode === "light";
+  const reduceMotion = useReducedMotion();
   const { inventory } = useNetworkDirectory();
   const notifications = useNotifications();
   const memory = loadWebsiteSessionMemory(identity);
@@ -169,7 +170,7 @@ export default function LikedShopsScreen({
           <motion.section
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35, ease: "easeOut" }}
+            transition={{ duration: reduceMotion ? 0 : 0.35, ease: "easeOut" }}
             className={`mb-4 overflow-hidden rounded-[28px] ${isLight ? "bg-[linear-gradient(180deg,rgba(247,232,194,0.80),rgba(232,238,248,0.74))] border border-[rgba(140,82,22,0.24)] shadow-[inset_0_1px_0_rgba(252,240,208,0.78),0_8px_22px_rgba(15,23,42,0.10)]" : "bd-glass-card"}`}
           >
             <div className="flex items-center justify-between px-4 pt-3 pb-1">

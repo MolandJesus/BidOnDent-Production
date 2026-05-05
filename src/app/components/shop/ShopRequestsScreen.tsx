@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { Search, AlertCircle, MapPin } from "lucide-react";
 import { logWorkflowEvent } from "../../services/supabaseService";
 import { useNotifications } from "../../features/notifications/NotificationContext";
@@ -25,6 +25,7 @@ export default function ShopRequestsScreen({
   appearanceMode = "map-dark",
 }: ShopRequestsScreenProps) {
   const isLight = appearanceMode === "light";
+  const reduceMotion = useReducedMotion();
   const [searchQuery, setSearchQuery] = useState("");
   const notifications = useNotifications();
   const [filterStatus, setFilterStatus] = useState<
@@ -262,7 +263,7 @@ export default function ShopRequestsScreen({
           <motion.section
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.25, delay: 0.08 }}
+            transition={{ duration: reduceMotion ? 0 : 0.25, delay: 0.08 }}
             className="bd-dashboard-panel bd-dashboard-panel--accent-blue overflow-hidden"
           >
             <div className="p-3">
