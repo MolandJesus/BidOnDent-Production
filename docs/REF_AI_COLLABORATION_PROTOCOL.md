@@ -1,9 +1,10 @@
 # BidOnDent - AI Collaboration Protocol (REFERENCE)
 
 **Authority level:** REFERENCE - current operating truth for multi-AI sessions, owner relay prompts, and agent-to-agent planning.
-**Last updated:** 2026-05-03
+**Last updated:** 2026-05-05
 **Status:** Active reference
 **Scope:** How AI agents should interpret, clean up, and act on Mola's multi-agent conversations inside this repo.
+**Companion (output layer):** [`OPS_AI_AGENT_PROMPT_DESIGN_KERNEL.md`](OPS_AI_AGENT_PROMPT_DESIGN_KERNEL.md) — when writing a relay prompt for an execution agent (Sonnet, Mola's Coder, etc.), use the kernel's 8 rules + 3-stage pipeline template.
 
 ---
 
