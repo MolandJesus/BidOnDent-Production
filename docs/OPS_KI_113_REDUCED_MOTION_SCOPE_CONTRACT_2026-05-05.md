@@ -481,3 +481,26 @@ If owner picks **batched commit shape (3/2 gate cadence like Phase 8 useShopMapL
 **Auditor VERDICT: CLEAN.** 45 files with `useReducedMotion`, 62 wrapped sites, 0 missed plain durations, Bucket B springs untouched, all original numeric values preserved verbatim in non-reduce branches. Build: `✓ 2920 modules`.
 
 **KI-113: RESOLVED.** **KI-112 close + Phase 8.5 Path A: UNBLOCKED.**
+
+---
+
+### Post-audit clarification (added 2026-05-05 by Sonnet v3.1 audit + Opus surgical patch)
+
+**Sonnet v3.1 runtime audit verdict:** `MAJOR_DRIFT` — correct per literal protocol rule, but architecturally a CSS hygiene gap, not a motion-system regression.
+
+**The WAAPI vs CSS distinction:** Sonnet's S1 measurement found `getAnimations()` returning `duration: 0` under reduce (WAAPI working) while `getComputedStyle().transitionDuration` returned `"0.15s"` from a separate CSS-layer source. The motion/react migration IS correct; a pre-existing CSS hover transition on `.bd-dashboard-section--interactive` (not in original KI-113 scope) leaked through.
+
+**Targeted CSS fixes applied (this commit, tight forensic-pass discipline — not a sweep):**
+
+- `.bd-dashboard-section--interactive` + `::before` + `:hover` + `:focus-visible` → `transition: none` + `transform: none` on hover/focus under reduce
+- `.bd-dashboard-primary-button`, `.bd-dashboard-secondary-button`, `.bd-dashboard-ghost-button`, `.bd-dashboard-filter-button` → `transition: none` under reduce
+- `.bd-report-input`, `.bd-report-primary-button`, `.bd-report-secondary-button` → `transition: none` under reduce
+- `.bd-glass-control` → `transition: none` under reduce
+
+**`LAW_ANIMATION_AND_ATMOSPHERE.md` §3 amendment (this commit):** Added explicit forbidden-pattern entry for "CSS `transition:` declarations on interactive states without a `@media (prefers-reduced-motion: reduce)` override." Codifies the WAAPI-vs-CSS layering lesson into canon.
+
+**Footnote — false-regression prevention:** WAAPI migration (Commits 1–9) is confirmed correct and is NOT being reverted. The CSS fixes above are post-audit hygiene, orthogonal to the motion/react sweep. Remaining unaudited `transition:` declarations in `theme.css` (~14, mostly on non-interactive surfaces) are tracked as informal residual; no separate KI created per tight-scope discipline.
+
+**No new KI created (deliberate, per advisor framing).** No `v3.2` prompt created (deliberate). v3.1 receives a single delta-rule patch — see `PROMPT_SONNET_MASTER_VISUAL_AUDIT_v3-1.md` §12.
+
+**Re-run expectation:** Sonnet v3.1 protocol re-run on the surfaces this commit fixed should now yield `VERDICT: CLEAN`.

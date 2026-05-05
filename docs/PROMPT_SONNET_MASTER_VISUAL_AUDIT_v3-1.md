@@ -292,4 +292,32 @@ Output the report. Do not edit anything. Return control to owner.
 
 ---
 
-**END OF v3.1 — paste verbatim to Sonnet.**
+## §12. Delta patch (added 2026-05-05 — applies to all v3.1 runs going forward)
+
+**Reason:** Sonnet's first v3.1 run (2026-05-05) correctly surfaced a WAAPI-vs-CSS layering gap. The `transitionDuration === "0s"` rule alone was insufficient — it conflated CSS-stylesheet motion with WAAPI-runtime motion. This delta closes that ambiguity.
+
+**Add to §4 measurement procedure (after step 4d "Quote both values verbatim in report"):**
+
+> 4e. **WAAPI cross-check** (mandatory): also capture `element.getAnimations()` filtered to `Animation` instances (excluding `CSSTransition`). For each WAAPI animation, capture `effect.getTiming().duration`. **PASS criteria:** ALL of the following must hold:
+>
+>   1. `getComputedStyle(element).transitionDuration === "0s"` OR `transitionProperty === "none"` (CSS layer reduced), AND
+>   2. Every WAAPI `Animation` instance returns `duration: 0` (or `getAnimations()` returns empty post-mount/post-hover) (motion/react WAAPI layer reduced)
+>
+> If WAAPI shows `duration: 0` BUT CSS shows non-zero `transitionDuration`: classify as **CSS-layer drift** (motion/react migration is correct; a CSS hover/focus transition is missing its `@media (prefers-reduced-motion: reduce)` override). Treat as MINOR_DRIFT not MAJOR_DRIFT (motion is suppressed at the WAAPI layer; CSS-layer is non-compliant with LAW §3 but not user-visible at runtime). Surface in §VII drift report under class **CSS reduce-guard miss** (sixth class beyond the five originally listed).
+
+**Add to §5 S1 + S3 protocols:**
+
+> When measuring under reduce, capture BOTH `getComputedStyle(node).transitionDuration` AND `node.getAnimations()` (filtered to `Animation` type). If WAAPI is reduced but CSS is not, the classification is CSS-layer drift, not WAAPI failure.
+
+**Add to §11 hard rules:**
+
+> - CSS hover/focus transitions are in scope if they produce visual motion, regardless of motion library usage.
+> - If WAAPI reads `duration: 0` but CSS reads non-zero `transitionDuration`, do not classify as MAJOR_DRIFT. The motion/react migration is correct; the CSS layer is a separate hygiene issue.
+
+**Verdict rules amendment (§8.1):** Add MINOR_DRIFT condition: "CSS-layer drift on ≤5 surfaces with WAAPI confirmed PASS." MAJOR_DRIFT condition narrows to: "S1 OR S3 WAAPI = FAIL, OR ≥6 CSS-layer drifts, OR Bucket C all 4 not observable."
+
+**No re-numbering. No v3.2. No new prompt file.** Future v3.1 runs read both v3.1 main body AND §12 delta as the unified spec.
+
+---
+
+**END OF v3.1 — paste verbatim to Sonnet (including §12 delta).**

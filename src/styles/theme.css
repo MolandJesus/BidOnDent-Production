@@ -3303,6 +3303,25 @@ body {
   border-color: rgba(125, 211, 252, 0.28);
 }
 
+/* KI-113 closure-proof: targeted reduce-guard for .bd-dashboard-section--interactive
+   per LAW_ANIMATION_AND_ATMOSPHERE.md §3 mandate. Surfaced by Sonnet v3.1 audit
+   (BidCardArticle hover S1 measurement returned CSS transitionDuration: "0.15s"
+   while WAAPI showed 0ms — the WAAPI-vs-CSS layering exposed this CSS-side gap).
+   See KI-114 for the broader CSS-side reduce-guard sweep across remaining
+   interactive-element transitions in theme.css. */
+@media (prefers-reduced-motion: reduce) {
+  .bd-dashboard-section--interactive {
+    transition: none;
+  }
+  .bd-dashboard-section--interactive::before {
+    transition: none;
+  }
+  .bd-dashboard-section--interactive:hover,
+  .bd-dashboard-section--interactive:focus-visible {
+    transform: none;
+  }
+}
+
 /* Light-mode polish: interactive tiles brighten their top lamp trim on
    hover so the lamp metaphor responds to touch. Locked palette only
    (top/corner lamp = rgba(196, 144, 65, *)). Additive — does not change
@@ -4031,6 +4050,40 @@ body {
   .bd-bid-card-float:hover::before {
     animation: none !important;
     opacity: 0 !important;
+  }
+}
+
+/* KI-113 closure forensic pass (2026-05-05) — reduce-guards for
+   interactive-element CSS transitions surfaced by the v3.1 audit.
+   Sonnet's S1 measurement caught .bd-dashboard-section--interactive
+   (handled inline above near L3306). The audit's broader implication
+   (per LAW_ANIMATION_AND_ATMOSPHERE.md §3 — "Every named animation MUST
+   be wrapped in a `prefers-reduced-motion: reduce` guard") applies
+   equally to CSS transitions on hover/focus states that produce visible
+   motion. This block covers the critical hover/focus transition groups
+   that were not previously guarded. Per ChatGPT advisor's tight
+   forensic-pass discipline: only guards that prevent visible motion
+   under reduce; not a sweep of every transition declaration. */
+@media (prefers-reduced-motion: reduce) {
+  /* Dashboard button family — transform + box-shadow on hover/focus */
+  .bd-dashboard-primary-button,
+  .bd-dashboard-secondary-button,
+  .bd-dashboard-ghost-button,
+  .bd-dashboard-filter-button {
+    transition: none;
+  }
+
+  /* Report flow inputs + buttons — focus state transform on inputs,
+     hover transform on buttons */
+  .bd-report-input,
+  .bd-report-primary-button,
+  .bd-report-secondary-button {
+    transition: none;
+  }
+
+  /* Glass-control surface — transform + background hover */
+  .bd-glass-control {
+    transition: none;
   }
 }
 

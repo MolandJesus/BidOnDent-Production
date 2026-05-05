@@ -132,6 +132,7 @@ When a Phase 6.5 / 7.5 / 8.5 commit adds a new animation, it MUST do one of the 
 - Hardcoded `animation: name 5s infinite` without an accompanying reduce-block — REJECTED on sight.
 - JS animation libraries (framer-motion, etc.) without their own reduce-motion handling — see Section 5.
 - "We'll skip the guard for the hero — it's important" — REJECTED. The hero is exactly where reduced-motion users need the guard most.
+- **CSS `transition:` declarations on interactive states (hover, focus, focus-visible, active) that produce visible motion (transform, opacity-via-transform-overlap) without a `@media (prefers-reduced-motion: reduce)` override** — REJECTED. The reduce-motion contract applies to ALL named motion sources, not just `motion/react` runtime systems. WAAPI overrides (from `motion/react`) and CSS transitions are independent layers; both must respect reduce. _Discovered 2026-05-05 during Phase 7.6 / KI-113 closure-proof audit: WAAPI was correctly reduced, but a CSS-level `.bd-dashboard-section--interactive` hover transition leaked through. See `OPS_KI_113_REDUCED_MOTION_SCOPE_CONTRACT_2026-05-05.md` close footer for the WAAPI-vs-CSS layering discussion._
 
 ---
 
