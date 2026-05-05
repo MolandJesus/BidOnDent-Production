@@ -178,9 +178,16 @@ export default function NotificationCenter({
                   : "rgba(96, 165, 250, 0.22)",
                 boxShadow: isLightAppearance
                   ? // Light mode aligned to locked 2026-05-03 palette (KI-066).
-                    "0 20px 60px rgba(15, 23, 42, 0.16), 0 4px 12px rgba(30, 58, 138, 0.08), inset 0 1px 0 rgba(252, 240, 208, 0.88), inset 0 -1px 0 rgba(140, 82, 22, 0.30), 0 0 0 1px rgba(140, 82, 22, 0.20), 0 0 0 1px rgba(191, 219, 254, 0.30), 0 0 36px rgba(196, 130, 45, 0.18)"
+                    // Phase 3 (2026-05-04): drop-shadow values aligned to
+                    // ProfileDropdown's canonical stack (24px/56px/0.14 +
+                    // 4px/12px/0.08) so the two top-bar dropdowns share the
+                    // same chrome-coherent surface treatment.
+                    "0 24px 56px rgba(15, 23, 42, 0.14), 0 4px 12px rgba(30, 58, 138, 0.08), inset 0 1px 0 rgba(252, 240, 208, 0.88), inset 0 -1px 0 rgba(140, 82, 22, 0.30), 0 0 0 1px rgba(140, 82, 22, 0.20), 0 0 0 1px rgba(191, 219, 254, 0.30), 0 0 36px rgba(196, 130, 45, 0.18)"
                   : // Dark popover shell aligned to locked palette (KI-066).
-                    "0 20px 64px rgba(2, 6, 23, 0.52), 0 0 0 1px rgba(96, 165, 250, 0.20), inset 0 1px 0 rgba(196, 144, 65, 0.24), inset 0 -1px 0 rgba(140, 82, 22, 0.34), 0 0 36px rgba(37, 99, 235, 0.12), 0 0 50px rgba(196, 130, 45, 0.18)",
+                    // Phase 3 (2026-05-04): close drop alpha tightened to 0.52
+                    // matched + 4px/12px/0.32 mid-drop added per ProfileDropdown
+                    // canonical stack — chrome-coherent two-dropdown surface.
+                    "0 24px 56px rgba(2, 6, 23, 0.52), 0 4px 12px rgba(2, 6, 23, 0.32), 0 0 0 1px rgba(96, 165, 250, 0.20), inset 0 1px 0 rgba(196, 144, 65, 0.24), inset 0 -1px 0 rgba(140, 82, 22, 0.34), 0 0 36px rgba(37, 99, 235, 0.12), 0 0 50px rgba(196, 130, 45, 0.18)",
                 backdropFilter: isLightAppearance
                   ? "blur(26px) saturate(1.5)"
                   : "blur(28px) saturate(1.5)",
