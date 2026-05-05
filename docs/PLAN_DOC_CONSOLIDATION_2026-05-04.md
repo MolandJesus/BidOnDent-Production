@@ -57,16 +57,22 @@ This plan executes consolidation **before** new docs proliferate, so each future
 
 **Problem:** `PLAN_PRODUCT_BRAIN.md` mixes tiers — LAW-adjacent invariants, current REF state, and PLAN cards in one 1,444-line file. Future agents read it as gospel and get a stale partial picture.
 
-**Action:**
+**Action (as actually executed in commit `e4a39ce1`):**
 
-1. Split `PLAN_PRODUCT_BRAIN.md` content by tier:
-   - **Current-state sections** ("What BidOnDent Currently Is", role descriptions, architecture snapshots) → audit for new content vs duplicates of REF_SYSTEM_STATE/REF_CODE_ORGANIZATION/REF_MODULE_STATUS. Move new material into the matching REF doc.
-   - **Code-organization sections** ("Code Organization Style To Preserve", file-layout patterns) → REF_CODE_ORGANIZATION (cross-ref LAW_LAYERED_ARCHITECTURE for new authority).
-   - **Future-facing CARDS** (strategic vision, unfunded ideas, future product directions) → new file `PLAN_PRODUCT_FUTURE_CARDS.md`.
-2. Replace `PLAN_PRODUCT_BRAIN.md` content with a 30-line stub redirecting readers to the three target docs (REF_SYSTEM_STATE, REF_CODE_ORGANIZATION, PLAN_PRODUCT_FUTURE_CARDS). Keep filename to preserve link integrity in archived docs that reference it.
-3. Update cross-refs in CLAUDE.md, AGENTS.md, README.md if they reference PRODUCT_BRAIN.
+1. `git mv docs/PLAN_PRODUCT_BRAIN.md → docs/archive/PLAN_PRODUCT_BRAIN_archived_2026-05-04.md`. Full original content preserved at the archive path; git history followable via `git log --follow`.
+2. New `docs/PLAN_PRODUCT_BRAIN.md` written as a redirect stub (~40 lines) listing the canonical home for new work on each topic the original doc covered.
+3. New `docs/PLAN_PRODUCT_FUTURE_CARDS.md` (~145 lines) extracts the forward-looking "Quick Reference — System Upgrade Cards" section verbatim — the doc's primary actionable surface.
+4. README.md PLAN section updated: PRODUCT_BRAIN row marked STUB; FUTURE_CARDS row added.
 
-**Risk:** Highest-LOC merge. Run after the dry-run cluster (B) succeeds.
+**Scope reduction vs original 1.5a plan (acknowledged):** The original Phase 1.5a plan called for migrating REF-tier content from PRODUCT_BRAIN into REF_SYSTEM_STATE / REF_CODE_ORGANIZATION / REF_MODULE_STATUS. The actually-shipped scope **does NOT migrate that content**. Reasons for the reduction:
+
+- Risk of destroying owner-voice nuance and Pass-numbered annotations (Pass 17 / 18 / 67) during a 1,444-line content split.
+- Risk of creating REF-tier duplicates or overrides if migrated content conflicts with what those docs already say.
+- Archive-and-stub is reversible (the archive is untouched, accessible, tracked); content migration is much harder to undo cleanly.
+
+The convergence with v3.3 is preserved: PRODUCT_BRAIN is gone from the active surface, the misleading "1,444 lines as gospel" problem is solved, agents are routed to proper-tier homes via the stub. **REF enrichment is deferred** — those docs may pull from the archive when an owner-named phase needs the content. The stub's table identifies where new canon on each topic should land going forward.
+
+**Risk (as executed):** Low. Pure file-system operation (`git mv` + new files + README ref updates). Original content preserved verbatim at archive path; nothing edited in-place inside REF docs.
 
 ---
 
