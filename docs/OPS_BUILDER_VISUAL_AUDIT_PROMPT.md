@@ -476,6 +476,73 @@ rg -n 'min-h-\[(3[0-9]|4[0-3])px\]' src/app/components --glob '*.{tsx,jsx}'
 
 **First applied:** Pass 6, 2026-05-05, commit `238d7257`. Promoted into this prompt during Pass 7a (KI-114 ledger close).
 
+### 9.7 Source-truth aria-label / accessible-name walker — fallback when runtime DOM is incomplete
+
+**Use this when:**
+
+- §9.5 cannot reach a button because it is state-gated (modal-open, error-state, route-active, drawer-open, popover-open) and the trigger is hard to env-fire.
+- A surface area is wide (auth, dialogs, settings, all role dashboards) and you want a single sweep across every `.tsx` rather than navigating each route.
+- Pass 7 lesson: §9.5 only catches what is currently rendered. Source-walker catches every `<button>` declaration in the codebase regardless of render state.
+
+**Method:** Save as `aria_audit.cjs` and run `node aria_audit.cjs src/app`.
+
+```js
+const fs = require("fs");
+const path = require("path");
+const root = process.argv[2] || "src/app";
+const findings = [];
+function walk(dir) {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const p = path.join(dir, entry.name);
+    if (entry.isDirectory()) walk(p);
+    else if (entry.name.endsWith(".tsx")) scan(p);
+  }
+}
+function scan(file) {
+  const src = fs.readFileSync(file, "utf8");
+  const re = /<button\b([^>]*)>([\s\S]*?)<\/button>/g;
+  let m;
+  while ((m = re.exec(src)) !== null) {
+    const attrs = m[1];
+    const inner = m[2];
+    if (/aria-label\s*=/.test(attrs)) continue;
+    if (/aria-labelledby\s*=/.test(attrs)) continue;
+    if (/title\s*=/.test(attrs)) continue;
+    const stripped = inner
+      .replace(/<[^>]+>/g, "")
+      .replace(/\{[^}]*\}/g, "")
+      .replace(/\s+/g, "")
+      .trim();
+    if (stripped.length > 1) continue;
+    const hasIcon =
+      /<[A-Z][A-Za-z0-9]*(\s[^>]*)?\/?\s*>/.test(inner) ||
+      /<svg\b/.test(inner) ||
+      /<img\b/.test(inner);
+    if (!hasIcon) continue;
+    const line = src.slice(0, m.index).split("\n").length;
+    findings.push({
+      file,
+      line,
+      snippet: m[0].replace(/\s+/g, " ").slice(0, 160),
+    });
+  }
+}
+walk(root);
+console.log("Findings:", findings.length);
+for (const f of findings) console.log(f.file + ":" + f.line + "  " + f.snippet);
+```
+
+**Triage rules:**
+
+1. **Skip `<button>` declarations whose only child is a translated string token** (e.g. `<button>{t('action.close')}</button>`) — the stripped-text check should already drop these, but inspect any false positive.
+2. **Prefer `aria-label`** for purely-icon buttons. Use the visible action verb (e.g. `aria-label="Close map"`, `aria-label="Zoom in"`).
+3. **Use `aria-labelledby`** when the button visually pairs with a heading nearby that fully describes its action.
+4. **Keep emoji-only buttons out of scope** for now — covered by a future i18n pass.
+
+**Pair with §9.5.** Runtime §9.5 is faster on currently-rendered surfaces. Source §9.7 is canonical when state-gated buttons are out of reach or when sweeping the full app in one pass.
+
+**First applied:** Pass 7, 2026-05-05, commit `63be2820` (22 fixes across `auth/`, `landing/`, `dashboard/`, `customer/`, `shop/`, `admin/`). Promoted into this prompt during Pass 8 (KI-115 ledger close).
+
 ---
 
 ## 10. AUDIT DOC CONVENTION

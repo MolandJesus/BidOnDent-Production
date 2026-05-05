@@ -640,3 +640,44 @@ caused (none expected — buttons are flex children, parent grows).
 **What this unlocks:** Lighthouse / axe-core baseline gets cleaner. Future a11y phases can pivot to color-contrast, focus-visible, and form-label sweeps without being noisy from icon-only baseline misses.
 
 **Best next pass:** Owner-direction — pick from planner's options 2 (reduced-motion regression check post-MotionConfig) or 3 (coverage-dialog forbidden-color sweep). Both are fresh signal axes.
+
+---
+
+## Pass 8 — Coverage Dialog forbidden-color sweep (2026-05-05, full-auto)
+
+**HEAD at start:** `63be2820` (post-Pass 7).
+
+**Pass chosen and why:** Planner option 3 — under-audited surface. Coverage Dialog is a high-density, multi-tab modal opened from the landing page "Open Full Map" CTA. It has not been swept under the locked Premium Gold Palette (LAW_PROJECT_RULES.md § Premium Gold Palette: locked baseline `196,144,65` / `196,130,45` / `140,82,22` / `252,238–240,204–208`; forbidden previous-gen `220,165,90` / `254,248,220` / `160,95,25` / `220,140,50`). Under-audited surfaces have historically yielded real signal.
+
+**Method:**
+
+1. Navigated `/landing` (light appearance default).
+2. Clicked "Open Full Map" → `CoverageMapDialog` opened (`role="dialog"` confirmed).
+3. Ran OPS §9.1 forbidden-color sweep scoped to `[role="dialog"] *` on each tab: Search, Explore, Saved, Shops.
+4. Source-grep cross-check: ran the four forbidden RGB literals against all 12 `src/app/components/landing/Coverage*.{ts,tsx}` files.
+
+**Findings:**
+
+| Surface | Tab | Element count | White panels (255,255,255 ≥0.5α) | Forbidden gold hits |
+| --- | --- | ---: | ---: | ---: |
+| CoverageMapDialog | (initial / dark) | 136 | 0 | 0 |
+| CoverageMapDialog | Search | 136 | 0 | 0 |
+| CoverageMapDialog | Explore | 149 | 0 | 0 |
+| CoverageMapDialog | Saved | 173 | 0 | 0 |
+| CoverageMapDialog | Shops | 141 | 0 | 0 |
+
+Source-grep: 0 matches across all 12 Coverage component files for `220,165,90`, `254,248,220`, `160,95,25`, and `220,140,50`.
+
+**Result:** **Negative result.** The Coverage Dialog is fully aligned with the locked Premium Gold Palette at both the runtime (computed-style) and source (literal RGB) layers. No fixes required.
+
+**Why this still matters:** Negative-result audits are publishable. They (a) close the surface as audited under the current locked palette, (b) raise confidence that the warm-gold regression vector is contained to the screens the LAW already enumerates, and (c) prevent a future agent from auditing the same surface in 2 weeks because no record existed.
+
+**Bundled in same pass — OPS §9.7 promotion:** Promoted the Pass 7 ad-hoc Node walker (`/tmp/aria_audit.cjs`) into `docs/OPS_BUILDER_VISUAL_AUDIT_PROMPT.md` as canonical §9.7. This is the source-truth fallback to §9.5 (runtime aria-label audit) for state-gated buttons. Closes KI-115's "promote tooling" follow-up.
+
+**Files touched:** `docs/OPS_BUILDER_VISUAL_AUDIT_PROMPT.md` (new §9.7), `docs/AUDIT_VISUAL_DEEP_2026-05-05_SONNET.md` (this section), `docs/REF_KNOWN_ISSUES.md` (KI-116 negative-result ledger entry).
+
+**Validation:** Build pending (next step). Source-grep clean. Runtime sweep clean across 4 tabs / 599 elements aggregate.
+
+**Doc updates:** OPS §9.7 added. KI-116 added (negative-result audit log; mirrors §9.6 promotion convention from KI-114).
+
+**Best next pass:** Per planner explicit STOP rule, return to owner. Do NOT auto-escalate to option 2 (reduced-motion regression check). Owner picks the next axis.
