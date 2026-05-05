@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { Database, HardDrive, RefreshCw, UserPlus } from "lucide-react";
 
 type QuickActionsProps = {
@@ -22,11 +22,12 @@ export default function QuickActions({
   onCheckEdgeFunctionHealth,
   onVerifyDatabase,
 }: QuickActionsProps) {
+  const reduceMotion = useReducedMotion();
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.1 }}
+      transition={{ duration: reduceMotion ? 0 : 0.3, delay: 0.1 }}
       className="bd-glass-card rounded-lg p-6 mb-6"
     >
       <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
@@ -76,6 +77,7 @@ export default function QuickActions({
         <motion.div
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
+          transition={{ duration: reduceMotion ? 0 : 0.3 }}
           className={`mt-4 p-4 rounded-lg whitespace-pre-wrap ${
             operationStatus.startsWith("✅")
               ? "bg-green-400/10 text-green-300 border border-green-400/30"

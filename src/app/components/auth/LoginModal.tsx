@@ -1,5 +1,5 @@
 // Login and Signup Modal Component
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { X } from "lucide-react";
 import { useEffect } from "react";
 import type { LoginView } from "../../types";
@@ -56,6 +56,7 @@ export default function LoginModal({
   onSignup,
   onLogin,
 }: LoginModalProps) {
+  const reduceMotion = useReducedMotion();
   useEffect(() => {
     if (!show || typeof document === "undefined") {
       return;
@@ -98,6 +99,7 @@ export default function LoginModal({
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: reduceMotion ? 0 : 0.3 }}
         aria-labelledby="login-modal-title"
         aria-modal="true"
         className="bd-glass-floating rounded-lg max-w-md w-full p-5 sm:p-6"

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { HardDrive, Trash, RefreshCw, Save, Eye, EyeOff, Copy, Check } from "lucide-react";
 
 /**
@@ -17,6 +17,7 @@ interface StorageItem {
 }
 
 export default function StorageDebugPanel() {
+  const reduceMotion = useReducedMotion();
   const [storageItems, setStorageItems] = useState<StorageItem[]>([]);
   const [totalSize, setTotalSize] = useState(0);
   const [autoRefresh, setAutoRefresh] = useState(false);
@@ -139,6 +140,7 @@ export default function StorageDebugPanel() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: reduceMotion ? 0 : 0.3 }}
       className="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
     >
       {/* Header */}
@@ -198,6 +200,7 @@ export default function StorageDebugPanel() {
                 key={item.key}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
+                transition={{ duration: reduceMotion ? 0 : 0.3 }}
                 className="border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors"
               >
                 <div className="flex items-start justify-between gap-3 mb-2">

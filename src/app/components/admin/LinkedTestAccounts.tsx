@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { CheckCircle, LogIn, RefreshCw, Trash2, UserPlus, Users, XCircle } from "lucide-react";
 import { TEST_ACCOUNTS } from "../../config/adminConfig";
 
@@ -31,11 +31,12 @@ export default function LinkedTestAccounts({
   onCreateAccount,
   onCheckAccount,
 }: LinkedTestAccountsProps) {
+  const reduceMotion = useReducedMotion();
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.2 }}
+      transition={{ duration: reduceMotion ? 0 : 0.3, delay: 0.2 }}
       className="bd-glass-card rounded-lg p-6 mb-6"
     >
       <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
@@ -52,7 +53,7 @@ export default function LinkedTestAccounts({
               key={account.email}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 + index * 0.1 }}
+              transition={{ duration: reduceMotion ? 0 : 0.3, delay: 0.3 + index * 0.1 }}
               className="border rounded-lg p-4 transition-all border-white/[0.10] hover:border-white/[0.12]"
             >
               <div className="flex items-start justify-between">

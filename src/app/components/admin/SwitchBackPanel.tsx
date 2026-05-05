@@ -1,15 +1,16 @@
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 
 type SwitchBackPanelProps = {
   adminEmail: string;
 };
 
 export default function SwitchBackPanel({ adminEmail }: SwitchBackPanelProps) {
+  const reduceMotion = useReducedMotion();
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ delay: 0.55 }}
+      transition={{ duration: reduceMotion ? 0 : 0.3, delay: 0.55 }}
       className="mt-4 bg-green-400/10 border-2 border-green-400/40 rounded-lg p-4 mb-6"
     >
       <h3 className="font-semibold text-green-900 mb-2 flex items-center gap-2">

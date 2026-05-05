@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { Lock, Mail, Shield, User, UserPlus } from "lucide-react";
 
 type NewAccountFormProps = {
@@ -30,11 +30,13 @@ export default function NewAccountForm({
   onCreate,
   onCancel,
 }: NewAccountFormProps) {
+  const reduceMotion = useReducedMotion();
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: reduceMotion ? 0 : 0.3 }}
       className="bd-glass-card rounded-lg border-2 border-green-300 p-6 mb-6"
     >
       <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
