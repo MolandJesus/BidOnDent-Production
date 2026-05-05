@@ -1569,14 +1569,47 @@ body {
 
 .dark .bd-glass-card,
 [data-theme="dark"] .bd-glass-card {
-  border-color: rgba(96, 165, 250, 0.2);
-  background: linear-gradient(180deg, rgba(30, 58, 138, 0.22) 0%, rgba(12, 25, 41, 0.68) 100%);
+  /* Pass 9 #3 (KI-081 site-wide lift) — owner directive 2026-05-05:
+     "more colors and gold in dark mode... liquid gold glass cards
+     everywhere." Base catch-all variant gains gold-trim grammar at
+     locked Premium Gold Palette baseline (196,144,65 / 196,130,45 /
+     140,82,22 / 252,240,208) — quieter than --landing/--dashboard
+     headline tiers so it doesn't compete, but every base-glass card
+     now reads as part of the same gold-lit liquid glass family
+     instead of cool-blue-only flatness. Cool-blue body preserved
+     (landing identity). All halo layers held at single-layer cap
+     0.22a or below per existing landing/dashboard convention. */
+  border-color: rgba(196, 144, 65, 0.32);
+  background: linear-gradient(180deg, rgba(30, 58, 138, 0.26) 0%, rgba(12, 25, 41, 0.74) 100%);
   box-shadow:
-    0 10px 24px rgba(2, 6, 23, 0.28),
-    inset 0 1px 0 rgba(147, 197, 253, 0.09),
-    inset 0 -1px 0 rgba(59, 130, 246, 0.04),
-    0 0 1px rgba(96, 165, 250, 0.25),
-    0 0 20px rgba(37, 99, 235, 0.05);
+    0 18px 40px rgba(2, 6, 23, 0.48),
+    0 6px 14px rgba(2, 6, 23, 0.26),
+    inset 0 1px 0 rgba(252, 240, 208, 0.22),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.28),
+    0 0 0 1px rgba(196, 144, 65, 0.2),
+    0 0 0 1px rgba(96, 165, 250, 0.18),
+    0 0 28px rgba(37, 99, 235, 0.1),
+    0 0 44px rgba(196, 130, 45, 0.22),
+    0 -28px 80px -16px rgba(196, 144, 65, 0.14),
+    inset 1px 0 0 rgba(252, 240, 208, 0.1),
+    inset -1px 0 0 rgba(252, 240, 208, 0.06);
+}
+
+.dark .bd-glass-card:hover,
+[data-theme="dark"] .bd-glass-card:hover {
+  /* Pass 9 #3 — hover deepens the lamp + brightens the trim, mirroring
+     landing/dashboard hover grammar at quieter delta (base tier). */
+  border-color: rgba(252, 240, 208, 0.5);
+  box-shadow:
+    0 24px 52px rgba(2, 6, 23, 0.56),
+    0 8px 18px rgba(2, 6, 23, 0.3),
+    inset 0 1px 0 rgba(252, 240, 208, 0.32),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.32),
+    0 0 0 1px rgba(196, 144, 65, 0.28),
+    0 0 0 1px rgba(147, 197, 253, 0.32),
+    0 0 40px rgba(37, 99, 235, 0.14),
+    0 0 56px rgba(196, 130, 45, 0.32),
+    0 -36px 100px -18px rgba(196, 144, 65, 0.2);
 }
 
 .dark .bd-glass-card--landing,
