@@ -150,46 +150,92 @@ This charter reaffirms:
 
 ---
 
-## 5. CSS-first lock (current state) + framer-motion escape clause (Phase 4.6)
+## 5. CSS-first default + `motion/react` envelope + remaining-libs escape clause
 
-### Current state: CSS-first, no JS animation libs
+> **Amended 2026-05-04 (`docs(canon):`)** during Phase 7.5 pre-execution audit, which surfaced a charter-vs-reality drift: `motion@12.23.24` (the framer-motion rebrand from Nov 2024) IS installed and consumed by 49 files via `motion/react` imports. The original §5 text claimed `framer-motion` was not installed, which was technically true (the package was renamed upstream) but materially false in spirit. This amendment aligns the charter with shipped reality while preserving the CSS-first default, the 29-keyframe primary vocabulary, and the mandatory reduced-motion contract. Additive correction only — §1, §2, §3, §4 untouched; no existing canon weakened.
 
-As of this charter:
+### Current state: CSS-first default, `motion/react` permitted within a defined envelope
 
-- `framer-motion` is **NOT installed.** Verify: `grep "framer-motion" package.json` returns no match.
+As of this amendment:
+
+- `motion@12.23.24` IS installed (`package.json` → `"motion": "12.23.24"`). This is the rebranded **framer-motion** package — upstream renamed it from `framer-motion` to `motion` in November 2024. Same library, same `motion`, `AnimatePresence`, `useReducedMotion`, gesture, and drag APIs, imported via `motion/react`.
+- `motion/react` is currently consumed by 49 files in `src/app/`. It is canon, not contraband.
 - `gsap` is **NOT installed.**
 - `lottie` / `lottie-react` is **NOT installed.**
 - `@react-spring/*` is **NOT installed.**
 - `three` / `@react-three/*` is **NOT installed.**
 
-The only motion infrastructure is CSS keyframes + Tailwind transition utilities + `useParallaxOffset` (vanilla React hook reading `requestAnimationFrame`).
+The motion infrastructure is therefore:
 
-### CSS-first lock
+1. **CSS keyframes + Tailwind transitions** — the primary vocabulary (Section 2's 29 canonical keyframes).
+2. **`useParallaxOffset`** — vanilla React hook, canonical reduced-motion-aware JS pattern (Section 3).
+3. **`motion/react`** — permitted within the envelope defined below; not a free-fire license.
 
-Phases 4.5, 6.5, 7.5, 8.5 ship all their work using:
+### CSS-first default (unchanged in spirit)
 
-1. The 29 canonical keyframes catalogued in Section 2
+The 29 canonical keyframes catalogued in Section 2 remain the **primary motion vocabulary**. New ambient / atmosphere / idle / scroll-trigger motion composes from keyframes first. Phases 4.5 / 6.5 / 7.5 / 8.5 default to:
+
+1. The 29 canonical keyframes
 2. New CSS keyframes added to `animations.css` or `theme.css` (with mandatory reduce-guard per Section 3)
 3. Tailwind `transition-*` utilities for state transitions
-4. Plain React hooks (no JS animation library) for any orchestration that CSS can't express
+4. `useParallaxOffset` (or equivalent vanilla hook) for orchestration CSS cannot express
 
-**No framer-motion install. No GSAP install. No Lottie install.** Hard stop.
+This default holds. `motion/react` does not displace it — it complements it for a specific, narrow envelope of interactions.
 
-### Framer-motion escape clause (Phase 4.6 only)
+### `motion/react` permitted envelope
 
-If, during Phase 6.5 or 7.5 execution, a specific commit hits a genuine wall that CSS cannot express (the canonical example: complex scroll-driven section reveals with stagger that would require ~300 lines of vanilla scroll-listener code), that commit **stops** and triggers Phase 4.6:
+The following patterns are canon (already established across the 49 shipped files), and may be reused or extended in additional surfaces without further authorization:
 
-1. The blocked commit halts. The work is parked, NOT shipped with a workaround.
-2. A separate `Phase 4.6` planning commit is proposed: a one-paragraph rationale + the specific CSS limitation hit + the framer-motion API that would resolve it.
-3. **Owner must explicitly authorize Phase 4.6.** Without explicit owner go, framer-motion does not get installed.
-4. If authorized, framer-motion is added in a single, focused commit (one dep + minimum-scope usage in the blocked commit's surface). The Phase 4.6 commit message names the wall it overcame.
-5. After Phase 4.6, framer-motion may be used in subsequent atmosphere commits — but each new use must still respect the reduce-motion contract (Section 3).
+1. **Stateful enter/exit transitions via `AnimatePresence`** — components that mount/unmount based on application state and need entrance + exit animations the DOM lifecycle alone cannot express. Canonical examples already shipped: [`AcceptedBidConfirmationSheet`](../src/app/components/codelayer/AcceptedBidConfirmationSheet.tsx), [`BidCardArticle`](../src/app/components/codelayer/BidCardArticle.tsx).
+2. **Gesture-driven micro-interactions** — `whileTap`, `whileHover`, `whileFocus` on buttons, cards, nav items, and other interactive surfaces where the gesture provides trust feedback. Canonical example already shipped: [`MobileBottomNav`](../src/app/components/dashboard/MobileBottomNav.tsx).
+3. **Drag / swipe interactions on bottom sheets and similar gesture surfaces** — where touch-driven dismissal, snapping, and momentum are part of the interaction model.
+
+This list **describes the established pattern**. It does not expand it. New `motion/react` patterns outside this envelope require justification (see guardrail below).
+
+### Mandatory reduced-motion contract — extended
+
+Section 3's reduced-motion contract is **extended**, not replaced. Both motion infrastructures must honor it:
+
+- **CSS-keyframe motion** — `@media (prefers-reduced-motion: reduce) { ... }` (existing rule, Section 3).
+- **`motion/react` motion** — `useReducedMotion()` from `motion/react` MUST be honored. Components using `motion.*`, `AnimatePresence`, `whileTap`/`whileHover`, or drag MUST short-circuit to a static / instant-state render when `useReducedMotion()` returns `true`. Same trust contract, same enforcement.
+
+**Verification stays the same** (Section 3 §Verification): reviewer opens DevTools → Rendering → Emulate CSS prefers-reduced-motion: reduce, confirms the animation is suppressed. This now applies to both CSS and `motion/react` surfaces.
+
+**Forbidden patterns (extends Section 3):**
+
+- A `motion/react` component that animates regardless of reduced-motion preference — REJECTED.
+- "Reduced-motion is a CSS-only concern" — REJECTED. The trust contract is library-agnostic.
+
+### New-component guardrail (LAW tier)
+
+Any **NEW component file** that introduces `motion/react` imports (vs. editing an existing file that already imports it) MUST justify in its commit message why CSS keyframes + Tailwind transitions cannot express the intent. The justification cites the specific gesture, enter/exit lifecycle, or drag interaction the new file requires.
+
+Editing existing `motion/react` files (the 49 already shipped) requires no such justification — they are canon.
 
 **Forbidden:**
 
-- "Just install framer-motion preemptively, we might need it" — REJECTED.
-- Installing framer-motion without an active blocked commit demonstrating the CSS wall — REJECTED.
-- Bundling Phase 4.6 into a Phase 6.5/7.5 commit instead of a separate dep-add commit — REJECTED.
+- A new component file silently importing `motion/react` for ambient / idle / atmosphere motion (CSS keyframes can express that and must be preferred) — REJECTED.
+- Replacing CSS-keyframe motion in an existing file with `motion/react` for stylistic reasons — REJECTED. CSS-first default holds.
+
+### Remaining-libs escape clause (was Phase 4.6)
+
+This clause now applies to **additional JS animation libraries** beyond `motion/react`: `gsap`, `lottie` / `lottie-react`, `@react-spring/*`, `three` / `@react-three/*`. None of these are installed. Adding any of them follows the same dep-add discipline:
+
+If, during any phase's execution, a specific commit hits a genuine wall that neither CSS keyframes nor `motion/react` can express, that commit **stops** and triggers a dep-add proposal:
+
+1. The blocked commit halts. The work is parked, NOT shipped with a workaround.
+2. A separate planning commit is proposed: a one-paragraph rationale + the specific limitation hit + the library API that would resolve it.
+3. **Owner must explicitly authorize the dep-add.** Without explicit owner go, the new library does not get installed.
+4. If authorized, the library is added in a single, focused commit (one dep + minimum-scope usage in the blocked commit's surface). The dep-add commit message names the wall it overcame.
+5. After authorization, the library may be used in subsequent commits — but each new use must still respect the reduced-motion contract (Section 3 + this section).
+
+**Forbidden:**
+
+- "Just install gsap preemptively, we might need it" — REJECTED.
+- Installing any additional JS animation library without an active blocked commit demonstrating the wall — REJECTED.
+- Bundling the dep-add into a feature commit instead of a separate dep-add commit — REJECTED.
+
+The original "Phase 4.6" framing is retired (`motion/react` is already canon, so there is no framer-motion-specific dep-add cycle to track). Any future JS motion library follows this generalized clause.
 
 ---
 
