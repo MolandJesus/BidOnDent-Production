@@ -907,3 +907,7 @@ Cluster 6A halt revealed the v3.3 Phase 6 scope contract was built on a partiall
 - `docs/OPS_PHASE_6_PRE_EXECUTION_AUDIT_2026-05-04.md` — read-only audit findings.
 - `docs/PLAN_DOC_INDEX_BY_PHASE.md` — Phase 6 row marked CLOSED with Path A annotation.
 - `src/app/components/dashboard/DashboardCoveragePanel.tsx` — `appearanceMode` prop added, 8 hardcoded text colors gated behind `isLight` ternary per Phase 2 `InsurerClaimApprovalModal` pattern.
+
+### v3.3 master-plan Phase 6.5 close (2026-05-04)
+
+Phase 6.5 (landing atmosphere + section transitions) closed via **Path B** (close-only with deferred-aesthetic note). Pre-execution audit (`docs/OPS_PHASE_6_5_PRE_EXECUTION_AUDIT_2026-05-04.md`) confirmed 4 of 4 originally-scoped deliverables already shipped via prior sweeps (parallax via `useParallaxOffset`, idle drift via 17 orb-animation instances, section transitions via `useScrollAnimation` + `bd-bloom-atmosphere`, coverage map ambient via `bd-pin-pulse` family). 1 aesthetic gap (gold-lamp halos in BenefitsSection / AboutOpportunitySection are static radials, not breathing) parked as **KI-112 P7-TECHDEBT** in `REF_KNOWN_ISSUES.md` with removal trigger "post-launch aesthetic pass OR Phase 8.5 ambient/idle motion work, whichever comes first." `OPS_LANDING_ATMOSPHERE_LOG.md` not written (Path B; audit doc + KI-112 are the durable record). 0 code edits this commit.

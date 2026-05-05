@@ -205,6 +205,12 @@ Following the Phase 6 A/B/C template:
 - [`OPS_PHASE_6_PRE_EXECUTION_AUDIT_2026-05-04.md`](OPS_PHASE_6_PRE_EXECUTION_AUDIT_2026-05-04.md) — sister audit; same method
 - [`PLAN_DOC_INDEX_BY_PHASE.md`](PLAN_DOC_INDEX_BY_PHASE.md) — Phase 6.5 row updated this commit
 - [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md) — apex design canon (LOCKED; not touched by this audit)
-- [`REF_KNOWN_ISSUES.md`](REF_KNOWN_ISSUES.md) — KI-108–111 (Phase 8 territory; not affected by 6.5)
+- [`REF_KNOWN_ISSUES.md`](REF_KNOWN_ISSUES.md) — KI-108–111 (Phase 8 territory; not affected by 6.5) **+ KI-112 (gold-lamp-breathe parked here per Phase 6.5 close, see footer)**
 - [`src/app/hooks/useParallaxOffset.ts`](../src/app/hooks/useParallaxOffset.ts) — canonical parallax hook (reduced-motion-aware)
 - [`src/app/hooks/useScrollAnimation.ts`](../src/app/hooks/useScrollAnimation.ts) — canonical scroll-trigger reveal hook
+
+---
+
+## Footer note (added 2026-05-04 at Phase 6.5 close)
+
+**PARKED AS KI-112 on 2026-05-04** — see [`REF_KNOWN_ISSUES.md`](REF_KNOWN_ISSUES.md) for durable tracking of the gold-lamp-breathe aesthetic gap surfaced in §2 + findings table row 1 of this audit. Phase 6.5 closed via Path B (close-only with deferred-aesthetic note). This OPS audit doc is a point-in-time snapshot; the KI ledger is the durable home for the parked candidate.

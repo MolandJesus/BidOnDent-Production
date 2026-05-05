@@ -2,7 +2,7 @@
 
 **Authority level:** REFERENCE — describes current known gaps, bugs, and structural issues.
 
-**Last updated:** 2026-05-04 (KI-108–111 added — Phase 5 map architecture diagnose findings; KI-107 unchanged)
+**Last updated:** 2026-05-04 (KI-112 parked — Phase 6.5 close gold-lamp-breathe aesthetic gap; KI-108–111 unchanged from Phase 5)
 
 **Update rules:**
 
@@ -902,3 +902,18 @@
 - **Removal trigger:** Phase 7 subtree review (not a hard requirement; review only).
 - **Next review:** Phase 7 kickoff.
 - **Status:** **OPEN — P6.**
+
+### KI-112: Gold-lamp halos in landing warm-register sections are static, not breathing (P7-TECHDEBT)
+
+- **Impact:** Landing warm-register surfaces (BenefitsSection "Why Choose" + AboutOpportunitySection "Built on Transparency" + adjacent gold-halo sites) render premium gold-lamp halos as **static radial gradients**. The `pulseGlow` keyframe is defined in [`src/styles/animations.css`](../src/styles/animations.css) L101 but is not consumed by any of these surfaces. Result: the page's atmosphere reads correct (gold canon densely applied — 205 `rgba(196,…)` hits in `theme.css`), but the lamp halos themselves don't oscillate the way premium-glass UI typically does. Aesthetic depth gap, not a functional or readability issue.
+- **Severity:** P7-TECHDEBT. Aesthetic addition territory; **not a defensive fix.** No regression. No accessibility issue. No user-facing bug — the page renders correctly with the static halos.
+- **Location:**
+  - [`src/app/components/landing/BenefitsSection.tsx`](../src/app/components/landing/BenefitsSection.tsx) L85 + L109 — static `radial-gradient(ellipse … rgba(196, 130, 45, 0.16) / rgba(196, 144, 65, 0.18))` halos
+  - [`src/app/components/landing/AboutOpportunitySection.tsx`](../src/app/components/landing/AboutOpportunitySection.tsx) L110+ — orb glow + radial gold halo
+  - Adjacent gold-halo sites across landing (TrustStatsSection, BusinessInquirySection warm-register surfaces) — survey on activation
+- **Evidence:** [`OPS_PHASE_6_5_PRE_EXECUTION_AUDIT_2026-05-04.md`](OPS_PHASE_6_5_PRE_EXECUTION_AUDIT_2026-05-04.md) §2 ("Gold lamp breathing") + findings table row 1.
+- **Fix direction (deferred):** Wire `pulseGlow` (or a new `bdGoldLampBreathe` keyframe with a slower/more atmospheric curve — 8–12s cycle) to the static gold-lamp halos via a new CSS class (e.g. `bd-gold-lamp-breathe`). Mandatory `prefers-reduced-motion: reduce` guard per [`LAW_ANIMATION_AND_ATMOSPHERE.md`](LAW_ANIMATION_AND_ATMOSPHERE.md) §3 (every named animation must have a guard in the same commit). Owner taste decisions required before activation: (a) which surfaces breathe (BenefitsSection only? all warm-register? every gold halo?), (b) breathing rate (4s premium-glass standard vs 8–12s slower drift). Estimated 1–2 commits if owner authorizes.
+- **Removal trigger:** Post-launch aesthetic pass OR Phase 8.5 ambient/idle motion work, whichever comes first. The pulseGlow keyframe already exists; consumption is the missing piece, so the activation path is short.
+- **Next review:** Post-launch retrospective OR Phase 8.5 kickoff.
+- **Why parked here, not in OPS audit only:** The OPS pre-execution audit is a point-in-time snapshot; the KI ledger is the durable home for parked aesthetic gaps. Future agents reading `REF_KNOWN_ISSUES.md` will surface this candidate without re-reading audit docs. Phase 6.5 close commit cross-refs this entry.
+- **Status:** **OPEN — P7-TECHDEBT.** Phase 6.5 closed via Path B (close-only with deferred-aesthetic note); this KI is the parked record.
