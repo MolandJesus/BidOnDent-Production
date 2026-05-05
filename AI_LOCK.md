@@ -49,7 +49,7 @@ Parallel AI work (one AI per layer) is only enabled after Phase 3 lock dry run +
 - Provider changes (MapLibre → Mapbox, Clerk → other)
 - Deploy/secret actions
 - Overwriting unrelated work
-- Touching [`docs/MOLANDJESUS_DESIGN_DECISIONS.md`](docs/MOLANDJESUS_DESIGN_DECISIONS.md) — locked apex design doc, no merges/edits/splits ever
+- **Structural** changes to [`docs/MOLANDJESUS_DESIGN_DECISIONS.md`](docs/MOLANDJESUS_DESIGN_DECISIONS.md) — no merges, splits, archives, renames, or restructuring ever (structural lock is absolute). **Controlled additive edits** are permitted only under the clause in [`docs/LAW_PROJECT_RULES.md`](docs/LAW_PROJECT_RULES.md) "Controlled-edit clause" — phase-required, additive-only, `docs(canon):` prefixed.
 
 ## Skills applied schema
 

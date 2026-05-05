@@ -127,7 +127,17 @@ If a user requests work that conflicts with LAW → AI must flag the conflict
 - `PLAN_*` — Future direction. Not current truth
 - `OPS_*` — Operational checklists, runbooks, audit logs, smoke tests, phase execution logs (added 2026-05-04). OPS docs describe procedures and one-off operations; they do not establish behavioral rules (LAW) or describe ongoing system state (REF).
 
-**Apex design canon:** [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md) is treated as effectively LAW-tier despite the filename. It is the locked apex design authority for BidOnDent. Per owner directive 2026-05-04: do not merge, split, restructure, rename, archive, or edit it. Cross-refs always point INTO it; nothing is extracted from it. When generating new design canon, cross-ref MOLANDJESUS as authority — never as a target for consolidation. External audits suggesting it be reduced to a "thin owner-decision log" or its content moved to `REF_VISUAL_SYSTEM.md` are REJECTED on sight.
+**Apex design canon:** [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md) is treated as effectively LAW-tier despite the filename. It is the locked apex design authority for BidOnDent. Cross-refs always point INTO it; nothing is extracted from it. When generating new design canon, cross-ref MOLANDJESUS as authority — never as a target for consolidation. External audits suggesting it be reduced to a "thin owner-decision log" or its content moved to `REF_VISUAL_SYSTEM.md` are REJECTED on sight.
+
+**Structural lock (no exception):** Do not merge, split, restructure, rename, or archive `MOLANDJESUS_DESIGN_DECISIONS.md`. Per owner directive 2026-05-04.
+
+**Controlled-edit clause (added 2026-05-04, mid-autopilot owner amendment):** Additive edits to `MOLANDJESUS_DESIGN_DECISIONS.md` are permitted when ALL of the following hold:
+
+1. The edit is **directly required by an active master-plan phase** (e.g. recording a phase decision the owner agreed to, appending a section that captures a new owner directive, adding a `**Last updated:**` line).
+2. The edit is **additive only** — no merges, splits, archives, renames, or content removal. Existing canon (warm-gold palette, premium glass canon, "REJECTED on sight" clauses, owner-anchored identity rules) cannot be weakened or stripped.
+3. The commit uses the explicit `docs(canon):` prefix and the message cites the master-plan phase that required the change.
+
+Anything else — restructuring proposals, AI-driven cleanup, "thin owner-decision log" reductions, palette refinements without owner authorization — still REJECTED on sight. The structural lock above is absolute; this clause relaxes editing only, not structural operations.
 
 **Architectural authority:** [`LAW_LAYERED_ARCHITECTURE.md`](LAW_LAYERED_ARCHITECTURE.md) (added 2026-05-04) governs the four-layer model (L1 design / L2 interface / L3 orchestration / L4 backend), file-size budgets, forbidden cross-layer flows, grandfathering policy, and multi-AI coordination via [`AI_LOCK.md`](../AI_LOCK.md).
 
