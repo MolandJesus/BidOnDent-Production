@@ -50,7 +50,7 @@ Documents are organized in four tiers: **LAW > REFERENCE > PLAN > OPS** (OPS add
 | [`PLAN_DASHBOARD_REDESIGN.md`](PLAN_DASHBOARD_REDESIGN.md)                                                                                          | Dashboard premium-lift plan (2026-05-02) — **PRE-EXECUTION**. Brings landing's _quality_ bar to all 4 roles' dashboard surfaces (~139 component files across customer/shop/insurer/admin) without violating the §9 inheritance rule (no automotive register, no warm amber atmosphere, no Direction C accents on dashboard). 12 owner-gated passes proposed (D1–D12). 6 open questions to answer before D1. Awaiting greenlight. |
 | [`PLAN_VISUAL_MASTER_2026-05-03.md`](archive/2026-05-03-visual-handoffs/PLAN_VISUAL_MASTER_2026-05-03_archived_2026-05-04.md)                       | **ARCHIVED 2026-05-04** — visual master ledger from 2026-05-03 session. KI-062 RESOLVED; subsequent visual work (Pass G/H/I/J/K/L/M/N/O) supersedes this ledger. Kept for pass-history context.                                                                                                                                                                                                                                  |
 | [`PLAN_DESIGN_POLISH_QUEUE_OPUS_2026-05-03.md`](archive/2026-05-03-visual-handoffs/PLAN_DESIGN_POLISH_QUEUE_OPUS_2026-05-03_archived_2026-05-04.md) | **ARCHIVED 2026-05-04** — surgical polish queue from 2026-05-03 session. P0 LAW palette drift fully RESOLVED across Pass H1.1/H1.6/H2 + KI-090; remaining queue items consumed by Pass H/I/J/K/L/M/N/O. Kept for pass-history context.                                                                                                                                                                                           |
-| [`PLAN_FUTURE_NAV_AND_MAP_FUNCTIONALITY.md`](PLAN_FUTURE_NAV_AND_MAP_FUNCTIONALITY.md)                                                              | DEFERRED future-pass scope — turn-by-turn nav engine, voice TTS, deviation handling, Supabase-backed saved places, per-role map layers, real-time partner-shop bid state on map markers. Tracked as KI-075. Four trigger conditions must ALL fire before this moves from PLAN to LAW. Created 2026-05-03 (Bucket 9 of cloud autopilot master pass).                                                                              |
+| [`PLAN_FUTURE_NAV_AND_MAP_FUNCTIONALITY.md`](archive/PLAN_FUTURE_NAV_AND_MAP_FUNCTIONALITY_archived_2026-05-04.md)                                  | **ARCHIVED 2026-05-04** (Phase 1.5d, Cluster C). Substantively subsumed by [`PLAN_MAP_MASTER.md`](PLAN_MAP_MASTER.md). Content preserved at archive path; KI-075 reference still valid (DEFERRED).                                                                                                                                                                                                                               |
 | [`PLAN_CHAT_SYSTEM_IMESSAGE_IOS26.md`](PLAN_CHAT_SYSTEM_IMESSAGE_IOS26.md)                                                                          | DEFERRED future-pass scope — in-app chat system anchored to transaction surfaces (damage report / bid / claim / job_assignment), iOS 26 iMessage design language adapted to BidOnDent's locked Premium Gold + cool blue canon. Four trigger conditions must ALL fire before activation (soft launch shipped, KI-002 RESOLVED, owner authorization, ≥5–10 production transaction loops). Created 2026-05-04 per owner directive.  |
 
 > **Landing-page plans archived 2026-05-03.** The original 16-pass landing redesign and the follow-up Liquid Map Intelligence / dark-mode parity / button-system passes all shipped. They live under `docs/archive/` for historical decision context. Current landing visual state lives in **[`REF_VISUAL_SYSTEM.md`](REF_VISUAL_SYSTEM.md)**.
@@ -95,15 +95,14 @@ These are the primary governing documents. Always start here.
 - **[`REF_AI_COLLABORATION_PROTOCOL.md`](REF_AI_COLLABORATION_PROTOCOL.md)** — canonical rules for Mola's multi-AI workflow. Read when a message includes pasted AI output, screenshots/logs from another tool, live owner add-ons, or instructions to plan-only vs go full autopilot.
 - **[`REF_AI_BROWSER_NAVIGATION.md`](REF_AI_BROWSER_NAVIGATION.md)** — canonical rules for browser automation and route recovery.
 
-### Phase / Audit Docs (open-ended)
+### OPS (procedures, runbooks, audit logs — added as 4th tier 2026-05-04)
 
-- **[`PHASE_6_SMOKE_TEST_CHECKLIST.md`](PHASE_6_SMOKE_TEST_CHECKLIST.md)** — three-environment smoke test (Local Docker / Hosted Staging / Production). Hosted columns still partial.
+- **[`OPS_DEVELOPER_SETUP.md`](OPS_DEVELOPER_SETUP.md)** — local setup, first run, Google OAuth provider configuration. Supersedes `GETTING_STARTED.md` + `GOOGLE_OAUTH_SETUP.md` (both archived 2026-05-04 under `docs/archive/`).
+- **[`OPS_PHASE_6_SMOKE_TEST.md`](OPS_PHASE_6_SMOKE_TEST.md)** — three-environment smoke test (Local Docker / Hosted Staging / Production). Renamed 2026-05-04 from `PHASE_6_SMOKE_TEST_CHECKLIST.md` for tier consistency.
 
-### Setup & Operations
+### Setup & Operations (Supabase platform contract)
 
-- **[`GETTING_STARTED.md`](GETTING_STARTED.md)** — local setup and first run. `.env` configuration is the canonical approach.
 - **[`SUPABASE_SETUP_GUIDE.md`](SUPABASE_SETUP_GUIDE.md)** — backend, storage, and edge-function setup. **§16 Storage Pointer Pattern** + **§17 verify_jwt = false** are load-bearing.
-- **[`GOOGLE_OAUTH_SETUP.md`](GOOGLE_OAUTH_SETUP.md)** — Clerk + Google OAuth setup.
 
 ### Optional References
 
