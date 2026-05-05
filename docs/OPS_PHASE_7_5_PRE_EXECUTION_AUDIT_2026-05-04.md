@@ -230,4 +230,78 @@ Rationale:
 - [`OPS_PHASE_7_PRE_EXECUTION_AUDIT_2026-05-04.md`](OPS_PHASE_7_PRE_EXECUTION_AUDIT_2026-05-04.md) — sister audit; same method
 - [`PLAN_DOC_INDEX_BY_PHASE.md`](PLAN_DOC_INDEX_BY_PHASE.md) — Phase 7.5 row updated this commit
 - [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md) — apex design canon (LOCKED; not touched by this audit)
-- [`REF_KNOWN_ISSUES.md`](REF_KNOWN_ISSUES.md) — KI-108/109/110/111/112 (close commit will add F1/F2/F3 entries pending owner adjudication)
+- [`REF_KNOWN_ISSUES.md`](REF_KNOWN_ISSUES.md) — KI-108/109/110/111/112 (extended 2026-05-05 to subsume F2 + F3) and KI-113 (created 2026-05-05 for F1 reduced-motion compliance gap)
+
+---
+
+## Close Footer (added 2026-05-05)
+
+**Status:** **PHASE 7.5 CLOSED 2026-05-05 via Path Y** (docs-only close per X+ bounded-sweep safety valve trip). Single `docs(close):` commit with no code changes. F1 reclassified P3 → KI-113 with full bucket-A 32-file scope contract. F2 + F3 folded into KI-112 extension (atmosphere/idle motion gap family). `MotionConfig` wrap deferred to future phase that closes the reduced-motion sweep.
+
+### Audit-stat correction
+
+The original audit (above, §2.1) reported **"1/49 compliant"** based on [`ReportScreen.tsx:200`](../src/app/components/codelayer/ReportScreen.tsx#L200) using `window.matchMedia("(prefers-reduced-motion: reduce)")`. The bounded sweep revealed that gate applies to **`scrollIntoView` behavior** (smooth vs auto), NOT to the `motion.div` step transition at [`ReportScreen.tsx:290`](../src/app/components/codelayer/ReportScreen.tsx#L290). The step transition uses explicit `transition={{ duration: 0.22 }}` and is ungated.
+
+**Corrected compliance ratio on motion/react component-level transition behavior: 0/49 = 0.0%.**
+
+The matchMedia adaptation in ReportScreen is correct for its `scrollIntoView` purpose and remains; it does not constitute reduced-motion compliance for the file's `motion.div`.
+
+### Sonnet runtime verification (2026-05-05, owner-supervised)
+
+Verification was executed by Sonnet (browser-automated) under owner supervision after this audit shipped. Sonnet applied a candidate `<MotionConfig reducedMotion="user">` wrap to `src/main.tsx`, ran the §3 verification protocol (DevTools → Rendering → Emulate `prefers-reduced-motion: reduce`), sampled three surfaces, and reverted the wrap before reporting. Verbatim verdict:
+
+| Surface                     | Component         | Transition type         | Under reduce                   | Recovery |
+| --------------------------- | ----------------- | ----------------------- | ------------------------------ | -------- |
+| S1 — BidCard hover          | `BidCardArticle`  | `duration: 0.2` (tween) | **FAIL** — animates over 200ms | PASS     |
+| S2 — MobileBottomNav tap    | `MobileBottomNav` | `type: "spring"`        | **PASS** — instant snap        | PASS     |
+| S3 — Route transition (sub) | `DashboardRouter` | `duration: 0.2` (tween) | **FAIL** (inferred)            | N/A      |
+
+> `MotionConfig reducedMotion="user"` in motion/react v11 makes **spring** animations instant (no explicit duration → MotionConfig can override). It does **NOT** override animations with explicit `transition={{ duration: N }}` props — the component-level transition takes precedence over the `MotionConfig` context value.
+
+This finding **falsified the Class 1 single-line-fix assumption** that drove the original Phase 7.5 close relay. F1 cannot be closed by a `MotionConfig` wrap alone — the wrap covers spring/whileTap surfaces (bucket C, 4 files) but explicit-duration tweens require per-component `useReducedMotion()`.
+
+### Builder bounded sweep (X+ Step 2A, 2026-05-05)
+
+After the Class 1 falsification, the relay split into Path X / X+ / Y / Z and the builder ran a read-only classification sweep across all 49 motion/react files. Sweep classifier: `transition={{ duration: ... }}` lines without an adjacent `type: "spring"` are explicit-duration tweens (definite fail under reduce). Bucket counts:
+
+| Bucket                                                                | Count  | Behavior under emulated `prefers-reduced-motion: reduce`                            |
+| --------------------------------------------------------------------- | ------ | ----------------------------------------------------------------------------------- |
+| A — explicit-duration tween in `transition` prop                      | **32** | Definite FAIL — animate over their declared duration                                |
+| B — mixed (explicit-duration overlay + spring sheet)                  | **2**  | Partial FAIL — overlay/duration animates, spring snaps                              |
+| C — pure spring (already covered by `MotionConfig`)                   | **4**  | PASS via `MotionConfig` wrap (verified Surface 2)                                   |
+| D — delay-only override (no duration; relies on motion/react default) | **7**  | UNCERTAIN — depends on default-transition resolution per prop type; no runtime test |
+| E — no transition prop at all (relies on motion/react default)        | **4**  | UNCERTAIN — same as D                                                               |
+| **Total**                                                             | **49** | —                                                                                   |
+
+Definite-fail set: 32 (bucket A) + 2 (bucket B) = **34 files**. Including uncertain (D + E): up to **45 files**.
+
+Full file-level scope (bucket A 32 files, bucket B 2 files, buckets C/D/E enumerated) is parked in [`REF_KNOWN_ISSUES.md`](REF_KNOWN_ISSUES.md) under **KI-113** as the durable scope contract for the future fix phase.
+
+### Scope-valve outcome (X+ → Y collapse)
+
+The advisor's bounded-sweep rule:
+
+- ≤ 8 files: fix all in this commit (Path X+)
+- 9–14 files: judgment call
+- **≥ 15 files: stop, retreat to Path Y** (docs-only close; full sweep deferred)
+
+Bucket A alone returned **32 files** — well past the 15-file safety valve. Including bucket B brings the definite-fail count to 34. Even the strictest read trips the valve. Bounded-X+ collapses to **Path Y**.
+
+**Phase 7.5 closes docs-only.** No `MotionConfig` wrap shipped this commit (intentionally deferred to avoid mixed messaging — partial fix adjacent to "32 files broken" acknowledgment would read poorly in `git log`). No `fix(a11y):` headline this commit. Full reduced-motion sweep + `MotionConfig` wrap = future-phase scope (per `LAW_HARDENING_PLAN.md` Phase 7.5 close session entry).
+
+### What ships in the close commit
+
+- This audit close footer (Sonnet verdict + sweep + valve trip + stat correction).
+- KI-112 extended to subsume F2 (dashboard atmosphere mini-map idle drift) + F3 (dashboard dropdown enter/exit) under the "static where atmosphere/canon supports motion" family.
+- KI-113 created (P3, 32-file bucket A scope + 2-file bucket B + 11-file bucket D+E "audit needed" note).
+- `PLAN_DOC_INDEX_BY_PHASE.md` Phase 7.5 row → CLOSED with Path Y annotation, scope-valve note, KI-113 link.
+- `LAW_HARDENING_PLAN.md` Phase 7.5 close session entry (verification chain: audit → Sonnet runtime → builder sweep → docs-only close).
+
+### What does NOT ship in the close commit
+
+- `<MotionConfig reducedMotion="user">` wrap in `src/main.tsx` (deferred — covers only bucket C; partial fix would mix messaging).
+- Per-file `useReducedMotion()` edits (deferred — 34-file mechanical sweep is its own phase).
+- No `fix(a11y):` commit (deferred to future phase that closes KI-113).
+- No `PLAN_PHASE_7_5*` writes (audit + close footer + KI-113 are the durable record).
+- MOLANDJESUS not touched (structural lock holds).
+- LAW_ANIMATION_AND_ATMOSPHERE §5 not amended further (the 2026-05-04 amendment in commit `63ef6b6b` stands as-is).

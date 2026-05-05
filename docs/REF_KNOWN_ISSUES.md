@@ -2,7 +2,7 @@
 
 **Authority level:** REFERENCE — describes current known gaps, bugs, and structural issues.
 
-**Last updated:** 2026-05-04 (KI-112 parked — Phase 6.5 close gold-lamp-breathe aesthetic gap; KI-108–111 unchanged from Phase 5)
+**Last updated:** 2026-05-05 (Phase 7.5 close — KI-112 extended to cover F2 dashboard atmosphere + F3 dropdown enter/exit; KI-113 created P3 for prefers-reduced-motion compliance gap across 32+ motion/react surfaces)
 
 **Update rules:**
 
@@ -903,17 +903,94 @@
 - **Next review:** Phase 7 kickoff.
 - **Status:** **OPEN — P6.**
 
-### KI-112: Gold-lamp halos in landing warm-register sections are static, not breathing (P7-TECHDEBT)
+### KI-112: Static atmosphere/idle motion gaps where keyframe motion would apply — landing warm-register sections + dashboard surfaces + dropdowns (P7-TECHDEBT)
 
-- **Impact:** Landing warm-register surfaces (BenefitsSection "Why Choose" + AboutOpportunitySection "Built on Transparency" + adjacent gold-halo sites) render premium gold-lamp halos as **static radial gradients**. The `pulseGlow` keyframe is defined in [`src/styles/animations.css`](../src/styles/animations.css) L101 but is not consumed by any of these surfaces. Result: the page's atmosphere reads correct (gold canon densely applied — 205 `rgba(196,…)` hits in `theme.css`), but the lamp halos themselves don't oscillate the way premium-glass UI typically does. Aesthetic depth gap, not a functional or readability issue.
-- **Severity:** P7-TECHDEBT. Aesthetic addition territory; **not a defensive fix.** No regression. No accessibility issue. No user-facing bug — the page renders correctly with the static halos.
+> **Scope extended 2026-05-05 (Phase 7.5 close)** to subsume Phase 7.5 audit findings F2 (dashboard mini-map idle drift NOT shipped) and F3 (dropdown entrance/exit NOT shipped). Originally scoped to landing warm-register gold-lamp halos only; now tracks the broader "static surfaces where keyframe-based ambient/idle/enter motion would apply but is not consumed" family.
+
+- **Impact (original scope — landing warm-register gold-lamp breathing):** Landing warm-register surfaces (BenefitsSection "Why Choose" + AboutOpportunitySection "Built on Transparency" + adjacent gold-halo sites) render premium gold-lamp halos as **static radial gradients**. The `pulseGlow` keyframe is defined in [`src/styles/animations.css`](../src/styles/animations.css) L101 but is not consumed by any of these surfaces. Result: the page's atmosphere reads correct (gold canon densely applied — 205 `rgba(196,…)` hits in `theme.css`), but the lamp halos themselves don't oscillate the way premium-glass UI typically does. Aesthetic depth gap, not a functional or readability issue.
+- **Impact (F2 — dashboard atmosphere mini-map idle drift, added 2026-05-05):** [`DashboardAtmosphere.tsx`](../src/app/components/app/DashboardAtmosphere.tsx) (184 LOC) renders dashboard backdrop as 100% static gradient + radial layers; zero animation classes consumed. [`MapLibreDashboardMapPreview.tsx`](../src/app/components/dashboard/MapLibreDashboardMapPreview.tsx) renders mini-map preview with zero camera-drift / idle-pan motion. Same pattern family as the landing gold-lamp gap: a surface where canon supports atmospheric breathing/drift but the consuming component renders statically. Phase 7.5 charter scoped "mini-map idle drift" as a deliverable; the audit found it was not shipped.
+- **Impact (F3 — dashboard dropdown entrance/exit, added 2026-05-05):** [`NotificationCenter.tsx`](../src/app/components/dashboard/NotificationCenter.tsx) (406 LOC) and [`ProfileDropdown.tsx`](../src/app/components/dashboard/ProfileDropdown.tsx) (451 LOC) render with CSS `transition-colors` only on hover affordance; no fade/scale/slide enter/exit animations on the dropdown panel itself. The dropdowns appear and disappear instantly via plain conditional render. Phase 7.5 charter scoped "dropdown entrance/exit animations" as a deliverable; the audit found them not shipped. Folded into KI-112's "static where atmosphere/canon supports motion" family by structural analogy: stateful enter/exit is canon (per [`LAW_ANIMATION_AND_ATMOSPHERE.md`](LAW_ANIMATION_AND_ATMOSPHERE.md) §5 envelope) but not consumed at these surfaces.
+- **Severity:** P7-TECHDEBT for all three sub-scopes. Aesthetic addition territory; **not a defensive fix.** No regression. No accessibility issue (the reduced-motion gap on motion/react surfaces is tracked separately in **KI-113**, not here). No user-facing bug — every surface in scope renders correctly without the missing motion.
 - **Location:**
-  - [`src/app/components/landing/BenefitsSection.tsx`](../src/app/components/landing/BenefitsSection.tsx) L85 + L109 — static `radial-gradient(ellipse … rgba(196, 130, 45, 0.16) / rgba(196, 144, 65, 0.18))` halos
-  - [`src/app/components/landing/AboutOpportunitySection.tsx`](../src/app/components/landing/AboutOpportunitySection.tsx) L110+ — orb glow + radial gold halo
-  - Adjacent gold-halo sites across landing (TrustStatsSection, BusinessInquirySection warm-register surfaces) — survey on activation
-- **Evidence:** [`OPS_PHASE_6_5_PRE_EXECUTION_AUDIT_2026-05-04.md`](OPS_PHASE_6_5_PRE_EXECUTION_AUDIT_2026-05-04.md) §2 ("Gold lamp breathing") + findings table row 1.
-- **Fix direction (deferred):** Wire `pulseGlow` (or a new `bdGoldLampBreathe` keyframe with a slower/more atmospheric curve — 8–12s cycle) to the static gold-lamp halos via a new CSS class (e.g. `bd-gold-lamp-breathe`). Mandatory `prefers-reduced-motion: reduce` guard per [`LAW_ANIMATION_AND_ATMOSPHERE.md`](LAW_ANIMATION_AND_ATMOSPHERE.md) §3 (every named animation must have a guard in the same commit). Owner taste decisions required before activation: (a) which surfaces breathe (BenefitsSection only? all warm-register? every gold halo?), (b) breathing rate (4s premium-glass standard vs 8–12s slower drift). Estimated 1–2 commits if owner authorizes.
-- **Removal trigger:** Post-launch aesthetic pass OR Phase 8.5 ambient/idle motion work, whichever comes first. The pulseGlow keyframe already exists; consumption is the missing piece, so the activation path is short.
+  - **Landing gold-lamp halos (original scope):**
+    - [`src/app/components/landing/BenefitsSection.tsx`](../src/app/components/landing/BenefitsSection.tsx) L85 + L109 — static `radial-gradient(ellipse … rgba(196, 130, 45, 0.16) / rgba(196, 144, 65, 0.18))` halos
+    - [`src/app/components/landing/AboutOpportunitySection.tsx`](../src/app/components/landing/AboutOpportunitySection.tsx) L110+ — orb glow + radial gold halo
+    - Adjacent gold-halo sites across landing (TrustStatsSection, BusinessInquirySection warm-register surfaces) — survey on activation
+  - **Dashboard atmosphere (F2, added 2026-05-05):**
+    - [`src/app/components/app/DashboardAtmosphere.tsx`](../src/app/components/app/DashboardAtmosphere.tsx) (184 LOC, zero animation classes)
+    - [`src/app/components/dashboard/MapLibreDashboardMapPreview.tsx`](../src/app/components/dashboard/MapLibreDashboardMapPreview.tsx) (no camera idle drift)
+  - **Dashboard dropdowns (F3, added 2026-05-05):**
+    - [`src/app/components/dashboard/NotificationCenter.tsx`](../src/app/components/dashboard/NotificationCenter.tsx) (406 LOC, CSS transition-colors only)
+    - [`src/app/components/dashboard/ProfileDropdown.tsx`](../src/app/components/dashboard/ProfileDropdown.tsx) (451 LOC, CSS transition-colors only)
+- **Evidence:**
+  - [`OPS_PHASE_6_5_PRE_EXECUTION_AUDIT_2026-05-04.md`](OPS_PHASE_6_5_PRE_EXECUTION_AUDIT_2026-05-04.md) §2 ("Gold lamp breathing") + findings table row 1 (original scope)
+  - [`OPS_PHASE_7_5_PRE_EXECUTION_AUDIT_2026-05-04.md`](OPS_PHASE_7_5_PRE_EXECUTION_AUDIT_2026-05-04.md) §1.1, §1.2, §4.1 + findings F2 + F3 (extended scope)
+- **Fix direction (deferred):** Three sub-fixes possible independently or together. (1) Landing gold-lamp: wire `pulseGlow` (or a new `bdGoldLampBreathe` keyframe with a slower/more atmospheric curve — 8–12s cycle) to the static gold-lamp halos via a new CSS class (e.g. `bd-gold-lamp-breathe`). (2) Dashboard atmosphere/mini-map: author dashboard-appropriate idle camera or layer drift keyframe; consume in DashboardAtmosphere + MapLibreDashboardMapPreview. (3) Dashboard dropdowns: opt for either the `motion/react` envelope (`AnimatePresence` + initial/animate/exit per LAW_ANIMATION_AND_ATMOSPHERE §5) or pure CSS keyframe enter/exit. Mandatory `prefers-reduced-motion: reduce` guard per [`LAW_ANIMATION_AND_ATMOSPHERE.md`](LAW_ANIMATION_AND_ATMOSPHERE.md) §3 in the same commit as any activation. Owner taste decisions required before any sub-fix activation.
+- **Removal trigger:** Post-launch aesthetic pass OR Phase 8.5 ambient/idle motion work, whichever comes first. Sub-fixes may activate independently.
 - **Next review:** Post-launch retrospective OR Phase 8.5 kickoff.
-- **Why parked here, not in OPS audit only:** The OPS pre-execution audit is a point-in-time snapshot; the KI ledger is the durable home for parked aesthetic gaps. Future agents reading `REF_KNOWN_ISSUES.md` will surface this candidate without re-reading audit docs. Phase 6.5 close commit cross-refs this entry.
-- **Status:** **OPEN — P7-TECHDEBT.** Phase 6.5 closed via Path B (close-only with deferred-aesthetic note); this KI is the parked record.
+- **Why parked here, not in OPS audit only:** The OPS pre-execution audit is a point-in-time snapshot; the KI ledger is the durable home for parked aesthetic gaps. Future agents reading `REF_KNOWN_ISSUES.md` will surface these candidates without re-reading audit docs. Phase 6.5 close commit cross-refs the original scope; Phase 7.5 close commit cross-refs the extended scope (F2 + F3).
+- **Status:** **OPEN — P7-TECHDEBT.** Phase 6.5 closed via Path B (deferred-aesthetic note, original scope). Phase 7.5 closed via Path Y (docs-only, F2 + F3 scope extension); this KI is the parked record for the full atmosphere/idle/enter-motion gap family.
+
+### KI-113: prefers-reduced-motion contract not honored across motion/react surfaces (P3)
+
+- **Impact:** [`LAW_ANIMATION_AND_ATMOSPHERE.md`](LAW_ANIMATION_AND_ATMOSPHERE.md) §5 (as amended 2026-05-04 in commit `63ef6b6b`) requires every `motion/react` component to honor `prefers-reduced-motion: reduce` via `useReducedMotion()` (or equivalent) — components must short-circuit to a static / instant-state render when the user preference is set. Phase 7.5 audit + Sonnet runtime verification (2026-05-05, owner-supervised) + builder bounded sweep (X+ Step 2A, 2026-05-05) jointly confirmed the contract is honored on **0/49** motion/react component-level transitions. Users who set `prefers-reduced-motion: reduce` in OS or browser settings will still see explicit-duration tween animations across the application — bid card hovers, sheet overlays, route transitions, account menus, login flows, onboarding screens, insurer/shop screens, dashboard router, etc.
+- **Severity:** P3 — accessibility-canon coverage gap. Not P0 (no production breakage; reduced-motion users still see content, just animated). Not P1 (no user-visible feature break). Not P2 (charter-vs-reality drift was already resolved in commit `63ef6b6b`; this is now a code-vs-LAW conformance gap, the narrower P3 class). The contract language is mandatory ("MUST be honored"), so this is a real coverage gap, not a stylistic preference.
+- **Audit-stat correction (relative to original Phase 7.5 audit):** The original audit reported "1/49 compliant" because [`ReportScreen.tsx`](../src/app/components/codelayer/ReportScreen.tsx) L200 uses `window.matchMedia("(prefers-reduced-motion: reduce)")`. Sweep revealed that gate applies to `scrollIntoView` behavior (smooth vs auto), NOT to the `motion.div` step transition at L290. Actual compliance ratio on motion/react component-level transition behavior: **0/49**.
+- **Root cause (Sonnet runtime verification, 2026-05-05, owner-supervised):**
+  - Surface 1 — `BidCardArticle` hover, explicit `transition={{ duration: 0.2 }}` (tween): **FAIL** under emulated `prefers-reduced-motion: reduce` — animates over 200ms.
+  - Surface 2 — `MobileBottomNav` whileTap, `type: "spring"` default: **PASS** — instant snap, no spring animation.
+  - Surface 3 — `DashboardRouter` route transition (substituted for sheet open due to navigation accessibility), explicit `transition={{ duration: 0.2 }}` (tween): **FAIL** (inferred — same explicit-duration pattern as Surface 1).
+  - Recovery: PASS — normal motion returned when emulation disabled.
+  - **Mechanism:** `MotionConfig reducedMotion="user"` in motion/react v12 (the framer-motion rebrand) makes **spring** animations instant — when no explicit `duration` is set on a transition, MotionConfig can override it. It does **NOT** override animations with explicit `transition={{ duration: N }}` props — the component-level transition takes precedence over the `MotionConfig` context value. Spring/whileTap surfaces would benefit from a global `MotionConfig` wrap; explicit-duration surfaces require per-component `useReducedMotion()` to honor the preference.
+- **Scope (bucket A — explicit-duration tweens, definite fail under reduce, 32 files):**
+  - [`auth/ClerkAccountTypeSelector.tsx`](../src/app/components/auth/ClerkAccountTypeSelector.tsx) (L66, L88)
+  - [`auth/LoginLoginView.tsx`](../src/app/components/auth/LoginLoginView.tsx) (L107)
+  - [`auth/LoginMainView.tsx`](../src/app/components/auth/LoginMainView.tsx) (L31, L54, L77)
+  - [`auth/LoginSignupView.tsx`](../src/app/components/auth/LoginSignupView.tsx) (L141)
+  - [`codelayer/AccountScreen.tsx`](../src/app/components/codelayer/AccountScreen.tsx) (L343)
+  - [`codelayer/BidCardArticle.tsx`](../src/app/components/codelayer/BidCardArticle.tsx) (L73, L169)
+  - [`codelayer/BidsEmptyState.tsx`](../src/app/components/codelayer/BidsEmptyState.tsx) (L24, L58)
+  - [`codelayer/BidsGeographyMap.tsx`](../src/app/components/codelayer/BidsGeographyMap.tsx) (L28)
+  - [`codelayer/BidsScreen.tsx`](../src/app/components/codelayer/BidsScreen.tsx) (L234, L354)
+  - [`codelayer/BidsSummaryHeader.tsx`](../src/app/components/codelayer/BidsSummaryHeader.tsx) (L45)
+  - [`codelayer/ReportScreen.tsx`](../src/app/components/codelayer/ReportScreen.tsx) (L290)
+  - [`codelayer/account/AccountHeader.tsx`](../src/app/components/codelayer/account/AccountHeader.tsx) (L38)
+  - [`codelayer/account/AccountInfoCard.tsx`](../src/app/components/codelayer/account/AccountInfoCard.tsx) (L90)
+  - [`codelayer/account/AccountMenu.tsx`](../src/app/components/codelayer/account/AccountMenu.tsx) (L243)
+  - [`codelayer/report/StepComplete.tsx`](../src/app/components/codelayer/report/StepComplete.tsx) (L162)
+  - [`demo/DemoAccountSwitcher.tsx`](../src/app/components/demo/DemoAccountSwitcher.tsx) (L42 variant, L100, L213)
+  - [`insurer/InsurerClaimsScreen.tsx`](../src/app/components/insurer/InsurerClaimsScreen.tsx) (L274)
+  - [`insurer/InsurerOnboarding.tsx`](../src/app/components/insurer/InsurerOnboarding.tsx) (L284, L349, L445)
+  - [`insurer/InsurerPartnerShopsScreen.tsx`](../src/app/components/insurer/InsurerPartnerShopsScreen.tsx) (L335)
+  - [`reports/CompetitorAnalysisScreen.tsx`](../src/app/components/reports/CompetitorAnalysisScreen.tsx) (L309)
+  - [`reports/MissingReportState.tsx`](../src/app/components/reports/MissingReportState.tsx) (L26, L43)
+  - [`reports/ReportsListScreen.tsx`](../src/app/components/reports/ReportsListScreen.tsx) (L154)
+  - [`shop/LikedShopsScreen.tsx`](../src/app/components/shop/LikedShopsScreen.tsx) (L172)
+  - [`shop/ShopActiveJobsScreen.tsx`](../src/app/components/shop/ShopActiveJobsScreen.tsx) (L316)
+  - [`shop/ShopEstimateInboxScreen.tsx`](../src/app/components/shop/ShopEstimateInboxScreen.tsx) (L217)
+  - [`shop/ShopOnboardingStep1.tsx`](../src/app/components/shop/ShopOnboardingStep1.tsx) (L169)
+  - [`shop/ShopOnboardingStep2.tsx`](../src/app/components/shop/ShopOnboardingStep2.tsx) (L80)
+  - [`shop/ShopOnboardingStep3.tsx`](../src/app/components/shop/ShopOnboardingStep3.tsx) (L156)
+  - [`shop/ShopOnboardingStep4.tsx`](../src/app/components/shop/ShopOnboardingStep4.tsx) (L114)
+  - [`shop/ShopRequestsScreen.tsx`](../src/app/components/shop/ShopRequestsScreen.tsx) (L265)
+  - [`routers/DashboardRouter.tsx`](../src/app/routers/DashboardRouter.tsx) (L34 variant)
+  - [`routers/DashboardSecondaryViews.tsx`](../src/app/routers/DashboardSecondaryViews.tsx) (L41 variant)
+- **Scope (bucket B — mixed overlay+spring, partial fail, 2 files):**
+  - [`codelayer/AcceptedBidConfirmationSheet.tsx`](../src/app/components/codelayer/AcceptedBidConfirmationSheet.tsx) (L59 explicit-duration overlay; L69 spring sheet — overlay fails, sheet covered)
+  - [`shop/ShopDetailSheet.tsx`](../src/app/components/shop/ShopDetailSheet.tsx) (L85 explicit-duration overlay; L98 spring sheet — same pattern)
+- **Scope (buckets D + E — runtime classification deferred, 11 files):** Files using delay-only `transition` overrides (no `duration` override) or no `transition` prop at all. Behavior under reduce depends on motion/react default-transition resolution (spring vs tween) per prop type — no runtime test on these surfaces. Pre-fix audit needed.
+  - **Bucket D (delay-only override, 7 files):** [`admin/AdminDashboard.tsx`](../src/app/components/admin/AdminDashboard.tsx), [`admin/AdminInfoPanel.tsx`](../src/app/components/admin/AdminInfoPanel.tsx), [`admin/AdminIntakeOperationsPanel.tsx`](../src/app/components/admin/AdminIntakeOperationsPanel.tsx), [`admin/AdminManagementPanel.tsx`](../src/app/components/admin/AdminManagementPanel.tsx), [`admin/LinkedTestAccounts.tsx`](../src/app/components/admin/LinkedTestAccounts.tsx), [`admin/QuickActions.tsx`](../src/app/components/admin/QuickActions.tsx), [`admin/SwitchBackPanel.tsx`](../src/app/components/admin/SwitchBackPanel.tsx)
+  - **Bucket E (no transition prop, 4 files):** [`admin/AdminHeader.tsx`](../src/app/components/admin/AdminHeader.tsx), [`admin/NewAccountForm.tsx`](../src/app/components/admin/NewAccountForm.tsx), [`auth/LoginModal.tsx`](../src/app/components/auth/LoginModal.tsx), [`devtools/StorageDebugPanel.tsx`](../src/app/components/devtools/StorageDebugPanel.tsx)
+- **Scope (bucket C — already covered by future MotionConfig wrap, 4 files; informational):** [`codelayer/account/AccountAdminOverlay.tsx`](../src/app/components/codelayer/account/AccountAdminOverlay.tsx), [`dashboard/MobileBottomNav.tsx`](../src/app/components/dashboard/MobileBottomNav.tsx) (verified PASS via Sonnet S2), [`shop/ImmersiveMapResultsDrawer.tsx`](../src/app/components/shop/ImmersiveMapResultsDrawer.tsx), [`shop/PhotoGuide.tsx`](../src/app/components/shop/PhotoGuide.tsx). These four use pure spring transitions and would resolve correctly under a global `<MotionConfig reducedMotion="user">` wrap.
+- **Fix direction (deferred to future phase):** Two-layer architectural fix.
+  - **Layer 1 — `MotionConfig` wrap at app root.** Wrap [`src/main.tsx`](../src/main.tsx) `<App />` (inside `<GlobalErrorBoundary>`, outside `<ClerkProvider>`) with `<MotionConfig reducedMotion="user">` from `motion/react`. Floors all spring/whileTap surfaces (bucket C verified PASS via Sonnet S2). Handles new code by default.
+  - **Layer 2 — Per-file `useReducedMotion()` for explicit-duration surfaces (buckets A + B, 34 files).** Pattern per file: `const reduce = useReducedMotion();` plus `transition={reduce ? { duration: 0 } : { duration: N, ... }}` on every explicit-duration `transition` prop. Pre-step audit needed for buckets D + E (11 files) before classifying as fix-required vs no-op.
+  - File-by-file build verification recommended (not all-at-once) — 34+ files is mechanical but each needs runtime check. Sonnet (or equivalent browser-capable AI) re-verifies a representative sample after the sweep.
+- **Removal trigger:** Future phase that closes the reduced-motion sweep (per `LAW_HARDENING_PLAN.md` Phase 7.5 close session entry, this is parked as deferred work, not Phase 7.5 close territory). Likely candidate phases: Phase 7.6 (if owner opens a dedicated reduced-motion close phase) or rolls into Phase 8 / 8.5.
+- **Next review:** When the future phase relay is opened, re-run the sweep classifier across the bucket A list (32 files) to catch any new explicit-duration code that landed between 2026-05-05 and the fix phase.
+- **Evidence:**
+  - [`OPS_PHASE_7_5_PRE_EXECUTION_AUDIT_2026-05-04.md`](OPS_PHASE_7_5_PRE_EXECUTION_AUDIT_2026-05-04.md) §2 (compliance verification) + close-footer (Sonnet verdict + sweep + scope-valve outcome)
+  - [`LAW_ANIMATION_AND_ATMOSPHERE.md`](LAW_ANIMATION_AND_ATMOSPHERE.md) §5 (the contract this KI documents conformance against; amended 2026-05-04 in commit `63ef6b6b`)
+  - [`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md) Phase 7.5 close session entry (the gate that explicitly defers the fix)
+- **Why parked here, not in OPS audit only:** The OPS pre-execution audit is a point-in-time snapshot; the KI ledger is the durable scope contract. Future agents reading `REF_KNOWN_ISSUES.md` will surface this 32+ file scope without re-reading audit docs. The full file list with line numbers is the scope-contract input for the future fix phase relay.
+- **Status:** **OPEN — P3.** Phase 7.5 closed via Path Y (docs-only) per X+ bounded sweep tripping the ≥15-file safety valve at 32 affected files; full sweep + `MotionConfig` wrap deferred to future phase.
