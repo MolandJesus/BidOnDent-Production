@@ -19,12 +19,13 @@ Documents are organized in four tiers: **LAW > REFERENCE > PLAN > OPS** (OPS add
 
 ### LAW (governs all work)
 
-| Document                                                                 | Purpose                                                                                                                                                |
-| ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **[`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md)**                       | Permanent behavioral rules: product definition, 6 laws, product DNA, map investment rules, doc authority model, palette canon, glass canon.            |
-| **[`LAW_LAYERED_ARCHITECTURE.md`](LAW_LAYERED_ARCHITECTURE.md)**         | Four-layer model (L1/L2/L3/L4), file-size budgets, forbidden cross-layer flows, grandfathering policy, multi-AI coordination via `AI_LOCK.md`.         |
-| **[`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md)**                     | Execution authority for the hardening phase. North Star, Launch Scope Guardrails, Locked Decisions, Execution Plan (Phases 0–6), Execution Discipline. |
-| **[`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md)** | **LOCKED apex design canon.** Effectively LAW-tier. Required read for any design-touching task. Do NOT propose merges/splits/edits.                    |
+| Document                                                                 | Purpose                                                                                                                                                                                                       |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **[`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md)**                       | Permanent behavioral rules: product definition, 6 laws, product DNA, map investment rules, doc authority model, palette canon, glass canon.                                                                   |
+| **[`LAW_LAYERED_ARCHITECTURE.md`](LAW_LAYERED_ARCHITECTURE.md)**         | Four-layer model (L1/L2/L3/L4), file-size budgets, forbidden cross-layer flows, grandfathering policy, multi-AI coordination via `AI_LOCK.md`.                                                                |
+| **[`LAW_ANIMATION_AND_ATMOSPHERE.md`](LAW_ANIMATION_AND_ATMOSPHERE.md)** | Motion canon: trust + spatial-continuity discriminating filter, 29 canonical keyframes catalogued, mandatory `prefers-reduced-motion` contract, CSS-first lock, framer-motion escape clause (Phase 4.6 only). |
+| **[`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md)**                     | Execution authority for the hardening phase. North Star, Launch Scope Guardrails, Locked Decisions, Execution Plan (Phases 0–6), Execution Discipline.                                                        |
+| **[`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md)** | **LOCKED apex design canon.** Effectively LAW-tier. Required read for any design-touching task. Do NOT propose merges/splits/edits.                                                                           |
 
 ### REFERENCE (current truth)
 
