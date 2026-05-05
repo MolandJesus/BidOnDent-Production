@@ -11,7 +11,7 @@ import { cn } from "../ui/utils";
 import type { CoverageNavigationExperience } from "../../hooks/useCoverageNavigationExperience";
 import type { NavigationProvider } from "../../services/navigation/externalNavigation";
 import { shareNavigationEta } from "../../services/navigation/shareEta";
-import { haversineMiles } from "../../services/supabase/map";
+import { useHaversineDistance } from "../../hooks/useHaversineDistance";
 import { X } from "lucide-react";
 import ServiceCoverageMap from "../maps/MapLibreServiceCoverageMap";
 import NavigationActionRail from "../maps/navigation/NavigationActionRail";
@@ -99,6 +99,12 @@ export default function CoverageActiveNavigationLayout({
   const followingStep = navigation.hasArrived
     ? null
     : navigation.routePreview?.steps[navigation.currentStepIndex + 1] || null;
+
+  const liveDistanceMiles = useHaversineDistance(
+    navigation.currentPosition,
+    navigation.nextStep?.location
+  );
+  const liveDistanceMeters = liveDistanceMiles != null ? liveDistanceMiles * 1609.34 : null;
 
   const remainingDurationSeconds = useMemo(() => {
     if (!navigation.routePreview || navigation.hasArrived) return 0;
@@ -333,11 +339,7 @@ export default function CoverageActiveNavigationLayout({
           tone={tone}
           nextStep={navigation.nextStep}
           followingStep={followingStep}
-          liveDistanceMeters={
-            navigation.currentPosition && navigation.nextStep
-              ? haversineMiles(navigation.currentPosition, navigation.nextStep.location) * 1609.34
-              : null
-          }
+          liveDistanceMeters={liveDistanceMeters}
         />
         <NavigationActionRail
           tone={tone}
