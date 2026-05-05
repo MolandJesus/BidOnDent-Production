@@ -448,6 +448,34 @@ document.querySelectorAll("button:not([aria-hidden])").forEach((el) => {
 return JSON.stringify(issues);
 ```
 
+### 9.6 Source-truth sub-44 grep — fallback when viewport spoof unreachable
+
+**Use this when:**
+
+- The Electron / VS Code integrated browser ignores `setViewportSize`, CDP `Emulation.setDeviceMetricsOverride`, screen-orientation override, and touch-emulation toggles (verified 2026-05-05 on Pass 6 — every viewport API attempted held at the host's native viewport).
+- A CTA is **state-conditional** (error state, route-active state, popup-open state, retry/clear state) and the runtime §9.2 sweep can't reach it without env-gating the trigger.
+
+**Why this is operationally stronger than runtime in those cases:** the source declaration is the truth. If `min-h-[40px]` is in the JSX, the rendered element will be 40 px tall on mobile regardless of which state surfaces it.
+
+**Method:**
+
+```bash
+# Catches every Tailwind arbitrary min-h between 30 and 43 px on interactive elements.
+rg -n 'min-h-\[(3[0-9]|4[0-3])px\]' src/app/components --glob '*.{tsx,jsx}'
+```
+
+**Triage rules:**
+
+1. **Filter to `<button>` and `role="button"`** elements. `<div>` / `<span>` containers with `min-h-[40px]` (avatars, badges, step dots, decorative chips) are NOT interactive — skip.
+2. **Skip `hidden md:` desktop-exception classes.** A `hidden md:flex` button is desktop-only; LAW exempts persistent desktop chrome.
+3. **Skip density-tuned compact UI** (filter chips, scrollable carousel rails, dense grid cells) **unless** the owner has reported a real touch-precision miss. Broad sweeps risk regressing intentional density.
+4. **Source-fix is sufficient** for state-gated buttons — no runtime re-audit needed if the only change is `min-h-[N]` → `min-h-[44px]` on a single className. Build-clean + grep-clean = done.
+5. **Companion grep for non-arbitrary tokens:** `(?<![a-z])h-(7|8|9|10)(?![0-9])` catches `h-7` / `h-8` / `h-9` / `h-10` (28 / 32 / 36 / 40 px). Most matches are decorative; same triage rules apply.
+
+**Pair with §9.2.** When viewport spoofing IS reachable (real device, real responsive panel, separate Chrome window), prefer §9.2 for default-state CTAs and §9.6 for state-conditional CTAs. When viewport spoofing is NOT reachable, §9.6 alone is the canonical fallback — do not skip the audit.
+
+**First applied:** Pass 6, 2026-05-05, commit `238d7257`. Promoted into this prompt during Pass 7a (KI-114 ledger close).
+
 ---
 
 ## 10. AUDIT DOC CONVENTION
