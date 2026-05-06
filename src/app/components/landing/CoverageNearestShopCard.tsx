@@ -41,7 +41,7 @@ export default function CoverageNearestShopCard({
           <div className="flex shrink-0 flex-col items-end gap-2">
             {isSelected ? <span className={theme.badgeClassName}>Focused</span> : null}
             {shop.dataMode === "demo" ? (
-              <span className="inline-flex rounded-full border border-amber-400/25 bg-amber-400/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-amber-300">
+              <span className="bd-status--warn inline-flex rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em]">
                 Demo
               </span>
             ) : null}
@@ -141,7 +141,7 @@ export default function CoverageNearestShopCard({
           </div>
           <div className={cn("mt-1 text-xs", theme.secondaryTextClassName)}>{shop.countyLabel}</div>
           {shop.dataMode === "demo" ? (
-            <span className="mt-1.5 inline-flex rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide bg-amber-400/15 text-amber-300 border border-amber-400/25">
+            <span className="bd-status--warn mt-1.5 inline-flex rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide">
               Demo
             </span>
           ) : null}

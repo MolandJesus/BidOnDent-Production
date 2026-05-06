@@ -161,13 +161,7 @@ export default function ShopDirectoryRoutePanel({
       ) : null}
 
       {routeError ? (
-        <div
-          className={`mt-4 rounded-[1.1rem] border px-3 py-3 ${
-            isLight
-              ? "border-amber-200 bg-amber-50 text-amber-800"
-              : "border-amber-400/20 bg-amber-400/10 text-amber-100"
-          }`}
-        >
+        <div className="bd-notice--warn mt-4 rounded-[1.1rem] border px-3 py-3">
           <div className="flex items-start gap-2">
             <TriangleAlert className="mt-0.5 h-4 w-4 shrink-0" />
             <div>

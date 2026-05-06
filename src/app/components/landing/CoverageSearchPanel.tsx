@@ -93,9 +93,7 @@ export default function CoverageSearchPanel({
    */
   const originBadgeClassName =
     isOutsideServiceRegion && activeOriginMode !== "zip"
-      ? tone === "light"
-        ? "border-amber-200/80 bg-amber-50 text-amber-800"
-        : "border-amber-400/25 bg-amber-500/15 text-amber-200"
+      ? "bd-status--warn"
       : activeOriginMode === "geolocation"
         ? tone === "light"
           ? "border-emerald-200/80 bg-emerald-50 text-emerald-800"
@@ -343,25 +341,11 @@ export default function CoverageSearchPanel({
         </div>
 
         {addressError && normalizedZip.length === 0 ? (
-          <div
-            className={cn(
-              "rounded-[1.2rem] border px-3.5 py-3 text-sm",
-              tone === "light"
-                ? "border-amber-200 bg-amber-50 text-amber-900"
-                : "border-amber-300/20 bg-amber-500/10 text-amber-200"
-            )}
-          >
+          <div className="bd-notice--warn rounded-[1.2rem] border px-3.5 py-3 text-sm">
             {addressError}
           </div>
         ) : locationError ? (
-          <div
-            className={cn(
-              "rounded-[1.2rem] border px-3.5 py-3 text-sm",
-              tone === "light"
-                ? "border-amber-200 bg-amber-50 text-amber-900"
-                : "border-amber-300/20 bg-amber-500/10 text-amber-200"
-            )}
-          >
+          <div className="bd-notice--warn rounded-[1.2rem] border px-3.5 py-3 text-sm">
             <p>{locationError}</p>
             {locationPermissionState === "denied" ? (
               <button
