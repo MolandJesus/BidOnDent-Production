@@ -121,13 +121,7 @@ export default function ShopDirectoryHybridStage({
       />
 
       {session.usingDemoFallback && (
-        <div
-          className={`mx-4 flex items-center gap-2 rounded-lg border px-3 py-2 text-xs ${
-            isLight
-              ? "border-amber-300/60 bg-amber-50 text-amber-700"
-              : "border-amber-400/30 bg-amber-400/10 text-amber-300"
-          }`}
-        >
+        <div className="mx-4 flex items-center gap-2 rounded-lg border px-3 py-2 text-xs bd-notice--warn">
           <AlertTriangle className="h-3.5 w-3.5 flex-shrink-0" />
           <span>
             Showing example shop locations. Verified partner shops will appear once your account is
