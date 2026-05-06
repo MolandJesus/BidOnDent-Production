@@ -1256,19 +1256,69 @@ body {
 
 /* Dashboard ambient layer — single subtle top-anchored radial glow. Apply as a
    positioned child div inside a relative container. Lighter than landing's
-   bd-bloom-atmosphere; no motion, no scroll-entry, no section alternation.
-   Adds workspace dimensional feel, not decoration. 5-7% peak opacity by design. */
+   bd-bloom-atmosphere; no scroll-entry, no section alternation.
+   Adds workspace dimensional feel, not decoration. 5-7% peak opacity by design.
+
+   2026-05-06 owner directive — "living premium gold liquid glass lava":
+   The gold lamp is now split across two pseudo-element layers that drift on
+   crossing long-period orbits (28s + 36s) so the gold reads as a slow, living
+   current under the navy/cool-mist surface — premium lava, never a strobe.
+   Element body keeps the cool base + safety static lamp so the layout is fully
+   rendered before motion (and stays rendered for prefers-reduced-motion users).
+   Same animation in light + dark; only the pseudo-element gradients differ. */
 .bd-dashboard-atmosphere {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  /* D4 (final v3.2): stronger warm-amber lamp + side-bias bloom in light mode
-     so the page feels lit from above by a gold lamp, like the dark mode does. */
+  overflow: hidden;
+  /* Body is intentionally transparent. Both gold/blue layers live on the
+     ::before + ::after pseudo-elements so the base alpha never doubles up.
+     Reduced-motion users still see the full layered look — only the
+     animation is suppressed, not the gradients themselves. */
+  background: transparent;
+  z-index: 0;
+}
+
+/* Living-lava layer A — top-cast lamp + right-side bloom drifting slowly. */
+.bd-dashboard-atmosphere::before,
+.bd-dashboard-atmosphere::after {
+  content: "";
+  position: absolute;
+  /* Slight overscan so the drift never exposes a hard edge. */
+  inset: -8%;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.bd-dashboard-atmosphere::before {
   background:
     radial-gradient(ellipse 80% 60% at 50% 0%, rgba(196, 130, 45, 0.18) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 80% at 100% 50%, rgba(220, 150, 60, 0.1) 0%, transparent 70%),
-    radial-gradient(ellipse 90% 55% at 50% 100%, rgba(96, 165, 250, 0.05) 0%, transparent 70%);
-  z-index: 0;
+    radial-gradient(ellipse 60% 80% at 100% 50%, rgba(220, 150, 60, 0.1) 0%, transparent 70%);
+  /* orbDrift gives a 4-stop translate+scale loop. 28s keeps it under perceptual
+     threshold — the eye registers depth, not motion. */
+  animation: orbDrift 28s ease-in-out infinite;
+}
+
+.bd-dashboard-atmosphere::after {
+  /* The cool blue counter-glow sits on the second layer so it crosses against
+     the gold lamp instead of moving with it — the interference is what makes
+     the gold feel liquid. */
+  background: radial-gradient(
+    ellipse 90% 55% at 50% 100%,
+    rgba(96, 165, 250, 0.05) 0%,
+    transparent 70%
+  );
+  /* 36s + reverse + delay desyncs the two layers so they never realign. */
+  animation: orbDrift 36s ease-in-out -9s infinite reverse;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bd-dashboard-atmosphere::before,
+  .bd-dashboard-atmosphere::after {
+    animation: none;
+    transform: none;
+    will-change: auto;
+  }
 }
 
 /* Atmosphere bloom — opacity + scale transition driven by useScrollAnimation.
@@ -1899,13 +1949,34 @@ body {
 
 /* Dashboard ambient layer — dark mode. D4 (final v2): stronger gold lamp glow
    over the navy surfaces. Three-stop overlay (top + bottom + side cinematic
-   side-bias) so the navy boxes read as "lit by a warm lamp from above." */
+   side-bias) so the navy boxes read as "lit by a warm lamp from above."
+
+   2026-05-06 owner directive — "living premium gold liquid glass lava":
+   Mirror the light-mode pseudo-element split so dark mode breathes the same
+   way. Element body keeps the static safety lamp; pseudos carry the drifting
+   gold lamp + cool counter-glow. Animation is shared (defined on the base
+   selector); we only re-paint the gradients here. */
 .dark .bd-dashboard-atmosphere,
 [data-theme="dark"] .bd-dashboard-atmosphere {
+  background: transparent;
+}
+
+.dark .bd-dashboard-atmosphere::before,
+[data-theme="dark"] .bd-dashboard-atmosphere::before {
   background:
     radial-gradient(ellipse 80% 60% at 50% 0%, rgba(196, 130, 45, 0.26) 0%, transparent 60%),
-    radial-gradient(ellipse 90% 55% at 50% 100%, rgba(200, 110, 25, 0.18) 0%, transparent 65%),
     radial-gradient(ellipse 60% 80% at 100% 50%, rgba(220, 150, 60, 0.14) 0%, transparent 70%);
+}
+
+.dark .bd-dashboard-atmosphere::after,
+[data-theme="dark"] .bd-dashboard-atmosphere::after {
+  /* Bottom warm pool replaces the cool counter-glow in dark mode — keeps the
+     "molten under the navy" feel without introducing cool light. */
+  background: radial-gradient(
+    ellipse 90% 55% at 50% 100%,
+    rgba(200, 110, 25, 0.18) 0%,
+    transparent 65%
+  );
 }
 
 .dark .bd-glass-badge,
