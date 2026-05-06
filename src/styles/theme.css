@@ -1193,13 +1193,18 @@ body {
 
 .bd-glass-card--dashboard:hover {
   /* Pass 8b: cream sub-rim 0.08 on hover, +0.02 over idle 0.06 to maintain
-     metallic-chrome catchlight delta when the card lifts. */
+     metallic-chrome catchlight delta when the card lifts.
+     Pass 9a: top inset highlight migrated from forbidden pure-white
+     rgba(255, 255, 255, 1) to locked-palette cream rgba(252, 240, 208, 0.94),
+     mirroring the idle-state fix that landed in KI-086 (Pass G + Pass F-fix)
+     but missed this hover sibling. +0.02 alpha over the conventional 0.92
+     idle, matching the metallic chrome catchlight delta convention. */
   transform: translateY(-2px);
   border-color: rgba(147, 197, 253, 0.7);
   box-shadow:
     0 24px 52px rgba(15, 42, 92, 0.16),
     0 6px 16px rgba(30, 58, 138, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 1px 0 rgba(252, 240, 208, 0.94),
     inset 0 -1px 0 rgba(196, 144, 65, 0.32),
     inset 0 -2px 0 rgba(252, 240, 208, 0.08),
     0 0 0 1px rgba(196, 144, 65, 0.28),
