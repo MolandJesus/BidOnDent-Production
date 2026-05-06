@@ -994,7 +994,13 @@ body {
        Diffuse halos amplified for smooth-gradient feel:
          primary halo (32px)  0.16 -> 0.20
          feather halo (64px)  NEW @ 0.10 (wider soft fall-off)
-       Rim + LAW cream inset preserved (Pass C wins kept). */
+       Rim + LAW cream inset preserved (Pass C wins kept).
+     Pass 8b — light-mode P3-A parity (2026-05-06): adds cream sub-rim
+     `inset 0 -2px 0 rgba(252, 240, 208, 0.06)` immediately below the
+     bronze trim line, mirroring Pass 7's dark-mode metallic chrome
+     doubled-edge in the light register. Conservative 0.06 alpha (range
+     0.06-0.08) so the band reads as bounce-light, not as a competing
+     warm second cap against the cream highlight at the top. */
   border-color: rgba(191, 219, 254, 0.7);
   background: linear-gradient(180deg, rgba(252, 253, 255, 0.9) 0%, rgba(241, 247, 255, 0.74) 100%);
   /* Pass F (KI-085): omni warm bleeds REMOVED (blush cause in cool canvas).
@@ -1005,6 +1011,7 @@ body {
     0 6px 16px rgba(30, 58, 138, 0.08),
     inset 0 1px 0 rgba(252, 240, 208, 0.88),
     inset 0 -1px 0 rgba(140, 82, 22, 0.2),
+    inset 0 -2px 0 rgba(252, 240, 208, 0.06),
     0 0 0 1px rgba(140, 82, 22, 0.08),
     0 0 0 1px rgba(191, 219, 254, 0.12),
     0 0 32px rgba(196, 130, 45, 0.14),
@@ -1049,13 +1056,16 @@ body {
 }
 
 .bd-glass-card--landing:hover {
-  /* Pass F: hover top-cast deeper. */
+  /* Pass F: hover top-cast deeper.
+     Pass 8b: cream sub-rim 0.08 on hover, +0.02 over idle 0.06 to maintain
+     metallic-chrome catchlight delta when the card lifts. */
   transform: translateY(-6px);
   box-shadow:
     0 28px 64px rgba(15, 23, 42, 0.16),
     0 10px 24px rgba(30, 58, 138, 0.1),
     inset 0 1px 0 rgba(252, 240, 208, 0.92),
     inset 0 -1px 0 rgba(140, 82, 22, 0.26),
+    inset 0 -2px 0 rgba(252, 240, 208, 0.08),
     0 0 0 1px rgba(140, 82, 22, 0.1),
     0 0 0 1px rgba(147, 197, 253, 0.32),
     0 0 44px rgba(196, 130, 45, 0.16),
@@ -1124,7 +1134,13 @@ body {
      too washy per owner feedback; was 0.94/0.86 pre-canon, paint not
      glass). 0.84/0.76 is the verified balance: panel contained, page
      atmosphere subtly bleeds through. Close warm halo demoted (0.28 ->
-     0.18) and directional top-cast champagne lamp added. */
+     0.18) and directional top-cast champagne lamp added.
+     Pass 8b — light-mode P3-A parity: cream sub-rim
+     `inset 0 -2px 0 rgba(252, 240, 208, 0.06)` mirrors Pass 7's dark
+     dashboard variant. Light dashboard cards were reading too close to
+     the cool blue-gray canvas in the 11-light-dashboard-full audit
+     screenshot; the bounce-light catchlight lifts them slightly without
+     competing with the hero champagne panel. */
   position: relative;
   overflow: hidden;
   border-color: rgba(147, 197, 253, 0.54);
@@ -1134,6 +1150,7 @@ body {
     0 6px 14px rgba(30, 58, 138, 0.08),
     inset 0 1px 0 rgba(252, 240, 208, 0.92),
     inset 0 -1px 0 rgba(196, 144, 65, 0.28),
+    inset 0 -2px 0 rgba(252, 240, 208, 0.06),
     0 0 0 1px rgba(196, 144, 65, 0.18),
     0 0 0 1px rgba(191, 219, 254, 0.3),
     0 0 28px rgba(59, 130, 246, 0.1),
@@ -1175,6 +1192,8 @@ body {
 }
 
 .bd-glass-card--dashboard:hover {
+  /* Pass 8b: cream sub-rim 0.08 on hover, +0.02 over idle 0.06 to maintain
+     metallic-chrome catchlight delta when the card lifts. */
   transform: translateY(-2px);
   border-color: rgba(147, 197, 253, 0.7);
   box-shadow:
@@ -1182,6 +1201,7 @@ body {
     0 6px 16px rgba(30, 58, 138, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 1),
     inset 0 -1px 0 rgba(196, 144, 65, 0.32),
+    inset 0 -2px 0 rgba(252, 240, 208, 0.08),
     0 0 0 1px rgba(196, 144, 65, 0.28),
     0 0 0 1px rgba(147, 197, 253, 0.42),
     0 0 36px rgba(59, 130, 246, 0.12),
