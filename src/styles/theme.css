@@ -1649,7 +1649,16 @@ body {
      (bottom inset rim 0.18 -> 0.26), bronze ring (0.13 -> 0.18), cool ring
      (0.18 -> 0.22), bronze outer halo (0.20 -> 0.22 at cap), cream edge
      catchlights (0.10/0.06 -> 0.14/0.08). Top sky-blue inset preserved at
-     0.22 -- landing cool-dominant identity untouched. */
+     0.22 -- landing cool-dominant identity untouched.
+     Pass 7 — Landing cool metallic chrome trim alignment (2026-05-06):
+     adopts the dashboard accent variant doubled-edge effect — adds a
+     cream sub-rim catchlight `inset 0 -2px 0 rgba(252,240,208,0.05)`
+     immediately below the bronze trim line. Light bouncing back from
+     under the bronze rim creates the polished-metal doubled edge that
+     reads as premium chrome trim. Same idea as Sonnet's Pass 6 dashboard
+     accent variants, brought into the landing cool surfaces so the trim
+     language is consistent across the app. Warm-dominant landing cards
+     intentionally skipped (would over-pale a warm surface). */
   border-color: rgba(96, 165, 250, 0.32);
   background: linear-gradient(180deg, rgba(37, 99, 235, 0.22) 0%, rgba(12, 25, 41, 0.78) 100%);
   /* Pass F (KI-085): omni 140px replaced with directional top-cast — light
@@ -1659,6 +1668,7 @@ body {
     0 6px 16px rgba(30, 58, 138, 0.32),
     inset 0 1px 0 rgba(147, 197, 253, 0.22),
     inset 0 -1px 0 rgba(196, 144, 65, 0.22),
+    inset 0 -2px 0 rgba(252, 240, 208, 0.05),
     0 0 0 1px rgba(196, 144, 65, 0.14),
     0 0 0 1px rgba(96, 165, 250, 0.22),
     0 0 36px rgba(37, 99, 235, 0.16),
@@ -1670,13 +1680,17 @@ body {
 
 .dark .bd-glass-card--landing:hover,
 [data-theme="dark"] .bd-glass-card--landing:hover {
-  /* Pass F: hover top-cast deeper — 0 -42px 120px -20px @ 0.20. */
+  /* Pass F: hover top-cast deeper — 0 -42px 120px -20px @ 0.20.
+     Pass 7 metallic-trim alignment (2026-05-06): cream sub-rim bumped to
+     0.07 on hover so the doubled-edge chrome catches more light when
+     lifted, preserving the hover delta over the 0.05 idle. */
   border-color: rgba(147, 197, 253, 0.55);
   box-shadow:
     0 28px 68px rgba(2, 6, 23, 0.62),
     0 10px 24px rgba(30, 58, 138, 0.38),
     inset 0 1px 0 rgba(147, 197, 253, 0.32),
     inset 0 -1px 0 rgba(196, 144, 65, 0.24),
+    inset 0 -2px 0 rgba(252, 240, 208, 0.07),
     0 0 0 1px rgba(196, 144, 65, 0.18),
     0 0 0 1px rgba(147, 197, 253, 0.4),
     0 0 56px rgba(37, 99, 235, 0.24),
@@ -1727,24 +1741,34 @@ body {
    trim — so the card reads navy-glass-lit-by-gold-lamp like the landing register. */
 .dark .bd-glass-card--dashboard,
 [data-theme="dark"] .bd-glass-card--dashboard {
+  /* Pass 7 metallic-trim alignment (2026-05-06): cream sub-rim catchlight
+     `inset 0 -2px 0 rgba(252,240,208,0.06)` added below the bronze trim
+     for the polished-metal doubled edge. Higher alpha than landing cool
+     cards (0.06 vs 0.05) — dashboard cards sit closer to the eye on a
+     denser navy field, so the bounce-light reads more clearly without
+     looking foggy. */
   border-color: rgba(196, 144, 65, 0.5);
   background: linear-gradient(180deg, rgba(11, 23, 47, 0.86) 0%, rgba(8, 18, 38, 0.8) 100%);
   box-shadow:
     0 18px 40px rgba(2, 6, 23, 0.5),
     inset 0 1px 0 rgba(252, 240, 208, 0.28),
     inset 0 -1px 0 rgba(190, 105, 35, 0.14),
+    inset 0 -2px 0 rgba(252, 240, 208, 0.06),
     0 0 0 1px rgba(196, 144, 65, 0.32),
     0 0 44px rgba(196, 130, 45, 0.28);
 }
 
 .dark .bd-glass-card--dashboard:hover,
 [data-theme="dark"] .bd-glass-card--dashboard:hover {
+  /* Pass 7: cream sub-rim bumped to 0.08 on hover to maintain the
+     metallic chrome catchlight delta over idle 0.06. */
   transform: translateY(-2px);
   border-color: rgba(252, 240, 208, 0.68);
   box-shadow:
     0 24px 52px rgba(2, 6, 23, 0.58),
     inset 0 1px 0 rgba(252, 240, 208, 0.36),
     inset 0 -1px 0 rgba(190, 105, 35, 0.18),
+    inset 0 -2px 0 rgba(252, 240, 208, 0.08),
     0 0 0 1px rgba(252, 240, 208, 0.52),
     0 0 60px rgba(196, 130, 45, 0.4);
 }
