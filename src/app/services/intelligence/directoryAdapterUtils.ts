@@ -26,9 +26,16 @@ export const CITY_COORDINATE_DIRECTORY: Record<string, Coordinates> = {
   "brewster,ny": { latitude: 41.3951, longitude: -73.6182 },
 };
 
+// KI-118 (2026-05-06) — anchor moved from Dallas, TX (32.7767, -96.797) to
+// White Plains, NY. BidOnDent's launch region is the NY metro per
+// LAW_PROJECT_RULES.md; shops without a matching entry in
+// CITY_COORDINATE_DIRECTORY were previously placed in Texas, producing
+// route distances of 700–1500 mi for in-frame NY-area destinations on the
+// dashboard ROUTE card. White Plains is the geographic center of the
+// locked NY metro directory (already a directory entry on its own).
 const DEFAULT_COORDINATE_ANCHOR: Coordinates = {
-  latitude: 32.7767,
-  longitude: -96.797,
+  latitude: 41.0534,
+  longitude: -73.7629,
 };
 
 const SHOP_FALLBACK_IMAGES = [
