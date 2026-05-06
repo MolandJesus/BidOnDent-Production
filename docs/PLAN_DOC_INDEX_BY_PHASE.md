@@ -10,7 +10,7 @@
 
 - [`LAW_LAYERED_ARCHITECTURE.md`](LAW_LAYERED_ARCHITECTURE.md) — the architecture charter
 - [`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md) — the LAW > REF > PLAN > OPS tier model
-- [`PLAN_DOC_CONSOLIDATION_2026-05-04.md`](PLAN_DOC_CONSOLIDATION_2026-05-04.md) — the Phase 1.5 consolidation that cleaned the tree before this index pre-declaration
+- [`PLAN_DOC_CONSOLIDATION_2026-05-04.md`](archive/PLAN_DOC_CONSOLIDATION_2026-05-04_archived_2026-05-05.md) — the Phase 1.5 consolidation that cleaned the tree before this index pre-declaration
 - [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md) — locked apex design canon (referenced by every design-touching new doc)
 
 ---
@@ -142,6 +142,6 @@ If a doc listed here is not generated (e.g. `LAW_MOBILE_VIEWPORT_DOCTRINE.md` is
 - [`LAW_LAYERED_ARCHITECTURE.md`](LAW_LAYERED_ARCHITECTURE.md) — code organization charter
 - [`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md) — doc tier model + co-update rules
 - [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md) — locked apex design canon
-- [`PLAN_DOC_CONSOLIDATION_2026-05-04.md`](PLAN_DOC_CONSOLIDATION_2026-05-04.md) — Phase 1.5 consolidation plan that this index follows
+- [`PLAN_DOC_CONSOLIDATION_2026-05-04.md`](archive/PLAN_DOC_CONSOLIDATION_2026-05-04_archived_2026-05-05.md) — Phase 1.5 consolidation plan that this index follows
 - [`README.md`](README.md) — docs operating index
 - [`AI_LOCK.md`](../AI_LOCK.md) — multi-AI coordination state

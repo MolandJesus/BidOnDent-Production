@@ -10,7 +10,7 @@
 
 **Companion docs:**
 
-- [`PLAN_PHASE_6_SCOPE.md`](PLAN_PHASE_6_SCOPE.md) — scope contract this audit measures against
+- [`PLAN_PHASE_6_SCOPE.md`](archive/PLAN_PHASE_6_SCOPE_archived_2026-05-05.md) — scope contract this audit measures against
 - [`OPS_MAP_ARCHITECTURE_DIAGNOSE_2026-05-04.md`](OPS_MAP_ARCHITECTURE_DIAGNOSE_2026-05-04.md) — Phase 5 diagnose; KI-108 inventory referenced
 - [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md) — apex design canon (LOCKED, structural; NOT touched)
 - [`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md) — Premium Glass + Premium Gold canon
@@ -231,7 +231,7 @@ Given the audit, "execute clusters in numeric order" is no longer the right orde
 
 ## Cross-references
 
-- [`PLAN_PHASE_6_SCOPE.md`](PLAN_PHASE_6_SCOPE.md) — original scope contract (now invalidated by this audit; awaiting owner decision on update path)
+- [`PLAN_PHASE_6_SCOPE.md`](archive/PLAN_PHASE_6_SCOPE_archived_2026-05-05.md) — original scope contract (now invalidated by this audit; awaiting owner decision on update path)
 - [`PLAN_DOC_INDEX_BY_PHASE.md`](PLAN_DOC_INDEX_BY_PHASE.md) — Phase 6 row updated this commit to reference this audit
 - [`OPS_MAP_ARCHITECTURE_DIAGNOSE_2026-05-04.md`](OPS_MAP_ARCHITECTURE_DIAGNOSE_2026-05-04.md) — Phase 5 diagnose; KI-108 import inventory verified against this audit's per-file checks
 - [`REF_KNOWN_ISSUES.md`](REF_KNOWN_ISSUES.md) — KI-108 inventory matches reality across all 8 audited files

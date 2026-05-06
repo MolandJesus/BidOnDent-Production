@@ -175,7 +175,7 @@ The Phase 7 surfaces' canon adoption traces to:
 
 ### L3 (orchestration)
 
-**Out of Phase 7 scope** — KI-108 (L2→L4 systemic), KI-109 (useOperatingRegionsCoverage 512 LOC), KI-110 (shopMapExperience coupling) are all explicitly Phase 8 territory per [`OPS_MAP_ARCHITECTURE_DIAGNOSE_2026-05-04.md`](OPS_MAP_ARCHITECTURE_DIAGNOSE_2026-05-04.md) findings table. Phase 7 must NOT touch L3 hooks per the firewall established in [`PLAN_PHASE_6_SCOPE.md`](PLAN_PHASE_6_SCOPE.md) §3 ("Zero L3/L4 boundary work. Any L2→L4 import encountered — leave it. Phase 8 owns it.").
+**Out of Phase 7 scope** — KI-108 (L2→L4 systemic), KI-109 (useOperatingRegionsCoverage 512 LOC), KI-110 (shopMapExperience coupling) are all explicitly Phase 8 territory per [`OPS_MAP_ARCHITECTURE_DIAGNOSE_2026-05-04.md`](OPS_MAP_ARCHITECTURE_DIAGNOSE_2026-05-04.md) findings table. Phase 7 must NOT touch L3 hooks per the firewall established in [`PLAN_PHASE_6_SCOPE.md`](archive/PLAN_PHASE_6_SCOPE_archived_2026-05-05.md) §3 ("Zero L3/L4 boundary work. Any L2→L4 import encountered — leave it. Phase 8 owns it.").
 
 ### L4 (services)
 
