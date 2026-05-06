@@ -38,17 +38,17 @@ Map chrome unified at the `bd-glass-card--map` utility layer. Four surface migra
 
 Every active map chrome + every `bd-*` utility surface + 6 inline `boxShadow` component sites migrated to locked Premium Gold Palette cream `rgba(252,240,208,Xα)`. Repo-wide grep on the canonical surgical pattern `inset 0 1px 0 rgba(255,255,255,0.5+)` across `src/app`: **zero hits.**
 
-| Pass | Scope | Commit |
-|------|-------|--------|
-| 9a | KI-068 shop-family white-surface migration | (pre-batch) |
-| 13d | `.map-command-sidebar-shell`, `.bd-glass-floating`, `.bd-dashboard-section--accent-rose` | (Pass 13 family) |
-| 13e | Active-surface inset cleanup | `9f6a9ee3` |
-| 13f | MapLibre popup + popup-tip | `7b95a961` |
-| 13g | MapLibre attribution + ctrl-group | `c5acf52b` |
-| 13h | Brand badge + scale control | `8ff779d6` |
-| 24 | Base `.bd-glass-card` (theme.css) | `74b0d3a1` |
-| 27 | `.bd-glass-badge` (theme.css) | `299e4646` |
-| 28 | 7 inline `boxShadow` sites across 6 component files | `774f6923` |
+| Pass | Scope                                                                                    | Commit           |
+| ---- | ---------------------------------------------------------------------------------------- | ---------------- |
+| 9a   | KI-068 shop-family white-surface migration                                               | (pre-batch)      |
+| 13d  | `.map-command-sidebar-shell`, `.bd-glass-floating`, `.bd-dashboard-section--accent-rose` | (Pass 13 family) |
+| 13e  | Active-surface inset cleanup                                                             | `9f6a9ee3`       |
+| 13f  | MapLibre popup + popup-tip                                                               | `7b95a961`       |
+| 13g  | MapLibre attribution + ctrl-group                                                        | `c5acf52b`       |
+| 13h  | Brand badge + scale control                                                              | `8ff779d6`       |
+| 24   | Base `.bd-glass-card` (theme.css)                                                        | `74b0d3a1`       |
+| 27   | `.bd-glass-badge` (theme.css)                                                            | `299e4646`       |
+| 28   | 7 inline `boxShadow` sites across 6 component files                                      | `774f6923`       |
 
 ### 1.4 Bid Realtime trust signal (Pass 14, 19)
 
@@ -57,6 +57,7 @@ Every active map chrome + every `bd-*` utility surface + 6 inline `boxShadow` co
 ### 1.5 Living-lava atmosphere (Pass 15, 16a, 16b, 17, 17b)
 
 Living premium gold liquid-glass lava motion landed across:
+
 - Dashboard atmosphere (Pass 15) — 28+36s periods
 - Landing toplamp (Pass 16a) — 32+44s
 - Landing bottomwash (Pass 16b) — 24+38s
@@ -98,42 +99,42 @@ Every open item below is gated. The taxonomy makes the gate explicit.
 
 ### 2A — Owner taste-call gates (visual / architectural; per-item approval)
 
-| ID | Summary | Blast radius | Notes |
-|----|---------|--------------|-------|
-| Pass 14 #8 / #9 | Bids surfaces additional trust elements deferred per Pass 23/25 decline rationale | Small | Now WONTFIX via KI-119/120; owner can override |
-| Pass 16c | `.bd-bloom-atmosphere` drift extension (Pass 22 declined as no-op) | Small | Override path: explicitly authorize adding new gradients to the host (changes visual identity, not just motion) |
-| Pass 18 #1 | Liquid Map Intelligence keyframe swap (`bdLiquidGoldFlow` / `mapLiquidSheenDrift` → canonical `orbDrift`) | Medium | Open fork from atmosphere coherence audit. Trade-off: coherence with the living-lava family vs preserving the bespoke flow as the map's signature motion |
-| Phase A | Playwright visual evidence batch (Sonnet skipped this) | Small | Owner can spin up dedicated browser session, or builder can if Playwright tools loaded |
+| ID              | Summary                                                                                                   | Blast radius | Notes                                                                                                                                                    |
+| --------------- | --------------------------------------------------------------------------------------------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Pass 14 #8 / #9 | Bids surfaces additional trust elements deferred per Pass 23/25 decline rationale                         | Small        | Now WONTFIX via KI-119/120; owner can override                                                                                                           |
+| Pass 16c        | `.bd-bloom-atmosphere` drift extension (Pass 22 declined as no-op)                                        | Small        | Override path: explicitly authorize adding new gradients to the host (changes visual identity, not just motion)                                          |
+| Pass 18 #1      | Liquid Map Intelligence keyframe swap (`bdLiquidGoldFlow` / `mapLiquidSheenDrift` → canonical `orbDrift`) | Medium       | Open fork from atmosphere coherence audit. Trade-off: coherence with the living-lava family vs preserving the bespoke flow as the map's signature motion |
+| Phase A         | Playwright visual evidence batch (Sonnet skipped this)                                                    | Small        | Owner can spin up dedicated browser session, or builder can if Playwright tools loaded                                                                   |
 
 ### 2B — Owner-action items (independent of any AI)
 
-| KI | Summary | What unblocks it |
-|----|---------|------------------|
-| **KI-002** | Email notifications not delivering — code complete, blocked on `RESEND_API_KEY` deploy to Supabase edge env | **Owner deploy of secret. P0 launch blocker.** |
-| KI-051 | CSP missing `overpass-api.de` blocks public map place discovery | Owner CSP edit + deploy |
-| KI-058 | Persisted signed URLs in `damage_reports.photo_urls` expire after 24h — root-cause investigation pending | Owner SQL run against prod data, then migration §3.17 + RLS via Dashboard SQL Editor (per `feedback_supabase_cli_pg17` memory: dashboard paste is the working path on PG17) |
-| KI-060 | Two legacy edge functions still deployed and unused | Owner Supabase dashboard delete |
-| KI-053 | Map performance budget overruns on landing/fullscreen map | Owner runs Chrome DevTools profiler; AI can analyze the captured trace |
-| KI-064 | Honda Accord dashboard thumbnail renders as solid red rectangle — bytes-level issue confirmed (not `storage://` leak) | Owner data-layer action |
-| KI-095 | (per its KI text — owner action item) | See KI body |
-| KI-100 | F-24 follow-up — full Supabase swap for `buildShopRecommendations` | Owner explicit second authorization (intentional defer) |
-| KI-101 | F-01 — "Toyoto" misspelled vehicle make persisted in DB | Owner DB hygiene action |
-| KI-102 | F-03 — Cat photo as damage report thumbnail | Owner data hygiene action |
-| KI-103 | F-14 — `bidondent@gmail.com` in landing footer | Owner decision (keep / change / route) |
+| KI         | Summary                                                                                                               | What unblocks it                                                                                                                                                            |
+| ---------- | --------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **KI-002** | Email notifications not delivering — code complete, blocked on `RESEND_API_KEY` deploy to Supabase edge env           | **Owner deploy of secret. P0 launch blocker.**                                                                                                                              |
+| KI-051     | CSP missing `overpass-api.de` blocks public map place discovery                                                       | Owner CSP edit + deploy                                                                                                                                                     |
+| KI-058     | Persisted signed URLs in `damage_reports.photo_urls` expire after 24h — root-cause investigation pending              | Owner SQL run against prod data, then migration §3.17 + RLS via Dashboard SQL Editor (per `feedback_supabase_cli_pg17` memory: dashboard paste is the working path on PG17) |
+| KI-060     | Two legacy edge functions still deployed and unused                                                                   | Owner Supabase dashboard delete                                                                                                                                             |
+| KI-053     | Map performance budget overruns on landing/fullscreen map                                                             | Owner runs Chrome DevTools profiler; AI can analyze the captured trace                                                                                                      |
+| KI-064     | Honda Accord dashboard thumbnail renders as solid red rectangle — bytes-level issue confirmed (not `storage://` leak) | Owner data-layer action                                                                                                                                                     |
+| KI-095     | (per its KI text — owner action item)                                                                                 | See KI body                                                                                                                                                                 |
+| KI-100     | F-24 follow-up — full Supabase swap for `buildShopRecommendations`                                                    | Owner explicit second authorization (intentional defer)                                                                                                                     |
+| KI-101     | F-01 — "Toyoto" misspelled vehicle make persisted in DB                                                               | Owner DB hygiene action                                                                                                                                                     |
+| KI-102     | F-03 — Cat photo as damage report thumbnail                                                                           | Owner data hygiene action                                                                                                                                                   |
+| KI-103     | F-14 — `bidondent@gmail.com` in landing footer                                                                        | Owner decision (keep / change / route)                                                                                                                                      |
 
 ### 2C — Hard-NO scope (owner override required to unlock)
 
-| Scope | Why locked | Unlock cost |
-|-------|------------|-------------|
+| Scope                                                                                               | Why locked                                                                                                                                                                                                                              | Unlock cost                                                                          |
+| --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
 | `.bd-report-progress-*` cream migration (theme.css L2876 / L2889 light-mode insets at 0.96 / 0.98α) | Same exact pattern Pass 28 swept everywhere else, but on the brief's Hard-NO scope per Sonnet Pass 9a audit boundary. Intentional preservation of the report-shell visual identity as a "different surface" from the panel/badge family | Single owner approval; ~6 lines of CSS; completes the LAW slip story across the repo |
 
 ### 2D — P2 architectural (sustainable feature dev; not launch blockers)
 
-| KI | Summary |
-|----|---------|
+| KI     | Summary                                                     |
+| ------ | ----------------------------------------------------------- |
 | KI-010 | `buildDashboardRouterProps` is an architectural choke point |
-| KI-011 | State-driven routing prevents URL sharing/bookmarking |
-| KI-020 | Type boundary mapping has multiple locations |
+| KI-011 | State-driven routing prevents URL sharing/bookmarking       |
+| KI-020 | Type boundary mapping has multiple locations                |
 
 ### 2E — P3 post-launch deferred
 
@@ -149,8 +150,8 @@ Pass 16c `.bd-bloom-atmosphere` motion attempt — Pass 22 declined as no-op bec
 
 Per [`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md) Launch Scope Guardrails, the **only remaining P0 launch blocker** is:
 
-| KI | Status | Path to launch |
-|----|--------|----------------|
+| KI                                            | Status                                                  | Path to launch                                                                                                                                          |
+| --------------------------------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **KI-002** Email notifications not delivering | Code COMPLETE; blocked on owner `RESEND_API_KEY` deploy | Owner deploys secret to Supabase edge function env → owner verifies emails actually fire end-to-end → KI-002 RESOLVED → launch unblocked from this axis |
 
 Everything else marked P0/P1 in REF_KNOWN_ISSUES.md is RESOLVED at HEAD `774f6923`. Re-grep on `Status:.*P0|Status:.*P1.*Open` returns:
@@ -166,18 +167,18 @@ Everything else marked P0/P1 in REF_KNOWN_ISSUES.md is RESOLVED at HEAD `774f692
 
 Rank-ordered. Each item: name · gate type · AI-actionable? · blast radius · owner-decision needed?
 
-| # | Item | Gate | AI? | Blast | Owner decision? |
-|---|------|------|-----|-------|-----------------|
-| 1 | **KI-002 email secret deploy** | 2B | No (owner only) | Tiny (env var) | Yes — single deploy action |
-| 2 | **`.bd-report-progress-*` Hard-NO unlock** | 2C | Yes (after approval) | ~6 lines CSS | Yes — single approval unlocks completion of the LAW slip story |
-| 3 | **Phase A Playwright visual evidence batch** | 2A | Yes (if Playwright tools loaded) | Audit-only, no code change | Optional — useful for confidence before launch |
-| 4 | **KI-053 map performance profiling** | 2B | Partial (AI analyzes captured trace) | Diagnostic-only | Owner runs DevTools profiler |
-| 5 | **KI-051 CSP fix for overpass-api.de** | 2B | No (deploy) | Single CSP edit | Owner deploys |
-| 6 | **KI-058 signed-URL persistence root-cause** | 2B | Partial (AI can prep migration §3.17) | Migration + RLS | Owner runs SQL via dashboard |
-| 7 | **KI-060 delete legacy edge functions** | 2B | No (owner dashboard action) | Tiny | Owner clicks delete |
-| 8 | **Pass 14 #8 / #9 re-evaluation** | 2A | Yes (after override) | Small | Owner reviews KI-119/120 decline rationale and chooses override or accept WONTFIX |
-| 9 | **Pass 18 #1 Liquid Map keyframe swap** | 2A | Yes (after approval) | Medium (motion identity change) | Yes — taste call between coherence and bespoke signature |
-| 10 | **KI-064 Honda Accord red rectangle** | 2B | No (data action) | Single record | Owner data action |
+| #   | Item                                         | Gate | AI?                                   | Blast                           | Owner decision?                                                                   |
+| --- | -------------------------------------------- | ---- | ------------------------------------- | ------------------------------- | --------------------------------------------------------------------------------- |
+| 1   | **KI-002 email secret deploy**               | 2B   | No (owner only)                       | Tiny (env var)                  | Yes — single deploy action                                                        |
+| 2   | **`.bd-report-progress-*` Hard-NO unlock**   | 2C   | Yes (after approval)                  | ~6 lines CSS                    | Yes — single approval unlocks completion of the LAW slip story                    |
+| 3   | **Phase A Playwright visual evidence batch** | 2A   | Yes (if Playwright tools loaded)      | Audit-only, no code change      | Optional — useful for confidence before launch                                    |
+| 4   | **KI-053 map performance profiling**         | 2B   | Partial (AI analyzes captured trace)  | Diagnostic-only                 | Owner runs DevTools profiler                                                      |
+| 5   | **KI-051 CSP fix for overpass-api.de**       | 2B   | No (deploy)                           | Single CSP edit                 | Owner deploys                                                                     |
+| 6   | **KI-058 signed-URL persistence root-cause** | 2B   | Partial (AI can prep migration §3.17) | Migration + RLS                 | Owner runs SQL via dashboard                                                      |
+| 7   | **KI-060 delete legacy edge functions**      | 2B   | No (owner dashboard action)           | Tiny                            | Owner clicks delete                                                               |
+| 8   | **Pass 14 #8 / #9 re-evaluation**            | 2A   | Yes (after override)                  | Small                           | Owner reviews KI-119/120 decline rationale and chooses override or accept WONTFIX |
+| 9   | **Pass 18 #1 Liquid Map keyframe swap**      | 2A   | Yes (after approval)                  | Medium (motion identity change) | Yes — taste call between coherence and bespoke signature                          |
+| 10  | **KI-064 Honda Accord red rectangle**        | 2B   | No (data action)                      | Single record                   | Owner data action                                                                 |
 
 **The top of this list is unambiguous:** unblock KI-002 (#1) and approve `.bd-report-progress-*` (#2). Those two actions close the last remaining surgical loops the AI sessions surfaced.
 
