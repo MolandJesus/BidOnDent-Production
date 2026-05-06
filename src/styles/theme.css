@@ -2213,7 +2213,10 @@ body {
   color: #0f172a;
 }
 
-/* D4 (final v3.2) modal panel — light: soft off-white liquid glass + more gold. */
+/* D4 (final v3.2) modal panel — light: soft off-white liquid glass + more gold.
+   Pass 13e (2026-05-06) — top inset highlight migrated from pure white
+   rgba(255, 255, 255, 0.96) to locked-palette cream rgba(252, 240, 208, 0.94)
+   per LAW Light-Mode Surface Rule (no pure-white inset highlights). */
 [data-appearance-mode="light"] .bd-glass-floating {
   border-color: rgba(147, 197, 253, 0.36);
   background:
@@ -2226,7 +2229,7 @@ body {
     0 22px 60px rgba(15, 42, 92, 0.15),
     0 0 0 1px rgba(196, 144, 65, 0.24),
     0 0 0 1px rgba(191, 219, 254, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.96),
+    inset 0 1px 0 rgba(252, 240, 208, 0.94),
     inset 0 -1px 0 rgba(196, 144, 65, 0.28),
     0 0 52px rgba(196, 130, 45, 0.3);
 }
@@ -3536,11 +3539,16 @@ body {
 }
 
 [data-appearance-mode="light"] .bd-dashboard-section--accent-rose {
+  /* Pass 13e (2026-05-06) — top inset highlight migrated from pure white
+     rgba(255, 255, 255, 0.94) to locked-palette cream
+     rgba(252, 240, 208, 0.94). Pass 6 brought the cool accent variants
+     (--accent-blue/cyan/indigo/deep) onto the locked palette but missed
+     this rose variant. Now in family parity. */
   background: linear-gradient(180deg, rgba(252, 234, 242, 0.94) 0%, rgba(248, 218, 230, 0.84) 100%);
   border-color: rgba(251, 113, 133, 0.32);
   box-shadow:
     0 16px 36px rgba(80, 14, 36, 0.09),
-    inset 0 1px 0 rgba(255, 255, 255, 0.94),
+    inset 0 1px 0 rgba(252, 240, 208, 0.94),
     inset 0 -1px 0 rgba(196, 144, 65, 0.24),
     0 0 0 1px rgba(196, 144, 65, 0.18),
     0 0 18px rgba(244, 63, 94, 0.08),
