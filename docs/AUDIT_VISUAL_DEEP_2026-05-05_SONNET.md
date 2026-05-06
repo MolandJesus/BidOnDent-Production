@@ -293,7 +293,7 @@ This pass closed the mobile-emulation gap noted in Pass 2 and produced the first
 | Report (Step 1)                 | 0       | 0                | 0               | 1 — Cancel icon-only 38×44                                                      | → fixed |
 | Bids                            | 0       | 0                | 0               | 0                                                                               | ✓ clean |
 | Account                         | 0       | 0                | 0               | 0                                                                               | ✓ clean |
-| Landing (unauth, full-page)      | 0       | 0                | 0               | 6 — header CTA, mobile-menu pair, 3 hero dots                                   | → fixed |
+| Landing (unauth, full-page)     | 0       | 0                | 0               | 6 — header CTA, mobile-menu pair, 3 hero dots                                   | → fixed |
 | Landing fullscreen coverage map | 0       | 0                | 0               | 2 — Close map (Dialog + BottomSheet)                                            | → fixed |
 
 ### Findings + same-pass fixes
@@ -309,13 +309,13 @@ This pass closed the mobile-emulation gap noted in Pass 2 and produced the first
 
 ### Live verification (after fixes, real mobile @ 457)
 
-| Element                                 | Before       | After (measured live) |
-| --------------------------------------- | ------------ | --------------------- |
-| Header Get Started                      | 110 × 40     | 110 × 44 ✓            |
-| Mobile-menu Login                       | 199 × 41.3   | 199 × 44 ✓            |
-| Mobile-menu Get Started                 | 198 × 41.3   | 198 × 44 ✓            |
-| Hero value steppers (×3)                | 32 × 40      | 44 × 44 ✓             |
-| Coverage map Close (×2)                 | 40 × 40      | 44 × 44 ✓             |
+| Element                                  | Before       | After (measured live) |
+| ---------------------------------------- | ------------ | --------------------- |
+| Header Get Started                       | 110 × 40     | 110 × 44 ✓            |
+| Mobile-menu Login                        | 199 × 41.3   | 199 × 44 ✓            |
+| Mobile-menu Get Started                  | 198 × 41.3   | 198 × 44 ✓            |
+| Hero value steppers (×3)                 | 32 × 40      | 44 × 44 ✓             |
+| Coverage map Close (×2)                  | 40 × 40      | 44 × 44 ✓             |
 | Landing full-page final-sweep touch < 44 | 6 violations | **0**                 |
 | Landing full-page hScroll                | 0            | 0                     |
 
@@ -380,6 +380,7 @@ Hit area now 44×44, icon scales gracefully, popup composition
 preserved.
 
 **KI-114 partial (collateral, same file):**
+
 - compact `actionButtonClassName`: `min-h-[36px]` → `min-h-[44px]`
 - compact directions button: `min-h-[38px]` → `min-h-[44px]`
 
@@ -591,30 +592,30 @@ caused (none expected — buttons are flex children, parent grows).
 
 **V-025..V-046 — 22 icon-only buttons missing accessible name (P3-A11Y):**
 
-| ID    | File                                                                                                                                        | Button purpose         | Aria-label added                         |
-| ----- | ------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- | ---------------------------------------- |
-| V-025 | [`auth/LoginLoginView.tsx:69`](../src/app/components/auth/LoginLoginView.tsx)                                                               | Password show/hide     | `{showPassword ? "Hide" : "Show"} password` |
-| V-026 | [`auth/LoginSignupView.tsx:103`](../src/app/components/auth/LoginSignupView.tsx)                                                            | Password show/hide     | `{showPassword ? "Hide" : "Show"} password` |
-| V-027 | [`auth/LoginModal.tsx:115`](../src/app/components/auth/LoginModal.tsx)                                                                      | Close login modal      | `"Close login"`                          |
-| V-028 | [`app/DashboardHeader.tsx:294`](../src/app/components/app/DashboardHeader.tsx)                                                              | Close header search    | `"Close search"`                         |
-| V-029 | [`codelayer/account/EditProfileModal.tsx:143`](../src/app/components/codelayer/account/EditProfileModal.tsx)                                | Change profile photo   | `"Change profile photo"`                 |
-| V-030 | [`codelayer/account/ServiceAreaEditorModal.tsx:175`](../src/app/components/codelayer/account/ServiceAreaEditorModal.tsx)                    | Close editor           | `"Close service area editor"`            |
-| V-031 | [`devtools/StorageInspector.tsx:130`](../src/app/components/devtools/StorageInspector.tsx)                                                  | Close devtool          | `"Close storage inspector"`              |
-| V-032 | [`insurer/InsuranceCompaniesScreen.tsx:51`](../src/app/components/insurer/InsuranceCompaniesScreen.tsx)                                     | Back navigation        | `"Back"`                                 |
-| V-033 | [`insurer/InsurerConnectionScreen.tsx:130`](../src/app/components/insurer/InsurerConnectionScreen.tsx)                                      | Back navigation        | `"Back"`                                 |
-| V-034 | [`insurer/InsurerNewClaimScreen.tsx:100`](../src/app/components/insurer/InsurerNewClaimScreen.tsx)                                          | Back navigation        | `"Back"`                                 |
-| V-035 | [`maps/MapBidSheet.tsx:111`](../src/app/components/maps/MapBidSheet.tsx)                                                                    | Close bid sheet        | `"Close bid sheet"`                      |
-| V-036 | [`maps/navigation/NavigationSettingsSheet.tsx:132`](../src/app/components/maps/navigation/NavigationSettingsSheet.tsx)                      | Close nav settings     | `"Close navigation settings"`            |
-| V-037 | [`maps/navigation/NavigationTurnListSheet.tsx:47`](../src/app/components/maps/navigation/NavigationTurnListSheet.tsx)                       | Close turn list        | `"Close turn list"`                      |
-| V-038 | [`maps/navigation/NavigationVoiceControlsSheet.tsx:75`](../src/app/components/maps/navigation/NavigationVoiceControlsSheet.tsx)             | Close voice controls   | `"Close voice controls"`                 |
-| V-039 | [`reports/CompetitorAnalysisScreen.tsx:201`](../src/app/components/reports/CompetitorAnalysisScreen.tsx)                                    | Back navigation        | `"Back"`                                 |
-| V-040 | [`reports/PhotoGalleryLightbox.tsx:30`](../src/app/components/reports/PhotoGalleryLightbox.tsx)                                             | Close gallery          | `"Close photo gallery"`                  |
-| V-041 | [`reports/ReportDetailScreen.tsx:117`](../src/app/components/reports/ReportDetailScreen.tsx)                                                | Back navigation        | `"Back"`                                 |
-| V-042 | [`reports/ReportsListScreen.tsx:105`](../src/app/components/reports/ReportsListScreen.tsx)                                                  | Back navigation        | `"Back"`                                 |
-| V-043 | [`shop/EstimateRequestSheet.tsx:77`](../src/app/components/shop/EstimateRequestSheet.tsx)                                                   | Close estimate request | `"Close estimate request"`               |
-| V-044 | [`shop/LikedShopsScreen.tsx:122`](../src/app/components/shop/LikedShopsScreen.tsx)                                                          | Back navigation        | `"Back"`                                 |
-| V-045 | [`shop/ShopActiveJobDetailModal.tsx:47`](../src/app/components/shop/ShopActiveJobDetailModal.tsx)                                           | Close job details      | `"Close job details"`                    |
-| V-046 | [`shop/ShopRatingModal.tsx:93`](../src/app/components/shop/ShopRatingModal.tsx)                                                             | Close rating           | `"Close rating"`                         |
+| ID    | File                                                                                                                            | Button purpose         | Aria-label added                            |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------- | ---------------------- | ------------------------------------------- |
+| V-025 | [`auth/LoginLoginView.tsx:69`](../src/app/components/auth/LoginLoginView.tsx)                                                   | Password show/hide     | `{showPassword ? "Hide" : "Show"} password` |
+| V-026 | [`auth/LoginSignupView.tsx:103`](../src/app/components/auth/LoginSignupView.tsx)                                                | Password show/hide     | `{showPassword ? "Hide" : "Show"} password` |
+| V-027 | [`auth/LoginModal.tsx:115`](../src/app/components/auth/LoginModal.tsx)                                                          | Close login modal      | `"Close login"`                             |
+| V-028 | [`app/DashboardHeader.tsx:294`](../src/app/components/app/DashboardHeader.tsx)                                                  | Close header search    | `"Close search"`                            |
+| V-029 | [`codelayer/account/EditProfileModal.tsx:143`](../src/app/components/codelayer/account/EditProfileModal.tsx)                    | Change profile photo   | `"Change profile photo"`                    |
+| V-030 | [`codelayer/account/ServiceAreaEditorModal.tsx:175`](../src/app/components/codelayer/account/ServiceAreaEditorModal.tsx)        | Close editor           | `"Close service area editor"`               |
+| V-031 | [`devtools/StorageInspector.tsx:130`](../src/app/components/devtools/StorageInspector.tsx)                                      | Close devtool          | `"Close storage inspector"`                 |
+| V-032 | [`insurer/InsuranceCompaniesScreen.tsx:51`](../src/app/components/insurer/InsuranceCompaniesScreen.tsx)                         | Back navigation        | `"Back"`                                    |
+| V-033 | [`insurer/InsurerConnectionScreen.tsx:130`](../src/app/components/insurer/InsurerConnectionScreen.tsx)                          | Back navigation        | `"Back"`                                    |
+| V-034 | [`insurer/InsurerNewClaimScreen.tsx:100`](../src/app/components/insurer/InsurerNewClaimScreen.tsx)                              | Back navigation        | `"Back"`                                    |
+| V-035 | [`maps/MapBidSheet.tsx:111`](../src/app/components/maps/MapBidSheet.tsx)                                                        | Close bid sheet        | `"Close bid sheet"`                         |
+| V-036 | [`maps/navigation/NavigationSettingsSheet.tsx:132`](../src/app/components/maps/navigation/NavigationSettingsSheet.tsx)          | Close nav settings     | `"Close navigation settings"`               |
+| V-037 | [`maps/navigation/NavigationTurnListSheet.tsx:47`](../src/app/components/maps/navigation/NavigationTurnListSheet.tsx)           | Close turn list        | `"Close turn list"`                         |
+| V-038 | [`maps/navigation/NavigationVoiceControlsSheet.tsx:75`](../src/app/components/maps/navigation/NavigationVoiceControlsSheet.tsx) | Close voice controls   | `"Close voice controls"`                    |
+| V-039 | [`reports/CompetitorAnalysisScreen.tsx:201`](../src/app/components/reports/CompetitorAnalysisScreen.tsx)                        | Back navigation        | `"Back"`                                    |
+| V-040 | [`reports/PhotoGalleryLightbox.tsx:30`](../src/app/components/reports/PhotoGalleryLightbox.tsx)                                 | Close gallery          | `"Close photo gallery"`                     |
+| V-041 | [`reports/ReportDetailScreen.tsx:117`](../src/app/components/reports/ReportDetailScreen.tsx)                                    | Back navigation        | `"Back"`                                    |
+| V-042 | [`reports/ReportsListScreen.tsx:105`](../src/app/components/reports/ReportsListScreen.tsx)                                      | Back navigation        | `"Back"`                                    |
+| V-043 | [`shop/EstimateRequestSheet.tsx:77`](../src/app/components/shop/EstimateRequestSheet.tsx)                                       | Close estimate request | `"Close estimate request"`                  |
+| V-044 | [`shop/LikedShopsScreen.tsx:122`](../src/app/components/shop/LikedShopsScreen.tsx)                                              | Back navigation        | `"Back"`                                    |
+| V-045 | [`shop/ShopActiveJobDetailModal.tsx:47`](../src/app/components/shop/ShopActiveJobDetailModal.tsx)                               | Close job details      | `"Close job details"`                       |
+| V-046 | [`shop/ShopRatingModal.tsx:93`](../src/app/components/shop/ShopRatingModal.tsx)                                                 | Close rating           | `"Close rating"`                            |
 
 **Why dynamic label on V-025/V-026:** the password-toggle button changes meaning every press; static label would be incorrect for screen-reader users. Dynamic `{showPassword ? "Hide password" : "Show password"}` matches the visual icon swap (Eye ↔ EyeOff).
 
@@ -658,13 +659,13 @@ caused (none expected — buttons are flex children, parent grows).
 
 **Findings:**
 
-| Surface | Tab | Element count | White panels (255,255,255 ≥0.5α) | Forbidden gold hits |
-| --- | --- | ---: | ---: | ---: |
-| CoverageMapDialog | (initial / dark) | 136 | 0 | 0 |
-| CoverageMapDialog | Search | 136 | 0 | 0 |
-| CoverageMapDialog | Explore | 149 | 0 | 0 |
-| CoverageMapDialog | Saved | 173 | 0 | 0 |
-| CoverageMapDialog | Shops | 141 | 0 | 0 |
+| Surface           | Tab              | Element count | White panels (255,255,255 ≥0.5α) | Forbidden gold hits |
+| ----------------- | ---------------- | ------------: | -------------------------------: | ------------------: |
+| CoverageMapDialog | (initial / dark) |           136 |                                0 |                   0 |
+| CoverageMapDialog | Search           |           136 |                                0 |                   0 |
+| CoverageMapDialog | Explore          |           149 |                                0 |                   0 |
+| CoverageMapDialog | Saved            |           173 |                                0 |                   0 |
+| CoverageMapDialog | Shops            |           141 |                                0 |                   0 |
 
 Source-grep: 0 matches across all 12 Coverage component files for `220,165,90`, `254,248,220`, `160,95,25`, and `220,140,50`.
 

@@ -72,9 +72,9 @@
 
 **Change applied:** [`src/app/components/landing/HeroSection.tsx:1018`](../src/app/components/landing/HeroSection.tsx)
 
-| Property                | Before                | After                                                          |
-| ----------------------- | --------------------- | -------------------------------------------------------------- |
-| Dark-mode text color    | `#fde6c0` (253,230,192) — outside locked range | `#fcefd0` (252,239,208) — inside locked `252,238–240,204–208`  |
+| Property             | Before                                         | After                                                         |
+| -------------------- | ---------------------------------------------- | ------------------------------------------------------------- |
+| Dark-mode text color | `#fde6c0` (253,230,192) — outside locked range | `#fcefd0` (252,239,208) — inside locked `252,238–240,204–208` |
 
 Light-mode text (`#7c4a16`), backgrounds, border, and inset/halo shadow stack: unchanged. Border was already `rgba(196,144,65,0.36)` (locked top/corner-lamp value). Inset/outer shadows were already in-family (`rgba(196, 144, 65, 0.22)` / `rgba(140, 82, 22, 0.22)` / `rgba(196, 130, 45, 0.12)`).
 
@@ -103,19 +103,19 @@ Light-mode text (`#7c4a16`), backgrounds, border, and inset/halo shadow stack: u
 
 **Change applied:** [`src/styles/theme.css:1769-1814`](../src/styles/theme.css)
 
-| Property | Before | After |
-| --- | --- | --- |
-| `border-color` | `rgba(96, 165, 250, 0.20)` (cool blue only) | `rgba(196, 144, 65, 0.32)` (locked top-lamp gold) |
-| Background gradient | `rgba(30,58,138,0.22) → rgba(12,25,41,0.68)` | `rgba(30,58,138,0.26) → rgba(12,25,41,0.74)` (slight depth bump, cool-blue body preserved per landing identity rule) |
-| Top inset highlight | `rgba(147, 197, 253, 0.09)` (sky-blue, faint) | `rgba(252, 240, 208, 0.22)` (locked cream-gold lamp) |
-| Bottom inset rim | `rgba(59, 130, 246, 0.04)` (cool blue, faint) | `rgba(140, 82, 22, 0.28)` (locked bronze trim) |
-| Gold ring | none | `0 0 0 1px rgba(196, 144, 65, 0.20)` (locked top-lamp) |
-| Cool ring | `0 0 1px rgba(96, 165, 250, 0.25)` | `0 0 0 1px rgba(96, 165, 250, 0.18)` (preserved at lower alpha) |
-| Cool glow | `0 0 20px rgba(37, 99, 235, 0.05)` | `0 0 28px rgba(37, 99, 235, 0.10)` |
-| Gold halo (outer) | none | `0 0 44px rgba(196, 130, 45, 0.22)` (locked deeper outer halo at single-layer cap) |
-| Top-cast lamp | none | `0 -28px 80px -16px rgba(196, 144, 65, 0.14)` (mirrors landing/dashboard "lamp from above" grammar) |
-| Side cream catchlights | none | `inset 1px 0 0 rgba(252,240,208,0.10)` + `inset -1px 0 0 rgba(252,240,208,0.06)` (mirrors `--landing` depth-bar criterion 7 — cards now in same metallic-glass family) |
-| Drop shadow depth | `0 10px 24px rgba(2,6,23,0.28)` | `0 18px 40px rgba(2,6,23,0.48)` + `0 6px 14px rgba(2,6,23,0.26)` (cards now sit ON the page, not flat against it) |
+| Property               | Before                                        | After                                                                                                                                                                  |
+| ---------------------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `border-color`         | `rgba(96, 165, 250, 0.20)` (cool blue only)   | `rgba(196, 144, 65, 0.32)` (locked top-lamp gold)                                                                                                                      |
+| Background gradient    | `rgba(30,58,138,0.22) → rgba(12,25,41,0.68)`  | `rgba(30,58,138,0.26) → rgba(12,25,41,0.74)` (slight depth bump, cool-blue body preserved per landing identity rule)                                                   |
+| Top inset highlight    | `rgba(147, 197, 253, 0.09)` (sky-blue, faint) | `rgba(252, 240, 208, 0.22)` (locked cream-gold lamp)                                                                                                                   |
+| Bottom inset rim       | `rgba(59, 130, 246, 0.04)` (cool blue, faint) | `rgba(140, 82, 22, 0.28)` (locked bronze trim)                                                                                                                         |
+| Gold ring              | none                                          | `0 0 0 1px rgba(196, 144, 65, 0.20)` (locked top-lamp)                                                                                                                 |
+| Cool ring              | `0 0 1px rgba(96, 165, 250, 0.25)`            | `0 0 0 1px rgba(96, 165, 250, 0.18)` (preserved at lower alpha)                                                                                                        |
+| Cool glow              | `0 0 20px rgba(37, 99, 235, 0.05)`            | `0 0 28px rgba(37, 99, 235, 0.10)`                                                                                                                                     |
+| Gold halo (outer)      | none                                          | `0 0 44px rgba(196, 130, 45, 0.22)` (locked deeper outer halo at single-layer cap)                                                                                     |
+| Top-cast lamp          | none                                          | `0 -28px 80px -16px rgba(196, 144, 65, 0.14)` (mirrors landing/dashboard "lamp from above" grammar)                                                                    |
+| Side cream catchlights | none                                          | `inset 1px 0 0 rgba(252,240,208,0.10)` + `inset -1px 0 0 rgba(252,240,208,0.06)` (mirrors `--landing` depth-bar criterion 7 — cards now in same metallic-glass family) |
+| Drop shadow depth      | `0 10px 24px rgba(2,6,23,0.28)`               | `0 18px 40px rgba(2,6,23,0.48)` + `0 6px 14px rgba(2,6,23,0.26)` (cards now sit ON the page, not flat against it)                                                      |
 
 **New `.dark .bd-glass-card:hover` rule added:** previously absent. Hover deepens the lamp, brightens cream rim, expands gold halo to `0 0 56px rgba(196,130,45,0.32)`. No transform added (no motion regression — reduced-motion contract honored automatically since shadow-only changes are not motion).
 
@@ -135,7 +135,6 @@ Light-mode text (`#7c4a16`), backgrounds, border, and inset/halo shadow stack: u
 
 **Risk:** Low. Locked palette only. Cool-blue body identity preserved (landing rule). Halo intensities at or below the established `--landing` precedent. Single CSS file.
 
-
 ---
 
 ## Pass 9 Polish #4 — Dark-mode liquid gold lift on `.bd-glass-panel` (sibling to #3) (2026-05-05)
@@ -148,14 +147,14 @@ Light-mode text (`#7c4a16`), backgrounds, border, and inset/halo shadow stack: u
 
 Same locked-palette grammar as #3, but with **calmer alphas** because panels frame content (cards) — they should not compete with the cards inside them:
 
-| Layer | Card variant (#3) | Panel variant (#4) |
-| --- | --- | --- |
-| border alpha | 0.32 | 0.26 |
-| top inset cream | 0.22 | 0.18 |
-| bottom bronze rim | 0.28 | 0.22 |
-| gold ring | 0.20 | 0.16 |
-| outer halo | 0.22 | 0.18 |
-| top-cast lamp | 0.14 | 0.12 |
+| Layer             | Card variant (#3) | Panel variant (#4) |
+| ----------------- | ----------------- | ------------------ |
+| border alpha      | 0.32              | 0.26               |
+| top inset cream   | 0.22              | 0.18               |
+| bottom bronze rim | 0.28              | 0.22               |
+| gold ring         | 0.20              | 0.16               |
+| outer halo        | 0.22              | 0.18               |
+| top-cast lamp     | 0.14              | 0.12               |
 
 All values from the LOCKED Premium Gold Palette: `196,144,65` / `196,130,45` / `140,82,22` / `252,240,208`. Cool-blue body preserved (background gradient unchanged from previous panel rule).
 
@@ -172,7 +171,6 @@ All values from the LOCKED Premium Gold Palette: `196,144,65` / `196,130,45` / `
 
 **Risk:** Low. Direct sibling of just-shipped #3 (which was runtime-verified). Same palette family, calmer alphas. Single CSS file.
 
-
 ---
 
 ## Pass 9 Polish #5 — Dark-mode gold lift on `.bd-glass-badge` (twinkle, not glow) (2026-05-05)
@@ -183,19 +181,18 @@ All values from the LOCKED Premium Gold Palette: `196,144,65` / `196,130,45` / `
 
 **Change applied:** [`src/styles/theme.css:1770-1785`](../src/styles/theme.css)
 
-| Property | Before | After |
-| --- | --- | --- |
-| `border-color` | `rgba(96,165,250,0.28)` (cool blue) | `rgba(196,144,65,0.36)` (locked top-lamp, brighter alpha because micro-element) |
-| Top inset | `rgba(147,197,253,0.08)` (sky-blue, faint) | `rgba(252,240,208,0.22)` (locked cream-gold) |
-| Bottom inset | none | `rgba(140,82,22,0.20)` (locked bronze rim) |
-| Outer halo | `0 0 8px rgba(59,130,246,0.08)` | `0 0 10px rgba(59,130,246,0.10) + 0 0 14px rgba(196,144,65,0.16)` (cool + warm dual halo, tiny radius) |
+| Property       | Before                                     | After                                                                                                  |
+| -------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
+| `border-color` | `rgba(96,165,250,0.28)` (cool blue)        | `rgba(196,144,65,0.36)` (locked top-lamp, brighter alpha because micro-element)                        |
+| Top inset      | `rgba(147,197,253,0.08)` (sky-blue, faint) | `rgba(252,240,208,0.22)` (locked cream-gold)                                                           |
+| Bottom inset   | none                                       | `rgba(140,82,22,0.20)` (locked bronze rim)                                                             |
+| Outer halo     | `0 0 8px rgba(59,130,246,0.08)`            | `0 0 10px rgba(59,130,246,0.10) + 0 0 14px rgba(196,144,65,0.16)` (cool + warm dual halo, tiny radius) |
 
 Cool-blue body + royal-blue text preserved (badge identity unchanged). Locked Premium Gold Palette only.
 
 **Validation:** Build ✓ clean, diagnostics 0, §9.1 forbidden-color 0 hits, §9.3 reduced-motion N/A (no motion changed), light mode untouched.
 
 **Note logged for follow-up (NOT fixed in this polish):** `.bd-dashboard-atmosphere` dark rule (line 1768) contains `rgba(220, 150, 60, 0.14)` — not on the explicit forbidden list, but drifting close to the banned `220,140,50`. Pre-existing, owner-tuned. Out of scope here; flag for a future palette-conformance pass.
-
 
 ---
 
@@ -217,12 +214,12 @@ Single new `.dark`-scoped rule, single property:
 
 **Rim alpha grammar context:**
 
-| Surface | Rim alpha (Pass 9) | Polish # |
-| --- | --- | --- |
-| `.bd-glass-card` (base) | 0.32 | #3 |
-| `.bd-glass-panel` | 0.26 | #4 |
-| `.bd-glass-badge` | 0.36 | #5 |
-| `.bd-dashboard-primary-button` (new) | **0.34** | **#9** |
+| Surface                              | Rim alpha (Pass 9) | Polish # |
+| ------------------------------------ | ------------------ | -------- |
+| `.bd-glass-card` (base)              | 0.32               | #3       |
+| `.bd-glass-panel`                    | 0.26               | #4       |
+| `.bd-glass-badge`                    | 0.36               | #5       |
+| `.bd-dashboard-primary-button` (new) | **0.34**           | **#9**   |
 
 Primary CTA at 0.34 sits between card (0.32, passive surface) and badge (0.36, micro-element) — appropriate for an attention-grabbing interactive surface that's neither maximally calm nor maximally tight.
 
@@ -276,4 +273,3 @@ Primary CTA at 0.34 sits between card (0.32, passive surface) and badge (0.36, m
 **Risk:** Lowest tier — single-property `.dark`-scoped override at panel-calmer alpha than primary sibling.
 
 **Cumulative Pass 9 status:** 10 polishes shipped + 1 reverted + KI-117. Owner-pending decisions: (1) #9 numbering audit-doc gap for relay's panel dial-back, (2) NavigationActiveManeuverCard:69 map-domain authorization, (3) Prettier trailing-zero drift global decision, (4) `rgba(220,150,60,*)` atmospheric drift ruling.
-
