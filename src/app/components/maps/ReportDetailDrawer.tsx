@@ -89,7 +89,7 @@ export function ReportDetailDrawer({
         className={cn(
           "max-w-lg mx-auto rounded-2xl p-0 backdrop-blur-2xl",
           isDark
-            ? "bg-gradient-to-b from-slate-900/90 to-blue-950/90 border-blue-400/20 shadow-[0_-8px_40px_rgba(59,130,246,0.15),0_0_60px_rgba(14,165,233,0.08),inset_0_1px_0_rgba(96,165,250,0.2)]"
+            ? "bg-gradient-to-b from-slate-900/92 to-blue-950/92 border-blue-400/22 shadow-[0_-12px_44px_rgba(2,6,23,0.55),0_0_80px_rgba(196,130,45,0.22),0_0_60px_rgba(59,130,246,0.12),inset_0_1px_0_rgba(196,144,65,0.36),inset_0_-1px_0_rgba(140,82,22,0.32),inset_0_-2px_0_rgba(252,240,208,0.06)]"
             : "border-[rgba(140,82,22,0.32)] bg-[linear-gradient(180deg,rgba(247,232,194,0.94),rgba(232,238,248,0.90))] shadow-[0_-12px_40px_rgba(140,82,22,0.18),0_0_60px_rgba(196,144,65,0.10),inset_0_1px_0_rgba(252,240,208,0.85)]"
         )}
       >
