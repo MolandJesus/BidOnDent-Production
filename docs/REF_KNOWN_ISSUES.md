@@ -1104,3 +1104,12 @@
 - **Resolution sites:** None — no code changes required. Star-amber stays as-is on these 8 surfaces.
 - **Status:** **RESOLVED-AS-INTENTIONAL 2026-05-05.** Same exception class as KI-106 (real-world signage convention). Re-open only if (a) a future design pass deliberately retires star-amber rating UI in favor of a different rating glyph, or (b) star-amber leaks out of rating/place-pin contexts into surface paint where the locked palette governs.
 - **Skill:** `bd-design-identity` (semantic exception class, second instance after KI-106).
+
+### KI-118: Dashboard route preview shows impossible mileage (P2-DATA)
+
+- **Impact:** On the dashboard "Find Shops" inline map (`ShopDirectoryRoutePreviewCard`), the floating ROUTE card displays inconsistent and physically impossible distance values for in-frame destinations. Owner reference (Pass 12 Phase 1 audit, 2026-05-06) shows two route alternatives chipped as `1005m / 853.4 mi` and `1035m / 876.8 mi`, with a `LIVE ROUTE` strip reading `My Locatio...  737.2 mi · 1264 min` for a destination clearly visible inside the same NY-area map viewport. 737.2 mi / 1264 min (≈21 h) is impossible for an in-frame route; the meters/miles paired chips suggest two formatting paths producing two different unit interpretations of the same underlying route value.
+- **Suspected root cause:** Double unit conversion. A route distance value (likely already in miles from one helper) is being passed through a `metersToMiles` formatter elsewhere, or vice versa. Most likely in `ShopDirectoryRoutePreviewCard.tsx` distance formatting helpers, or in the upstream `useShopDirectoryRoute*` hook that computes `distanceMiles` / `distanceMeters` for the card.
+- **Surface:** [src/app/components/shop/ShopDirectoryRoutePreviewCard.tsx](../src/app/components/shop/ShopDirectoryRoutePreviewCard.tsx) — visible symptoms.
+- **Severity:** P2-DATA. User-visible numerical wrongness on the primary dashboard map surface. Not a launch blocker (the map is still navigable and Start Navigation still hands off to the routing provider) but breaks user trust in the route preview card.
+- **Status:** OPEN. Tracked but **not** fixed in Pass 12 chrome-unification scope. Fix is its own dedicated pass after Pass 12 #1–#7 lands.
+- **Discovery:** Pass 12 Phase 1 map coherence audit ([docs/map_coherence_audit_sonnet_2026-05-06.md](map_coherence_audit_sonnet_2026-05-06.md) HSF-1).
