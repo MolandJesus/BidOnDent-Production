@@ -3305,6 +3305,42 @@ body {
     0 0 18px rgba(244, 63, 94, 0.1);
 }
 
+/* Pass 11 #5 (owner directive 2026-05-06 "more atmospheric, gold
+   lighting"): cool-register section variants (--deep + --accent-blue/
+   cyan/indigo/rose) get a softer corner lamp ::after that mirrors the
+   panel-level lamp from Pass 11 #2 — same gold, smaller scale (38% width
+   vs panel's 48%), softer alpha (0.30 vs panel's 0.50). Brings report
+   cards / interactive cool tiles into the gold-lit atmospheric family
+   without out-shouting the panels above them. Warm pop tiles
+   (--accent-gold + --accent-champagne) intentionally excluded — they
+   already carry warm character and a corner lamp would muddy the body.
+   Locked Premium Gold Palette only (rgba(196, 144, 65) corner lamp).
+   Light-mode override below holds the lamp at panel-light parity. */
+.bd-dashboard-section--deep::after,
+.bd-dashboard-section--accent-blue::after,
+.bd-dashboard-section--accent-cyan::after,
+.bd-dashboard-section--accent-indigo::after,
+.bd-dashboard-section--accent-rose::after {
+  content: "";
+  position: absolute;
+  right: -10%;
+  top: -22%;
+  aspect-ratio: 1;
+  width: 38%;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(196, 144, 65, 0.30) 0%, transparent 72%);
+  pointer-events: none;
+}
+
+[data-appearance-mode="light"] .bd-dashboard-section--deep::after,
+[data-appearance-mode="light"] .bd-dashboard-section--accent-blue::after,
+[data-appearance-mode="light"] .bd-dashboard-section--accent-cyan::after,
+[data-appearance-mode="light"] .bd-dashboard-section--accent-indigo::after,
+[data-appearance-mode="light"] .bd-dashboard-section--accent-rose::after {
+  width: 30%;
+  background: radial-gradient(circle, rgba(196, 144, 65, 0.20) 0%, transparent 72%);
+}
+
 /* Deeper-gold tile: warm pop tile per LAW. Body stays warm-brown, trim
    stays warm-bronze (cool blue would clash with the warm body). Inset
    bevel + outer halo aligned to locked palette. Pairs with --accent-
