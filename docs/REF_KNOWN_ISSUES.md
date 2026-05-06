@@ -1123,3 +1123,14 @@
 - **Status:** WONTFIX (intentional design separation between segmented-pill and cycle-button affordances).
 - **Severity:** P7-TECHDEBT (no user impact).
 
+### KI-120: Phase E MapRoutePreviewCard extraction declined (P7-TECHDEBT)
+
+- **Brief:** 2026-05-06 full-autopilot Phase E proposed extracting a shared `MapRoutePreviewCard` from `ShopDirectoryRoutePreviewCard.tsx` and adopting it in `CoverageBrowseExperience` to collapse an apparent "RECENT ROUTE / YOUR ROUTE" 2-card stack into a single floating card.
+- **On inspection:** The "RECENT ROUTE / YOUR ROUTE" pattern in `CoverageBrowseExperience` is NOT two floating map overlays of the same shape. It is two distinct sidebar metric panels with separate roles:
+  - `CoverageCommandCenterSidebar.tsx` L196 — "Recent Route" history strip (sidebar)
+  - `PlannerRoutePreview.tsx` L274 — "Your route" plan strip (sidebar, planner experience)
+- `ShopDirectoryRoutePreviewCard` is a floating map overlay (single active route preview) on the dashboard — different surface, different chrome (`bd-glass-card--map` floating), different role (live navigation preview vs. sidebar history/plan).
+- **Decision:** Skip extraction. Replacing the sidebar metric panels with a single floating map overlay would (a) move persistent metrics into a transient overlay obscuring map content, (b) lose the history-vs-plan distinction, (c) conflict with the existing sidebar role.
+- **Status:** WONTFIX (intentional surface separation between floating map overlays and sidebar metric panels).
+- **Severity:** P7-TECHDEBT (no user impact).
+
