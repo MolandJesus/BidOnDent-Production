@@ -251,12 +251,7 @@ export function ReportDetailDrawer({
                 onPlaceBid(report);
                 onOpenChange(false);
               }}
-              className={cn(
-                "mt-1.5 w-full rounded-xl border py-2.5 text-sm font-semibold transition-colors min-h-[44px]",
-                isDark
-                  ? "border-amber-400/30 bg-amber-500/20 text-amber-200 hover:bg-amber-500/30"
-                  : "border-amber-300/60 bg-amber-50 text-amber-700 hover:bg-amber-100"
-              )}
+              className="bd-button--warn mt-1.5 w-full rounded-xl border py-2.5 text-sm font-semibold min-h-[44px]"
             >
               Place Bid
             </button>

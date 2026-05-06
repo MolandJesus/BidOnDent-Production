@@ -4342,3 +4342,70 @@ body {
   background: rgba(252, 240, 208, 0.55);
   color: rgba(110, 70, 18, 1);
 }
+
+/* ============================================================
+   bd-button--warn — warm interactive CTA (Pass 10 #1)
+   ------------------------------------------------------------
+   Locked Premium Gold Palette migration of legacy Tailwind
+   amber-* button surfaces in map popups + drawers. Sibling
+   to .bd-notice--warn but tuned for buttons: fuller cream
+   bg in light / warmer wash in dark, hover lift, active
+   press, and locked-palette focus-visible ring.
+
+   Color tokens only. Layout (sizing, padding, border radius,
+   font weight, min-h target) stays per call site so existing
+   button shapes are preserved unchanged.
+
+   Migrated call sites:
+     - ReportLayerPopup.tsx (View Detail button)
+     - ReportDetailDrawer.tsx (Place Bid button)
+
+   Same LAW citation as .bd-notice--warn — no Tailwind
+   amber-* tokens permitted on user-visible surfaces.
+   ============================================================ */
+
+.bd-button--warn {
+  border-color: rgba(196, 144, 65, 0.36);
+  background: rgba(228, 140, 55, 0.22);
+  color: rgba(253, 220, 160, 1);
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    transform 120ms ease;
+}
+
+.bd-button--warn:hover {
+  background: rgba(228, 140, 55, 0.36);
+  border-color: rgba(196, 144, 65, 0.5);
+}
+
+.bd-button--warn:active {
+  background: rgba(228, 140, 55, 0.42);
+  transform: translateY(1px);
+}
+
+.bd-button--warn:focus-visible {
+  outline: 2px solid rgba(196, 144, 65, 0.65);
+  outline-offset: 2px;
+}
+
+[data-appearance-mode="light"] .bd-button--warn {
+  border-color: rgba(140, 82, 22, 0.42);
+  background: rgba(252, 240, 208, 0.85);
+  color: rgba(110, 70, 18, 1);
+}
+
+[data-appearance-mode="light"] .bd-button--warn:hover {
+  background: rgba(252, 232, 188, 1);
+  border-color: rgba(140, 82, 22, 0.55);
+}
+
+[data-appearance-mode="light"] .bd-button--warn:active {
+  background: rgba(248, 222, 170, 1);
+  transform: translateY(1px);
+}
+
+[data-appearance-mode="light"] .bd-button--warn:focus-visible {
+  outline: 2px solid rgba(140, 82, 22, 0.6);
+  outline-offset: 2px;
+}
