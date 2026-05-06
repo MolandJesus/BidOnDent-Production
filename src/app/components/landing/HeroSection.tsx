@@ -592,7 +592,8 @@ export default function HeroSection({
                 height: "200px",
                 background: isLightAppearance ? "#dbe7f5" : "#0d1d3a",
                 boxShadow: isLightAppearance
-                  ? "0 14px 40px rgba(15, 30, 60, 0.10), 0 40px 90px rgba(15, 30, 60, 0.08), 0 0 50px rgba(37, 99, 235, 0.06), inset 0 1px 0 rgba(255,255,255,0.55), inset 0 0 0 1px rgba(190,210,235,0.22), inset 0 -1px 0 rgba(140,82,22,0.20), 0 0 80px rgba(196,130,45,0.05)"
+                  ? // Pass 28: cream-gold top inset per locked Premium Gold Palette.
+                    "0 14px 40px rgba(15, 30, 60, 0.10), 0 40px 90px rgba(15, 30, 60, 0.08), 0 0 50px rgba(37, 99, 235, 0.06), inset 0 1px 0 rgba(252,240,208,0.55), inset 0 0 0 1px rgba(190,210,235,0.22), inset 0 -1px 0 rgba(140,82,22,0.20), 0 0 80px rgba(196,130,45,0.05)"
                   : "0 16px 48px rgba(2, 6, 23, 0.40), 0 50px 110px rgba(2, 6, 23, 0.18), 0 0 60px rgba(37, 99, 235, 0.12), inset 0 1px 0 rgba(196, 144, 65,0.20), inset 0 0 0 1px rgba(96, 165, 250, 0.14), inset 0 -1px 0 rgba(196, 144, 65,0.16), 0 0 100px rgba(196, 130, 45, 0.08)",
               }}
             >
@@ -855,7 +856,9 @@ export default function HeroSection({
                   maxHeight: "520px",
                   background: isLightAppearance ? "#dbe7f5" : "#0d1d3a",
                   boxShadow: isLightAppearance
-                    ? "0 18px 60px rgba(15, 30, 60, 0.10), 0 0 80px rgba(37, 99, 235, 0.10), 0 0 140px rgba(196, 144, 65,0.08), inset 0 1px 0 rgba(255,255,255,0.62), inset 0 -1px 0 rgba(196, 144, 65,0.18), inset 0 2px 12px rgba(255,255,255,0.20)"
+                    ? // Pass 28: cream-gold top inset per locked Premium Gold Palette.
+                      // Soft inner glow inset 0 2px 12px left as-is at 0.20α — different shape (broad inner glow, not top-edge specular); falls outside Pass 24/27 surgical pattern.
+                      "0 18px 60px rgba(15, 30, 60, 0.10), 0 0 80px rgba(37, 99, 235, 0.10), 0 0 140px rgba(196, 144, 65,0.08), inset 0 1px 0 rgba(252,240,208,0.62), inset 0 -1px 0 rgba(196, 144, 65,0.18), inset 0 2px 12px rgba(255,255,255,0.20)"
                     : "0 22px 70px rgba(2, 6, 23, 0.42), 0 0 90px rgba(37, 99, 235, 0.14), 0 0 160px rgba(196, 144, 65,0.10), inset 0 1px 0 rgba(196, 144, 65,0.18), inset 0 -1px 0 rgba(196, 144, 65,0.16), inset 0 2px 12px rgba(96, 165, 250, 0.10)",
                   WebkitMaskImage:
                     "linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.55) 4%, #000 11%, #000 100%)",

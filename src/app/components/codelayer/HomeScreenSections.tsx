@@ -107,7 +107,8 @@ export function HomeOnboardingCard({
                   background: tone.background,
                   borderColor: tone.borderColor,
                   boxShadow: isLight
-                    ? "0 12px 24px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.96)"
+                    ? // Pass 28: cream-gold top inset per locked Premium Gold Palette.
+                      "0 12px 24px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(252, 240, 208, 0.96)"
                     : "0 16px 30px rgba(2, 6, 23, 0.24), inset 0 1px 0 rgba(191, 219, 254, 0.05)",
                 }}
               >

@@ -293,7 +293,8 @@ export default function WhoWeServeSection({
                       ? `1.5px solid ${card.iconBg}3D`
                       : `1.5px solid ${card.iconBgDark}66`,
                     boxShadow: isLightAppearance
-                      ? `0 6px 22px ${card.iconBg}30, 0 0 30px ${card.iconBg}1A, inset 0 1px 0 rgba(255,255,255,0.65)`
+                      ? // Pass 28: cream-gold top inset per locked Premium Gold Palette.
+                        `0 6px 22px ${card.iconBg}30, 0 0 30px ${card.iconBg}1A, inset 0 1px 0 rgba(252,240,208,0.65)`
                       : `0 0 24px ${card.iconBgDark}55, inset 0 1px 0 ${card.iconBgDark}33, inset 0 -1px 0 rgba(2,6,23,0.30)`,
                   }}
                 >
