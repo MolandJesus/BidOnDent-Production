@@ -28,9 +28,13 @@ export default function MapPaneLegendPanel({
   density = "default",
 }: MapPaneLegendProps) {
   const isCompactDensity = density === "compact";
-  const legendCard = isDark
-    ? "border-blue-300/20 bg-[linear-gradient(180deg,rgba(15,23,42,0.84),rgba(15,23,42,0.76))] text-white shadow-xl backdrop-blur-2xl"
-    : "border-slate-200/78 bg-[linear-gradient(180deg,rgba(248,250,252,0.84),rgba(226,232,240,0.76))] text-slate-700 shadow-lg backdrop-blur-2xl";
+  // Pass 12 #5 — legend card + status filter chip bar migrated to canonical
+  // bd-glass-card--map utility (theme.css). The bd utility carries the locked
+  // Pass 11 #3/#4 grammar across light + dark and keeps both the legend wrap
+  // and the chip bar visually identical to the rest of the map chrome
+  // (Coverage sidebar, Coverage bottom strip, ShopDirectory route preview).
+  // Only the text color is kept here so chip text contrast is preserved.
+  const legendCardText = isDark ? "text-white" : "text-slate-700";
   const topPickDot = isDark
     ? "border border-white/70 bg-slate-900 shadow-[0_0_0_1px_rgba(148,163,184,0.45)]"
     : "border border-slate-400 bg-slate-900";
@@ -38,7 +42,7 @@ export default function MapPaneLegendPanel({
   return (
     <>
       <div
-        className={`border shadow-lg ${isCompactDensity ? "rounded-lg px-1.5 py-1 text-[8px] @xl:px-1.5 @xl:py-1 @xl:text-[8px] @3xl:px-2 @3xl:text-[9px]" : "rounded-xl px-2 py-1 text-[9px] @xl:px-2.5 @xl:py-1.5 @xl:text-[10px] @3xl:px-3 @3xl:py-2 @3xl:text-[11px]"} ${legendCard}`}
+        className={`bd-glass-card--map ${isCompactDensity ? "rounded-lg px-1.5 py-1 text-[8px] @xl:px-1.5 @xl:py-1 @xl:text-[8px] @3xl:px-2 @3xl:text-[9px]" : "rounded-xl px-2 py-1 text-[9px] @xl:px-2.5 @xl:py-1.5 @xl:text-[10px] @3xl:px-3 @3xl:py-2 @3xl:text-[11px]"} ${legendCardText}`}
       >
         <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
           <span className="inline-flex items-center gap-1">
@@ -126,7 +130,7 @@ export default function MapPaneLegendPanel({
       {/* ── Report status filter chips ── */}
       {showReports && onReportStatusFilterChange && (
         <div
-          className={`pointer-events-auto flex flex-wrap border shadow-lg backdrop-blur-2xl ${isCompactDensity ? "gap-0.5 rounded-lg px-1.5 py-1" : "gap-1 rounded-xl px-2 py-1.5"} ${legendCard}`}
+          className={`bd-glass-card--map pointer-events-auto flex flex-wrap ${isCompactDensity ? "gap-0.5 rounded-lg px-1.5 py-1" : "gap-1 rounded-xl px-2 py-1.5"} ${legendCardText}`}
         >
           {(
             [

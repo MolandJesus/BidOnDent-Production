@@ -63,9 +63,15 @@ export default function ShopDirectoryRoutePreviewCard({
   const [routeExpanded, setRouteExpanded] = useState(false);
   const isCompactDensity = density === "compact";
 
-  const glassPanel = isDark
-    ? "border-[rgba(96,165,250,0.22)] bg-[linear-gradient(180deg,rgba(15,23,42,0.86),rgba(8,16,33,0.82))] backdrop-blur-md text-white shadow-[inset_0_1px_0_rgba(196,144,65,0.20),inset_0_-1px_0_rgba(140,82,22,0.18),0_0_0_1px_rgba(96,165,250,0.16),0_18px_40px_rgba(2,6,23,0.40),0_0_36px_rgba(196,130,45,0.12)]"
-    : "border-[rgba(140,82,22,0.26)] bg-[linear-gradient(180deg,rgba(247,232,194,0.88),rgba(232,238,248,0.82))] backdrop-blur-md text-slate-800 shadow-[inset_0_1px_0_rgba(252,240,208,0.78),0_8px_20px_rgba(15,23,42,0.10)]";
+  // Pass 12 #4 — outer card wrap migrated to canonical `bd-glass-card--map`
+  // utility (see theme.css). Pre-Pass-12 this used the bespoke `map-liquid-panel`
+  // + per-tone shadow/border/background string. The bd utility carries the same
+  // Pass 11 #3/#4 grammar (cream catchlight + bronze rim + warm gold halo + cool
+  // blue identity ring) for both light and dark and stays in sync with the rest
+  // of the map chrome (Coverage sidebar, Coverage bottom strip, MapPaneLegend).
+  // Only the text color tone is kept here because the card body still drives
+  // text contrast separately from the surface.
+  const cardTextTone = isDark ? "text-white" : "text-slate-800";
   const secondaryText = isDark ? "text-white/60" : "text-slate-500";
   const divider = isDark ? "border-white/10" : "border-black/8";
   const activeRoute = isDark
@@ -115,9 +121,9 @@ export default function ShopDirectoryRoutePreviewCard({
       }}
     >
       <div
-        className={`map-liquid-panel rounded-2xl border shadow-2xl ${
+        className={`bd-glass-card--map rounded-2xl ${
           isCompactDensity ? "p-2 sm:p-2.5" : "p-2 sm:p-2.5"
-        } ${glassPanel}`}
+        } ${cardTextTone}`}
       >
         <div className="flex items-center justify-between">
           <div
