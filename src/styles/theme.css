@@ -1501,21 +1501,27 @@ body {
      trim is slightly quieter than the card variant — same locked-palette
      grammar (196,144,65 / 196,130,45 / 140,82,22 / 252,240,208), just
      calmer alphas so panels frame content instead of competing with the
-     cards inside them. Cool-blue body preserved per landing identity. */
-  border-color: rgba(196, 144, 65, 0.26);
+     cards inside them. Cool-blue body preserved per landing identity.
+     Pass 9 #9 (gate v2 dial-back 2026-05-05): account-hub composite showed
+     right-edge gold pool from this panel halo amplifying the
+     .bd-dashboard-atmosphere warm radial (220,150,60,0.18). Dialed
+     outer warm halo 0.18→0.10, lamp 0.12→0.08, bronze rim 0.22→0.16,
+     gold ring 0.16→0.12, top inset cream 0.18→0.14. Panels frame; they
+     no longer pool. Card grammar (#3) untouched. */
+  border-color: rgba(196, 144, 65, 0.22);
   background: linear-gradient(180deg, rgba(15, 30, 51, 0.88) 0%, rgba(12, 25, 41, 0.82) 100%);
   box-shadow:
     0 18px 44px rgba(2, 6, 23, 0.42),
     0 6px 14px rgba(2, 6, 23, 0.24),
-    inset 0 1px 0 rgba(252, 240, 208, 0.18),
-    inset 0 -1px 0 rgba(140, 82, 22, 0.22),
-    0 0 0 1px rgba(196, 144, 65, 0.16),
+    inset 0 1px 0 rgba(252, 240, 208, 0.14),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.16),
+    0 0 0 1px rgba(196, 144, 65, 0.12),
     0 0 0 1px rgba(96, 165, 250, 0.22),
     0 0 28px rgba(37, 99, 235, 0.08),
-    0 0 40px rgba(196, 130, 45, 0.18),
-    0 -24px 70px -14px rgba(196, 144, 65, 0.12),
-    inset 1px 0 0 rgba(252, 240, 208, 0.08),
-    inset -1px 0 0 rgba(252, 240, 208, 0.05);
+    0 0 32px rgba(196, 130, 45, 0.1),
+    0 -20px 60px -14px rgba(196, 144, 65, 0.08),
+    inset 1px 0 0 rgba(252, 240, 208, 0.06),
+    inset -1px 0 0 rgba(252, 240, 208, 0.04);
 }
 
 .dark .bd-glass-control,
@@ -1777,10 +1783,10 @@ body {
   background: linear-gradient(180deg, rgba(59, 130, 246, 0.22) 0%, rgba(37, 99, 235, 0.16) 100%);
   color: var(--bd-royal-blue-soft);
   box-shadow:
-    0 0 10px rgba(59, 130, 246, 0.10),
+    0 0 10px rgba(59, 130, 246, 0.1),
     0 0 14px rgba(196, 144, 65, 0.16),
     inset 0 1px 0 rgba(252, 240, 208, 0.22),
-    inset 0 -1px 0 rgba(140, 82, 22, 0.20);
+    inset 0 -1px 0 rgba(140, 82, 22, 0.2);
 }
 
 /* Luminous glow utility — use on surfaces that float over the map or need extra radiance */
