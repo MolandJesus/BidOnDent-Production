@@ -250,9 +250,7 @@ export default function InsurerClaimsScreen({
       {/* Demo Data Banner */}
       {isSeedData && !reportsLoading && (
         <div className="mx-4 mt-4">
-          <div
-            className="bd-notice--warn flex items-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium"
-          >
+          <div className="bd-notice--warn flex items-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium">
             <AlertCircle className="w-4 h-4 flex-shrink-0" />
             <span>
               Showing example claims for preview. Active claims will appear here as repair reports
@@ -304,7 +302,10 @@ export default function InsurerClaimsScreen({
                 </div>
                 <div className="flex flex-wrap items-center gap-2 p-3">
                   <span className="bd-status--warn inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-medium">
-                    <span className="h-2 w-2 rounded-full" style={{ background: "rgba(196, 144, 65, 1)" }} />
+                    <span
+                      className="h-2 w-2 rounded-full"
+                      style={{ background: "rgba(196, 144, 65, 1)" }}
+                    />
                     Insurance claim
                   </span>
                 </div>
