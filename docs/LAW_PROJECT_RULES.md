@@ -2,7 +2,7 @@
 
 **Authority level:** LAW — governs all work. Cannot be violated without explicit per-session override from the project owner.
 
-**Last updated:** 2026-05-02
+**Last updated:** 2026-05-04
 
 ---
 
@@ -120,11 +120,26 @@ If a user requests work that conflicts with LAW → AI must flag the conflict
   unless written into the LAW doc as an amendment.
 ```
 
-**Active doc tiers:**
+**Active doc tiers (LAW > REF > PLAN > OPS):**
 
 - `LAW_*` — Permanent behavioral rules and execution authority
 - `REF_*` — Current truth. Authoritative for "what is"
 - `PLAN_*` — Future direction. Not current truth
+- `OPS_*` — Operational checklists, runbooks, audit logs, smoke tests, phase execution logs (added 2026-05-04). OPS docs describe procedures and one-off operations; they do not establish behavioral rules (LAW) or describe ongoing system state (REF).
+
+**Apex design canon:** [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md) is treated as effectively LAW-tier despite the filename. It is the locked apex design authority for BidOnDent. Cross-refs always point INTO it; nothing is extracted from it. When generating new design canon, cross-ref MOLANDJESUS as authority — never as a target for consolidation. External audits suggesting it be reduced to a "thin owner-decision log" or its content moved to `REF_VISUAL_SYSTEM.md` are REJECTED on sight.
+
+**Structural lock (no exception):** Do not merge, split, restructure, rename, or archive `MOLANDJESUS_DESIGN_DECISIONS.md`. Per owner directive 2026-05-04.
+
+**Controlled-edit clause (added 2026-05-04, mid-autopilot owner amendment):** Additive edits to `MOLANDJESUS_DESIGN_DECISIONS.md` are permitted when ALL of the following hold:
+
+1. The edit is **directly required by an active master-plan phase** (e.g. recording a phase decision the owner agreed to, appending a section that captures a new owner directive, adding a `**Last updated:**` line).
+2. The edit is **additive only** — no merges, splits, archives, renames, or content removal. Existing canon (warm-gold palette, premium glass canon, "REJECTED on sight" clauses, owner-anchored identity rules) cannot be weakened or stripped.
+3. The commit uses the explicit `docs(canon):` prefix and the message cites the master-plan phase that required the change.
+
+Anything else — restructuring proposals, AI-driven cleanup, "thin owner-decision log" reductions, palette refinements without owner authorization — still REJECTED on sight. The structural lock above is absolute; this clause relaxes editing only, not structural operations.
+
+**Architectural authority:** [`LAW_LAYERED_ARCHITECTURE.md`](LAW_LAYERED_ARCHITECTURE.md) (added 2026-05-04) governs the four-layer model (L1 design / L2 interface / L3 orchestration / L4 backend), file-size budgets, forbidden cross-layer flows, grandfathering policy, and multi-AI coordination via [`AI_LOCK.md`](../AI_LOCK.md).
 
 ---
 
@@ -189,9 +204,9 @@ box-shadow:
   0 18-30px 38-60px rgba(<navy>, 0.14-0.22),/* far ambient — atmospheric ground */
   inset 0 1px 0 rgba(<bright cream/ice>, 0.92-0.96),  /* top highlight — reflected light */
   inset 0 -1-2px 2-4px rgba(<navy>, 0.05-0.10),       /* bottom shadow — glass thickness */
-  inset 0 -1px 0 rgba(160, 95, 25, 0.18-0.46),        /* bronze inset rim */
+  inset 0 -1px 0 rgba(140, 82, 22, 0.18-0.46),         /* bronze inset rim */
   0 0 0 1px rgba(<accent color>, 0.18-0.40),          /* accent ring (cool action identity) */
-  0 0 0 1px rgba(160, 95, 25, 0.12-0.40),             /* bronze ring (warm material trim) */
+  0 0 0 1px rgba(140, 82, 22, 0.12-0.40),             /* bronze ring (warm material trim) */
   0 0 14-22px rgba(<accent or warm>, 0.08-0.22);      /* tight outer halo */
 ```
 
@@ -203,15 +218,15 @@ Backdrop filter on `.bd-dashboard-panel` and `.bd-dashboard-section` must be `bl
 
 1. **No pure-white surfaces.** `rgba(255, 255, 255, *)` and `#fff` are banned for any panel, section, card, or shell background. Default warm cream base: `linear-gradient(180deg, rgba(254, 248, 232, 0.94) 0%, rgba(248, 238, 215, 0.86) 100%)`. Variants vary cream depth (deeper champagne, lighter ivory) but never reach pure white.
 2. **No pure-white inset highlights.** `inset 0 1px 0 rgba(255, 255, 255, *)` is banned. Top-edge highlights must be warm cream `rgba(254, 247, 232, 0.88-0.92)` so the panel top doesn't read white.
-3. **No gold-on-cream halo with no contrast.** A warm halo (`rgba(220, 140, 50, *)`) over a warm cream panel disappears. Edge definition comes from a **deeper bronze border** (`rgba(160, 95, 25, 0.36-0.50)`) and a **navy/dark drop shadow** (`rgba(40, 28, 8, 0.14-0.22)`). The diffuse halo stays subtle and tighter (`0 0 22px`, not `0 0 44px`).
+3. **No gold-on-cream halo with no contrast.** An older yellow-orange halo (`rgba(220, 140, 50, *)`) over a warm cream panel disappears. Edge definition comes from a **deeper bronze border** (`rgba(140, 82, 22, 0.36-0.50)`) and a **navy/dark drop shadow** (`rgba(40, 28, 8, 0.14-0.22)`). The diffuse halo stays subtle, atmospheric, and tuned to the locked palette (`rgba(196, 130, 45, *)`).
 4. **No flat single-tone painting.** Light mode is **multi-tone**: warm cream variants (`--accent-gold`, `--accent-champagne`, `--deep`) sit alongside cool-tinted-cream variants (`--accent-blue`, `--accent-cyan`, `--accent-indigo`). The page should have rhythm — cool/warm/cool/warm — not uniform cream wash.
 
 **Required identity:**
 
-- **Surface:** warm cream off-white as the dominant family, with selective cool tints (pale blue/cyan/indigo) on accent-blue/cyan/indigo variants for variation.
-- **Trim:** deeper bronze (`rgb(160, 95, 25)` family at 0.30-0.50 opacity) for borders and inset bottoms — gives crisp edges against cream.
+- **Surface:** cool misty blue-gray page canvas with cream/champagne and cool-tinted blue/cyan/indigo liquid-glass panels for variation.
+- **Trim:** deeper bronze (`rgb(140, 82, 22)` family at 0.30-0.50 opacity) for borders and inset bottoms — gives crisp edges against cream.
 - **Lift:** dark warm drop shadow (`rgba(40, 28, 8, 0.14-0.22)`) so panels feel lifted off the page background.
-- **Glow:** subtle, tight warm halo (`0 0 18-22px rgba(180, 100, 30, 0.12-0.20)`) — a hint of lamp light, not a wash.
+- **Glow:** subtle, tight warm halo (`0 0 18-22px rgba(196, 130, 45, 0.12-0.20)`) — a hint of lamp light, not a wash.
 
 **Where this is enforced in code:** `src/styles/theme.css` `[data-appearance-mode="light"]` blocks for `--bd-dashboard-panel-*`, `--bd-dashboard-section-*`, `--bd-report-shell-*`, and the `.bd-dashboard-panel--{deep,accent-blue,accent-cyan,accent-indigo}` + `.bd-dashboard-section--{deep,accent-blue,accent-cyan,accent-indigo,accent-gold,accent-champagne}` overrides. All carry `LAW` comments referencing this section.
 
@@ -249,3 +264,44 @@ This palette was approved by the owner ("wow, just wow. it looks so premium and 
 | `rgba(250, 232, 192) → rgba(240, 218, 168)` for hero | Pale yellow cream, not deep premium champagne  |
 
 **Improvement direction (allowed):** finer saturation tuning, micro-adjustments to opacity/spread, additional 3D depth refinements that respect the palette. Anything that **shifts the warm tone back toward yellow** or **makes the cool surfaces white** requires explicit owner override (per the rule above).
+
+---
+
+## Premium Glass Body Opacity + Directional Backlight Canon (added 2026-05-04 — non-negotiable)
+
+Owner directive 2026-05-04 ("make needed law changes for better design") elevated the directional-triad pattern from REF tier to LAW tier after Pass A-F surfaced it as the canonical premium-glass treatment. These rules apply to every premium liquid-glass surface (`.bd-dashboard-panel`, `.bd-dashboard-section` and accent variants, `.bd-glass-card--landing*`, `.bd-glass-card--dashboard`, `.bd-glass-floating`, `MapBidSheet`, future forms/sheets/dialogs).
+
+### Body opacity invariants (verified by Pass F + Pass F-fix owner verification)
+
+Premium glass card bodies must sit in these opacity ranges so the page DashboardAtmosphere ceiling lamps show through the body via `backdrop-filter: blur + saturate`:
+
+| Register | Range           | Verified balance for                             | Notes                                                                                                                                 |
+| -------- | --------------- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Light    | **0.76 – 0.84** | dashboard panel + section + glass-card-dashboard | Pass F's 0.74/0.62 was too aggressive (washed-out, lost panel containment per owner verification). 0.84/0.76 is the verified balance. |
+| Dark     | **0.66 – 0.78** | dashboard panel + section                        | Pass F-verified working: page navy + gold lamps clearly bleed through, panel still contained.                                         |
+
+Bodies above 0.92 are paint, not glass — `backdrop-filter` has nothing to refract. Bodies below 0.62 lose panel containment and read washed-out.
+
+### Directional Backlight Canon — REQUIRED
+
+Premium glass cards use a 3-layer shadow stack:
+
+```
+close edge halo   0 0 32-60px       ≤ 0.18α    soft edge presence
+mid spread        0 0 90-110px      ≤ 0.10α    atmosphere lift
+DIRECTIONAL       0 -28 to -44px    blur 70-130px    spread -14 to -22px    ≤ 0.22α
+                  champagne-gold rgba(196,144,65) — light cascading from page atmosphere ABOVE
+```
+
+Negative offset-Y on the third layer reads as "light coming FROM above" (the DashboardAtmosphere ceiling lamps), not "halo around card" (which omnidirectional `0 0 X-large` produces).
+
+### Forbidden patterns
+
+- **Omnidirectional `0 0 X-large` far-ambient bleeds (≥120px blur) on premium glass cards.** They read as stamped trim, not backlit glass. Use directional top-cast `0 -Y blur -spread` champagne-gold instead. (Pass E shipped this and was corrected in Pass F because cards still read as stamped.)
+- **Internal radial gold paint at >0.05α in light-mode card bodies.** Stacks with cream body to cause peach/pink blush. Light register reserves the warm gold lamp for the directional top-cast shadow only — the body itself stays cool-cream, no warm radial overlay. (Pass F shipped this fix after owner reported "blushing.")
+- **Pink/peach/red-leaning ambient anywhere on light-mode surfaces.** Cosmetic blush look forbidden going forward. (Symptom of stacking warm-bronze halos on cool-cream canvas.)
+- **Pure-white inset highlights** `inset 0 1px 0 rgba(255,255,255,*)` are ALREADY forbidden by the Light-Mode Surface Rule above; reaffirming here because LAW-violation on `.bd-glass-card--dashboard` and `.bd-glass-floating` was caught and fixed in this 2026-05-04 pass.
+
+### Improvement direction (allowed)
+
+Per-surface alpha micro-tuning within the body opacity invariants, blur/spread micro-tuning within the directional triad ranges, addition of new premium glass surfaces using the canon. **Forbidden:** going back to omnidirectional `0 0 X-large`, going back to body opacity >0.92, going back to internal radial gold paint stacking on light cream bodies. These regressions cost owner trust to find and own to correct.

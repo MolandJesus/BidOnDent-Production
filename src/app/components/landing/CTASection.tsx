@@ -19,7 +19,7 @@ export default function CTASection({
 
   return (
     <section
-      className="py-12 sm:py-16 md:py-20 lg:py-24 relative overflow-hidden"
+      className="py-4 sm:py-8 md:py-10 lg:py-12 relative overflow-hidden"
       style={{
         background: isLightAppearance
           ? "linear-gradient(180deg, #e8f1fc 0%, #ddeaf9 40%, #d5e5f8 70%, #cde0f7 100%)"
@@ -27,6 +27,11 @@ export default function CTASection({
       }}
       ref={sectionRef}
     >
+      {/* Pass H1.7 — section-level directional top-cast champagne lamp
+          per hero atmospheric language. */}
+      <div className="bd-landing-section-toplamp" aria-hidden="true" />
+      {/* Pass H9 — companion cool-blue bottom depth wash. */}
+      <div className="bd-landing-section-bottomwash" aria-hidden="true" />
       {/* Edge blend */}
       <div
         className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-slate-300/20" : "via-blue-400/25"} to-transparent`}
@@ -35,13 +40,15 @@ export default function CTASection({
       <div className={`bd-bloom-atmosphere ${isVisible ? "is-visible" : "is-hidden"}`}>
         {isLightAppearance ? (
           <>
-            {/* Subtle radial dot pattern */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(200,170,110,0.05)_1px,transparent_1px)] [background-size:24px_24px] opacity-80" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_50%_50%,rgba(210,180,130,0.18),transparent_60%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_30%_20%,rgba(200,165,100,0.14),transparent_55%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_35%_at_65%_70%,rgba(220,185,115,0.13),transparent_50%)]" />
-            <div className="absolute top-0 right-[25%] w-64 h-64 bg-amber-200/[0.14] rounded-full blur-[100px]" />
-            <div className="absolute bottom-0 left-[20%] w-48 h-48 bg-amber-100/[0.12] rounded-full blur-[120px]" />
+            {/* Pass I — atmospheric radial dot pattern + radials canon-
+                swapped at SAME alpha. Pre-canon goldenrod -> canon
+                champagne. */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(196,144,65,0.05)_1px,transparent_1px)] [background-size:24px_24px] opacity-80" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_50%_50%,rgba(196,144,65,0.18),transparent_60%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_30%_20%,rgba(196,144,65,0.14),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_35%_at_65%_70%,rgba(196,144,65,0.13),transparent_50%)]" />
+            <div className="absolute top-0 right-[25%] w-64 h-64 bg-[rgba(196,144,65,0.14)] rounded-full blur-[100px]" />
+            <div className="absolute bottom-0 left-[20%] w-48 h-48 bg-[rgba(196,144,65,0.12)] rounded-full blur-[120px]" />
             <div className="absolute -top-10 left-[10%] w-[44rem] h-[44rem] bg-sky-400/[0.16] rounded-full blur-[220px]" />
             <div className="absolute bottom-0 right-[8%] w-[30rem] h-[30rem] bg-blue-400/[0.14] rounded-full blur-[210px]" />
           </>
@@ -80,7 +87,7 @@ export default function CTASection({
                   /* D6: navy CTA card now picks up gold lamp identity — warm
                      inset bottom + warm outer halo, matching dashboard family. */
                   boxShadow:
-                    "0 44px 88px rgba(2, 6, 20, 0.62), 0 16px 44px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(147, 197, 253, 0.32), inset 0 -1px 0 rgba(220, 165, 90, 0.20), 0 0 0 1px rgba(220, 165, 90, 0.14), 0 0 130px rgba(37, 99, 235, 0.20), 0 0 60px rgba(96, 165, 250, 0.20), 0 0 80px rgba(220, 140, 50, 0.16)",
+                    "0 44px 88px rgba(2, 6, 20, 0.62), 0 16px 44px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(147, 197, 253, 0.32), inset 0 -1px 0 rgba(196, 144, 65, 0.20), 0 0 0 1px rgba(196, 144, 65, 0.14), 0 0 130px rgba(37, 99, 235, 0.20), 0 0 60px rgba(96, 165, 250, 0.20), 0 0 80px rgba(196, 130, 45, 0.16)",
                 }
               : {
                   background:
@@ -91,7 +98,7 @@ export default function CTASection({
                   /* D6: navy CTA card now picks up gold lamp identity — warm
                      inset bottom + warm outer halo, matching dashboard family. */
                   boxShadow:
-                    "0 28px 64px rgba(3, 10, 24, 0.58), inset 0 1px 0 rgba(147, 197, 253, 0.30), inset 0 -1px 0 rgba(220, 165, 90, 0.22), 0 0 0 1px rgba(220, 165, 90, 0.14), 0 0 100px rgba(37, 99, 235, 0.18), 0 0 56px rgba(96, 165, 250, 0.22), 0 0 80px rgba(220, 140, 50, 0.18)",
+                    "0 28px 64px rgba(3, 10, 24, 0.58), inset 0 1px 0 rgba(147, 197, 253, 0.30), inset 0 -1px 0 rgba(196, 144, 65, 0.22), 0 0 0 1px rgba(196, 144, 65, 0.14), 0 0 100px rgba(37, 99, 235, 0.18), 0 0 56px rgba(96, 165, 250, 0.22), 0 0 80px rgba(196, 130, 45, 0.18)",
                 }
           }
         >
@@ -119,7 +126,7 @@ export default function CTASection({
             }}
           />
           <div
-            className={`mb-6 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+            className={`mb-4 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
           >
             <span className="inline-flex items-center px-4 py-2 rounded-full text-sm md:text-base font-semibold bd-glass-badge">
               <Sparkles className="w-4 h-4 mr-2" />
@@ -163,7 +170,7 @@ export default function CTASection({
             />
           </div>
           <p
-            className={`mx-auto max-w-2xl text-base sm:text-lg md:text-xl leading-relaxed mb-8 transition-all duration-700 text-blue-100/75 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+            className={`mx-auto max-w-2xl text-base sm:text-lg md:text-xl leading-relaxed mb-6 transition-all duration-700 text-blue-100/75 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
             style={{ transitionDelay: "0.3s" }}
           >
             No fees. No phone tag. Just transparent bids from trusted shops — compared and
@@ -174,27 +181,31 @@ export default function CTASection({
             style={{ transitionDelay: "0.45s" }}
           >
             {isSignedIn ? (
-              <button
-                onClick={onNavigateToDashboard}
-                className="bd-dashboard-primary-button px-6 sm:px-8 py-3 sm:py-3.5 text-white font-semibold text-base sm:text-lg leading-none inline-flex items-center min-h-[48px]"
-                style={{
-                  background: `linear-gradient(180deg, rgba(37, 99, 235, 0.98) 0%, rgba(30, 64, 175, 0.98) 100%)`,
-                }}
-              >
-                Go to Dashboard
-                <ChevronRight className="ml-2 w-5 h-5" />
-              </button>
-            ) : (
-              <SignUpButton mode="modal">
+              <span className="bd-landing-cta-glow">
                 <button
+                  onClick={onNavigateToDashboard}
                   className="bd-dashboard-primary-button px-6 sm:px-8 py-3 sm:py-3.5 text-white font-semibold text-base sm:text-lg leading-none inline-flex items-center min-h-[48px]"
                   style={{
                     background: `linear-gradient(180deg, rgba(37, 99, 235, 0.98) 0%, rgba(30, 64, 175, 0.98) 100%)`,
                   }}
                 >
-                  Get Started Now
+                  Go to Dashboard
                   <ChevronRight className="ml-2 w-5 h-5" />
                 </button>
+              </span>
+            ) : (
+              <SignUpButton mode="modal">
+                <span className="bd-landing-cta-glow">
+                  <button
+                    className="bd-dashboard-primary-button px-6 sm:px-8 py-3 sm:py-3.5 text-white font-semibold text-base sm:text-lg leading-none inline-flex items-center min-h-[48px]"
+                    style={{
+                      background: `linear-gradient(180deg, rgba(37, 99, 235, 0.98) 0%, rgba(30, 64, 175, 0.98) 100%)`,
+                    }}
+                  >
+                    Get Started Now
+                    <ChevronRight className="ml-2 w-5 h-5" />
+                  </button>
+                </span>
               </SignUpButton>
             )}
           </div>

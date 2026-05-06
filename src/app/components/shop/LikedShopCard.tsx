@@ -25,7 +25,7 @@ export default function LikedShopCard({
     <article
       className={`overflow-hidden rounded-[28px] transition-shadow ${
         focused ? "ring-2 ring-blue-400/60 shadow-lg" : ""
-      } ${isLight ? "bg-white/80 border border-slate-200/60 shadow-sm" : "bd-glass-card"}`}
+      } ${isLight ? "bg-[linear-gradient(180deg,rgba(247,232,194,0.80),rgba(232,238,248,0.74))] border border-[rgba(140,82,22,0.24)] shadow-[inset_0_1px_0_rgba(252,240,208,0.78),0_8px_22px_rgba(15,23,42,0.10)]" : "bd-glass-card"}`}
     >
       <div className="flex flex-col gap-4 p-4 md:flex-row md:p-5">
         <div
@@ -184,7 +184,7 @@ export default function LikedShopCard({
             <button
               className={`inline-flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-medium transition-colors ${
                 isLight
-                  ? "border border-slate-300 bg-white text-slate-700 hover:bg-slate-100"
+                  ? "border border-[rgba(140,82,22,0.28)] bg-[linear-gradient(180deg,rgba(247,232,194,0.84),rgba(232,238,248,0.78))] text-slate-700 shadow-[inset_0_1px_0_rgba(252,240,208,0.78)] hover:bg-[linear-gradient(180deg,rgba(247,232,194,0.94),rgba(232,238,248,0.88))]"
                   : "bd-glass-control--utility"
               }`}
               onClick={onOpenMap}
@@ -196,7 +196,7 @@ export default function LikedShopCard({
                 href={`tel:${shop.mapResult.phone}`}
                 className={`inline-flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-medium transition-colors ${
                   isLight
-                    ? "border border-slate-300 bg-white text-slate-700 hover:bg-slate-100"
+                    ? "border border-[rgba(140,82,22,0.28)] bg-[linear-gradient(180deg,rgba(247,232,194,0.84),rgba(232,238,248,0.78))] text-slate-700 shadow-[inset_0_1px_0_rgba(252,240,208,0.78)] hover:bg-[linear-gradient(180deg,rgba(247,232,194,0.94),rgba(232,238,248,0.88))]"
                     : "bd-glass-control--utility"
                 }`}
               >

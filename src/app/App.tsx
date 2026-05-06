@@ -462,7 +462,11 @@ export default function App() {
   }
 
   return (
-    <ClerkProvider publishableKey={clerkPublishableKey} appearance={clerkAppearance}>
+    <ClerkProvider
+      publishableKey={clerkPublishableKey}
+      appearance={clerkAppearance}
+      afterSignOutUrl="/"
+    >
       <AppWithToast />
     </ClerkProvider>
   );

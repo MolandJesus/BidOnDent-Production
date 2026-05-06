@@ -66,6 +66,11 @@ export default function OperatingRegionsSection({
       }
       ref={sectionRef}
     >
+      {/* Pass H1.7 — section-level directional top-cast champagne lamp
+          per hero atmospheric language. */}
+      <div className="bd-landing-section-toplamp" aria-hidden="true" />
+      {/* Pass H9 — companion cool-blue bottom depth wash. */}
+      <div className="bd-landing-section-bottomwash" aria-hidden="true" />
       {/* Smooth transition edges — top/bottom gradient fades */}
       {/* Pass 10 — atmospheric bloom-bridge at TrustStats→Coverage cool transition.
           Replaces the previous transparent-to-transparent placeholder strip with a
@@ -254,7 +259,30 @@ export default function OperatingRegionsSection({
                       </p>
                     </div>
 
-                    <div className="flex flex-wrap items-start content-start self-start gap-2 lg:max-w-[18rem] lg:justify-end">
+                    {/* C2 — Mode badges row spine: thin glass strip backing
+                         the 3 chips so they read as one unit instead of three
+                         loose pills. Light = bronze trim + cool blue-cream glass;
+                         dark = cool blue trim + navy glass with gold lamp inset. */}
+                    <div
+                      className="inline-flex flex-wrap items-center gap-1 self-start rounded-full border p-1 backdrop-blur-md lg:justify-end"
+                      style={
+                        isLightAppearance
+                          ? {
+                              borderColor: "rgba(140, 82, 22, 0.22)",
+                              background:
+                                "linear-gradient(180deg, rgba(247,232,194,0.55) 0%, rgba(232,238,248,0.45) 100%)",
+                              boxShadow:
+                                "inset 0 1px 0 rgba(252,240,208,0.78), 0 6px 18px rgba(140,82,22,0.10)",
+                            }
+                          : {
+                              borderColor: "rgba(96, 165, 250, 0.18)",
+                              background:
+                                "linear-gradient(180deg, rgba(11,23,47,0.58) 0%, rgba(8,18,38,0.46) 100%)",
+                              boxShadow:
+                                "inset 0 1px 0 rgba(196,144,65,0.18), 0 6px 18px rgba(2,6,23,0.34)",
+                            }
+                      }
+                    >
                       <span
                         className={cn(
                           "rounded-full px-2.5 py-1 text-[11px] font-semibold",
@@ -322,8 +350,8 @@ export default function OperatingRegionsSection({
                       }`}
                       style={{
                         boxShadow: isLightAppearance
-                          ? "inset 1px 0 0 rgba(220,165,90,0.18)"
-                          : "inset 1px 0 0 rgba(220,165,90,0.22)",
+                          ? "inset 1px 0 0 rgba(196, 144, 65,0.18)"
+                          : "inset 1px 0 0 rgba(196, 144, 65,0.22)",
                       }}
                     />
                   </div>
@@ -445,7 +473,7 @@ export default function OperatingRegionsSection({
                         <button
                           onClick={() => coverage.setIsMapExpanded(true)}
                           className={cn(
-                            "inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-[12px] font-semibold transition-all hover:-translate-y-0.5 active:scale-[0.97]",
+                            "inline-flex min-h-[44px] items-center gap-1.5 rounded-full border px-4 py-2 text-[12px] font-semibold transition-all hover:-translate-y-0.5 active:scale-[0.97]",
                             isLightAppearance
                               ? "border-blue-300/50 bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-[0_6px_20px_rgba(37,99,235,0.32)] hover:shadow-[0_10px_28px_rgba(37,99,235,0.42)]"
                               : "border-blue-300/30 bg-blue-300 text-slate-950 shadow-[0_6px_18px_rgba(59,130,246,0.24)] hover:bg-blue-200"

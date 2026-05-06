@@ -421,15 +421,15 @@ A single radial luminance accent per section, 600–800px diameter, 15–22% opa
 - Sedan silhouette watermark (low opacity, behind hero image, never as a focal element)
 - Topographic / radar-style concentric rings behind the map (≤ 8% opacity)
 - Road-lane dashes at section transitions (gradient color matches separator)
-- Headlight bokeh / route lines / topographic rings / painted-metal sheen (future)
+- Headlight-style catchlights, route lines, topographic rings, painted-metal sheen (future). Avoid free-floating bokeh blobs; any light should feel anchored to the product world.
 
 These render as automotive **atmosphere**, not iconography. They support the product story without making the page look like a parts catalog or a mechanic shop website.
 
-### Dashboard Material Tier (Calm Workspace — Locked 2026-05-02, Pass D1; updated D4 final v2 2026-05-02)
+### Dashboard Material Tier (Calm Workspace — Locked 2026-05-02, Pass D1; updated D4 final v2 2026-05-02, LAW palette lock 2026-05-03)
 
-> **Owner-authorized reversal (2026-05-02, Pass D4 final v2):** the original "no warm amber on dashboard" rule has been explicitly overridden by the owner. The dashboard now adopts the **navy-lit-by-gold-lamp** identity: navy infill (dark) / gold off-white surfaces (light), with **amber as trim and lighting only** — borders, inset highlights, outer ambient glow, and atmospheric overlays. Box backgrounds remain navy in dark and warm cream in light; gold is decoration material, not infill. This brings the dashboard onto the same gold-lit register as the landing's Direction B surfaces while preserving the calm-workspace energy. Item 9 in §9 below is amended accordingly.
+> **Owner-authorized reversal (2026-05-02, Pass D4 final v2):** the original "no warm amber on dashboard" rule has been explicitly overridden by the owner. The dashboard now adopts the **navy-lit-by-gold-lamp** identity: navy infill (dark) / cool blue-gray + cream/champagne liquid-glass surfaces (light), with premium bronze/champagne gold as trim and lighting only — borders, inset highlights, outer ambient glow, and atmospheric overlays. Box backgrounds remain navy in dark and cool/cream glass in light; gold is decoration material, not infill. This brings the dashboard onto the same gold-lit register as the landing's Direction B surfaces while preserving the calm-workspace energy. Item 9 in §9 below is amended accordingly.
 
-The dashboard inherits the cool-blue glass shell as the structural base, with **gold-amber trim + lamp-glow lighting layered on top** (D4 final v2). Direction C luminance accents and editorial flanking strokes remain landing-only.
+The dashboard inherits the cool-blue glass shell as the structural base, with **premium bronze/champagne trim + lamp-glow lighting layered on top** (D4 final v2 + 2026-05-03 LAW palette lock). Direction C luminance accents and editorial flanking strokes remain landing-only.
 
 **Three-tier glass card hierarchy (post-D1):**
 
@@ -440,7 +440,7 @@ The dashboard inherits the cool-blue glass shell as the structural base, with **
 | `bd-glass-card--landing`      | Landing premium-marketing anchor cards              | High-presence marketing |
 | `bd-glass-card--landing-warm` | Landing Direction B warm-amber sections only        | Warm Direction B        |
 
-`--dashboard` material spec (light): heavier shadow than base (`0 14px 32px` vs `0 10px 24px`), stronger inset top highlight (`rgba(255,255,255,0.85)` vs `0.65`), brighter border (`rgba(147,197,253,0.42)` vs `bd-glass-border-light`), subtle ambient blue glow (`0 0 28px rgba(59,130,246,0.06)`), 2px hover lift (vs `--landing`'s 6px). Workspace, not marketing.
+`--dashboard` material spec (light): heavier shadow than base (`0 14px 32px` vs `0 10px 24px`), stronger champagne/cream inset top highlight (`rgba(252,240,208,0.82-0.92)`, never pure white), bronze/champagne trim from the LAW palette, subtle ambient blue glow (`0 0 28px rgba(59,130,246,0.06)`), 2px hover lift (vs `--landing`'s 6px). Workspace, not marketing.
 
 `--dashboard` material spec (dark): follows the canonical Dark Shell pattern (`linear-gradient(180deg, rgba(11,23,47,0.84) 0%, rgba(8,18,38,0.78) 100%)`, `rgba(96,165,250,0.22–0.26)` borders) with stronger inset highlight + 28px ambient blue glow at `rgba(37,99,235,0.10)`. Calmer than `--landing` (no marketing-anchor glow tier).
 

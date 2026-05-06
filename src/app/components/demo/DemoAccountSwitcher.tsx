@@ -1,4 +1,5 @@
-import { motion } from "motion/react";
+import { useMemo } from "react";
+import { motion, useReducedMotion } from "motion/react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -37,10 +38,16 @@ const cardContainer = {
   },
 };
 
-const cardItem = {
-  hidden: { opacity: 0, y: 14 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: "easeOut" as const } },
-};
+function makeCardItem(reduceMotion: boolean) {
+  return {
+    hidden: { opacity: 0, y: 14 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: reduceMotion ? 0 : 0.35, ease: "easeOut" as const },
+    },
+  };
+}
 
 export default function DemoAccountSwitcher({
   currentAccountType,
@@ -50,6 +57,8 @@ export default function DemoAccountSwitcher({
 }: DemoAccountSwitcherProps) {
   const [appearanceMode] = useAppearanceModeCtx();
   const isLight = appearanceMode === "light";
+  const reduceMotion = useReducedMotion();
+  const cardItem = useMemo(() => makeCardItem(!!reduceMotion), [reduceMotion]);
   const accountTypes: DemoAccountCard[] = [
     {
       id: "customer",
@@ -97,7 +106,7 @@ export default function DemoAccountSwitcher({
       <motion.section
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: reduceMotion ? 0 : 0.3 }}
         className="bd-glass-card p-5 md:p-6"
         style={{
           background:
@@ -210,7 +219,7 @@ export default function DemoAccountSwitcher({
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: 0.15 }}
+        transition={{ duration: reduceMotion ? 0 : 0.3, delay: 0.15 }}
         className="flex justify-center"
       >
         <button

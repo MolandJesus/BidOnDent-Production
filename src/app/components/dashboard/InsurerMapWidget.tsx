@@ -68,8 +68,12 @@ export default function InsurerMapWidget({
 
   return (
     <section className="bd-dashboard-panel bd-dashboard-panel--accent-indigo overflow-hidden">
-      {/* Embedded mini-map */}
-      <div className="relative h-[180px] md:h-[200px]">
+      {/* Embedded mini-map — Bucket 1.3 (KI-074 partial): inner-glass bezel
+          ring eliminates the flat seam between panel chrome and map canvas. */}
+      <div className="relative h-[180px] md:h-[200px] rounded-xl ring-1 ring-[rgba(96,165,250,0.16)] ring-inset overflow-hidden">
+        {/* Bucket 5.9 (KI-074 RESOLVED): map canvas edge sheen — premium
+            curved-glass edge feel above the map canvas. */}
+        <div className="bd-map-canvas-sheen z-[1]" aria-hidden="true" />
         <DashboardMapPreview
           shops={partnerShops}
           reportPins={reportPins}
@@ -123,7 +127,7 @@ export default function InsurerMapWidget({
           <span
             className={`bd-dashboard-chip shrink-0 px-2.5 py-1 text-[11px] font-medium ${
               isLight
-                ? "bg-white/85 text-indigo-700"
+                ? "bg-[rgba(238,247,255,0.92)] text-indigo-700"
                 : "border-indigo-200/18 bg-white/10 text-indigo-50"
             }`}
           >

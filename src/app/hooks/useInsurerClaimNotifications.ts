@@ -33,8 +33,15 @@ export function useInsurerClaimNotifications({
   useEffect(() => {
     if (userType !== "insurer") return;
 
-    const unsub = realtimeReportService.subscribeToReportUpdates(
-      (report: RealtimeReportPayload) => {
+    let mounted = true;
+    let currentUnsubscribe: (() => void) | null = null;
+
+    function doSubscribe() {
+      // StrictMode-safe: defer subscribe by one microtask + `mounted` short-circuit.
+      // See useBidsForReport.ts for full mechanism + KI-057.
+      if (!mounted) return;
+      currentUnsubscribe = realtimeReportService.subscribeToReportUpdates(
+        (report: RealtimeReportPayload) => {
         // We get ALL report updates — for insurers, all are relevant claims
         const status = report.status ?? "";
 
@@ -80,8 +87,14 @@ export function useInsurerClaimNotifications({
 
         onChangeRef.current?.();
       }
-    );
+      );
+    }
 
-    return unsub;
+    queueMicrotask(doSubscribe);
+
+    return () => {
+      mounted = false;
+      if (currentUnsubscribe) currentUnsubscribe();
+    };
   }, [userType, notifications]);
 }

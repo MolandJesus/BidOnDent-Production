@@ -4,8 +4,8 @@ The future BidOnDent map/platform/design vision is now governed by:
 
 - `PLAN_MAP_MASTER.md` (strategic vision, blue system, atmosphere, day/night guidance planning)
 - `archive/BIDONDENT_MAP_TRACKER_2026-03-21_archived_2026-05-02.md` (execution tracker, vision alignment, future guidance)
-- `PLAN_PRODUCT_BRAIN.md` (operational bridge: current vs aspirational truth, map identity, blue system, day/night intent)
-- `MOLANDJESUS_DESIGN_DECISIONS.md` (design articulation: atmosphere, depth, glass, control feel, emotional target)
+- `MOLANDJESUS_DESIGN_DECISIONS.md` (LOCKED apex design canon — design articulation, atmosphere, depth, glass, control feel, emotional target. Effectively LAW-tier)
+- `PLAN_PRODUCT_BRAIN.md` — STUB (2026-05-04). Original archived at `archive/PLAN_PRODUCT_BRAIN_archived_2026-05-04.md`; current operational truth lives in `REF_SYSTEM_STATE.md`
 
 All future map/product/design direction is planned/aspirational unless otherwise stated in the tracker.
 
@@ -37,7 +37,8 @@ Recent map-program sync note: coverage browse/landing routing now uses explicit 
 Use this together with:
 
 - `docs/REF_SYSTEM_STATE.md`
-- `docs/PLAN_PRODUCT_BRAIN.md`
+- `docs/MOLANDJESUS_DESIGN_DECISIONS.md` (apex design canon)
+- `docs/LAW_LAYERED_ARCHITECTURE.md` (four-layer model — new authority for code organization, supersedes the older PLAN_PRODUCT_BRAIN code-organization sections)
 
 ## Current Architecture Snapshot
 

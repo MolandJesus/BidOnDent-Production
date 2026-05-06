@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { Mail, Lock, Eye, EyeOff, AlertCircle } from "lucide-react";
 import type { LoginView } from "../../types";
 
@@ -31,6 +31,7 @@ export function LoginLoginView({
   onLoginViewChange,
   onLogin,
 }: LoginLoginViewProps) {
+  const reduceMotion = useReducedMotion();
   return (
     <div className="space-y-4">
       <div>
@@ -68,6 +69,7 @@ export function LoginLoginView({
           <button
             type="button"
             onClick={onShowPasswordToggle}
+            aria-label={showPassword ? "Hide password" : "Show password"}
             className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400"
           >
             {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -104,7 +106,7 @@ export function LoginLoginView({
         type="button"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: 0.1 }}
+        transition={{ duration: reduceMotion ? 0 : 0.3, delay: 0.1 }}
       >
         Log In
       </motion.button>

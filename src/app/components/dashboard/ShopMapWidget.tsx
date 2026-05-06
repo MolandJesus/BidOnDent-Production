@@ -114,8 +114,12 @@ export default function ShopMapWidget({
 
   return (
     <section className="bd-dashboard-panel bd-dashboard-panel--accent-blue overflow-hidden">
-      {/* Embedded mini-map */}
-      <div className="relative h-[180px] md:h-[200px]">
+      {/* Embedded mini-map — Bucket 1.3 (KI-074 partial): inner-glass bezel
+          ring eliminates the flat seam between panel chrome and map canvas. */}
+      <div className="relative h-[180px] md:h-[200px] rounded-xl ring-1 ring-[rgba(96,165,250,0.16)] ring-inset overflow-hidden">
+        {/* Bucket 5.9 (KI-074 RESOLVED): map canvas edge sheen — premium
+            curved-glass edge feel above the map canvas. */}
+        <div className="bd-map-canvas-sheen z-[1]" aria-hidden="true" />
         <DashboardMapPreview
           shops={partnerShops}
           reportPins={reportPins}
@@ -169,7 +173,9 @@ export default function ShopMapWidget({
           </div>
           <span
             className={`bd-dashboard-chip shrink-0 px-2.5 py-1 text-[11px] font-medium ${
-              isLight ? "bg-white/85 text-blue-700" : "border-blue-200/18 bg-white/10 text-blue-50"
+              isLight
+                ? "bg-[rgba(238,247,255,0.92)] text-blue-700"
+                : "border-blue-200/18 bg-white/10 text-blue-50"
             }`}
           >
             {liveRequestCount} live

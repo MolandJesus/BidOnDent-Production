@@ -1,6 +1,6 @@
 import { Camera, User as UserIcon } from "lucide-react";
 import { ImageWithFallback } from "../../figma/ImageWithFallback";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import type { DashboardAppearanceMode } from "../../../routers/dashboard-router-types";
 
 type AccountHeaderProps = {
@@ -24,6 +24,7 @@ export default function AccountHeader({
   onProfileImageClick,
 }: AccountHeaderProps) {
   const isLight = appearanceMode === "light";
+  const reduceMotion = useReducedMotion();
   const subtitle =
     userType === "customer"
       ? "Car Owner"
@@ -35,7 +36,7 @@ export default function AccountHeader({
     <motion.section
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.25 }}
+      transition={{ duration: reduceMotion ? 0 : 0.25 }}
       className={`bd-dashboard-panel bd-dashboard-panel--accent-blue relative overflow-hidden rounded-2xl p-5 md:p-6 ${
         isLight ? "text-slate-800" : "text-white"
       }`}

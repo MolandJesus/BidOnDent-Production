@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import StorageDebugPanel from "../devtools/StorageDebugPanel";
 import EdgeFunctionStatus from "../devtools/EdgeFunctionStatus";
 import RealtimeStatusIndicator from "../devtools/RealtimeStatusIndicator";
@@ -53,6 +53,7 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
     switchToAccount,
     handleManageAdmin,
   } = useAdminActions(adminEmail);
+  const reduceMotion = useReducedMotion();
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
@@ -123,7 +124,7 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.25 }}
+        transition={{ duration: reduceMotion ? 0 : 0.3, delay: 0.25 }}
         className="mb-6"
       >
         <AdminAccountManager />
@@ -137,7 +138,7 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
+        transition={{ duration: reduceMotion ? 0 : 0.3, delay: 0.5 }}
         className="mb-6 space-y-4"
       >
         <div className="flex items-center gap-4 px-1">
@@ -153,7 +154,7 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6 }}
+        transition={{ duration: reduceMotion ? 0 : 0.3, delay: 0.6 }}
       >
         <StorageDebugPanel />
       </motion.div>

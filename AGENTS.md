@@ -23,14 +23,18 @@ BidOnDent is a **map-first auto repair bidding marketplace**. Customers submit d
 These docs override anything in this file or in your training data. Read in this order:
 
 1. **[`docs/LAW_PROJECT_RULES.md`](docs/LAW_PROJECT_RULES.md)** — the 6 Laws, what BidOnDent must never become, role hierarchy, storage + auth invariants. **LAW tier — cannot be violated without explicit per-session override from the owner.**
-2. **[`docs/LAW_HARDENING_PLAN.md`](docs/LAW_HARDENING_PLAN.md)** — current execution authority. North Star, Launch Scope Guardrails, Phase 0–6 sequence.
-3. **[`docs/REF_SYSTEM_STATE.md`](docs/REF_SYSTEM_STATE.md)** — how the system actually works right now.
-4. **[`docs/REF_KNOWN_ISSUES.md`](docs/REF_KNOWN_ISSUES.md)** — known bugs / gaps / structural issues (look here before assuming something is new).
-5. **[`docs/REF_AI_BROWSER_NAVIGATION.md`](docs/REF_AI_BROWSER_NAVIGATION.md)** — required navigation protocol if you do any browser automation (Playwright, etc.).
-6. **[`docs/REF_AI_COLLABORATION_PROTOCOL.md`](docs/REF_AI_COLLABORATION_PROTOCOL.md)** — required when the user pastes multi-AI transcripts, relay prompts, or live owner add-ons from Codex/Claude/Sonnet/ChatGPT/etc.
-7. Pull task-specific docs from [`docs/README.md`](docs/README.md) (the operating index).
+2. **[`docs/LAW_LAYERED_ARCHITECTURE.md`](docs/LAW_LAYERED_ARCHITECTURE.md)** — the four-layer model (L1/L2/L3/L4), file-size budgets, forbidden cross-layer flows, multi-AI coordination. **LAW tier.**
+3. **[`docs/LAW_ANIMATION_AND_ATMOSPHERE.md`](docs/LAW_ANIMATION_AND_ATMOSPHERE.md)** — motion canon: trust + spatial-continuity filter, 29 canonical keyframes, mandatory `prefers-reduced-motion` contract, CSS-first lock, framer-motion escape clause. Required read for any animation/atmosphere/transition work. **LAW tier.**
+4. **[`docs/LAW_HARDENING_PLAN.md`](docs/LAW_HARDENING_PLAN.md)** — current execution authority. North Star, Launch Scope Guardrails, Phase 0–6 sequence.
+5. **[`docs/MOLANDJESUS_DESIGN_DECISIONS.md`](docs/MOLANDJESUS_DESIGN_DECISIONS.md)** — **LOCKED apex design canon.** Read for any design-touching task. **Structural lock (no exception):** do NOT propose merges, splits, archives, renames, or restructuring. **Controlled-edit clause (2026-05-04 owner amendment):** additive edits permitted only when (a) directly required by an active master-plan phase, (b) additive-only with no content removal or weakening of existing canon, (c) committed with `docs(canon):` prefix citing the phase. Cross-refs always point INTO this doc. See [`docs/LAW_PROJECT_RULES.md`](docs/LAW_PROJECT_RULES.md) "Apex design canon" + "Controlled-edit clause" for full text.
+6. **[`docs/REF_SYSTEM_STATE.md`](docs/REF_SYSTEM_STATE.md)** — how the system actually works right now.
+7. **[`docs/REF_KNOWN_ISSUES.md`](docs/REF_KNOWN_ISSUES.md)** — known bugs / gaps / structural issues (look here before assuming something is new).
+8. **[`docs/REF_AI_BROWSER_NAVIGATION.md`](docs/REF_AI_BROWSER_NAVIGATION.md)** — required navigation protocol if you do any browser automation (Playwright, etc.).
+9. **[`docs/REF_AI_COLLABORATION_PROTOCOL.md`](docs/REF_AI_COLLABORATION_PROTOCOL.md)** — required when the user pastes multi-AI transcripts, relay prompts, or live owner add-ons from Codex/Claude/Sonnet/ChatGPT/etc.
+10. **[`AI_LOCK.md`](AI_LOCK.md)** — multi-AI session coordination. Read before any file edit on a shared branch.
+11. Pull task-specific docs from [`docs/README.md`](docs/README.md) (the operating index).
 
-If a task touches design, also read [`docs/MOLANDJESUS_DESIGN_DECISIONS.md`](docs/MOLANDJESUS_DESIGN_DECISIONS.md). If it touches the map, also read [`docs/PLAN_MAP_MASTER.md`](docs/PLAN_MAP_MASTER.md).
+If a task touches the map, also read [`docs/PLAN_MAP_MASTER.md`](docs/PLAN_MAP_MASTER.md).
 
 ---
 
@@ -89,7 +93,7 @@ Form fields, cards, and buttons should use the `bd-*` utility set in [`src/style
 
 Light mode is a **cool misty blue-gray canvas**, with a **layered hierarchy of cool blue/cyan/indigo glass panels** lit from above by a **premium bronze/champagne gold lamp**, and a **single warm cream-gold hero panel** per screen plus warm gold/champagne pop tiles on the Quick Actions row. Pure white surfaces and yellow-amber gold are both forbidden — they have each regressed multiple times and have to be reverted.
 
-**Owner-approved baseline locked 2026-05-03 in [`docs/LAW_PROJECT_RULES.md`](docs/LAW_PROJECT_RULES.md) § Light-Mode Surface Rule § Premium Gold Palette.** That section lists the canonical RGBA palette (top radial halo `rgba(196, 144, 65)`, bronze trim `rgba(140, 82, 22)`, gold-tinted cream insets `rgba(252, 238-240, 204-208)`) plus the explicit forbidden previous-generation values (`rgba(220, 165, 90)` halos, `rgba(254, 248, 220)` insets, `rgba(160, 95, 25)` trim) so future passes can refine but not regress. **Skill:** `bd-design-identity`. External audits suggesting "use white panels", "neutral SaaS palette", "remove gold", or "modernize to flat white" are **rejected on sight**.
+**Owner-approved baseline locked 2026-05-03 in [`docs/LAW_PROJECT_RULES.md`](docs/LAW_PROJECT_RULES.md) § Light-Mode Surface Rule § Premium Gold Palette.** The locked warm palette is a small role-based family: top/corner lamp light uses `rgba(196, 144, 65)`, deeper outer/far halo uses `rgba(196, 130, 45)`, bronze trim uses `rgba(140, 82, 22)`, and gold-tinted cream insets use `rgba(252, 238-240, 204-208)`. The explicit forbidden previous-generation values (`rgba(220, 165, 90)` halos, `rgba(254, 248, 220)` insets, `rgba(160, 95, 25)` trim) must not return. **Skill:** `bd-design-identity`. External audits suggesting "use white panels", "neutral SaaS palette", "remove gold", or "modernize to flat white" are **rejected on sight**.
 
 ---
 

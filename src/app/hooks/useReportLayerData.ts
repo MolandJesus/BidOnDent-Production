@@ -1,0 +1,278 @@
+/**
+ * useReportLayerData — Fetches, geocodes, filters, and computes GeoJSON
+ * for the MapLibre report layer. Extracted from MapLibreReportLayer to
+ * enforce file-size limits and separation of data vs rendering.
+ */
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { getAllDamageReports } from "../services/supabase/reports";
+import { supabase } from "../services/supabaseService";
+import { getBidsForReport } from "../services/supabase/bids";
+import { zipToCoordinates, geocodeAddress } from "../services/supabase/map";
+import type { DamageReport } from "../types";
+
+type UseReportLayerDataParams = {
+  initialReports?: DamageReport[];
+  statusFilter: string;
+  onReportCountChange?: (count: number, loading: boolean) => void;
+};
+
+export type ReportWithCoords = {
+  report: DamageReport;
+  coords: { lat: number; lng: number };
+};
+
+export function useReportLayerData({
+  initialReports,
+  statusFilter,
+  onReportCountChange,
+}: UseReportLayerDataParams) {
+  const [reports, setReports] = useState<DamageReport[]>(initialReports ?? []);
+  const [loading, setLoading] = useState(!initialReports);
+  const [fetchError, setFetchError] = useState(false);
+  const [geocodedCoords, setGeocodedCoords] = useState<Map<string, { lat: number; lng: number }>>(
+    new Map()
+  );
+  const [bidCounts, setBidCounts] = useState<Record<string, number>>({});
+
+  const fetchReports = useCallback(() => {
+    if (initialReports) return;
+    setLoading(true);
+    setFetchError(false);
+    let isMounted = true;
+    getAllDamageReports()
+      .then((data) => {
+        if (!isMounted) return;
+        setReports(Array.isArray(data) ? data : []);
+      })
+      .catch(() => {
+        if (!isMounted) return;
+        setFetchError(true);
+        setReports([]);
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, [initialReports]);
+
+  // Sync with prop changes when using initialReports
+  useEffect(() => {
+    if (initialReports) {
+      setReports(initialReports);
+      setLoading(false);
+    }
+  }, [initialReports]);
+
+  useEffect(() => {
+    fetchReports();
+  }, [fetchReports]);
+
+  // Auto-refresh when a new report is submitted — map pins update without page reload.
+  // Uses a dedicated channel name to avoid conflicting with useShopNearbyReportNotifications.
+  // Auto-refresh when damage reports change (insert, update, delete) — map pins stay live.
+  // Uses a dedicated channel name to avoid conflicting with useShopNearbyReportNotifications.
+  useEffect(() => {
+    if (initialReports) return; // Parent manages data — no subscription needed
+    let mounted = true;
+    let refreshTimer: ReturnType<typeof setTimeout> | null = null;
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+
+    function doSubscribe() {
+      // StrictMode-safe: defer subscribe by one microtask + `mounted` short-circuit.
+      // See useBidsForReport.ts for full mechanism + KI-057.
+      if (!mounted) return;
+      channel = supabase
+        .channel("map-report-layer-changes")
+        .on("postgres_changes", { event: "*", schema: "public", table: "damage_reports" }, () => {
+          // Debounce: wait 1.5 s before re-fetching in case of rapid successive changes
+          if (refreshTimer) clearTimeout(refreshTimer);
+          refreshTimer = setTimeout(() => {
+            void fetchReports();
+          }, 1500);
+        })
+        .subscribe();
+    }
+
+    queueMicrotask(doSubscribe);
+
+    return () => {
+      mounted = false;
+      if (refreshTimer) clearTimeout(refreshTimer);
+      if (channel) void supabase.removeChannel(channel);
+    };
+  }, [initialReports, fetchReports]);
+
+  // Refresh bid counts when any bid is created, updated, or deleted.
+  // Triggers a full re-fetch so the bid counter on each report pin stays accurate.
+  useEffect(() => {
+    if (initialReports) return; // Parent manages data — no subscription needed
+    let mounted = true;
+    let bidTimer: ReturnType<typeof setTimeout> | null = null;
+    let bidChannel: ReturnType<typeof supabase.channel> | null = null;
+
+    function doSubscribe() {
+      // StrictMode-safe: defer subscribe by one microtask + `mounted` short-circuit.
+      // See useBidsForReport.ts for full mechanism + KI-057.
+      if (!mounted) return;
+      bidChannel = supabase
+        .channel("map-report-bid-updates")
+        .on("postgres_changes", { event: "*", schema: "public", table: "bids" }, () => {
+          if (bidTimer) clearTimeout(bidTimer);
+          bidTimer = setTimeout(() => {
+            void fetchReports();
+          }, 1500);
+        })
+        .subscribe();
+    }
+
+    queueMicrotask(doSubscribe);
+
+    return () => {
+      mounted = false;
+      if (bidTimer) clearTimeout(bidTimer);
+      if (bidChannel) void supabase.removeChannel(bidChannel);
+    };
+  }, [initialReports, fetchReports]);
+
+  // Geocode report addresses only if stored coordinates are missing
+  useEffect(() => {
+    if (reports.length === 0) return;
+    let cancelled = false;
+
+    (async () => {
+      for (const report of reports) {
+        if (cancelled) break;
+        // Skip geocoding if stored coordinates already exist
+        if (
+          typeof report.latitude === "number" &&
+          typeof report.longitude === "number" &&
+          Number.isFinite(report.latitude) &&
+          Number.isFinite(report.longitude)
+        ) {
+          continue;
+        }
+        const zip = report.zipCode;
+        if (!report.address && !report.city && !zip) continue;
+        const coords = await geocodeAddress({
+          address: report.address,
+          city: report.city,
+          state: report.state,
+          zip,
+        });
+        if (cancelled) break;
+        if (coords && report.id) {
+          setGeocodedCoords((prev) => {
+            const next = new Map(prev);
+            next.set(report.id!, coords);
+            return next;
+          });
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [reports]);
+
+  // Fetch bid counts for each report
+  useEffect(() => {
+    if (reports.length === 0) return;
+    let cancelled = false;
+    (async () => {
+      const counts: Record<string, number> = {};
+      await Promise.allSettled(
+        reports.map(async (report) => {
+          if (!report.id || cancelled) return;
+          try {
+            const bids = await getBidsForReport(report.id);
+            if (!cancelled) {
+              counts[report.id] = bids.filter((b) => b.status !== "rejected").length;
+            }
+          } catch (err) {
+            if (import.meta.env.DEV)
+              console.warn(`Bid count fetch failed for report ${report.id}:`, err);
+          }
+        })
+      );
+      if (!cancelled) setBidCounts(counts);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [reports]);
+
+  const reportsWithCoordinates = useMemo(
+    () =>
+      reports
+        .map((report) => {
+          // Prefer stored coordinates (from database) over re-geocoding
+          if (
+            typeof report.latitude === "number" &&
+            typeof report.longitude === "number" &&
+            Number.isFinite(report.latitude) &&
+            Number.isFinite(report.longitude)
+          ) {
+            return { report, coords: { lat: report.latitude, lng: report.longitude } };
+          }
+          const geocoded = report.id ? geocodedCoords.get(report.id) : undefined;
+          const coords = geocoded ?? zipToCoordinates(report.zipCode);
+          if (!coords) return null;
+          return { report, coords };
+        })
+        .filter((entry): entry is ReportWithCoords => Boolean(entry)),
+    [reports, geocodedCoords]
+  );
+
+  const filteredReportsWithCoordinates = useMemo(
+    () =>
+      statusFilter === "all"
+        ? reportsWithCoordinates
+        : reportsWithCoordinates.filter(
+            ({ report }) => (report.status ?? "pending") === statusFilter
+          ),
+    [reportsWithCoordinates, statusFilter]
+  );
+
+  // Notify parent of report count changes
+  useEffect(() => {
+    onReportCountChange?.(filteredReportsWithCoordinates.length, loading);
+  }, [filteredReportsWithCoordinates.length, loading, onReportCountChange]);
+
+  const geojson = useMemo(
+    () => ({
+      type: "FeatureCollection" as const,
+      features: filteredReportsWithCoordinates.map(({ report, coords }) => ({
+        type: "Feature" as const,
+        geometry: {
+          type: "Point" as const,
+          coordinates: [coords.lng, coords.lat],
+        },
+        properties: {
+          id: report.id,
+          status: report.status ?? "pending",
+          vehicle:
+            `${report.vehicleInfo?.year || ""} ${report.vehicleInfo?.make || ""} ${report.vehicleInfo?.model || ""}`.trim(),
+          damageType: report.damageType,
+          severity: report.damageSeverity,
+          zip: report.zipCode ?? "",
+          bidCount: report.id ? (bidCounts[report.id] ?? 0) : 0,
+        },
+      })),
+    }),
+    [filteredReportsWithCoordinates, bidCounts]
+  );
+
+  return {
+    reports,
+    loading,
+    fetchError,
+    fetchReports,
+    bidCounts,
+    reportsWithCoordinates,
+    filteredReportsWithCoordinates,
+    geojson,
+  };
+}

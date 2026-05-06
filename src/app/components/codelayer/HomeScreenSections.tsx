@@ -201,7 +201,7 @@ export function HomeQuickActions({
                 } ${
                   isLight
                     ? "border-[rgba(147,197,253,0.32)] shadow-[0_10px_22px_rgba(15,23,42,0.08),inset_0_1px_0_rgba(255,255,255,0.85),0_0_0_1px_rgba(191,219,254,0.18)] hover:shadow-[0_18px_36px_rgba(15,23,42,0.12),inset_0_1px_0_rgba(255,255,255,0.92),0_0_0_1px_rgba(147,197,253,0.32),0_0_24px_rgba(59,130,246,0.10)] hover:-translate-y-0.5"
-                    : "hover:-translate-y-0.5 hover:shadow-[0_18px_40px_rgba(2,6,23,0.40),inset_0_1px_0_rgba(147,197,253,0.16),0_0_0_1px_rgba(96,165,250,0.26),0_0_30px_rgba(37,99,235,0.14)]"
+                    : "hover:-translate-y-0.5 hover:shadow-[0_22px_44px_rgba(2,6,23,0.42),inset_0_1px_0_rgba(147,197,253,0.18),inset_0_-1px_0_rgba(196,144,65,0.18),0_0_0_1px_rgba(96,165,250,0.30),0_0_28px_rgba(37,99,235,0.14),0_0_22px_rgba(196,130,45,0.16)]"
                 }`}
               >
                 <div
@@ -233,9 +233,11 @@ export function HomeQuickActions({
             background: isLight
               ? "linear-gradient(to left, rgba(244,250,254,0.96), rgba(244,250,254,0.85) 35%, transparent)"
               : "linear-gradient(to left, rgba(8,18,38,0.96), rgba(8,18,38,0.85) 35%, transparent)",
+            // Aligned to locked 2026-05-03 premium gold palette (KI-066):
+            // edge sheen uses corner-lamp gold (196,144,65), not legacy yellow-amber.
             boxShadow: isLight
-              ? "inset 1px 0 0 rgba(220,165,90,0.20)"
-              : "inset 1px 0 0 rgba(220,165,90,0.24)",
+              ? "inset 1px 0 0 rgba(196,144,65,0.22)"
+              : "inset 1px 0 0 rgba(196,144,65,0.26)",
           }}
         />
       </div>

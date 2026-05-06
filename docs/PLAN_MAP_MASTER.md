@@ -67,7 +67,7 @@ Status: Active strategic reference
 
 This plan should be read alongside:
 
-- `docs/PLAN_PRODUCT_BRAIN.md` — overall product architecture, role model, and design system direction
+- `docs/PLAN_PRODUCT_BRAIN.md` — STUB (2026-05-04). Original archived at `docs/archive/PLAN_PRODUCT_BRAIN_archived_2026-05-04.md`. Canonical homes for new work: `LAW_PROJECT_RULES.md` (product architecture, role model), `MOLANDJESUS_DESIGN_DECISIONS.md` (design system direction — apex, locked).
 - `docs/archive/BIDONDENT_MAP_TRACKER_2026-03-21_archived_2026-05-02.md` — granular delivery history and active risks
 - `docs/PHASE_2_PLATFORM_RECOMMENDATION_2026-03-20.md` — architecture truth table and module plan
 

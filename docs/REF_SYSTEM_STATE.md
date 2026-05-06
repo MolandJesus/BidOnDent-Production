@@ -2,7 +2,7 @@
 
 **Authority level:** REFERENCE — describes the current system as it actually works. Not a vision doc. Not a roadmap.
 
-**Last updated:** 2026-05-03 (visual system pointer to `REF_VISUAL_SYSTEM.md`; landing visual plans archived; gold-lamp identity at top of landing in dark mode shipped; AI collaboration protocol added)
+**Last updated:** 2026-05-05 (Phase 7.6 close — KI-113 RESOLVED via 45-file `useReducedMotion()` sweep + `<MotionConfig reducedMotion="user">` wrap at app root. Phase 8 close — KI-109 RESOLVED via `useOperatingRegionsCoverage` 512→468 LOC helper extraction; KI-110 RESOLVED-WITH-RESIDUAL via `useShopMapListings` Y1-narrowed hook + 3 substantive caller migrations; KI-108 partial closure with documented selectivity policy. 4 new L3 hooks landed: `useGeoCoordinates`, `useHaversineDistance`, `useNavigationVoicePriming`, `useShopMapListings` + `useReportLayerData` relocation to `hooks/`. Pre-execution-audit pattern is now 8-for-8 across Phases 4 / 6 / 6.5 / 7 / 7.5 / 8 / 8.5 / KI-113. Visual system pointer to `REF_VISUAL_SYSTEM.md`; gold-lamp identity + mobile map-first doctrine locked.)
 
 **Build:** 0 TS errors, 568/568 tests passing, ~3.4s
 
@@ -20,14 +20,15 @@
 
 Before starting work, read docs in this order based on task type:
 
-| Task                                   | Reading order                                                                                                         |
-| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| **Bug fix**                            | `LAW_PROJECT_RULES.md` → `REF_KNOWN_ISSUES.md` → this doc → code                                                      |
-| **Feature (within hardening plan)**    | `LAW_HARDENING_PLAN.md` → `LAW_PROJECT_RULES.md` → this doc → code                                                    |
-| **Architecture change**                | `LAW_PROJECT_RULES.md` → `LAW_HARDENING_PLAN.md` → this doc → `PLAN_POST_LAUNCH_ROADMAP.md` → code                    |
-| **Planning session**                   | All LAW → all REF → all PLAN → code as needed                                                                         |
-| **UI/design work**                     | `LAW_PROJECT_RULES.md` → `REF_VISUAL_SYSTEM.md` → `MOLANDJESUS_DESIGN_DECISIONS.md` → this doc → `theme.css` → code   |
-| **Multi-AI transcript / relay prompt** | `LAW_PROJECT_RULES.md` → `REF_AI_COLLABORATION_PROTOCOL.md` → task-specific docs → code only if execution is approved |
+| Task                                   | Reading order                                                                                                                                                                                                                                                               |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Bug fix**                            | `LAW_PROJECT_RULES.md` → `REF_KNOWN_ISSUES.md` → this doc → code                                                                                                                                                                                                            |
+| **Feature (within hardening plan)**    | `LAW_HARDENING_PLAN.md` → `LAW_PROJECT_RULES.md` → this doc → code                                                                                                                                                                                                          |
+| **Architecture change**                | `LAW_PROJECT_RULES.md` → `LAW_HARDENING_PLAN.md` → this doc → `PLAN_POST_LAUNCH_ROADMAP.md` → code                                                                                                                                                                          |
+| **Planning session**                   | All LAW → all REF → all PLAN → code as needed                                                                                                                                                                                                                               |
+| **UI/design work**                     | `LAW_PROJECT_RULES.md` → `REF_VISUAL_SYSTEM.md` → `MOLANDJESUS_DESIGN_DECISIONS.md` → this doc → `theme.css` → code                                                                                                                                                         |
+| **Major visual polish handoff**        | `LAW_PROJECT_RULES.md` → `REF_AI_COLLABORATION_PROTOCOL.md` → `REF_VISUAL_SYSTEM.md` → `HANDOFF_MASTER_PROMPT_2026-05-04_CODEBASE_CLEAN_AND_POLISH.md` (current). Earlier 2026-05-03 visual session docs archived 2026-05-04 to `docs/archive/2026-05-03-visual-handoffs/`. |
+| **Multi-AI transcript / relay prompt** | `LAW_PROJECT_RULES.md` → `REF_AI_COLLABORATION_PROTOCOL.md` → task-specific docs → code only if execution is approved                                                                                                                                                       |
 
 **If this doc and `LAW_HARDENING_PLAN.md` disagree, the Hardening Plan wins.** Flag the conflict.
 

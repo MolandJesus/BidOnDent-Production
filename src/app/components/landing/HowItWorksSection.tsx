@@ -41,7 +41,7 @@ export default function HowItWorksSection({
   return (
     <section
       id="how-it-works"
-      className="py-12 sm:py-16 md:py-20 relative overflow-hidden"
+      className="py-4 sm:py-8 md:py-10 relative overflow-hidden"
       style={{
         background: isLightAppearance
           ? "linear-gradient(175deg, #eef5ff 0%, #e8f1fd 45%, #e3edfc 100%)"
@@ -49,6 +49,13 @@ export default function HowItWorksSection({
       }}
       ref={sectionRef}
     >
+      {/* Pass H1.7 (KI-090 follow-up) — section-level directional
+          top-cast champagne lamp per hero atmospheric language. */}
+      <div className="bd-landing-section-toplamp" aria-hidden="true" />
+      {/* Pass H9 — companion cool-blue bottom depth wash so cool
+          sections read as a "lit room" (gold from above, navy depth
+          from below) instead of as flat planes. */}
+      <div className="bd-landing-section-bottomwash" aria-hidden="true" />
       {/* Edge blend — light keeps sky thread; dark gets a subtle gold whisper
           at center to thread the gold identity from warm sections into the
           cool register without overpowering. Owner: "bring subtle dashboard
@@ -76,13 +83,16 @@ export default function HowItWorksSection({
         />
         {isLightAppearance ? (
           <>
-            {/* Subtle mesh texture */}
-            <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_39px,rgba(200,170,110,0.05)_39px,rgba(200,170,110,0.05)_40px)] opacity-80" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_70%_-10%,rgba(210,180,130,0.18),transparent_60%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_20%_80%,rgba(200,165,100,0.14),transparent_55%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_35%_at_40%_90%,rgba(220,185,115,0.14),transparent_50%)]" />
-            <div className="absolute top-10 left-[20%] w-64 h-64 bg-amber-200/[0.22] rounded-full blur-[110px]" />
-            <div className="absolute bottom-0 right-[20%] w-48 h-48 bg-amber-100/[0.18] rounded-full blur-[120px]" />
+            {/* Pass I — atmospheric mesh + radials swapped to LAW canon
+                palette at SAME alpha. Pre-canon goldenrod values
+                (rgba(200,170,110), (210,180,130), (200,165,100), (220,185,115),
+                amber-100) all map to canon champagne rgba(196,144,65). */}
+            <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_39px,rgba(196,144,65,0.05)_39px,rgba(196,144,65,0.05)_40px)] opacity-80" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_70%_-10%,rgba(196,144,65,0.18),transparent_60%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_20%_80%,rgba(196,144,65,0.14),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_35%_at_40%_90%,rgba(196,144,65,0.14),transparent_50%)]" />
+            <div className="absolute top-10 left-[20%] w-64 h-64 bg-[rgba(196,144,65,0.22)] rounded-full blur-[110px]" />
+            <div className="absolute bottom-0 right-[20%] w-48 h-48 bg-[rgba(196,144,65,0.18)] rounded-full blur-[120px]" />
             <div className="absolute -top-10 right-[8%] w-[28rem] h-[28rem] bg-sky-400/[0.18] rounded-full blur-[130px]" />
             <div className="absolute bottom-0 left-[5%] w-72 h-72 bg-blue-300/[0.14] rounded-full blur-[130px]" />
           </>
@@ -155,18 +165,18 @@ export default function HowItWorksSection({
       <div className="container mx-auto px-4 max-w-7xl relative">
         {/* Section badge */}
         <div
-          className={`text-center mb-6 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+          className={`text-center mb-4 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
         >
           <span
             className={`inline-flex items-center px-4 py-1.5 rounded-full border backdrop-blur-sm text-sm font-medium ${isLightAppearance ? "border-[rgba(100,160,230,0.30)] bg-[rgba(230,244,255,0.60)] text-sky-700 shadow-[inset_0_1px_0_rgba(220,240,255,0.8)]" : "border-blue-400/25 bg-blue-500/10 text-blue-200"}`}
           >
-            <span className="w-2 h-2 rounded-full mr-2 bg-blue-400" />
+            <span className="w-2 h-2 rounded-full mr-2 bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.6),0_0_14px_rgba(196,144,65,0.20)]" />
             Three Steps
           </span>
         </div>
 
         <div
-          className={`text-center mb-8 md:mb-12 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+          className={`text-center mb-6 md:mb-8 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
           style={{ transitionDelay: "0.15s" }}
         >
           {/* Pass 14 — Direction C flanking accent: sky teal (HowItWorks's

@@ -9,9 +9,69 @@ type RespondFunction = (
 ) => Response;
 
 /**
+ * Default preferences returned to the client when the persistence layer is
+ * unavailable (table missing, RLS misconfig, etc.). Mirrors the DEFAULT clauses
+ * in migration 20251230000001_full_schema.sql §3.17. Returning these with
+ * fallback:true keeps Appearance Settings usable in degraded mode while
+ * surfacing the failure mode for diagnostics — instead of a hard 500 that the
+ * client circuit-breaker silences for 60s.
+ */
+const FALLBACK_PREFERENCES = {
+  id: "",
+  clerk_user_id: "",
+  in_app_bid_updates: true,
+  in_app_report_updates: true,
+  in_app_nearby_reports: true,
+  in_app_estimate_updates: true,
+  email_bid_updates: true,
+  email_report_updates: true,
+  email_nearby_reports: true,
+  email_estimate_updates: true,
+  sms_bid_updates: false,
+  sms_report_updates: false,
+  email_enabled: true,
+  sms_enabled: false,
+  share_data_with_shops: true,
+  show_profile_to_insurers: false,
+} as const;
+
+/**
+ * Log the full Postgres error (code + message + details + hint) so prod logs
+ * are diagnostic. Client-facing messages stay sanitized via sanitizeErrorMessage.
+ */
+function logPostgrestError(context: string, error: unknown): void {
+  const e = error as { code?: string; message?: string; details?: string; hint?: string } | null;
+  console.error(`${context}:`, {
+    code: e?.code,
+    message: e?.message,
+    details: e?.details,
+    hint: e?.hint,
+  });
+}
+
+/**
+ * Detect Postgres errors that indicate the persistence layer itself is
+ * unavailable (table missing, schema not applied, RLS denying service role).
+ * These are infrastructure-level failures the user can't recover from — and
+ * they should degrade to defaults rather than 500 the UI.
+ *   42P01 — undefined_table (relation does not exist)
+ *   42501 — insufficient_privilege (RLS or grant)
+ *   0LP01 — invalid_grant_operation
+ */
+const PERSISTENCE_UNAVAILABLE_CODES = ["42P01", "42501", "0LP01"];
+
+function isPersistenceUnavailable(error: unknown): boolean {
+  const code = (error as { code?: string } | null)?.code;
+  return code !== undefined && PERSISTENCE_UNAVAILABLE_CODES.includes(code);
+}
+
+/**
  * GET /notification-preferences
  * Returns the authenticated user's notification preferences.
  * Creates a default row if none exists.
+ * Falls back to defaults with fallback:true if the table is missing or RLS
+ * denies access — keeps Appearance Settings usable while the data layer is
+ * being diagnosed.
  */
 export async function getNotificationPreferences(
   req: Request,
@@ -29,10 +89,13 @@ export async function getNotificationPreferences(
       .maybeSingle();
 
     if (error) {
-      console.error(
-        "getNotificationPreferences:",
-        sanitizeErrorMessage(error.message)
-      );
+      logPostgrestError("getNotificationPreferences select", error);
+      if (isPersistenceUnavailable(error)) {
+        return respond(
+          { preferences: { ...FALLBACK_PREFERENCES, clerk_user_id: clerkUserId }, fallback: true },
+          200
+        );
+      }
       return respond({ error: "Failed to fetch preferences" }, 500);
     }
 
@@ -45,10 +108,13 @@ export async function getNotificationPreferences(
         .single();
 
       if (createError) {
-        console.error(
-          "getNotificationPreferences: create default error:",
-          sanitizeErrorMessage(createError.message)
-        );
+        logPostgrestError("getNotificationPreferences insert default", createError);
+        if (isPersistenceUnavailable(createError)) {
+          return respond(
+            { preferences: { ...FALLBACK_PREFERENCES, clerk_user_id: clerkUserId }, fallback: true },
+            200
+          );
+        }
         return respond({ error: "Failed to initialize preferences" }, 500);
       }
 

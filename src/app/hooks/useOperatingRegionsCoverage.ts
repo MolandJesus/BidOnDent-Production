@@ -4,15 +4,21 @@ import { useCoveragePartnerShops } from "./useCoveragePartnerShops";
 import { useCoverageNavigationExperience } from "./useCoverageNavigationExperience";
 import { useUserGeolocation } from "./useUserGeolocation";
 import { useNavigationLaunch } from "./useNavigationLaunch";
+import {
+  computeNearbyShops,
+  resolveIsOutsideServiceRegion,
+  resolveZipMapTarget,
+  resolveZipSearchTarget,
+  selectFallbackSearchTarget,
+  selectMapFocusTarget,
+} from "./useOperatingRegionsCoverageHelpers";
 import type { NavigationProvider } from "../services/navigation/externalNavigation";
 import {
   addressResultToSearchTarget,
   resolveSubmittedAddressResult,
 } from "../services/navigation/addressSearch";
-import { haversineMiles, zipToCoordinates } from "../services/supabase/map";
 import { resolveMapSurfaceTone } from "../components/maps/mapSurfaceTheme";
 import type {
-  CoverageNearbyShop,
   CoveragePartnerShop,
   CoverageSearchTarget,
   MapTileMode,
@@ -25,7 +31,6 @@ import {
 import {
   countyCenters,
   defaultCoverageCenter,
-  isTargetInsideNyServiceRegion,
   resolveCoverageLookup,
   sanitizeZipInput,
 } from "../components/landing/coverageData";
@@ -84,44 +89,22 @@ export function useOperatingRegionsCoverage({
   const hasCoverageSignal = Boolean(lookup);
   const radiusMeters = Number(radiusMiles) * 1609.34;
 
-  const zipSearchTarget = useMemo<CoverageSearchTarget | null>(() => {
-    if (normalizedZip.length < 5) return null;
+  const zipSearchTarget = useMemo(
+    () => resolveZipSearchTarget(lookup, normalizedZip),
+    [lookup, normalizedZip]
+  );
 
-    const fallbackCoordinates = zipToCoordinates(normalizedZip);
-    const lat = lookup?.lat ?? fallbackCoordinates?.lat;
-    const lng = lookup?.lng ?? fallbackCoordinates?.lng;
+  const zipMapTarget = useMemo(
+    () => resolveZipMapTarget(lookup, normalizedZip),
+    [lookup, normalizedZip]
+  );
 
-    if (typeof lat !== "number" || typeof lng !== "number") {
-      return null;
-    }
-
-    return {
-      lat,
-      lng,
-      county: lookup?.county || "Regional coverage",
-      label: `ZIP ${normalizedZip}`,
-      source: "zip",
-    };
-  }, [lookup, normalizedZip]);
-
-  const zipMapTarget = useMemo<CoverageSearchTarget | null>(() => {
-    if (!lookup) return null;
-
-    return {
-      lat: lookup.lat,
-      lng: lookup.lng,
-      county: lookup.county,
-      label: normalizedZip.length >= 5 ? `ZIP ${normalizedZip}` : `${normalizedZip} area`,
-      source: "zip",
-    };
-  }, [lookup, normalizedZip]);
-
-  const fallbackSearchTarget =
-    activeOriginMode === "geolocation"
-      ? currentLocationTarget
-      : activeOriginMode === "address"
-        ? manualSearchTarget
-        : zipSearchTarget;
+  const fallbackSearchTarget = selectFallbackSearchTarget(
+    activeOriginMode,
+    currentLocationTarget,
+    manualSearchTarget,
+    zipSearchTarget
+  );
 
   const preselectedShop = useMemo<CoveragePartnerShop | null>(
     () => mapPartnerShops.find((shop) => `${shop.id || shop.name}` === selectedShopId) || null,
@@ -134,50 +117,23 @@ export function useOperatingRegionsCoverage({
     voiceGuidanceEnabled,
   });
   const listSearchTarget = navigation.activeOriginTarget || fallbackSearchTarget;
-  const mapFocusTarget =
-    listSearchTarget ||
-    (activeOriginMode === "geolocation"
-      ? currentLocationTarget
-      : activeOriginMode === "address"
-        ? manualSearchTarget
-        : zipMapTarget);
+  const mapFocusTarget = selectMapFocusTarget(
+    listSearchTarget,
+    activeOriginMode,
+    currentLocationTarget,
+    manualSearchTarget,
+    zipMapTarget
+  );
 
-  /*
-   * Phase 2 honesty (2026-05-03 P2): replace the prior
-   * `Boolean(listSearchTarget) && !hasCoverageSignal` heuristic — that only
-   * checked ZIP coverage, so a real NY user using live GPS (no ZIP typed)
-   * was incorrectly flagged as outside the service region. Now the flag is
-   * driven by actual geographic distance to our six NY county centers.
-   *
-   * `isOutsideServiceRegion` is true only when there's an active origin AND
-   * that origin sits more than 60mi from every NY county center. ZIP origins
-   * still respect their lookup result so the existing in-coverage messaging
-   * keeps working for known NY ZIPs.
-   */
-  const isOutsideServiceRegion = useMemo(() => {
-    if (!listSearchTarget) return false;
-    if (activeOriginMode === "zip" && hasCoverageSignal) return false;
-    return !isTargetInsideNyServiceRegion(listSearchTarget.lat, listSearchTarget.lng);
-  }, [listSearchTarget, activeOriginMode, hasCoverageSignal]);
+  const isOutsideServiceRegion = useMemo(
+    () => resolveIsOutsideServiceRegion(listSearchTarget, activeOriginMode, hasCoverageSignal),
+    [listSearchTarget, activeOriginMode, hasCoverageSignal]
+  );
 
-  const nearbyShops = useMemo<CoverageNearbyShop[]>(() => {
-    if (!listSearchTarget) return [];
-
-    return mapPartnerShops
-      .map((shop) => {
-        const distanceMiles = haversineMiles(
-          { lat: listSearchTarget.lat, lng: listSearchTarget.lng },
-          { lat: shop.lat, lng: shop.lng }
-        );
-        return {
-          ...shop,
-          distanceMiles,
-        };
-      })
-      .filter((shop) => shop.distanceMiles <= Number(radiusMiles))
-      .sort((a, b) => a.distanceMiles - b.distanceMiles)
-      .slice(0, 6);
-  }, [listSearchTarget, mapPartnerShops, radiusMiles]);
+  const nearbyShops = useMemo(
+    () => computeNearbyShops(listSearchTarget, mapPartnerShops, radiusMiles),
+    [listSearchTarget, mapPartnerShops, radiusMiles]
+  );
 
   const selectedShop = useMemo<CoveragePartnerShop | null>(
     () =>

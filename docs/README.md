@@ -1,8 +1,9 @@
 # BidOnDent Docs Operating Index
 
-**Last updated:** 2026-05-03
+**Last updated:** 2026-05-05 (doc cleanup pass — PLAN_DASHBOARD_REDESIGN + OPS_PHASE_6_SMOKE_TEST archived; 4 stale archive files deleted)
 **Status:** Active documentation operating index
 **Current phase:** Soft Launch Hardening (edge functions v50, `verify_jwt: false`, storage pointer pattern)
+**Current handoff:** see git log + active relay prompt context (per relay discipline: do NOT create new session-report docs — the git log + commit messages are the durable record)
 
 BidOnDent is a **geo-native, map-first automotive repair marketplace**. Three user types (customer, shop, insurer) interact through a spatial bidding loop backed by Supabase and PostGIS.
 
@@ -12,14 +13,19 @@ BidOnDent is a **geo-native, map-first automotive repair marketplace**. Three us
 
 ## ⚡ Start Here — Document Authority Model
 
-Documents are organized in three tiers: **LAW > REFERENCE > PLAN**. LAW docs override everything. REF docs describe current truth. PLAN docs describe future direction.
+Documents are organized in four tiers: **LAW > REFERENCE > PLAN > OPS** (OPS added 2026-05-04). LAW docs override everything. REF docs describe current truth. PLAN docs describe future direction. OPS docs describe procedures, runbooks, audit logs, and phase execution logs.
+
+**Apex design canon:** [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md) is treated as effectively LAW-tier despite the filename — it is the locked apex design authority. Per owner directive 2026-05-04: do not merge, split, restructure, rename, archive, or edit it. Cross-refs always point INTO it.
 
 ### LAW (governs all work)
 
-| Document                                             | Purpose                                                                                                                                                |
-| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **[`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md)**   | Permanent behavioral rules: product definition, 6 laws, product DNA, map investment rules, doc authority model.                                        |
-| **[`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md)** | Execution authority for the hardening phase. North Star, Launch Scope Guardrails, Locked Decisions, Execution Plan (Phases 0–6), Execution Discipline. |
+| Document                                                                 | Purpose                                                                                                                                                                                                       |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **[`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md)**                       | Permanent behavioral rules: product definition, 6 laws, product DNA, map investment rules, doc authority model, palette canon, glass canon.                                                                   |
+| **[`LAW_LAYERED_ARCHITECTURE.md`](LAW_LAYERED_ARCHITECTURE.md)**         | Four-layer model (L1/L2/L3/L4), file-size budgets, forbidden cross-layer flows, grandfathering policy, multi-AI coordination via `AI_LOCK.md`.                                                                |
+| **[`LAW_ANIMATION_AND_ATMOSPHERE.md`](LAW_ANIMATION_AND_ATMOSPHERE.md)** | Motion canon: trust + spatial-continuity discriminating filter, 29 canonical keyframes catalogued, mandatory `prefers-reduced-motion` contract, CSS-first lock, framer-motion escape clause (Phase 4.6 only). |
+| **[`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md)**                     | Execution authority for the hardening phase. North Star, Launch Scope Guardrails, Locked Decisions, Execution Plan (Phases 0–6), Execution Discipline.                                                        |
+| **[`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md)** | **LOCKED apex design canon.** Effectively LAW-tier. Required read for any design-touching task. Do NOT propose merges/splits/edits.                                                                           |
 
 ### REFERENCE (current truth)
 
@@ -35,13 +41,20 @@ Documents are organized in three tiers: **LAW > REFERENCE > PLAN**. LAW docs ove
 
 ### PLAN (future direction — not current truth)
 
-| Document                                                     | Purpose                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`PLAN_POST_LAUNCH_ROADMAP.md`](PLAN_POST_LAUNCH_ROADMAP.md) | Deliberately deferred work with priority bands and triggers. Not a backlog.                                                                                                                                                                                                                                                                                                                                                      |
-| [`PLAN_PRODUCT_BRAIN.md`](PLAN_PRODUCT_BRAIN.md)             | Strategic product vision. Paused during hardening.                                                                                                                                                                                                                                                                                                                                                                               |
-| [`PLAN_MAP_MASTER.md`](PLAN_MAP_MASTER.md)                   | Map strategy and product law. Feature-level map work paused; strategic vision intact.                                                                                                                                                                                                                                                                                                                                            |
-| [`PLAN_PAYMENT_MODEL.md`](PLAN_PAYMENT_MODEL.md)             | Payment model. **Deferred** per Post-Launch Roadmap F1. Do not implement without a fired trigger.                                                                                                                                                                                                                                                                                                                                |
-| [`PLAN_DASHBOARD_REDESIGN.md`](PLAN_DASHBOARD_REDESIGN.md)   | Dashboard premium-lift plan (2026-05-02) — **PRE-EXECUTION**. Brings landing's _quality_ bar to all 4 roles' dashboard surfaces (~139 component files across customer/shop/insurer/admin) without violating the §9 inheritance rule (no automotive register, no warm amber atmosphere, no Direction C accents on dashboard). 12 owner-gated passes proposed (D1–D12). 6 open questions to answer before D1. Awaiting greenlight. |
+| Document                                                                                                                                            | Purpose                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| --------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`PLAN_POST_LAUNCH_ROADMAP.md`](PLAN_POST_LAUNCH_ROADMAP.md)                                                                                        | Deliberately deferred work with priority bands and triggers. Not a backlog.                                                                                                                                                                                                                                                                                                                                                      |
+| [`PLAN_PRODUCT_BRAIN.md`](PLAN_PRODUCT_BRAIN.md)                                                                                                    | **STUB (2026-05-04).** Original 1,444-line content split per Phase 1.5c. Forward-looking CARDS moved to `PLAN_PRODUCT_FUTURE_CARDS.md`. Full original at `docs/archive/PLAN_PRODUCT_BRAIN_archived_2026-05-04.md`.                                                                                                                                                                                                               |
+| [`PLAN_PRODUCT_FUTURE_CARDS.md`](PLAN_PRODUCT_FUTURE_CARDS.md)                                                                                      | **NEW (2026-05-04).** Forward-looking work cards (one-card-per-system pattern) extracted from `PLAN_PRODUCT_BRAIN`. Future direction; no current truth.                                                                                                                                                                                                                                                                          |
+| [`PLAN_DOC_CONSOLIDATION_2026-05-04.md`](PLAN_DOC_CONSOLIDATION_2026-05-04.md)                                                                      | **NEW (2026-05-04).** Phase 1.5 doc consolidation plan + audit table. Describes the 5-commit consolidation that produced this clean tree.                                                                                                                                                                                                                                                                                        |
+| [`PLAN_DOC_INDEX_BY_PHASE.md`](PLAN_DOC_INDEX_BY_PHASE.md)                                                                                          | **NEW (2026-05-04).** Pre-declared section-doc index for Phases 4–8.5 of the v3.3 master plan. ~10–11 docs (LAW + PLAN + OPS) named in advance to prevent ad-hoc tree growth.                                                                                                                                                                                                                                                    |
+| [`PLAN_MAP_MASTER.md`](PLAN_MAP_MASTER.md)                                                                                                          | Map strategy and product law. Feature-level map work paused; strategic vision intact.                                                                                                                                                                                                                                                                                                                                            |
+| [`PLAN_PAYMENT_MODEL.md`](PLAN_PAYMENT_MODEL.md)                                                                                                    | Payment model. **Deferred** per Post-Launch Roadmap F1. Do not implement without a fired trigger.                                                                                                                                                                                                                                                                                                                                |
+| [`archive/PLAN_DASHBOARD_REDESIGN_archived_2026-05-05.md`](archive/PLAN_DASHBOARD_REDESIGN_archived_2026-05-05.md)                                  | Dashboard premium-lift plan (2026-05-02) — **SHIPPED + ARCHIVED 2026-05-05.** Pass D4 final v2 shipped; navy-lit-by-gold-lamp identity established; MOLANDJESUS §9 inheritance rule amended to match per owner-authorized identity reversal. Historical record only.                                                                                                                                                       |
+| [`PLAN_VISUAL_MASTER_2026-05-03.md`](archive/2026-05-03-visual-handoffs/PLAN_VISUAL_MASTER_2026-05-03_archived_2026-05-04.md)                       | **ARCHIVED 2026-05-04** — visual master ledger from 2026-05-03 session. KI-062 RESOLVED; subsequent visual work (Pass G/H/I/J/K/L/M/N/O) supersedes this ledger. Kept for pass-history context.                                                                                                                                                                                                                                  |
+| [`PLAN_DESIGN_POLISH_QUEUE_OPUS_2026-05-03.md`](archive/2026-05-03-visual-handoffs/PLAN_DESIGN_POLISH_QUEUE_OPUS_2026-05-03_archived_2026-05-04.md) | **ARCHIVED 2026-05-04** — surgical polish queue from 2026-05-03 session. P0 LAW palette drift fully RESOLVED across Pass H1.1/H1.6/H2 + KI-090; remaining queue items consumed by Pass H/I/J/K/L/M/N/O. Kept for pass-history context.                                                                                                                                                                                           |
+| [`PLAN_FUTURE_NAV_AND_MAP_FUNCTIONALITY.md`](archive/PLAN_FUTURE_NAV_AND_MAP_FUNCTIONALITY_archived_2026-05-04.md)                                  | **ARCHIVED 2026-05-04** (Phase 1.5d, Cluster C). Substantively subsumed by [`PLAN_MAP_MASTER.md`](PLAN_MAP_MASTER.md). Content preserved at archive path; KI-075 reference still valid (DEFERRED).                                                                                                                                                                                                                               |
+| [`PLAN_CHAT_SYSTEM_IMESSAGE_IOS26.md`](PLAN_CHAT_SYSTEM_IMESSAGE_IOS26.md)                                                                          | DEFERRED future-pass scope — in-app chat system anchored to transaction surfaces (damage report / bid / claim / job_assignment), iOS 26 iMessage design language adapted to BidOnDent's locked Premium Gold + cool blue canon. Four trigger conditions must ALL fire before activation (soft launch shipped, KI-002 RESOLVED, owner authorization, ≥5–10 production transaction loops). Created 2026-05-04 per owner directive.  |
 
 > **Landing-page plans archived 2026-05-03.** The original 16-pass landing redesign and the follow-up Liquid Map Intelligence / dark-mode parity / button-system passes all shipped. They live under `docs/archive/` for historical decision context. Current landing visual state lives in **[`REF_VISUAL_SYSTEM.md`](REF_VISUAL_SYSTEM.md)**.
 
@@ -54,12 +67,15 @@ Documents are organized in three tiers: **LAW > REFERENCE > PLAN**. LAW docs ove
 Read in this order:
 
 1. **[`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md)** — what BidOnDent is, the 6 laws, what to protect.
-2. **[`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md)** — what to do now, in what order.
-3. **[`REF_SYSTEM_STATE.md`](REF_SYSTEM_STATE.md)** — how the system actually works (includes AI reading order by task type).
-4. **[`REF_KNOWN_ISSUES.md`](REF_KNOWN_ISSUES.md)** — what's broken or missing.
-5. **[`REF_AI_BROWSER_NAVIGATION.md`](REF_AI_BROWSER_NAVIGATION.md)** — required browser automation navigation protocol for Playwright-like tools.
-6. **[`REF_AI_COLLABORATION_PROTOCOL.md`](REF_AI_COLLABORATION_PROTOCOL.md)** — required when Mola pastes multi-AI transcripts, relay prompts, or live add-on directives.
-7. Then pick task-specific docs from the sections below.
+2. **[`LAW_LAYERED_ARCHITECTURE.md`](LAW_LAYERED_ARCHITECTURE.md)** — the four-layer code model and file-size budgets.
+3. **[`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md)** — what to do now, in what order.
+4. **[`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md)** — apex design canon (locked).
+5. **[`REF_SYSTEM_STATE.md`](REF_SYSTEM_STATE.md)** — how the system actually works (includes AI reading order by task type).
+6. **[`REF_KNOWN_ISSUES.md`](REF_KNOWN_ISSUES.md)** — what's broken or missing.
+7. **[`REF_AI_BROWSER_NAVIGATION.md`](REF_AI_BROWSER_NAVIGATION.md)** — required browser automation navigation protocol for Playwright-like tools.
+8. **[`REF_AI_COLLABORATION_PROTOCOL.md`](REF_AI_COLLABORATION_PROTOCOL.md)** — required when Mola pastes multi-AI transcripts, relay prompts, or live add-on directives.
+9. **[`AI_LOCK.md`](../AI_LOCK.md)** — multi-AI session coordination (read before editing on a shared branch).
+10. Then pick task-specific docs from the sections below.
 
 ---
 
@@ -73,25 +89,26 @@ These are the primary governing documents. Always start here.
 
 - **[`REF_VISUAL_SYSTEM.md`](REF_VISUAL_SYSTEM.md)** — current visual system state. Read first for any design work.
 - **[`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md)** — long-form design philosophy and historical decisions. The "why behind the system."
-- **[`VISUAL_AUDIT_PREP_2026-05-03.md`](VISUAL_AUDIT_PREP_2026-05-03.md)** — strengths/risks/audit targets snapshot prepared for the upcoming Sonnet visual audit.
-- **[`HANDOFF_VISUAL_AUDIT_PROMPT_SONNET_2026-05-03.md`](HANDOFF_VISUAL_AUDIT_PROMPT_SONNET_2026-05-03.md)** — copy-paste-ready prompt for Sonnet's deep visual audit pass.
-- **[`HANDOFF_VISUAL_NEXT_PASS_PROMPT_OPUS_2026-05-03.md`](HANDOFF_VISUAL_NEXT_PASS_PROMPT_OPUS_2026-05-03.md)** — copy-paste-ready prompt for the later Opus visual next-pass planning/build chat after screenshots and, ideally, the Sonnet audit.
+- **[`PLAN_VISUAL_MASTER_2026-05-03.md`](archive/2026-05-03-visual-handoffs/PLAN_VISUAL_MASTER_2026-05-03_archived_2026-05-04.md)** — ARCHIVED 2026-05-04. Visual master ledger from 2026-05-03 session, superseded by Pass G/H/I/J/K/L/M/N/O.
+- **[`PLAN_DESIGN_POLISH_QUEUE_OPUS_2026-05-03.md`](archive/2026-05-03-visual-handoffs/PLAN_DESIGN_POLISH_QUEUE_OPUS_2026-05-03_archived_2026-05-04.md)** — ARCHIVED 2026-05-04. Surgical polish queue from 2026-05-03 session; P0/P1/P2 items consumed by Pass H1/H1.6/H2 + KI-090 + Pass G/H/I.
+- **[`HANDOFF_VISUAL_MASTER_PROMPT_OPUS_4_7_2026-05-03.md`](archive/2026-05-03-visual-handoffs/HANDOFF_VISUAL_MASTER_PROMPT_OPUS_4_7_2026-05-03_archived_2026-05-04.md)** — ARCHIVED 2026-05-04. Was the 2026-05-03 visual session master prompt; consumed across the 2026-05-04 / 2026-05-05 autopilot work. Kept for KI-067 (owner HOLD) historical reference.
 
 ### AI Collaboration / Handoffs
 
 - **[`REF_AI_COLLABORATION_PROTOCOL.md`](REF_AI_COLLABORATION_PROTOCOL.md)** — canonical rules for Mola's multi-AI workflow. Read when a message includes pasted AI output, screenshots/logs from another tool, live owner add-ons, or instructions to plan-only vs go full autopilot.
 - **[`REF_AI_BROWSER_NAVIGATION.md`](REF_AI_BROWSER_NAVIGATION.md)** — canonical rules for browser automation and route recovery.
 
-### Phase / Audit Docs (open-ended)
+### OPS (procedures, runbooks, audit logs — added as 4th tier 2026-05-04)
 
-- **[`PHASE_6_SMOKE_TEST_CHECKLIST.md`](PHASE_6_SMOKE_TEST_CHECKLIST.md)** — three-environment smoke test (Local Docker / Hosted Staging / Production). Hosted columns still partial.
-- **[`SHOP_AUDIT_REPORT_2026-04-29.md`](SHOP_AUDIT_REPORT_2026-04-29.md)** — Shop role audit. "Best Next Passes" outstanding.
+- **[`OPS_DEVELOPER_SETUP.md`](OPS_DEVELOPER_SETUP.md)** — local setup, first run, Google OAuth provider configuration. Supersedes `GETTING_STARTED.md` + `GOOGLE_OAUTH_SETUP.md` (both archived 2026-05-04 under `docs/archive/`).
+- **[`archive/OPS_PHASE_6_SMOKE_TEST_archived_2026-05-05.md`](archive/OPS_PHASE_6_SMOKE_TEST_archived_2026-05-05.md)** — three-environment smoke test (Local Docker / Hosted Staging / Production). Pre-Phase-6 prep template; Phase 6 closed via Path A (different scope from the 6.1+6.3 staging+prod runs this template was built for); never fully executed. **ARCHIVED 2026-05-05.** Available for re-activation if a future staging+prod smoke pass is wanted.
+- **[`OPS_MOBILE_AUDIT_2026-05-04.md`](OPS_MOBILE_AUDIT_2026-05-04.md)** — Phase 4 mobile audit findings (5 clusters audited, 2 fixes shipped: NotificationCenter close button + ShopDirectoryHero chip). 0 LAW promotions warranted. Status: COMPLETE.
+- **[`OPS_DEPENDABOT_TRIAGE_2026-05-04.md`](OPS_DEPENDABOT_TRIAGE_2026-05-04.md)** — Phase 3.6 dependabot triage snapshot. 3 vulnerabilities classified + patched (Clerk 5.61.5→5.61.6 high, postcss 8.5.6→8.5.14 moderate via override). `npm audit` final: 0 vulnerabilities.
+- **[`OPS_MAP_ARCHITECTURE_DIAGNOSE_2026-05-04.md`](OPS_MAP_ARCHITECTURE_DIAGNOSE_2026-05-04.md)** — Phase 5 read-only architectural audit of the map system. 4 findings (2 P3 grandfathered, 1 P5, 1 P6). 0 P0/P1/P2. Map system shippable as-is. Phase 8 = cleanup, not rescue.
 
-### Setup & Operations
+### Setup & Operations (Supabase platform contract)
 
-- **[`GETTING_STARTED.md`](GETTING_STARTED.md)** — local setup and first run. `.env` configuration is the canonical approach.
 - **[`SUPABASE_SETUP_GUIDE.md`](SUPABASE_SETUP_GUIDE.md)** — backend, storage, and edge-function setup. **§16 Storage Pointer Pattern** + **§17 verify_jwt = false** are load-bearing.
-- **[`GOOGLE_OAUTH_SETUP.md`](GOOGLE_OAUTH_SETUP.md)** — Clerk + Google OAuth setup.
 
 ### Optional References
 
@@ -111,10 +128,29 @@ Project-specific patterns that future projects can reuse live under `~/.claude/s
 
 Everything under [`docs/archive/`](archive/) is historical reference, retained for traceability. Not active operating surface.
 
-Most recent archive moves (2026-05-03):
+Most recent archive moves (2026-05-04):
 
+- `AUDIT_FULL_AUTOPILOT_2026-05-05.md` → archive — Phase 0 audit baseline for the 2026-05-05 long-run autopilot session; findings consumed (KI-086-090 all RESOLVED across that pass). Captured at HEAD `23f4a2cd`; stale at this writing.
+- `AUTOPILOT_2026-05-05_FUNCTIONALITY_SWEEP_REPORT.md` (parts 1-4) → archive — 4-part sustained functionality sweep report; all referenced commits + KIs (F-04 / F-16 / F-18 / F-24 / KI-095-103) shipped or marked owner-action per current REF_KNOWN_ISSUES.md.
+- `HANDOFF_MASTER_PROMPT_2026-05-04_CODEBASE_CLEAN_AND_POLISH.md` → archive — was the inherited handoff into the 2026-05-04 codebase-cleanup-and-polish runway; consumed across the prior block + this relay supersedes it. Per relay discipline: handoff prompts no longer get persisted as docs (git log + relay context = durable record).
+- `PASS_AUTOPILOT_2026-05-04_MASTER_PROMPT_AND_POLISH_REPORT.md` → archive — past pass report (range `e5937a27 → 34c96526`).
+- `PASS_AUTOPILOT_2026-05-04_MASTER_PROMPT_FOLLOWUP_REPORT.md` → archive — past pass followup report.
+- `PASS_AUTOPILOT_2026-05-03_MASTER_REPORT.md` → archive — Cloud master pass (Buckets 1-7) all KIs RESOLVED or owner-gated (KI-067 HOLD, KI-075 DEFERRED).
+- `PASS_AUTOPILOT_2026-05-04_MOBILE_DARK_REPORT.md` → archive — mobile/dark visual pass; KI-076-080 all RESOLVED, KI-067/068/075 owner-gated.
+- `PASS_AUTOPILOT_2026-05-05_LONGRUN_REPORT.md` → archive — long-run pass; KI-086-090 all RESOLVED, KI-067/075/089 owner-gated.
+- `HANDOFF_CLOUD_MASTER_AUTOPILOT_2026-05-03.md` → archive — Cloud master autopilot handoff brief, superseded by 2026-05-04 work (now also archived).
+- `AUDIT_VISUAL_MOBILE_DARK_LIGHT_2026-05-04.md` → archive — visual mobile audit; bucket findings all RESOLVED across Pass H/I/J/K/L/M/N/O.
+- `AUDIT_FULL_2026-05-04_SONNET.md` → archive — F-01..F-24 audit findings; all RESOLVED or owner-gated (per Part 3 report scorecard).
+- `PASS_H_2026-05-05_REPORT.md` → archive — KI-091/092 RESOLVED.
+- `PASS_I_J_2026-05-05_REPORT.md` → archive — KI-091/092/093/094 RESOLVED.
+- `SHOP_AUDIT_REPORT_2026-04-29.md` → archive — pre-Pass-A era; findings folded into KI ledger.
+- 14 obsolete archived prompts + sprint reports DELETED (old AI prompts superseded by REF_AI_COLLABORATION_PROTOCOL.md + HANDOFF system; old GREEN_PATH/PASS_3X verification reports superseded by KI ledger). DUAL_AI_COORDINATION.md kept per LAW_HARDENING_PLAN.md L89.
+
+Earlier archive moves (2026-05-03):
+
+- `2026-05-03-visual-handoffs/` — superseded Sonnet audit prep/prompt/report, earlier Opus visual handoff docs, AND (added 2026-05-04) the full 2026-05-03 visual session trio: `PLAN_VISUAL_MASTER_2026-05-03_archived_2026-05-04.md`, `PLAN_DESIGN_POLISH_QUEUE_OPUS_2026-05-03_archived_2026-05-04.md`, `HANDOFF_VISUAL_MASTER_PROMPT_OPUS_4_7_2026-05-03_archived_2026-05-04.md`. All visual handoff prompts now consumed; current handoff is the active relay prompt context, not a doc.
 - `PLAN_LANDING_REDESIGN.md` → archive — 16-pass landing redesign, STATUS COMPLETE 2026-05-02.
-- `PLAN_LANDING_LIQUID_MAP_INTELLIGENCE.md` → archive — Passes A–G shipped; Pass H (verification) handed off to Sonnet via `HANDOFF_VISUAL_AUDIT_PROMPT_SONNET_2026-05-03.md`.
+- `PLAN_LANDING_LIQUID_MAP_INTELLIGENCE.md` → archive — Passes A–G shipped; Pass H verification completed through the archived Sonnet audit handoff in `archive/2026-05-03-visual-handoffs/`.
 - `PLAN_LANDING_BUTTON_SYSTEM_ADOPTION.md` → archive — cross-app primary-CTA shell adoption, SHIPPED 2026-05-03.
 - `PLAN_LANDING_DARK_MODE_PARITY.md` → archive — superseded twice, then absorbed into the gold-lamp landing pass shipped 2026-05-03.
 - `landing_dark_audit_2026-05-03.md`, `landing_signature_audit_2026-05-03.md`, `landing_visual_audit_2026-05-03.md` → archive — pre-fix audit snapshots; issues addressed by subsequent hero polish + gold-lamp passes.
@@ -130,7 +166,7 @@ Earlier moves (2026-04-16):
 - `BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md` — superseded by `LAW_HARDENING_PLAN.md`
 - `BIDONDENT_FINISHING_MASTER_PLAN.md` — superseded by hardening plan
 - `DUAL_AI_COORDINATION.md` — superseded by Group 2a execution model
-- Various `GREEN_PATH_*`, `PASS_*_STATUS_REPORT`, `LIGHT_DARK_MODE_AUDIT`, `SHOP_AUDIT_PASS_26`, `SESSION_AUDIT_2026-04-06` — point-in-time, superseded
+- Various `GREEN_PATH_*`, `PASS_*_STATUS_REPORT` — point-in-time, superseded (additional point-in-time audits `LIGHT_DARK_MODE_AUDIT`, `SHOP_AUDIT_PASS_26`, `SESSION_AUDIT_2026-04-06` deleted from archive 2026-05-05; git history retains)
 
 ---
 

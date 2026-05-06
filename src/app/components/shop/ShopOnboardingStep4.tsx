@@ -1,5 +1,5 @@
 import { Check } from "lucide-react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import type { ShopOnboardingFormData } from "../../types";
 
 type ShopOnboardingStep4Props = {
@@ -23,6 +23,8 @@ export default function ShopOnboardingStep4({
   onBack,
   onComplete,
 }: ShopOnboardingStep4Props) {
+  const reduceMotion = useReducedMotion();
+
   return (
     <div>
       <div className="mb-6">
@@ -45,7 +47,9 @@ export default function ShopOnboardingStep4({
       <div className="bd-report-section rounded-2xl p-4 sm:p-6 space-y-4">
         <label
           className={`flex items-center justify-between p-4 rounded-xl cursor-pointer border ${
-            isLight ? "border-slate-200/60 bg-white/60" : "border-white/[0.08] bg-white/[0.04]"
+            isLight
+              ? "border-[rgba(140,82,22,0.22)] bg-[linear-gradient(180deg,rgba(238,247,255,0.78),rgba(219,234,254,0.70))] shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]"
+              : "border-white/[0.08] bg-white/[0.04]"
           }`}
         >
           <div>
@@ -67,7 +71,9 @@ export default function ShopOnboardingStep4({
 
         <label
           className={`flex items-center justify-between p-4 rounded-xl cursor-pointer border ${
-            isLight ? "border-slate-200/60 bg-white/60" : "border-white/[0.08] bg-white/[0.04]"
+            isLight
+              ? "border-[rgba(140,82,22,0.22)] bg-[linear-gradient(180deg,rgba(238,247,255,0.78),rgba(219,234,254,0.70))] shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]"
+              : "border-white/[0.08] bg-white/[0.04]"
           }`}
         >
           <div>
@@ -107,7 +113,7 @@ export default function ShopOnboardingStep4({
           style={{ background: primaryColor }}
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.3, delay: 0.15 }}
+          transition={{ duration: reduceMotion ? 0 : 0.3, delay: 0.15 }}
         >
           {isSubmitting ? "Saving..." : "Complete Setup"}
           <Check className="w-5 h-5 ml-2" />

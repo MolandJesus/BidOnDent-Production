@@ -44,7 +44,12 @@ export default function NavigationTurnListSheet({
               Upcoming guidance
             </div>
           </div>
-          <button type="button" onClick={onClose} className={theme.iconButtonClassName}>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close turn list"
+            className={theme.iconButtonClassName}
+          >
             <X className="h-4 w-4" />
           </button>
         </div>

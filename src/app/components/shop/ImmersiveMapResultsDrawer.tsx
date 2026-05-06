@@ -81,8 +81,8 @@ export default function ImmersiveMapResultsDrawer({
   onRequestEstimate,
 }: ImmersiveMapResultsDrawerProps) {
   const drawerBg = isDark
-    ? "border-blue-400/[0.12] bg-[linear-gradient(180deg,rgba(30,58,138,0.18)_0%,rgba(8,18,38,0.92)_100%)] backdrop-blur-xl"
-    : "border-black/8 bg-white/92 backdrop-blur-xl";
+    ? "border-[rgba(96,165,250,0.20)] bg-[linear-gradient(180deg,rgba(30,58,138,0.20)_0%,rgba(8,18,38,0.92)_100%)] backdrop-blur-xl shadow-[inset_0_1px_0_rgba(196,144,65,0.22),inset_0_-1px_0_rgba(140,82,22,0.20),0_0_0_1px_rgba(96,165,250,0.16),0_-22px_56px_rgba(2,6,23,0.46),0_0_56px_rgba(196,130,45,0.14)]"
+    : "border-[rgba(140,82,22,0.28)] bg-[linear-gradient(180deg,rgba(247,232,194,0.92),rgba(232,238,248,0.88))] backdrop-blur-xl shadow-[inset_0_1px_0_rgba(252,240,208,0.85),0_-18px_46px_rgba(15,23,42,0.14),0_0_0_1px_rgba(140,82,22,0.18)]";
   const drawerDivider = isDark ? "border-white/[0.08]" : "border-black/[0.06]";
   const drawerLabel = isDark ? "text-slate-500" : "text-slate-400";
   const drawerTitle = isDark ? "text-slate-100" : "text-slate-800";
@@ -123,18 +123,19 @@ export default function ImmersiveMapResultsDrawer({
           role="region"
           aria-label="Shop results"
           onKeyDown={(e) => e.key === "Escape" && onClose()}
-          style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
+          style={
+            {
+              // Pass P (2026-05-04): typed as React.CSSProperties so the
+              // custom property `--drawer-h` (consumed by `animate` height
+              // below) is accepted without `as any`.
+              "--drawer-h": snapHeights[snap],
+              paddingBottom: "env(safe-area-inset-bottom, 0px)",
+            } as React.CSSProperties
+          }
           initial={{ y: "100%" }}
           animate={{ y: 0, height: `var(--drawer-h)` }}
           exit={{ y: "100%" }}
           transition={{ type: "spring", damping: 28, stiffness: 300 }}
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          {...({
-            style: {
-              "--drawer-h": snapHeights[snap],
-              paddingBottom: "env(safe-area-inset-bottom, 0px)",
-            },
-          } as any)}
           drag="y"
           dragConstraints={{ top: 0, bottom: 0 }}
           dragElastic={{ top: 0.15, bottom: 0.4 }}

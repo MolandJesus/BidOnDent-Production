@@ -1,5 +1,5 @@
 import { ArrowRight, Building, MapPin } from "lucide-react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import type { ShopOnboardingFormData } from "../../types";
 
 type ShopOnboardingStep1Props = {
@@ -32,6 +32,7 @@ export default function ShopOnboardingStep1({
   };
 
   const labelClass = `block text-sm font-medium mb-1.5 ${isLight ? "text-slate-700" : "text-slate-300"}`;
+  const reduceMotion = useReducedMotion();
 
   return (
     <div>
@@ -166,7 +167,7 @@ export default function ShopOnboardingStep1({
         whileTap={{ scale: 0.98 }}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: 0.2 }}
+        transition={{ duration: reduceMotion ? 0 : 0.3, delay: 0.2 }}
       >
         Continue
         <ArrowRight className="w-5 h-5 ml-2" />

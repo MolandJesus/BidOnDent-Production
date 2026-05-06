@@ -37,14 +37,19 @@ export default function AboutOpportunitySection({
   return (
     <section
       id="about-opportunity"
-      className={`py-12 sm:py-16 md:py-20 relative overflow-hidden ${isLightAppearance ? "" : "dark"}`}
+      className={`py-4 sm:py-8 md:py-10 relative overflow-hidden ${isLightAppearance ? "" : "dark"}`}
       style={{
         background: isLightAppearance
-          ? "linear-gradient(180deg, #ffffff 0%, #fdfcfb 40%, #f9f8f7 70%, #f5f4f2 100%)"
+          ? "linear-gradient(180deg, #f2f8ff 0%, #eaf3ff 35%, #e4efff 70%, #dde9ff 100%)"
           : "linear-gradient(180deg, #081834 0%, #0c2040 50%, #071630 100%)",
       }}
       ref={sectionRef}
     >
+      {/* Pass G (KI-090) — section-level directional top-cast champagne
+          lamp. LAW canon extension from cards to section backgrounds. */}
+      <div className="bd-landing-section-toplamp" aria-hidden="true" />
+      {/* Pass H9 — companion cool-blue bottom depth wash. */}
+      <div className="bd-landing-section-bottomwash" aria-hidden="true" />
       {/* Edge blend — light keeps amber thread; dark gets a subtle gold
           whisper at center to thread the gold identity through the cool
           register. Owner: "bring subtle dashboard gold trims to landing
@@ -72,13 +77,14 @@ export default function AboutOpportunitySection({
         />
         {isLightAppearance ? (
           <>
-            {/* Subtle diagonal stripe texture */}
-            <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_49px,rgba(200,170,110,0.05)_49px,rgba(200,170,110,0.05)_50px)] opacity-80" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_30%_-10%,rgba(210,180,130,0.18),transparent_60%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_50%_at_75%_90%,rgba(200,165,100,0.14),transparent_55%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_55%_40%,rgba(220,185,115,0.14),transparent_50%)]" />
-            <div className="absolute top-0 left-[25%] w-64 h-64 bg-amber-200/[0.18] rounded-full blur-[110px]" />
-            <div className="absolute bottom-0 right-[15%] w-48 h-48 bg-amber-100/[0.14] rounded-full blur-[120px]" />
+            {/* Pass I — diagonal stripe + radials canon-swapped at
+                SAME alpha. Pre-canon goldenrod -> canon champagne. */}
+            <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_49px,rgba(196,144,65,0.05)_49px,rgba(196,144,65,0.05)_50px)] opacity-80" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_30%_-10%,rgba(196,144,65,0.18),transparent_60%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_50%_at_75%_90%,rgba(196,144,65,0.14),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_55%_40%,rgba(196,144,65,0.14),transparent_50%)]" />
+            <div className="absolute top-0 left-[25%] w-64 h-64 bg-[rgba(196,144,65,0.18)] rounded-full blur-[110px]" />
+            <div className="absolute bottom-0 right-[15%] w-48 h-48 bg-[rgba(196,144,65,0.14)] rounded-full blur-[120px]" />
           </>
         ) : (
           <>
@@ -105,10 +111,10 @@ export default function AboutOpportunitySection({
         style={{ animationDelay: "1s" }}
       >
         <div
-          className={`w-5 h-5 rounded-full ${isLightAppearance ? "bg-amber-400/[0.12]" : "bg-blue-400/50"}`}
+          className={`w-5 h-5 rounded-full ${isLightAppearance ? "bg-[rgba(196,144,65,0.12)]" : "bg-blue-400/50"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 30px 10px rgba(200,165,100,0.14)"
+              ? "0 0 30px 10px rgba(196,144,65,0.14)"
               : "0 0 30px 10px rgba(59,130,246,0.26)",
           }}
         />
@@ -121,7 +127,7 @@ export default function AboutOpportunitySection({
           className={`w-9 h-9 rounded-[1rem] flex items-center justify-center ${isLightAppearance ? "bg-[rgba(255,251,245,0.45)] border border-[rgba(200,180,150,0.22)] backdrop-blur-sm" : "bg-blue-500/15 border border-blue-400/20"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 20px rgba(200,165,100,0.10), inset 0 1px 0 rgba(255,250,240,0.7)"
+              ? "0 0 20px rgba(196,144,65,0.10), inset 0 1px 0 rgba(255,250,240,0.7)"
               : "0 0 18px rgba(59,130,246,0.12)",
           }}
         >
@@ -133,12 +139,12 @@ export default function AboutOpportunitySection({
 
       <div className="container mx-auto px-4 max-w-6xl relative">
         <div
-          className={`text-center mb-8 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+          className={`text-center mb-6 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
         >
           <span
             className={`inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium ${isLightAppearance ? "border border-[rgba(200,180,150,0.25)] bg-[rgba(255,251,245,0.4)] text-blue-700 backdrop-blur-sm shadow-[inset_0_1px_0_rgba(255,250,240,0.6)]" : "border border-blue-400/20 bg-blue-500/10 text-blue-200 backdrop-blur-sm"}`}
           >
-            <span className="w-2 h-2 rounded-full mr-2 bg-blue-400" />
+            <span className="w-2 h-2 rounded-full mr-2 bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.6),0_0_14px_rgba(196,144,65,0.20)]" />
             About BidOnDent
           </span>
           {/* Pass 14/15 — Direction C flanking accent: cobalt-family for
@@ -213,8 +219,8 @@ export default function AboutOpportunitySection({
                        plate joins the gold-lamp family. Cool blue dominance
                        preserved (cool drop + cool halo unchanged). */
                     boxShadow: isLightAppearance
-                      ? "0 6px 22px rgba(59,130,246,0.16), 0 0 30px rgba(59,130,246,0.10), inset 0 1px 0 rgba(255,255,255,0.60), inset 0 -1px 0 rgba(220,165,90,0.16), 0 0 22px rgba(220,140,50,0.12)"
-                      : "0 6px 22px rgba(59,130,246,0.26), 0 0 32px rgba(59,130,246,0.18), inset 0 1px 0 rgba(147,197,253,0.28), inset 0 -1px 0 rgba(220,165,90,0.18), 0 0 26px rgba(220,140,50,0.16)",
+                      ? "0 6px 22px rgba(59,130,246,0.16), 0 0 30px rgba(59,130,246,0.10), inset 0 1px 0 rgba(255,255,255,0.60), inset 0 -1px 0 rgba(196, 144, 65,0.16), 0 0 22px rgba(196, 130, 45,0.12)"
+                      : "0 6px 22px rgba(59,130,246,0.26), 0 0 32px rgba(59,130,246,0.18), inset 0 1px 0 rgba(147,197,253,0.28), inset 0 -1px 0 rgba(196, 144, 65,0.18), 0 0 26px rgba(196, 130, 45,0.16)",
                   }}
                 >
                   <item.icon

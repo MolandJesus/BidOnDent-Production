@@ -36,9 +36,12 @@
     <meta name="apple-mobile-web-app-title" content="BidOnDent" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/favicon.svg" />
-    <!-- Security headers via meta tags -->
+    <!-- Security headers via meta tags.
+         NOTE: X-Frame-Options is NOT a valid <meta> directive — browsers reject it
+         and emit a console warning. It must be served as an HTTP response header.
+         Dev: see vite.config.ts server.headers. Prod: configure at the hosting
+         platform (Vercel headers, Cloudflare, nginx, etc.). -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
-    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <script>
       (function () {

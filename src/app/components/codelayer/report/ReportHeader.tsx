@@ -84,7 +84,8 @@ export default function ReportHeader({
         {showCancel && (
           <button
             onClick={onCancel}
-            className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-full px-3 py-2 text-sm font-semibold transition-colors ${
+            aria-label="Cancel report"
+            className={`inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-1.5 rounded-full px-3 py-2 text-sm font-semibold transition-colors ${
               isLightAppearance
                 ? "text-rose-600 hover:bg-rose-50"
                 : "text-rose-200 hover:bg-rose-500/10"

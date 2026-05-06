@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { ArrowLeft, Clock } from "lucide-react";
 
 type BidsEmptyStateProps = {
@@ -16,12 +16,14 @@ export default function BidsEmptyState({
   onBack,
   onStartReport,
 }: BidsEmptyStateProps) {
+  const reduceMotion = useReducedMotion();
+
   return (
     <div className="pb-20 px-4 md:px-6 py-4 md:py-5 space-y-4">
       <motion.section
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: reduceMotion ? 0 : 0.3 }}
         className="bd-dashboard-panel bd-dashboard-panel--accent-blue relative overflow-hidden p-5"
       >
         <div className="flex items-center gap-3">
@@ -55,7 +57,7 @@ export default function BidsEmptyState({
       <motion.section
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.25, delay: 0.05 }}
+        transition={{ duration: reduceMotion ? 0 : 0.25, delay: 0.05 }}
         className="bd-dashboard-panel bd-dashboard-panel--deep p-5 text-center sm:p-6"
       >
         <div className="bd-dashboard-note bd-dashboard-note--deep mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full">

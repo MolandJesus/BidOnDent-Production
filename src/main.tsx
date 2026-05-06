@@ -1,5 +1,6 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
+import { MotionConfig } from "motion/react";
 import App from "./app/App.tsx";
 import { initSentry } from "./app/services/sentryInit.ts";
 import { captureException } from "./app/services/errorReporting.ts";
@@ -49,13 +50,21 @@ class GlobalErrorBoundary extends Component<{ children: ReactNode }, GlobalError
     if (this.state.hasError) {
       return (
         <div className="min-h-screen bg-[#eef2f7] flex items-center justify-center px-5 py-12">
+          {/* F-18 (KI-098): canon-aligned error boundary panel.
+              Pre-fix used rgba(255,255,255,0.82) body + bg-white button +
+              rgba(255,255,255,0.42) inset highlight — three LAW Light-Mode
+              Surface Rule violations. Replaced with cool ice body in canon
+              opacity range, canon cream highlight inset, and canon bronze
+              trim border. Kept backdrop-filter (the crash card stays a
+              premium glass surface even on catastrophic failure). */}
           <div
-            className="mx-auto w-full max-w-md rounded-2xl border border-white/30 p-8 text-center"
+            className="mx-auto w-full max-w-md rounded-2xl border p-8 text-center"
             style={{
-              background: "linear-gradient(180deg, rgba(255,255,255,0.82), rgba(241,245,249,0.64))",
+              borderColor: "rgba(140,82,22,0.22)",
+              background: "linear-gradient(180deg, rgba(248,250,255,0.84), rgba(229,238,250,0.76))",
               backdropFilter: "blur(20px)",
               WebkitBackdropFilter: "blur(20px)",
-              boxShadow: "0 16px 44px rgba(15,23,42,0.12), inset 0 1px 0 rgba(255,255,255,0.42)",
+              boxShadow: "0 16px 44px rgba(15,23,42,0.12), inset 0 1px 0 rgba(252,240,208,0.42)",
             }}
           >
             {/* Logo mark */}
@@ -110,7 +119,7 @@ class GlobalErrorBoundary extends Component<{ children: ReactNode }, GlobalError
               <button
                 type="button"
                 onClick={this.handleReload}
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-[rgba(248,250,255,0.92)] px-5 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:bg-[rgba(238,247,255,0.95)]"
               >
                 Reload Page
               </button>
@@ -126,7 +135,9 @@ class GlobalErrorBoundary extends Component<{ children: ReactNode }, GlobalError
 
 createRoot(document.getElementById("root")!).render(
   <GlobalErrorBoundary>
-    <App />
+    <MotionConfig reducedMotion="user">
+      <App />
+    </MotionConfig>
   </GlobalErrorBoundary>
 );
 

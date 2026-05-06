@@ -136,7 +136,7 @@ export default function HelpModal({
               placeholder="Describe your issue..."
               value={message}
               onChange={(event) => setMessage(event.target.value)}
-              className={`w-full p-2 border rounded ${isLight ? "border-slate-200 bg-white text-slate-800 placeholder:text-slate-400" : "border-white/[0.12] bg-white/[0.04] text-slate-100 placeholder:text-slate-500"}`}
+              className={`w-full p-2 border rounded ${isLight ? "border-slate-200 bg-[#fffefa] text-slate-800 placeholder:text-slate-400" : "border-white/[0.12] bg-white/[0.04] text-slate-100 placeholder:text-slate-500"}`}
               rows={4}
             />
             <p className={`mt-2 text-xs ${isLight ? "text-slate-500" : "text-slate-400"}`}>

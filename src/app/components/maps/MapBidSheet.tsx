@@ -90,8 +90,8 @@ export default function MapBidSheet({
         className={cn(
           "relative z-10 w-full max-w-lg rounded-t-2xl p-6 pb-[max(2rem,env(safe-area-inset-bottom))]",
           isDark
-            ? "bg-gradient-to-b from-slate-900/95 to-blue-950/95 border-t border-blue-400/20 shadow-[0_-8px_40px_rgba(59,130,246,0.15)]"
-            : "bg-white border-t border-slate-200 shadow-xl"
+            ? "bg-gradient-to-b from-slate-900/78 to-blue-950/72 border-t border-blue-400/20 backdrop-blur-xl backdrop-saturate-150 shadow-[0_-32px_90px_-16px_rgba(196,144,65,0.16),0_0_36px_rgba(196,130,45,0.10),0_0_60px_rgba(196,130,45,0.06),inset_0_1px_0_rgba(196,144,65,0.22)]"
+            : "bg-gradient-to-b from-sky-50/84 via-blue-50/80 to-slate-50/76 border-t border-[rgba(140,82,22,0.32)] backdrop-blur-xl backdrop-saturate-150 shadow-[0_-28px_80px_-16px_rgba(196,144,65,0.18),0_0_32px_rgba(196,130,45,0.10),0_0_60px_rgba(196,130,45,0.06),inset_0_1px_0_rgba(252,240,208,0.92)]"
         )}
       >
         {/* Drag handle */}
@@ -111,6 +111,7 @@ export default function MapBidSheet({
           <button
             type="button"
             onClick={onClose}
+            aria-label="Close bid sheet"
             className={cn(
               "rounded-full p-2 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center",
               isDark
@@ -168,7 +169,7 @@ export default function MapBidSheet({
                   "w-full rounded-xl py-3 pl-8 pr-3 text-sm min-h-[44px] transition-colors outline-none",
                   isDark
                     ? "bg-white/5 border border-blue-400/20 text-white placeholder:text-slate-500 focus:border-blue-400/50 focus:bg-white/8"
-                    : "bg-slate-50 border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:bg-white"
+                    : "bg-blue-50/80 border border-sky-200 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:bg-sky-50"
                 )}
               />
             </div>
@@ -211,7 +212,7 @@ export default function MapBidSheet({
                 "w-full rounded-xl py-3 px-3 text-sm min-h-[44px] transition-colors outline-none",
                 isDark
                   ? "bg-white/5 border border-blue-400/20 text-white placeholder:text-slate-500 focus:border-blue-400/50 focus:bg-white/8"
-                  : "bg-slate-50 border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:bg-white"
+                  : "bg-blue-50/80 border border-sky-200 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:bg-sky-50"
               )}
             />
           </div>
@@ -237,7 +238,7 @@ export default function MapBidSheet({
                 "w-full resize-none rounded-xl py-3 px-3 text-sm transition-colors outline-none",
                 isDark
                   ? "bg-white/5 border border-blue-400/20 text-white placeholder:text-slate-500 focus:border-blue-400/50 focus:bg-white/8"
-                  : "bg-slate-50 border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:bg-white"
+                  : "bg-blue-50/80 border border-sky-200 text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:bg-sky-50"
               )}
             />
           </div>

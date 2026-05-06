@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { Shield } from "lucide-react";
 
 type AdminHeaderProps = {
@@ -7,8 +7,14 @@ type AdminHeaderProps = {
 };
 
 export default function AdminHeader({ primaryColor, adminEmail }: AdminHeaderProps) {
+  const reduceMotion = useReducedMotion();
   return (
-    <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
+    <motion.div
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: reduceMotion ? 0 : 0.3 }}
+      className="mb-8"
+    >
       <div className="flex items-center gap-3 mb-2">
         <Shield className="w-8 h-8" style={{ color: primaryColor }} />
         <h1 className="text-3xl font-bold">Admin Dashboard</h1>

@@ -70,10 +70,10 @@ export default function CoverageSearchPanel({
   const theme = getMapSurfaceTheme(tone);
   const fieldClassName =
     tone === "light"
-      ? "h-11 rounded-[1.1rem] border border-white/85 bg-white/82 px-4 text-slate-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)] outline-none transition placeholder:text-slate-400 focus:border-sky-300 focus:bg-white"
+      ? "h-11 rounded-[1.1rem] border border-sky-200/80 bg-blue-50/85 px-4 text-slate-900 shadow-[inset_0_1px_0_rgba(252,240,208,0.55)] outline-none transition placeholder:text-slate-400 focus:border-sky-300 focus:bg-sky-50/95"
       : "h-11 rounded-[1.1rem] border border-white/12 bg-slate-900/72 px-4 text-white outline-none transition placeholder:text-slate-400 focus:border-cyan-400/40 focus:bg-slate-900/88";
   const actionButtonClassName =
-    "!min-h-[42px] w-full justify-center !gap-1.5 !px-3.5 !py-2 text-[11px] leading-tight sm:text-xs";
+    "!min-h-[44px] w-full justify-center !gap-1.5 !px-3.5 !py-2 text-[11px] leading-tight sm:text-xs";
   const showAddressMatches =
     normalizedZip.length === 0 && (addressSuggestions.length > 0 || addressResults.length > 0);
   const resultOptions = addressResults.length > 0 ? addressResults : [];
@@ -202,7 +202,7 @@ export default function CoverageSearchPanel({
             type="submit"
             className={cn(
               theme.primaryButtonClassName,
-              "min-h-[40px] w-full justify-center px-4 text-sm lg:w-auto lg:min-w-[126px]"
+              "min-h-[44px] w-full justify-center px-4 text-sm lg:w-auto lg:min-w-[126px]"
             )}
           >
             <Search className="h-3.5 w-3.5" />
@@ -291,7 +291,7 @@ export default function CoverageSearchPanel({
                   onClick={onClearAddressResult}
                   className={cn(
                     theme.secondaryButtonClassName,
-                    "!min-h-[38px] !px-3 !py-1.5 !text-xs"
+                    "!min-h-[44px] !px-3 !py-1.5 !text-xs"
                   )}
                 >
                   <X className="h-3.5 w-3.5" />

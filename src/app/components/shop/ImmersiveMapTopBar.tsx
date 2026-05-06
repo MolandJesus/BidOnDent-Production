@@ -43,20 +43,20 @@ export default function ImmersiveMapTopBar({
     ? "bg-gradient-to-b from-[#0a1a38]/80 via-[#0d2244]/30 to-transparent"
     : "bg-gradient-to-b from-black/20 via-black/6 to-transparent";
   const controlShell = isDark
-    ? "border-blue-400/[0.16] bg-[linear-gradient(180deg,rgba(9,18,36,0.84),rgba(12,25,41,0.68))] shadow-[0_16px_36px_rgba(2,6,23,0.34)]"
-    : "border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.84),rgba(241,245,249,0.74))] shadow-[0_14px_28px_rgba(15,23,42,0.10)]";
+    ? "border-[rgba(96,165,250,0.20)] bg-[linear-gradient(180deg,rgba(9,18,36,0.86),rgba(12,25,41,0.72))] shadow-[inset_0_1px_0_rgba(196,144,65,0.20),inset_0_-1px_0_rgba(140,82,22,0.18),0_0_0_1px_rgba(96,165,250,0.16),0_18px_44px_rgba(2,6,23,0.40),0_0_44px_rgba(196,130,45,0.12)]"
+    : "border-[rgba(140,82,22,0.26)] bg-[linear-gradient(180deg,rgba(247,232,194,0.86),rgba(232,238,248,0.78))] shadow-[inset_0_1px_0_rgba(252,240,208,0.78),0_14px_28px_rgba(15,23,42,0.10)]";
   const iconBtn = isDark
-    ? "border-blue-400/[0.18] bg-[rgba(12,25,41,0.82)] text-white shadow-[0_4px_20px_rgba(2,6,23,0.45),0_0_12px_rgba(37,99,235,0.06)] backdrop-blur-xl hover:bg-[rgba(12,25,41,0.92)]"
-    : "border-black/10 bg-white/82 text-slate-800 shadow-xl backdrop-blur-md hover:bg-white/95";
+    ? "border-[rgba(96,165,250,0.22)] bg-[linear-gradient(180deg,rgba(12,25,41,0.86),rgba(8,16,33,0.78))] text-white shadow-[inset_0_1px_0_rgba(196,144,65,0.20),inset_0_-1px_0_rgba(140,82,22,0.18),0_4px_20px_rgba(2,6,23,0.46),0_0_18px_rgba(196,130,45,0.10)] backdrop-blur-xl hover:bg-[linear-gradient(180deg,rgba(12,25,41,0.94),rgba(8,16,33,0.86))]"
+    : "border-[rgba(140,82,22,0.28)] bg-[linear-gradient(180deg,rgba(247,232,194,0.86),rgba(232,238,248,0.80))] text-slate-800 shadow-[inset_0_1px_0_rgba(252,240,208,0.78),0_4px_18px_rgba(15,23,42,0.10)] backdrop-blur-md hover:bg-[linear-gradient(180deg,rgba(247,232,194,0.94),rgba(232,238,248,0.88))]";
   const searchInputCls = isDark
-    ? "border-blue-400/[0.18] bg-[rgba(12,25,41,0.82)] text-white placeholder:text-white/45 shadow-[0_4px_20px_rgba(2,6,23,0.45)] focus:border-blue-400/40 focus:bg-[rgba(12,25,41,0.92)] backdrop-blur-xl"
-    : "border-black/10 bg-white/82 text-slate-800 placeholder:text-slate-400 focus:border-blue-400/40 focus:bg-white/95";
+    ? "border-[rgba(96,165,250,0.22)] bg-[linear-gradient(180deg,rgba(12,25,41,0.86),rgba(8,16,33,0.78))] text-white placeholder:text-white/45 shadow-[inset_0_1px_0_rgba(196,144,65,0.18),inset_0_-1px_0_rgba(140,82,22,0.16),0_4px_20px_rgba(2,6,23,0.46)] focus:border-blue-400/50 focus:bg-[linear-gradient(180deg,rgba(12,25,41,0.94),rgba(8,16,33,0.86))] backdrop-blur-xl"
+    : "border-[rgba(140,82,22,0.28)] bg-[linear-gradient(180deg,rgba(247,232,194,0.86),rgba(232,238,248,0.80))] text-slate-800 placeholder:text-slate-400 shadow-[inset_0_1px_0_rgba(252,240,208,0.78)] focus:border-blue-500/50 focus:bg-[linear-gradient(180deg,rgba(247,232,194,0.94),rgba(232,238,248,0.88))]";
   const listBtnActive = isDark
-    ? "border-blue-400/40 bg-blue-600/30 text-white"
-    : "border-blue-400/40 bg-blue-100 text-blue-700";
+    ? "border-blue-400/45 bg-blue-600/30 text-white"
+    : "border-blue-400/45 bg-blue-100 text-blue-700";
   const listBtnInactive = isDark
-    ? "border-white/20 bg-slate-950/70 text-white/80 hover:bg-slate-950/85 hover:text-white"
-    : "border-black/10 bg-white/82 text-slate-600 hover:bg-white/95 hover:text-slate-800";
+    ? "border-[rgba(96,165,250,0.22)] bg-[linear-gradient(180deg,rgba(15,23,42,0.78),rgba(8,16,33,0.70))] text-white/80 shadow-[inset_0_1px_0_rgba(196,144,65,0.16),inset_0_-1px_0_rgba(140,82,22,0.14)] hover:bg-[linear-gradient(180deg,rgba(15,23,42,0.90),rgba(8,16,33,0.82))] hover:text-white"
+    : "border-[rgba(140,82,22,0.28)] bg-[linear-gradient(180deg,rgba(247,232,194,0.84),rgba(232,238,248,0.78))] text-slate-600 shadow-[inset_0_1px_0_rgba(252,240,208,0.78)] hover:bg-[linear-gradient(180deg,rgba(247,232,194,0.94),rgba(232,238,248,0.88))] hover:text-slate-800";
 
   return (
     <div

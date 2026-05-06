@@ -7,7 +7,12 @@
 
 import { MapPinned, Navigation, RefreshCcw, Route } from "lucide-react";
 import { cn } from "../../ui/utils";
-import { formatApproximateDriveWindow, formatDistanceMiles } from "../mapRoutePresentation";
+import {
+  formatApproximateDriveWindow,
+  formatDistanceMiles,
+  formatDurationMinutes,
+  formatTurnDistance,
+} from "../mapRoutePresentation";
 import type { MapSurfaceTheme, MapSurfaceTone } from "../serviceCoverageMapTypes";
 import type { NavigationRoutePreview } from "../../../types/navigation";
 import type { CoveragePartnerShop } from "../serviceCoverageMapTypes";
@@ -174,7 +179,7 @@ export default function PlannerRoutePreview({
                               ? "border-sky-300/80 bg-[linear-gradient(180deg,rgba(239,246,255,0.96),rgba(219,234,254,0.86))]"
                               : "border-cyan-400/30 bg-[linear-gradient(180deg,rgba(6,182,212,0.18),rgba(15,23,42,0.78))]"
                             : tone === "light"
-                              ? "border-white/80 bg-white/72 hover:bg-white/90"
+                              ? "border-[rgba(140,82,22,0.28)] bg-[linear-gradient(180deg,rgba(247,232,194,0.72),rgba(232,238,248,0.68))] hover:bg-[linear-gradient(180deg,rgba(247,232,194,0.88),rgba(232,238,248,0.84))]"
                               : "border-white/10 bg-slate-900/76 hover:bg-slate-900/88"
                         )}
                       >
@@ -339,7 +344,7 @@ export default function PlannerRoutePreview({
                       ? "border-sky-300/80 bg-[linear-gradient(180deg,rgba(239,246,255,0.96),rgba(219,234,254,0.86))]"
                       : "border-cyan-400/30 bg-[linear-gradient(180deg,rgba(6,182,212,0.18),rgba(15,23,42,0.78))]"
                     : tone === "light"
-                      ? "border-white/80 bg-white/72"
+                      ? "border-[rgba(140,82,22,0.28)] bg-[linear-gradient(180deg,rgba(247,232,194,0.72),rgba(232,238,248,0.68))]"
                       : "border-white/10 bg-slate-900/76"
                 )}
               >
@@ -347,8 +352,19 @@ export default function PlannerRoutePreview({
                   {step.instruction}
                 </div>
                 <div className={cn("text-[10px]", theme.secondaryTextClassName)}>
-                  {(step.distanceMeters / 1609.34).toFixed(1)} mi •{" "}
-                  {Math.max(1, Math.round(step.durationSeconds / 60))} min
+                  {/* KI-052 family honesty fix: replaced inline `Math.max(1, ...)` floor
+                      with the canonical `formatDurationMinutes` helper (returns null below
+                      30 sec rather than fabricating "1 min" for genuine zero-duration steps).
+                      Distance label uses canonical `formatTurnDistance` for the same reason —
+                      step.distanceMeters can legitimately be 0 (e.g. arrival step), and
+                      `0.0 mi` would similarly be a fabrication. Filter+join handles either
+                      label being null. */}
+                  {[
+                    formatTurnDistance(step.distanceMeters),
+                    formatDurationMinutes(step.durationSeconds),
+                  ]
+                    .filter(Boolean)
+                    .join(" • ")}
                 </div>
               </div>
             ))}

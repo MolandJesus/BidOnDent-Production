@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type ComponentType, type ReactNode } from "react";
 import { useAuth as useClerkAuth } from "@clerk/clerk-react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { Activity, Building2, CircleCheck, Clock3, FileStack, Shield } from "lucide-react";
 import {
   loadAdminIntakeOperations,
@@ -19,6 +19,7 @@ export default function AdminIntakeOperationsPanel({
   primaryColor,
 }: AdminIntakeOperationsPanelProps) {
   const { getToken } = useClerkAuth();
+  const reduceMotion = useReducedMotion();
   const [isLoading, setIsLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
   const [shopSubmissions, setShopSubmissions] = useState<ShopSubmission[]>([]);
@@ -94,7 +95,7 @@ export default function AdminIntakeOperationsPanel({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.2 }}
+      transition={{ duration: reduceMotion ? 0 : 0.3, delay: 0.2 }}
       className="bd-glass-card rounded-lg p-6 mb-6"
     >
       <div className="flex items-center justify-between mb-4">

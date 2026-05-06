@@ -129,6 +129,7 @@ export default function InsurerConnectionScreen({
         <div className="flex items-center mb-4">
           <button
             onClick={onBack}
+            aria-label="Back"
             className={`mr-3 inline-flex h-11 w-11 items-center justify-center rounded-2xl transition-colors ${
               isLight ? "bg-slate-100 hover:bg-slate-200" : "bg-white/10 hover:bg-white/20"
             }`}

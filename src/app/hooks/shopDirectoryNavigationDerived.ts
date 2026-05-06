@@ -170,7 +170,7 @@ export function computeRemainingLabels(params: {
   const liveRemainingEtaLabel = hasArrivedForDestination
     ? "Arrived"
     : liveNavigationActive && remainingDurationSeconds > 0
-      ? `${Math.max(1, Math.round(remainingDurationSeconds / 60))}m`
+      ? `${Math.round(remainingDurationSeconds / 60)}m`
       : null;
   const liveRemainingDistanceLabel = hasArrivedForDestination
     ? "Here"

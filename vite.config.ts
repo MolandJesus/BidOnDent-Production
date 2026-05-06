@@ -70,13 +70,13 @@ export default defineConfig({
         "default-src 'self'",
         "script-src 'self' 'unsafe-inline' https://*.clerk.accounts.dev",
         "style-src 'self' 'unsafe-inline'",
-        "img-src 'self' data: blob: https://*.supabase.co https://*.basemaps.cartocdn.com https://server.arcgisonline.com https://*.clerk.com https://img.clerk.com",
+        "img-src 'self' data: blob: https://*.supabase.co https://*.basemaps.cartocdn.com https://server.arcgisonline.com https://*.clerk.com https://img.clerk.com https://images.unsplash.com",
         "font-src 'self' data:",
         // Local Supabase (Docker stack on :54321) is allow-listed for dev only — this header
         // is emitted by Vite's dev server and never reaches production. Without it, the
         // browser blocks every call to the local stack and the app appears dead, which
         // forced an in-process proxy workaround during the 2026-04-26 audit. See KI-054.
-        "connect-src 'self' http://127.0.0.1:54321 http://localhost:54321 ws://127.0.0.1:54321 ws://localhost:54321 https://*.supabase.co wss://*.supabase.co https://*.clerk.accounts.dev https://*.clerk.com https://*.sentry.io https://*.basemaps.cartocdn.com https://server.arcgisonline.com https://nominatim.openstreetmap.org https://router.project-osrm.org https://overpass-api.de",
+        "connect-src 'self' http://127.0.0.1:54321 http://localhost:54321 ws://127.0.0.1:54321 ws://localhost:54321 https://*.supabase.co wss://*.supabase.co https://*.clerk.accounts.dev https://*.clerk.com https://clerk-telemetry.com https://*.sentry.io https://*.basemaps.cartocdn.com https://server.arcgisonline.com https://nominatim.openstreetmap.org https://router.project-osrm.org https://overpass-api.de",
         "frame-src https://*.clerk.accounts.dev",
         "worker-src 'self' blob:",
       ].join("; "),

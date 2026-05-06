@@ -33,7 +33,7 @@ export default function TrustStatsSection({
   return (
     <section
       ref={sectionRef}
-      className={`py-12 sm:py-16 md:py-20 relative overflow-hidden ${isLightAppearance ? "" : "text-white"}`}
+      className={`py-4 sm:py-8 md:py-10 relative overflow-hidden ${isLightAppearance ? "" : "text-white"}`}
       style={{
         background: isLightAppearance
           ? "linear-gradient(176deg, #faf8f4 0%, #f7f5ef 40%, #f2efe8 70%, #ece8df 100%)"
@@ -71,14 +71,14 @@ export default function TrustStatsSection({
             height: "800px",
             top: "-200px",
             left: "-200px",
-            background: "radial-gradient(circle, rgba(180,140,40,0.22), transparent 65%)",
+            background: "radial-gradient(circle, rgba(196,130,45,0.22), transparent 65%)",
           }}
         />
         {isLightAppearance ? (
           <>
             {/* Dot grid (Branch A: deeper amber) */}
             <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(180,130,60,0.07)_1px,transparent_1px)] [background-size:20px_20px] opacity-90" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_20%_20%,rgba(220,165,90,0.26),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_20%_20%,rgba(196, 144, 65,0.26),transparent_55%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_80%_80%,rgba(210,155,70,0.22),transparent_50%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_30%_at_50%_50%,rgba(230,175,100,0.24),transparent_50%)]" />
             <div className="absolute top-0 right-[30%] w-64 h-64 bg-amber-300/[0.38] rounded-full blur-[100px]" />
@@ -145,7 +145,7 @@ export default function TrustStatsSection({
 
       <div className="container mx-auto px-4 max-w-7xl relative">
         {/* Section header */}
-        <div className="text-center mb-8 sm:mb-10">
+        <div className="text-center mb-6 sm:mb-8">
           <span
             className={`inline-flex items-center px-4 py-1.5 rounded-full backdrop-blur-sm text-sm font-medium mb-5 ${
               isLightAppearance
@@ -153,7 +153,7 @@ export default function TrustStatsSection({
                 : "border border-amber-400/45 bg-amber-500/[0.16] text-amber-100 shadow-[inset_0_1px_0_rgba(255,232,180,0.18),0_0_24px_rgba(240,170,70,0.18)]"
             }`}
           >
-            <span className="w-2 h-2 rounded-full mr-2 bg-amber-300 shadow-[0_0_10px_rgba(253,224,124,0.85)]" />
+            <span className="w-2 h-2 rounded-full mr-2 bg-[rgb(252,240,208)] shadow-[0_0_10px_rgba(196,144,65,0.75)]" />
             Our Commitments
           </span>
           {/* Pass 12 (calibrated test, 2026-05-02): metallic-gold flanking accent.
@@ -167,8 +167,8 @@ export default function TrustStatsSection({
               className="hidden sm:block h-[2px] w-20 lg:w-28 rounded-full"
               style={{
                 background: isLightAppearance
-                  ? "linear-gradient(90deg, transparent 0%, rgba(184,134,11,0.10) 25%, rgba(218,165,32,0.85) 60%, rgba(184,134,11,0.55) 85%, transparent 100%)"
-                  : "linear-gradient(90deg, transparent 0%, rgba(180,140,40,0.20) 25%, rgba(253,224,124,0.90) 60%, rgba(218,165,32,0.55) 85%, transparent 100%)",
+                  ? "linear-gradient(90deg, transparent 0%, rgba(140,82,22,0.10) 25%, rgba(196,144,65,0.85) 60%, rgba(140,82,22,0.55) 85%, transparent 100%)"
+                  : "linear-gradient(90deg, transparent 0%, rgba(196,130,45,0.20) 25%, rgba(252,240,208,0.90) 60%, rgba(196,144,65,0.55) 85%, transparent 100%)",
               }}
             />
             <h3
@@ -186,8 +186,8 @@ export default function TrustStatsSection({
               className="hidden sm:block h-[2px] w-20 lg:w-28 rounded-full"
               style={{
                 background: isLightAppearance
-                  ? "linear-gradient(90deg, transparent 0%, rgba(184,134,11,0.55) 15%, rgba(218,165,32,0.85) 40%, rgba(184,134,11,0.10) 75%, transparent 100%)"
-                  : "linear-gradient(90deg, transparent 0%, rgba(218,165,32,0.55) 15%, rgba(253,224,124,0.90) 40%, rgba(180,140,40,0.20) 75%, transparent 100%)",
+                  ? "linear-gradient(90deg, transparent 0%, rgba(140,82,22,0.55) 15%, rgba(196,144,65,0.85) 40%, rgba(140,82,22,0.10) 75%, transparent 100%)"
+                  : "linear-gradient(90deg, transparent 0%, rgba(196,144,65,0.55) 15%, rgba(252,240,208,0.90) 40%, rgba(196,130,45,0.20) 75%, transparent 100%)",
               }}
             />
           </div>
@@ -205,7 +205,7 @@ export default function TrustStatsSection({
           {commitments.map((item, index) => (
             <div
               key={item.label}
-              className={`bd-glass-card bd-glass-card--landing-warm group h-full rounded-[1.75rem] border px-5 py-6 text-left backdrop-blur-xl transition-all duration-300 sm:px-6 sm:py-7 md:text-center ${isLightAppearance ? "border-[rgba(220,205,180,0.65)] bg-[linear-gradient(180deg,rgba(255,255,255,0.82),rgba(248,250,254,0.72))] shadow-[0_20px_48px_rgba(15,23,42,0.13)] hover:-translate-y-1 hover:shadow-[0_28px_56px_rgba(15,23,42,0.18)] hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(255,253,248,0.85))]" : "border-blue-300/16 bg-[linear-gradient(180deg,rgba(10,22,44,0.78),rgba(8,18,36,0.68))] shadow-[0_18px_38px_rgba(2,8,24,0.26)] hover:-translate-y-1 hover:border-blue-300/24 hover:bg-[linear-gradient(180deg,rgba(15,30,58,0.84),rgba(9,20,40,0.74))]"}`}
+              className={`bd-glass-card bd-glass-card--landing-warm group h-full rounded-[1.75rem] border px-5 py-6 text-left backdrop-blur-xl transition-all duration-300 sm:px-6 sm:py-7 md:text-center ${isLightAppearance ? "border-[rgba(140,82,22,0.32)] bg-[linear-gradient(180deg,rgba(252,240,208,0.82),rgba(247,232,194,0.72))] shadow-[0_20px_48px_rgba(110,70,18,0.18)] hover:-translate-y-1 hover:shadow-[0_28px_56px_rgba(110,70,18,0.24)] hover:bg-[linear-gradient(180deg,rgba(252,240,208,0.92),rgba(247,232,194,0.85))]" : "border-blue-300/16 bg-[linear-gradient(180deg,rgba(10,22,44,0.78),rgba(8,18,36,0.68))] shadow-[0_18px_38px_rgba(2,8,24,0.26)] hover:-translate-y-1 hover:border-blue-300/24 hover:bg-[linear-gradient(180deg,rgba(15,30,58,0.84),rgba(9,20,40,0.74))]"}`}
               style={{ animationDelay: `${index * 0.15}s` }}
             >
               <div
@@ -259,8 +259,8 @@ export default function TrustStatsSection({
         className="absolute bottom-0 left-0 right-0 h-px pointer-events-none"
         style={{
           background: isLightAppearance
-            ? "linear-gradient(to right, transparent, rgba(220,165,90,0.22) 50%, transparent)"
-            : "linear-gradient(to right, transparent, rgba(220,165,90,0.28) 50%, transparent)",
+            ? "linear-gradient(to right, transparent, rgba(196, 144, 65,0.22) 50%, transparent)"
+            : "linear-gradient(to right, transparent, rgba(196, 144, 65,0.28) 50%, transparent)",
         }}
       />
     </section>

@@ -24,14 +24,24 @@ export default function MapSurfaceControls({
 }: MapSurfaceControlsProps) {
   const theme = getMapSurfaceTheme(tone);
 
+  // Bucket 5.8 (KI-074 partial): premium capsule rail wrapping all map
+  // surface controls so they read as one premium glass control unit
+  // instead of disconnected pills. Per-mode tuning: dark navy + cool
+  // blue ring + black drop + bronze atmospheric halo; light cream-tint
+  // + bronze ring + cool-shadow + bronze atmospheric halo.
+  const capsuleRailClassName =
+    tone === "light"
+      ? "pointer-events-auto inline-flex flex-wrap items-center justify-end gap-1.5 rounded-full bg-[rgba(252,238,204,0.62)] backdrop-blur-md ring-1 ring-[rgba(140,82,22,0.28)] shadow-[0_8px_24px_rgba(15,30,60,0.16),0_0_30px_rgba(196,130,45,0.10)] px-1.5 py-1.5 sm:gap-2"
+      : "pointer-events-auto inline-flex flex-wrap items-center justify-end gap-1.5 rounded-full bg-[rgba(10,22,45,0.72)] backdrop-blur-md ring-1 ring-[rgba(96,165,250,0.20)] shadow-[0_8px_24px_rgba(2,6,23,0.40),0_0_30px_rgba(196,130,45,0.12)] px-1.5 py-1.5 sm:gap-2";
+
   return (
-    <div className="pointer-events-auto flex flex-wrap items-center justify-end gap-1.5 sm:gap-2">
+    <div className={capsuleRailClassName}>
       <div className={theme.segmentedClassName}>
         <button
           type="button"
           onClick={() => onTileModeChange("roadmap")}
           className={cn(
-            "inline-flex h-8 items-center gap-1 rounded-full px-2.5 text-xs font-semibold transition sm:h-10 sm:gap-2 sm:px-4 sm:text-sm",
+            "inline-flex h-10 items-center gap-1 rounded-full px-2.5 text-xs font-semibold transition sm:gap-2 sm:px-4 sm:text-sm",
             tileMode === "roadmap" ? theme.activeSegmentClassName : theme.inactiveSegmentClassName
           )}
         >
@@ -42,7 +52,7 @@ export default function MapSurfaceControls({
           type="button"
           onClick={() => onTileModeChange("night")}
           className={cn(
-            "inline-flex h-8 items-center gap-1 rounded-full px-2.5 text-xs font-semibold transition sm:h-10 sm:gap-2 sm:px-4 sm:text-sm",
+            "inline-flex h-10 items-center gap-1 rounded-full px-2.5 text-xs font-semibold transition sm:gap-2 sm:px-4 sm:text-sm",
             tileMode === "night" ? theme.activeSegmentClassName : theme.inactiveSegmentClassName
           )}
         >
@@ -53,7 +63,7 @@ export default function MapSurfaceControls({
           type="button"
           onClick={() => onTileModeChange("satellite")}
           className={cn(
-            "inline-flex h-8 items-center gap-1 rounded-full px-2.5 text-xs font-semibold transition sm:h-10 sm:gap-2 sm:px-4 sm:text-sm",
+            "inline-flex h-10 items-center gap-1 rounded-full px-2.5 text-xs font-semibold transition sm:gap-2 sm:px-4 sm:text-sm",
             tileMode === "satellite" ? theme.activeSegmentClassName : theme.inactiveSegmentClassName
           )}
         >
@@ -68,7 +78,7 @@ export default function MapSurfaceControls({
         disabled={!canCenter}
         className={cn(
           theme.secondaryButtonClassName,
-          "disabled:translate-y-0 disabled:opacity-50 !h-8 !px-2.5 !text-xs sm:!h-auto sm:!px-4 sm:!text-sm"
+          "disabled:translate-y-0 disabled:opacity-50 !h-10 !px-2.5 !text-xs sm:!h-auto sm:!px-4 sm:!text-sm"
         )}
       >
         <LocateFixed className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
@@ -80,7 +90,7 @@ export default function MapSurfaceControls({
         onClick={onResetView}
         className={cn(
           theme.secondaryButtonClassName,
-          "!h-8 !px-2.5 !text-xs sm:!h-auto sm:!px-4 sm:!text-sm"
+          "!h-10 !px-2.5 !text-xs sm:!h-auto sm:!px-4 sm:!text-sm"
         )}
       >
         <ScanSearch className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
@@ -93,7 +103,7 @@ export default function MapSurfaceControls({
           onClick={onExpand}
           className={cn(
             theme.primaryButtonClassName,
-            "!h-8 !px-2.5 !text-xs sm:!h-auto sm:!px-4 sm:!text-sm"
+            "!h-10 !px-2.5 !text-xs sm:!h-auto sm:!px-4 sm:!text-sm"
           )}
         >
           <Expand className="h-3.5 w-3.5 sm:h-4 sm:w-4" />

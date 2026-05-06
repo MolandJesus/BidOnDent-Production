@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Check, ArrowRight, Shield, DollarSign, FileText } from "lucide-react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import type { InsurerOnboardingFormData } from "../../types";
 import { useAppearanceModeCtx } from "../../hooks/AppearanceModeContext";
 
@@ -20,6 +20,7 @@ export default function InsurerOnboarding({
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [appearanceMode] = useAppearanceModeCtx();
   const isLight = appearanceMode === "light";
+  const reduceMotion = useReducedMotion();
   const [formData, setFormData] = useState({
     companyName: "",
     licenseNumber: "",
@@ -281,7 +282,7 @@ export default function InsurerOnboarding({
               whileTap={{ scale: 0.98 }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.2 }}
+              transition={{ duration: reduceMotion ? 0 : 0.3, delay: 0.2 }}
             >
               Continue
               <ArrowRight className="w-5 h-5 ml-2" />
@@ -346,7 +347,7 @@ export default function InsurerOnboarding({
                 style={{ background: primaryColor }}
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.3, delay: 0.15 }}
+                transition={{ duration: reduceMotion ? 0 : 0.3, delay: 0.15 }}
               >
                 Continue
                 <ArrowRight className="w-5 h-5 ml-2" />
@@ -442,7 +443,7 @@ export default function InsurerOnboarding({
                 style={{ background: primaryColor }}
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.3, delay: 0.15 }}
+                transition={{ duration: reduceMotion ? 0 : 0.3, delay: 0.15 }}
               >
                 {isSubmitting ? "Saving..." : "Complete Setup"}
                 <Check className="w-5 h-5 ml-2" />

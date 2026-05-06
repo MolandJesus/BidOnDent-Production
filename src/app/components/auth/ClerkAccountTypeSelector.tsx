@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useUser } from "@clerk/clerk-react";
 import { Car, Wrench, Shield, CheckCircle2 } from "lucide-react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { updateUserMetadata } from "../../services/clerkService";
 import { useAppearanceModeCtx } from "../../hooks/AppearanceModeContext";
 import type { UserType } from "../../services/clerkService";
@@ -29,6 +29,7 @@ const ACCOUNT_TYPES: {
 
 export default function ClerkAccountTypeSelector() {
   const { user } = useUser();
+  const reduceMotion = useReducedMotion();
   const [selectedType, setSelectedType] = useState<UserType>("customer");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -63,7 +64,7 @@ export default function ClerkAccountTypeSelector() {
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+        transition={{ duration: reduceMotion ? 0 : 0.4, ease: [0.4, 0, 0.2, 1] }}
         className="bd-report-section rounded-2xl p-5 sm:p-8 max-w-2xl w-full"
       >
         <h2
@@ -85,7 +86,11 @@ export default function ClerkAccountTypeSelector() {
                 onClick={() => setSelectedType(type)}
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.08 * idx, ease: [0.4, 0, 0.2, 1] }}
+                transition={{
+                  duration: reduceMotion ? 0 : 0.3,
+                  delay: 0.08 * idx,
+                  ease: [0.4, 0, 0.2, 1],
+                }}
                 className={`bd-report-choice relative p-5 sm:p-6 rounded-2xl min-h-[44px] text-left sm:text-center ${
                   isActive ? "bd-report-choice--active" : ""
                 }`}

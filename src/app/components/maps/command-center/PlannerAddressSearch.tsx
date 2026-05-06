@@ -112,7 +112,7 @@ export default function PlannerAddressSearch({
               className={cn(
                 "h-11 min-w-0 rounded-[0.875rem] border px-3 text-sm outline-none transition",
                 tone === "light"
-                  ? "border-white/80 bg-white/80 text-slate-900 placeholder:text-slate-400 focus:border-sky-300"
+                  ? "border-[rgba(140,82,22,0.30)] bg-[linear-gradient(180deg,rgba(247,232,194,0.78),rgba(232,238,248,0.74))] text-slate-900 placeholder:text-slate-400 focus:border-sky-300"
                   : "border-white/12 bg-slate-900/78 text-white placeholder:text-slate-400 focus:border-cyan-400/40"
               )}
             />

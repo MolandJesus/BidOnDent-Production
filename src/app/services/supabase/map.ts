@@ -2,7 +2,7 @@ import { supabase } from "./client";
 import { fetchGeocodeSearchResults } from "../navigation/geocodingClient";
 import type { PartnerShopMapRecord } from "./types";
 
-type Coordinates = {
+export type Coordinates = {
   lat: number;
   lng: number;
 };

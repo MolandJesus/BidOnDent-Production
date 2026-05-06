@@ -30,6 +30,7 @@ export default function PhotoGalleryLightbox({ photos, onClose }: PhotoGalleryLi
         <button
           className="text-white hover:bg-white/10 rounded-full p-2 transition-colors"
           onClick={onClose}
+          aria-label="Close photo gallery"
         >
           <X className="w-6 h-6" />
         </button>

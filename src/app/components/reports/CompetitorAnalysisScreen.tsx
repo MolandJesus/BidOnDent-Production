@@ -1,16 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, MapPin, Search } from "lucide-react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import CompetitorShopCard from "./CompetitorShopCard";
 import type { WebsiteIdentity } from "../../services/auth/websiteIdentity";
 import {
   loadWebsiteSessionMemory,
   updateWebsiteSessionMemory,
 } from "../../services/auth/websiteIdentity";
-import {
-  buildShopMapListings,
-  toggleRoleCollectionShopId,
-} from "../../services/intelligence/shopMapExperience";
+import { toggleRoleCollectionShopId } from "../../services/intelligence/shopMapExperience";
+import { useShopMapListings } from "../../hooks/useShopMapListings";
 import { useNetworkDirectory } from "../../hooks/useNetworkDirectory";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 import DashboardMapPreview from "../dashboard/MapLibreDashboardMapPreview";
@@ -73,6 +71,7 @@ export default function CompetitorAnalysisScreen({
   appearanceMode = "map-dark",
 }: CompetitorAnalysisScreenProps) {
   const isLight = appearanceMode === "light";
+  const reduceMotion = useReducedMotion();
   const { inventory } = useNetworkDirectory();
   const memory = loadWebsiteSessionMemory(identity);
   const [searchQuery, setSearchQuery] = useState("");
@@ -102,7 +101,7 @@ export default function CompetitorAnalysisScreen({
     );
   }, [identity, watchlistIds]);
 
-  const marketListings = buildShopMapListings({
+  const marketListings = useShopMapListings({
     connectedInsurerIds,
     directoryInsurers: inventory.insurers,
     directoryShops: inventory.shops,
@@ -201,6 +200,7 @@ export default function CompetitorAnalysisScreen({
           <div className="mb-4 flex items-center gap-3">
             <button
               onClick={onBack}
+              aria-label="Back"
               className={`flex h-11 w-11 items-center justify-center rounded-2xl transition-colors ${
                 isLight ? "bg-slate-100 hover:bg-slate-200" : "bg-white/10 hover:bg-white/20"
               }`}
@@ -306,7 +306,7 @@ export default function CompetitorAnalysisScreen({
         <motion.section
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35, ease: "easeOut" }}
+          transition={{ duration: reduceMotion ? 0 : 0.35, ease: "easeOut" }}
           className="bd-dashboard-panel mx-4 mt-4 overflow-hidden rounded-[28px]"
         >
           <div className="flex items-center justify-between px-4 pt-3 pb-1">

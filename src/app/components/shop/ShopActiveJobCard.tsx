@@ -207,7 +207,7 @@ export default function ShopActiveJobCard({
                   task.completed
                     ? "border-emerald-400 bg-emerald-500"
                     : isLight
-                      ? "border-slate-300 bg-white"
+                      ? "border-[rgba(140,82,22,0.32)] bg-[linear-gradient(180deg,rgba(247,232,194,0.86),rgba(232,238,248,0.80))] shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]"
                       : "border-blue-300/30 bg-white/8"
                 }`}
               >

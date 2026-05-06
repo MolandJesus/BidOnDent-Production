@@ -292,7 +292,7 @@ export default function NavigationSavedPlacesPanel({
                           type="button"
                           onClick={() => onDeleteSavedLocation(location.id)}
                           className={cn(
-                            "inline-flex h-9 w-9 items-center justify-center rounded-full transition-all duration-200",
+                            "inline-flex h-10 w-10 items-center justify-center rounded-full transition-all duration-200",
                             tone === "light"
                               ? "text-slate-400 hover:bg-rose-50 hover:text-rose-500"
                               : "text-slate-400 hover:bg-rose-500/10 hover:text-rose-400"

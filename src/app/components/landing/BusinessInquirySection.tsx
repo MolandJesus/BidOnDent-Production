@@ -104,7 +104,7 @@ export default function BusinessInquirySection({
   return (
     <section
       id="business-inquiry"
-      className="pt-8 pb-12 sm:pt-10 sm:pb-16 md:pt-12 md:pb-20 relative overflow-hidden"
+      className="pt-6 pb-8 sm:pt-8 sm:pb-12 md:pt-10 md:pb-16 relative overflow-hidden"
       style={{
         background: isLightAppearance
           ? "linear-gradient(180deg, #f5f7fb 0%, #f8f9fc 35%, #f4f6fb 70%, #f0f4f9 100%)"
@@ -112,6 +112,11 @@ export default function BusinessInquirySection({
       }}
       ref={sectionRef}
     >
+      {/* Pass H1.7 — section-level directional top-cast champagne lamp
+          per hero atmospheric language. */}
+      <div className="bd-landing-section-toplamp" aria-hidden="true" />
+      {/* Pass H9 — companion cool-blue bottom depth wash. */}
+      <div className="bd-landing-section-bottomwash" aria-hidden="true" />
       {/* Edge blend — light keeps amber; dark gets a tri-stop with gold
           whisper at center to thread gold identity into the cool register. */}
       <div
@@ -138,13 +143,14 @@ export default function BusinessInquirySection({
         />
         {isLightAppearance ? (
           <>
-            {/* Subtle dot grid texture */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(200,170,110,0.05)_1px,transparent_1px)] [background-size:28px_28px] opacity-80" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_60%_-5%,rgba(210,180,130,0.18),transparent_55%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_50%_at_25%_80%,rgba(200,165,100,0.14),transparent_55%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_35%_at_45%_50%,rgba(220,185,115,0.13),transparent_50%)]" />
-            <div className="absolute bottom-0 left-[30%] w-60 h-60 bg-amber-200/[0.22] rounded-full blur-[110px]" />
-            <div className="absolute top-10 right-[20%] w-48 h-48 bg-amber-100/[0.18] rounded-full blur-[120px]" />
+            {/* Pass I — atmospheric dot-grid + radials canon-swapped at
+                SAME alpha. Pre-canon goldenrod -> canon champagne. */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(196,144,65,0.05)_1px,transparent_1px)] [background-size:28px_28px] opacity-80" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_60%_-5%,rgba(196,144,65,0.18),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_50%_at_25%_80%,rgba(196,144,65,0.14),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_35%_at_45%_50%,rgba(196,144,65,0.13),transparent_50%)]" />
+            <div className="absolute bottom-0 left-[30%] w-60 h-60 bg-[rgba(196,144,65,0.22)] rounded-full blur-[110px]" />
+            <div className="absolute top-10 right-[20%] w-48 h-48 bg-[rgba(196,144,65,0.18)] rounded-full blur-[120px]" />
           </>
         ) : (
           <>
@@ -212,12 +218,12 @@ export default function BusinessInquirySection({
 
       <div className="container mx-auto px-4 max-w-6xl relative">
         <div
-          className={`text-center mb-6 sm:mb-7 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+          className={`text-center mb-4 sm:mb-5 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
         >
           <span
             className={`inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium ${isLightAppearance ? "border border-[rgba(200,180,150,0.25)] bg-[rgba(255,251,245,0.4)] text-blue-700 backdrop-blur-sm shadow-[inset_0_1px_0_rgba(255,250,240,0.6)]" : "border border-blue-400/20 bg-blue-500/10 text-blue-200 backdrop-blur-sm"}`}
           >
-            <span className="w-2 h-2 rounded-full mr-2 bg-blue-400" />
+            <span className="w-2 h-2 rounded-full mr-2 bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.6),0_0_14px_rgba(196,144,65,0.20)]" />
             Growth &amp; Partnerships
           </span>
           {/* Pass 14 — Direction C flanking accent: slate-blue (BusinessInquiry's
@@ -316,7 +322,7 @@ export default function BusinessInquirySection({
                     setFormOpen(true);
                     setSubmitMessage("");
                   }}
-                  className={`bd-glass-card group relative flex items-center gap-4 rounded-2xl px-6 py-5 text-left border transition-all duration-200 sm:min-w-[260px] backdrop-blur-md ${isLightAppearance ? "border-[rgba(200,180,150,0.30)] bg-[rgba(255,251,245,0.55)] hover:bg-[rgba(255,251,245,0.72)] hover:border-[rgba(200,180,150,0.4)] shadow-[0_8px_24px_rgba(0,0,0,0.10),0_2px_8px_rgba(30,58,138,0.06),inset_0_1px_0_rgba(255,250,240,0.85),0_0_24px_rgba(59,130,246,0.10)] hover:shadow-[0_14px_36px_rgba(0,0,0,0.14),0_0_32px_rgba(59,130,246,0.16)]" : "border-blue-400/30 bg-[rgba(20,42,92,0.32)] hover:bg-[rgba(28,52,108,0.42)] hover:border-blue-400/55 shadow-[0_10px_28px_rgba(2,6,23,0.45),inset_0_1px_0_rgba(147,197,253,0.16),0_0_28px_rgba(59,130,246,0.18)] hover:shadow-[0_14px_36px_rgba(2,6,23,0.55),0_0_40px_rgba(59,130,246,0.32)]"}`}
+                  className={`bd-glass-card group relative flex items-center gap-4 rounded-2xl px-6 py-5 text-left border transition-all duration-200 sm:min-w-[260px] backdrop-blur-md ${isLightAppearance ? "border-[rgba(200,180,150,0.30)] bg-[rgba(255,251,245,0.55)] hover:bg-[rgba(255,251,245,0.72)] hover:border-[rgba(200,180,150,0.4)] shadow-[0_8px_24px_rgba(0,0,0,0.10),0_2px_8px_rgba(30,58,138,0.06),inset_0_1px_0_rgba(255,250,240,0.85),0_0_24px_rgba(59,130,246,0.10)] hover:shadow-[0_14px_36px_rgba(0,0,0,0.14),0_0_32px_rgba(59,130,246,0.16)]" : "border-blue-400/30 bg-[rgba(20,42,92,0.32)] hover:bg-[rgba(28,52,108,0.42)] hover:border-blue-400/55 shadow-[0_10px_28px_rgba(2,6,23,0.45),inset_0_1px_0_rgba(147,197,253,0.16),inset_0_-1px_0_rgba(196,144,65,0.16),0_0_28px_rgba(59,130,246,0.18),0_0_18px_rgba(196,130,45,0.12)] hover:shadow-[0_18px_42px_rgba(2,6,23,0.58),inset_0_1px_0_rgba(147,197,253,0.20),inset_0_-1px_0_rgba(196,144,65,0.22),0_0_0_1px_rgba(96,165,250,0.30),0_0_36px_rgba(59,130,246,0.28),0_0_22px_rgba(196,130,45,0.18)]"}`}
                 >
                   <div
                     className={`flex-shrink-0 w-12 h-12 rounded-[1rem] flex items-center justify-center ${isLightAppearance ? "bg-blue-600" : "bg-[#003d82]"}`}
@@ -347,7 +353,7 @@ export default function BusinessInquirySection({
                     setFormOpen(true);
                     setSubmitMessage("");
                   }}
-                  className={`bd-glass-card group relative flex items-center gap-4 rounded-2xl px-6 py-5 text-left border transition-all duration-200 sm:min-w-[260px] backdrop-blur-md ${isLightAppearance ? "border-[rgba(200,180,150,0.30)] bg-[rgba(255,251,245,0.55)] hover:bg-[rgba(255,251,245,0.72)] hover:border-[rgba(200,180,150,0.4)] shadow-[0_8px_24px_rgba(0,0,0,0.10),0_2px_8px_rgba(30,58,138,0.06),inset_0_1px_0_rgba(255,250,240,0.85),0_0_24px_rgba(59,130,246,0.10)] hover:shadow-[0_14px_36px_rgba(0,0,0,0.14),0_0_32px_rgba(59,130,246,0.16)]" : "border-blue-400/30 bg-[rgba(20,42,92,0.32)] hover:bg-[rgba(28,52,108,0.42)] hover:border-blue-400/55 shadow-[0_10px_28px_rgba(2,6,23,0.45),inset_0_1px_0_rgba(147,197,253,0.16),0_0_28px_rgba(59,130,246,0.18)] hover:shadow-[0_14px_36px_rgba(2,6,23,0.55),0_0_40px_rgba(59,130,246,0.32)]"}`}
+                  className={`bd-glass-card group relative flex items-center gap-4 rounded-2xl px-6 py-5 text-left border transition-all duration-200 sm:min-w-[260px] backdrop-blur-md ${isLightAppearance ? "border-[rgba(200,180,150,0.30)] bg-[rgba(255,251,245,0.55)] hover:bg-[rgba(255,251,245,0.72)] hover:border-[rgba(200,180,150,0.4)] shadow-[0_8px_24px_rgba(0,0,0,0.10),0_2px_8px_rgba(30,58,138,0.06),inset_0_1px_0_rgba(255,250,240,0.85),0_0_24px_rgba(59,130,246,0.10)] hover:shadow-[0_14px_36px_rgba(0,0,0,0.14),0_0_32px_rgba(59,130,246,0.16)]" : "border-blue-400/30 bg-[rgba(20,42,92,0.32)] hover:bg-[rgba(28,52,108,0.42)] hover:border-blue-400/55 shadow-[0_10px_28px_rgba(2,6,23,0.45),inset_0_1px_0_rgba(147,197,253,0.16),inset_0_-1px_0_rgba(196,144,65,0.16),0_0_28px_rgba(59,130,246,0.18),0_0_18px_rgba(196,130,45,0.12)] hover:shadow-[0_18px_42px_rgba(2,6,23,0.58),inset_0_1px_0_rgba(147,197,253,0.20),inset_0_-1px_0_rgba(196,144,65,0.22),0_0_0_1px_rgba(96,165,250,0.30),0_0_36px_rgba(59,130,246,0.28),0_0_22px_rgba(196,130,45,0.18)]"}`}
                 >
                   <div
                     className={`flex-shrink-0 w-12 h-12 rounded-[1rem] flex items-center justify-center ${isLightAppearance ? "bg-indigo-600" : "bg-[#1e3a5f]"}`}

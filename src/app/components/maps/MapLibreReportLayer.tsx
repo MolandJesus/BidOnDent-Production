@@ -3,7 +3,7 @@ import { Source, Layer, useMap } from "react-map-gl/maplibre";
 import type { MapLayerMouseEvent } from "react-map-gl/maplibre";
 import { ReportDetailDrawer } from "./ReportDetailDrawer";
 import ReportLayerPopup from "./ReportLayerPopup";
-import { useReportLayerData } from "./useReportLayerData";
+import { useReportLayerData } from "../../hooks/useReportLayerData";
 import type { DamageReport } from "../../types";
 import type { MarketUserType } from "../../services/intelligence/marketIntelligence";
 import type { MapTheme } from "../../types/mapDomain";
@@ -203,7 +203,9 @@ export default function MapLibreReportLayer({
           <div className="pointer-events-none absolute left-1/2 top-14 z-20 -translate-x-1/2">
             <div
               className={`flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium shadow-lg backdrop-blur-md ${
-                isDark ? "bg-slate-900/80 text-slate-300" : "bg-white/80 text-slate-600"
+                isDark
+                  ? "bg-slate-900/80 text-slate-300"
+                  : "border border-[rgba(140,82,22,0.30)] bg-[linear-gradient(180deg,rgba(247,232,194,0.85),rgba(232,238,248,0.80))] text-slate-700 shadow-[0_8px_22px_rgba(140,82,22,0.16),inset_0_1px_0_rgba(252,240,208,0.80)]"
               }`}
             >
               No {statusFilter !== "all" ? statusFilter.replace("-", " ") : ""} reports on map

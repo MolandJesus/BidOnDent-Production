@@ -135,20 +135,20 @@ export default function ShopDirectorySearchPanel({
   ].join(" · ");
   const rootClassName = isStage
     ? isLight
-      ? "rounded-[1.9rem] border border-white/76 bg-[linear-gradient(180deg,rgba(255,255,255,0.9),rgba(241,245,249,0.8))] p-4 shadow-[0_24px_56px_rgba(15,23,42,0.08)] sm:p-4 lg:p-5"
-      : "rounded-[1.75rem] border border-white/[0.08] bg-[linear-gradient(180deg,rgba(7,16,32,0.76),rgba(8,18,36,0.86))] p-4 shadow-[0_24px_52px_rgba(2,6,23,0.32)] backdrop-blur-2xl sm:p-4 lg:p-5"
+      ? "rounded-[1.9rem] border border-[rgba(140,82,22,0.26)] bg-[linear-gradient(180deg,rgba(247,232,194,0.90),rgba(232,238,248,0.82))] p-4 shadow-[inset_0_1px_0_rgba(252,240,208,0.85),0_24px_56px_rgba(15,23,42,0.10),0_0_0_1px_rgba(140,82,22,0.18)] sm:p-4 lg:p-5"
+      : "rounded-[1.75rem] border border-[rgba(96,165,250,0.18)] bg-[linear-gradient(180deg,rgba(7,16,32,0.78),rgba(8,18,36,0.86))] p-4 shadow-[inset_0_1px_0_rgba(196,144,65,0.22),inset_0_-1px_0_rgba(140,82,22,0.20),0_0_0_1px_rgba(96,165,250,0.14),0_24px_52px_rgba(2,6,23,0.40),0_0_56px_rgba(196,130,45,0.12)] backdrop-blur-2xl sm:p-4 lg:p-5"
     : isLight
-      ? "bg-white/95 border-b border-slate-200/60 px-3 py-2.5 sm:px-4 sm:py-3"
+      ? "bg-[linear-gradient(180deg,rgba(247,232,194,0.92),rgba(232,238,248,0.86))] border-b border-[rgba(140,82,22,0.24)] shadow-[inset_0_1px_0_rgba(252,240,208,0.78)] px-3 py-2.5 sm:px-4 sm:py-3"
       : "bd-glass-panel px-3 py-2.5 sm:px-4 sm:py-3";
   const searchInputClassName = isStage
     ? `w-full min-w-0 rounded-[1.2rem] border py-3.5 pl-10 pr-4 text-sm outline-none transition-colors ${
         isLight
-          ? "border-white/80 bg-white/92 text-slate-800 placeholder:text-slate-400 focus:border-blue-400/60 focus:bg-white shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_10px_24px_rgba(15,23,42,0.05)]"
+          ? "border-[rgba(140,82,22,0.28)] bg-[linear-gradient(180deg,rgba(232,238,248,0.92),rgba(247,232,194,0.86))] text-slate-800 placeholder:text-slate-400 shadow-[inset_0_1px_0_rgba(252,240,208,0.85),0_8px_22px_rgba(15,23,42,0.08)] focus:border-blue-500/60"
           : "border-white/[0.12] bg-white/[0.06] text-slate-100 placeholder:text-slate-400/70 focus:border-blue-400/40 focus:bg-white/[0.08]"
       }`
     : `w-full min-w-0 rounded-full border py-2 pl-9 pr-3 text-xs outline-none transition-colors ${
         isLight
-          ? "border-slate-200/80 bg-white/80 text-slate-800 placeholder:text-slate-400 focus:border-blue-400/60 focus:bg-white shadow-sm"
+          ? "border-[rgba(140,82,22,0.26)] bg-[linear-gradient(180deg,rgba(232,238,248,0.84),rgba(247,232,194,0.78))] text-slate-800 placeholder:text-slate-400 shadow-[inset_0_1px_0_rgba(252,240,208,0.78)] focus:border-blue-500/60"
           : "bd-glass-control border-white/[0.12] bg-white/[0.06] text-slate-100 placeholder:text-slate-400/70 focus:border-blue-400/40 focus:bg-white/[0.08]"
       }`;
   const searchButtonClassName = isStage
@@ -219,7 +219,9 @@ export default function ShopDirectorySearchPanel({
           <div className="space-y-1.5">
             <div
               className={`inline-flex w-full ${isStage ? "rounded-[1.1rem] p-1" : "rounded-xl p-0.5"} border ${
-                isLight ? "border-slate-200/80 bg-white/75" : "border-white/[0.10] bg-white/[0.04]"
+                isLight
+                  ? "border-[rgba(140,82,22,0.24)] bg-[linear-gradient(180deg,rgba(247,232,194,0.78),rgba(232,238,248,0.72))] shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]"
+                  : "border-white/[0.10] bg-white/[0.04]"
               }`}
             >
               {VIEW_MODE_OPTIONS.map((option) => (
@@ -247,7 +249,7 @@ export default function ShopDirectorySearchPanel({
               onClick={() => setMobileFiltersOpen((current) => !current)}
               className={`sm:hidden flex min-h-[36px] w-full items-center justify-between rounded-xl border px-2.5 py-1.5 text-left text-xs transition-colors ${
                 isLight
-                  ? "border-slate-200 bg-white text-slate-700 shadow-sm"
+                  ? "border-[rgba(140,82,22,0.26)] bg-[linear-gradient(180deg,rgba(247,232,194,0.84),rgba(232,238,248,0.78))] text-slate-700 shadow-[inset_0_1px_0_rgba(252,240,208,0.78),0_4px_10px_rgba(15,23,42,0.06)]"
                   : "border-white/[0.10] bg-white/[0.04] text-slate-200"
               }`}
             >
@@ -263,14 +265,14 @@ export default function ShopDirectorySearchPanel({
               <div
                 className={`flex flex-wrap ${isStage ? "gap-2 rounded-[1.1rem] p-2" : "gap-1.5 rounded-xl p-1.5"} border ${
                   isLight
-                    ? "border-white/76 bg-[linear-gradient(180deg,rgba(255,255,255,0.78),rgba(241,245,249,0.72))]"
+                    ? "border-[rgba(140,82,22,0.24)] bg-[linear-gradient(180deg,rgba(247,232,194,0.78),rgba(232,238,248,0.72))] shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]"
                     : "border-white/[0.10] bg-white/[0.04]"
                 }`}
               >
                 <select
                   className={`${isStage ? "min-h-[38px] rounded-[0.85rem] px-3 py-2 text-sm" : "min-h-[32px] rounded-lg px-2.5 py-1 text-xs"} flex-1 min-w-[120px] border outline-none ${
                     isLight
-                      ? "border-white/80 bg-white text-slate-800 shadow-[0_6px_14px_rgba(15,23,42,0.04)]"
+                      ? "border-[rgba(140,82,22,0.26)] bg-[linear-gradient(180deg,rgba(232,238,248,0.86),rgba(247,232,194,0.80))] text-slate-800 shadow-[inset_0_1px_0_rgba(252,240,208,0.78),0_6px_14px_rgba(15,23,42,0.06)]"
                       : "border-white/[0.12] bg-white/[0.06] text-slate-200"
                   }`}
                   onChange={(event) => onSortChange(event.target.value as ShopSortOption)}
@@ -290,7 +292,7 @@ export default function ShopDirectorySearchPanel({
                         ? "border-amber-400/60 bg-amber-50 text-amber-700"
                         : "border-amber-400/40 bg-amber-400/15 text-amber-300"
                       : isLight
-                        ? "border-slate-200 bg-white text-slate-600 hover:border-amber-300 hover:bg-amber-50"
+                        ? "border-[rgba(140,82,22,0.26)] bg-[linear-gradient(180deg,rgba(247,232,194,0.84),rgba(232,238,248,0.78))] text-slate-600 shadow-[inset_0_1px_0_rgba(252,240,208,0.78)] hover:border-amber-300 hover:bg-[linear-gradient(180deg,rgba(254,243,199,0.92),rgba(247,232,194,0.86))]"
                         : "border-white/[0.10] bg-white/[0.04] text-slate-300 hover:bg-white/[0.08]"
                   }`}
                   onClick={() => onFilterRatingChange(filterRating === 4.5 ? 0 : 4.5)}
@@ -305,7 +307,7 @@ export default function ShopDirectorySearchPanel({
                 <button
                   className={`inline-flex ${isStage ? "min-h-[38px] rounded-[0.85rem] px-3 py-2 text-sm" : "min-h-[32px] rounded-lg px-2.5 py-1 text-xs"} items-center justify-center gap-1 border font-medium transition-colors ${
                     isLight
-                      ? "border-slate-200 bg-white text-slate-600 hover:border-blue-300 hover:bg-blue-50"
+                      ? "border-[rgba(140,82,22,0.26)] bg-[linear-gradient(180deg,rgba(247,232,194,0.84),rgba(232,238,248,0.78))] text-slate-600 shadow-[inset_0_1px_0_rgba(252,240,208,0.78)] hover:border-blue-300 hover:bg-[linear-gradient(180deg,rgba(232,238,248,0.92),rgba(219,234,254,0.86))]"
                       : "border-white/[0.10] bg-white/[0.04] text-slate-300 hover:bg-white/[0.08]"
                   }`}
                   onClick={onToggleTheme}
@@ -339,7 +341,9 @@ export default function ShopDirectorySearchPanel({
       {!showMapPane && (
         <div
           className={`mt-3 ${
-            isLight ? "bg-white/80 border border-slate-200/60 rounded-2xl" : "bd-glass-card"
+            isLight
+              ? "bg-[linear-gradient(180deg,rgba(247,232,194,0.78),rgba(232,238,248,0.72))] border border-[rgba(140,82,22,0.24)] rounded-2xl shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]"
+              : "bd-glass-card"
           } p-3 sm:p-4`}
         >
           <div
@@ -360,7 +364,7 @@ export default function ShopDirectorySearchPanel({
           <div
             className={`mt-2 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] ${
               isLight
-                ? "border-slate-200 bg-white text-slate-700"
+                ? "border-[rgba(140,82,22,0.26)] bg-[linear-gradient(180deg,rgba(247,232,194,0.84),rgba(232,238,248,0.78))] text-slate-700 shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]"
                 : "border-white/[0.10] bg-white/[0.06] text-slate-300"
             }`}
           >
@@ -391,7 +395,7 @@ export default function ShopDirectorySearchPanel({
             <button
               className={`mt-2 min-h-[36px] rounded-xl border px-2.5 py-1.5 text-xs font-medium transition-colors ${
                 isLight
-                  ? "border-slate-200 bg-white text-slate-700 hover:border-blue-300 hover:bg-blue-50"
+                  ? "border-[rgba(140,82,22,0.26)] bg-[linear-gradient(180deg,rgba(247,232,194,0.84),rgba(232,238,248,0.78))] text-slate-700 shadow-[inset_0_1px_0_rgba(252,240,208,0.78)] hover:border-blue-300 hover:bg-[linear-gradient(180deg,rgba(232,238,248,0.92),rgba(219,234,254,0.86))]"
                   : "border-white/[0.10] bg-white/[0.04] text-slate-300 hover:bg-white/[0.08]"
               }`}
               onClick={onOpenRelatedScreen}

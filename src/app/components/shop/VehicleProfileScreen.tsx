@@ -173,8 +173,14 @@ export default function VehicleProfileScreen({
   };
 
   const labelClass = `block text-sm font-medium mb-1 ${isLight ? "text-slate-700" : "text-slate-300"}`;
-  const inputClass = `w-full px-3 py-3 border rounded-md ${isLight ? "border-slate-200 bg-white text-slate-800 placeholder:text-slate-400" : "border-white/[0.12] bg-white/[0.06] text-slate-100 placeholder:text-slate-400/60"}`;
-  const inputClassSm = `w-full px-3 py-2 border rounded-md uppercase ${isLight ? "border-slate-200 bg-white text-slate-800 placeholder:text-slate-400" : "border-white/[0.12] bg-white/[0.06] text-slate-100 placeholder:text-slate-400/60"}`;
+  // LAW Light-Mode Surface Rule fix (Pass S, 2026-05-04): replaced light-mode
+  // `bg-white` (pure white — forbidden) with `bg-[#fffefa]` (warm cream tint
+  // matching canonical `--bd-report-input-bg` first stop `rgba(255,254,250,0.96)`).
+  // Visually still reads as input-receiving surface; LAW-compliant. Dark mode
+  // UNCHANGED (uses `bg-white/[0.06]` low-alpha glass overlay — that's
+  // legitimate dark-glass posture, not pure-white).
+  const inputClass = `w-full px-3 py-3 border rounded-md ${isLight ? "border-slate-200 bg-[#fffefa] text-slate-800 placeholder:text-slate-400" : "border-white/[0.12] bg-white/[0.06] text-slate-100 placeholder:text-slate-400/60"}`;
+  const inputClassSm = `w-full px-3 py-2 border rounded-md uppercase ${isLight ? "border-slate-200 bg-[#fffefa] text-slate-800 placeholder:text-slate-400" : "border-white/[0.12] bg-white/[0.06] text-slate-100 placeholder:text-slate-400/60"}`;
 
   return (
     <div className={`min-h-screen bd-glass-panel pb-20${isLight ? " bd-light-surface" : ""}`}>

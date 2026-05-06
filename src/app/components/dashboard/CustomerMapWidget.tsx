@@ -109,7 +109,7 @@ export default function CustomerMapWidget({
   ];
 
   return (
-    <section className="overflow-hidden">
+    <section className="overflow-hidden rounded-2xl ring-1 ring-[rgba(96,165,250,0.18)] ring-inset">
       {/* Embedded mini-map with click-through overlay */}
       <div
         className="bd-dashboard-panel bd-dashboard-panel--deep group relative h-[200px] cursor-pointer overflow-hidden rounded-2xl md:h-[220px]"
@@ -130,12 +130,31 @@ export default function CustomerMapWidget({
           onMapClick={() => onViewShops?.()}
         />
 
+        {/* Bucket 5.6 (KI-074 partial): top ambient gold lamp overlay — simulates
+            premium lamp light hitting the top edge of the map canvas. Pointer-
+            events-none so it never intercepts map interactions. Both modes
+            get the gold tint so the cohesion grammar reads in light + dark.
+            Pass 5 (2026-05-04): alpha bumped 0.06 -> 0.09 for stronger dark-
+            mode presence; still well below the 0.22 single-layer halo cap. */}
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-12 bg-gradient-to-b from-[rgba(196,144,65,0.09)] via-transparent to-transparent"
+          aria-hidden="true"
+        />
+
+        {/* Bucket 5.9 (KI-074 RESOLVED): map canvas edge sheen — 1px cream
+            top catchlight + 1px bronze bottom rim. Premium curved-glass
+            edge feel. */}
+        <div className="bd-map-canvas-sheen" aria-hidden="true" />
+
         {/* Bottom gradient overlay — "Explore" teaser */}
         <div
           className="absolute inset-x-0 bottom-0 z-10 flex items-end justify-center pb-3 pt-16 pointer-events-none transition-opacity group-hover:opacity-100 opacity-80"
           style={{
             background: isLight
-              ? "linear-gradient(to top, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.4) 60%, transparent 100%)"
+              ? // Cool blue-gray fade replaces white fade (KI-066) so the
+                // map preview "Explore" teaser feels like the dashboard glass,
+                // not a printer-paper overlay.
+                "linear-gradient(to top, rgba(232,242,254,0.92) 0%, rgba(232,242,254,0.40) 60%, transparent 100%)"
               : "linear-gradient(to top, rgba(2,6,23,0.92) 0%, rgba(2,6,23,0.4) 60%, transparent 100%)",
           }}
         >
@@ -190,7 +209,9 @@ export default function CustomerMapWidget({
           </div>
           <span
             className={`bd-dashboard-chip shrink-0 px-2.5 py-1 text-[11px] font-medium ${
-              isLight ? "bg-white/85 text-cyan-700" : "border-cyan-200/18 bg-white/10 text-cyan-50"
+              isLight
+                ? "bg-[rgba(238,247,255,0.92)] text-cyan-700"
+                : "border-cyan-200/18 bg-white/10 text-cyan-50"
             }`}
           >
             {capabilities.length} tools
@@ -211,13 +232,15 @@ export default function CustomerMapWidget({
               key={label}
               type="button"
               onClick={() => onViewShops?.()}
-              className={`bd-dashboard-section bd-dashboard-section--interactive flex flex-col items-center gap-1 rounded-xl px-2 py-2.5 text-center active:scale-[0.97] ${
+              className={`bd-dashboard-section bd-dashboard-section--interactive flex min-h-[96px] flex-col items-center justify-center gap-1.5 rounded-xl px-2 py-3 text-center active:scale-[0.97] sm:min-h-0 sm:gap-1 sm:py-2.5 ${
                 capabilitySurfaceClasses[index % capabilitySurfaceClasses.length]
               }`}
             >
               <div
                 className={`flex h-8 w-8 items-center justify-center rounded-lg ${
-                  isLight ? "bg-white/80 text-blue-700" : "bg-white/10 text-blue-100"
+                  isLight
+                    ? "bg-[rgba(238,247,255,0.88)] text-blue-700"
+                    : "bg-white/10 text-blue-100"
                 }`}
               >
                 <Icon className="h-4 w-4" />
@@ -248,7 +271,9 @@ export default function CustomerMapWidget({
           </div>
           <span
             className={`bd-dashboard-chip shrink-0 px-2.5 py-1 text-[11px] font-medium ${
-              isLight ? "bg-white/85 text-blue-700" : "border-blue-200/18 bg-white/10 text-blue-50"
+              isLight
+                ? "bg-[rgba(238,247,255,0.92)] text-blue-700"
+                : "border-blue-200/18 bg-white/10 text-blue-50"
             }`}
           >
             {isLoadingShops ? "Loading" : `${compactShops.length || displayShops.length} shown`}
@@ -267,7 +292,9 @@ export default function CustomerMapWidget({
               >
                 <div
                   className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${
-                    isLight ? "bg-white/80 text-blue-700" : "bg-white/10 text-blue-100"
+                    isLight
+                      ? "bg-[rgba(238,247,255,0.88)] text-blue-700"
+                      : "bg-white/10 text-blue-100"
                   }`}
                 >
                   <Store className="h-3.5 w-3.5" />

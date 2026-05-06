@@ -1,15 +1,16 @@
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 
 type AdminInfoPanelProps = {
   adminEmail: string;
 };
 
 export default function AdminInfoPanel({ adminEmail }: AdminInfoPanelProps) {
+  const reduceMotion = useReducedMotion();
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ delay: 0.5 }}
+      transition={{ duration: reduceMotion ? 0 : 0.3, delay: 0.5 }}
       className="mt-6 bg-blue-400/10 border border-blue-400/30 rounded-lg p-4 mb-6"
     >
       <h3 className="font-semibold text-blue-900 mb-2">ℹ️ Admin System Info</h3>

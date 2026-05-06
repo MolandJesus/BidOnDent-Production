@@ -6,7 +6,7 @@
  * match reasons, AI summary, category ratings, response time, pricing.
  */
 import { useCallback, useEffect, useRef } from "react";
-import { motion, AnimatePresence, type PanInfo } from "motion/react";
+import { motion, AnimatePresence, useReducedMotion, type PanInfo } from "motion/react";
 import {
   Award,
   Clock,
@@ -42,6 +42,7 @@ export default function ShopDetailSheet({
   onToggleSave,
   isDark = true,
 }: ShopDetailSheetProps) {
+  const reduceMotion = useReducedMotion();
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Reset scroll on shop change
@@ -82,7 +83,7 @@ export default function ShopDetailSheet({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: reduceMotion ? 0 : 0.2 }}
             onClick={onClose}
           />
           {/* Sheet */}
@@ -380,7 +381,7 @@ export default function ShopDetailSheet({
 
             {/* ── Fixed bottom CTA bar ── */}
             <div
-              className={`shrink-0 border-t border-inherit px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur-xl ${isDark ? "bg-slate-900/90" : "bg-white/90"}`}
+              className={`shrink-0 border-t border-inherit px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur-xl ${isDark ? "bg-[linear-gradient(180deg,rgba(15,23,42,0.86),rgba(8,16,33,0.90))] shadow-[inset_0_1px_0_rgba(196,144,65,0.18)]" : "bg-[linear-gradient(180deg,rgba(232,238,248,0.86),rgba(247,232,194,0.82))] shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]"}`}
             >
               <div className="flex gap-2">
                 {onToggleSave && (

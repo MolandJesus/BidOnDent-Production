@@ -82,9 +82,15 @@ export default function ShopRatingModal({
       <div
         className={`bd-glass-floating rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto${isLight ? " bd-light-surface" : ""}`}
       >
-        <div className="sticky top-0 bg-white/80 backdrop-blur-sm border-b border-blue-100/50 p-4 flex justify-between items-center">
+        <div
+          className={`sticky top-0 backdrop-blur-sm border-b p-4 flex justify-between items-center ${
+            isLight
+              ? "bg-[linear-gradient(180deg,rgba(247,232,194,0.86),rgba(232,238,248,0.80))] border-[rgba(140,82,22,0.22)] shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]"
+              : "bg-[linear-gradient(180deg,rgba(15,23,42,0.86),rgba(8,16,33,0.82))] border-[rgba(96,165,250,0.18)] shadow-[inset_0_1px_0_rgba(196,144,65,0.20)]"
+          }`}
+        >
           <h2 className="text-xl font-bold">Rate {shopName}</h2>
-          <button onClick={onClose} className="bd-glass-control--secondary p-1">
+          <button onClick={onClose} aria-label="Close rating" className="bd-glass-control--secondary p-1">
             <X className="w-5 h-5" />
           </button>
         </div>

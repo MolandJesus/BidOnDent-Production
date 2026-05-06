@@ -110,6 +110,12 @@ export function useBidsForReport(reportId?: string | null) {
     let currentUnsubscribe: (() => void) | null = null;
 
     function doSubscribe() {
+      // StrictMode dev double-invokes effects synchronously (mount→cleanup→mount).
+      // The cleanup sets `mounted = false` before any microtask fires, so the first
+      // invocation's deferred subscribe is short-circuited here — only the second
+      // mount's queueMicrotask actually opens a channel. Avoids phx_join/phx_leave
+      // cycling and the "WebSocket closed before connection established" warning.
+      if (!mounted) return;
       currentUnsubscribe = realtimeBidService.subscribeToReportBids(
         reportId!,
         // onNewBid
@@ -150,7 +156,7 @@ export function useBidsForReport(reportId?: string | null) {
       );
     }
 
-    doSubscribe();
+    queueMicrotask(doSubscribe);
 
     return () => {
       mounted = false;

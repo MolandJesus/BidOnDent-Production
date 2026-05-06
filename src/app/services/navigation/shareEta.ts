@@ -20,7 +20,10 @@ function buildEtaMessage({
   }
 
   if (Number.isFinite(durationMinutes)) {
-    parts.push(`${Math.max(1, Math.round(Number(durationMinutes)))} min remaining.`);
+    const minutes = Math.round(Number(durationMinutes));
+    if (minutes >= 1) {
+      parts.push(`${minutes} min remaining.`);
+    }
   }
 
   if (Number.isFinite(distanceMiles)) {

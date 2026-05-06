@@ -83,7 +83,7 @@ export default function WhoWeServeSection({
   return (
     <section
       id="who-we-serve"
-      className="py-12 sm:py-16 md:py-20 relative overflow-hidden"
+      className="py-4 sm:py-8 md:py-10 relative overflow-hidden"
       style={{
         background: isLightAppearance
           ? "linear-gradient(178deg, #f2f8ff 0%, #eaf3ff 35%, #e4efff 70%, #dde9ff 100%)"
@@ -91,6 +91,11 @@ export default function WhoWeServeSection({
       }}
       ref={sectionRef}
     >
+      {/* Pass G (KI-090) — section-level directional top-cast champagne
+          lamp. LAW canon extension from cards to section backgrounds. */}
+      <div className="bd-landing-section-toplamp" aria-hidden="true" />
+      {/* Pass H9 — companion cool-blue bottom depth wash. */}
+      <div className="bd-landing-section-bottomwash" aria-hidden="true" />
       {/* Edge blend */}
       <div
         className="absolute -top-px left-0 right-0 h-px"
@@ -128,13 +133,14 @@ export default function WhoWeServeSection({
         />
         {isLightAppearance ? (
           <>
-            {/* Subtle dot grid texture */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(200,170,110,0.05)_1px,transparent_1px)] [background-size:36px_36px] opacity-80" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_50%_0%,rgba(210,180,130,0.18),transparent_60%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_50%_at_15%_70%,rgba(200,165,100,0.14),transparent_55%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_35%_35%_at_70%_60%,rgba(220,185,115,0.14),transparent_50%)]" />
-            <div className="absolute bottom-0 right-[20%] w-64 h-64 bg-amber-200/[0.18] rounded-full blur-[110px]" />
-            <div className="absolute top-10 left-[15%] w-48 h-48 bg-amber-100/[0.14] rounded-full blur-[120px]" />
+            {/* Pass I — atmospheric dot-grid + radials canon-swapped at
+                SAME alpha. Pre-canon goldenrod -> canon champagne. */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(196,144,65,0.05)_1px,transparent_1px)] [background-size:36px_36px] opacity-80" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_50%_0%,rgba(196,144,65,0.18),transparent_60%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_50%_at_15%_70%,rgba(196,144,65,0.14),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_35%_35%_at_70%_60%,rgba(196,144,65,0.14),transparent_50%)]" />
+            <div className="absolute bottom-0 right-[20%] w-64 h-64 bg-[rgba(196,144,65,0.18)] rounded-full blur-[110px]" />
+            <div className="absolute top-10 left-[15%] w-48 h-48 bg-[rgba(196,144,65,0.14)] rounded-full blur-[120px]" />
             <div className="absolute -top-10 right-[0%] w-[30rem] h-[30rem] bg-sky-400/[0.18] rounded-full blur-[130px]" />
             <div className="absolute bottom-0 left-[10%] w-80 h-80 bg-blue-300/[0.14] rounded-full blur-[120px]" />
           </>
@@ -193,10 +199,10 @@ export default function WhoWeServeSection({
         style={{ animationDelay: "5s" }}
       >
         <div
-          className={`w-4 h-4 rounded-full ${isLightAppearance ? "bg-amber-300/[0.10]" : "bg-indigo-400/40"}`}
+          className={`w-4 h-4 rounded-full ${isLightAppearance ? "bg-[rgba(196,144,65,0.10)]" : "bg-indigo-400/40"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 26px 9px rgba(200,165,100,0.12)"
+              ? "0 0 26px 9px rgba(196,144,65,0.12)"
               : "0 0 24px 8px rgba(99,102,241,0.22)",
           }}
         />
@@ -205,7 +211,7 @@ export default function WhoWeServeSection({
       <div className="container mx-auto px-4 max-w-7xl relative">
         {/* Section badge */}
         <div
-          className={`text-center mb-6 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+          className={`text-center mb-4 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
         >
           <span
             className={`inline-flex items-center px-4 py-1.5 rounded-full backdrop-blur-sm text-sm font-medium ${isLightAppearance ? "border border-[rgba(100,160,230,0.30)] bg-[rgba(230,244,255,0.60)] text-sky-700 shadow-[inset_0_1px_0_rgba(220,240,255,0.8)]" : "border border-blue-400/20 bg-blue-500/10 text-blue-200"}`}
@@ -216,7 +222,7 @@ export default function WhoWeServeSection({
         </div>
 
         <div
-          className={`text-center mb-8 md:mb-12 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+          className={`text-center mb-6 md:mb-8 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
           style={{ transitionDelay: "0.15s" }}
         >
           {/* Pass 14 — Direction C flanking accent: royal blue (WhoWeServe's
@@ -313,8 +319,8 @@ export default function WhoWeServeSection({
                       style={{
                         backgroundColor: isLightAppearance ? card.checkColor : card.checkColorDark,
                         boxShadow: isLightAppearance
-                          ? `0 0 8px ${card.checkColor}66`
-                          : `0 0 10px ${card.checkColorDark}88`,
+                          ? `0 0 8px ${card.checkColor}66, 0 0 14px rgba(196, 144, 65, 0.18)`
+                          : `0 0 10px ${card.checkColorDark}88, 0 0 16px rgba(196, 144, 65, 0.22)`,
                       }}
                     />
                     <span
@@ -355,9 +361,11 @@ export default function WhoWeServeSection({
           ))}
         </div>
       </div>
-      {/* Bottom transition — blends into About pure-white */}
+      {/* Bottom transition — blends into adjacent cool section.
+          Pass G (KI-090): #ffffff target replaced with cool blue-gray
+          per LAW Light-Mode Surface Rule (no pure-white fades). */}
       <div
-        className={`absolute bottom-0 left-0 right-0 h-32 pointer-events-none ${isLightAppearance ? "bg-gradient-to-b from-transparent to-[#ffffff]" : "bg-gradient-to-b from-transparent to-[#081834]"}`}
+        className={`absolute bottom-0 left-0 right-0 h-32 pointer-events-none ${isLightAppearance ? "bg-gradient-to-b from-transparent to-[#dde9ff]" : "bg-gradient-to-b from-transparent to-[#081834]"}`}
       />
     </section>
   );

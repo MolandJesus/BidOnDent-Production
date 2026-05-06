@@ -108,11 +108,14 @@ export default function NotificationCenter({
           document.body
         )
       : null;
+  // KI-067: on mobile, anchor the panel near the bottom of the viewport
+  // (with safe-area padding) so it lands within thumb-reach on tall phones.
+  // Desktop position unchanged — still drops below the trigger.
   const panelPositionStyle =
     anchorRect && typeof window !== "undefined"
       ? isMobile
         ? {
-            top: anchorRect.bottom + 10,
+            bottom: "calc(env(safe-area-inset-bottom, 0px) + 12px)",
             left: 8,
             right: 8,
           }
@@ -122,7 +125,7 @@ export default function NotificationCenter({
           }
       : isMobile
         ? {
-            top: 72,
+            bottom: "calc(env(safe-area-inset-bottom, 0px) + 12px)",
             left: 8,
             right: 8,
           }
@@ -174,8 +177,17 @@ export default function NotificationCenter({
                   ? "rgba(147, 197, 253, 0.42)"
                   : "rgba(96, 165, 250, 0.22)",
                 boxShadow: isLightAppearance
-                  ? "0 20px 60px rgba(15, 23, 42, 0.16), 0 4px 12px rgba(30, 58, 138, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.92), inset 0 -1px 0 rgba(220, 165, 90, 0.22), 0 0 0 1px rgba(220, 165, 90, 0.14), 0 0 0 1px rgba(191, 219, 254, 0.30), 0 0 36px rgba(220, 140, 50, 0.16)"
-                  : "0 20px 64px rgba(2, 6, 23, 0.52), 0 0 0 1px rgba(96, 165, 250, 0.20), inset 0 1px 0 rgba(220, 165, 90, 0.22), inset 0 -1px 0 rgba(220, 165, 90, 0.18), 0 0 36px rgba(37, 99, 235, 0.12), 0 0 50px rgba(220, 140, 50, 0.16)",
+                  ? // Light mode aligned to locked 2026-05-03 palette (KI-066).
+                    // Phase 3 (2026-05-04): drop-shadow values aligned to
+                    // ProfileDropdown's canonical stack (24px/56px/0.14 +
+                    // 4px/12px/0.08) so the two top-bar dropdowns share the
+                    // same chrome-coherent surface treatment.
+                    "0 24px 56px rgba(15, 23, 42, 0.14), 0 4px 12px rgba(30, 58, 138, 0.08), inset 0 1px 0 rgba(252, 240, 208, 0.88), inset 0 -1px 0 rgba(140, 82, 22, 0.30), 0 0 0 1px rgba(140, 82, 22, 0.20), 0 0 0 1px rgba(191, 219, 254, 0.30), 0 0 36px rgba(196, 130, 45, 0.18)"
+                  : // Dark popover shell aligned to locked palette (KI-066).
+                    // Phase 3 (2026-05-04): close drop alpha tightened to 0.52
+                    // matched + 4px/12px/0.32 mid-drop added per ProfileDropdown
+                    // canonical stack — chrome-coherent two-dropdown surface.
+                    "0 24px 56px rgba(2, 6, 23, 0.52), 0 4px 12px rgba(2, 6, 23, 0.32), 0 0 0 1px rgba(96, 165, 250, 0.20), inset 0 1px 0 rgba(196, 144, 65, 0.24), inset 0 -1px 0 rgba(140, 82, 22, 0.34), 0 0 36px rgba(37, 99, 235, 0.12), 0 0 50px rgba(196, 130, 45, 0.18)",
                 backdropFilter: isLightAppearance
                   ? "blur(26px) saturate(1.5)"
                   : "blur(28px) saturate(1.5)",
@@ -184,6 +196,17 @@ export default function NotificationCenter({
                   : "blur(28px) saturate(1.5)",
               }}
             >
+              {/* ── Mobile drag-handle (KI-067 reachability affordance) ── */}
+              {isMobile ? (
+                <div aria-hidden="true" className="flex items-center justify-center pt-2 pb-1">
+                  <span
+                    className={`block h-1 w-9 rounded-full ${
+                      isLightAppearance ? "bg-[rgba(140,82,22,0.32)]" : "bg-[rgba(196,144,65,0.34)]"
+                    }`}
+                  />
+                </div>
+              ) : null}
+
               {/* ── Header ── */}
               <div
                 className={`px-4 py-3 ${
@@ -240,7 +263,7 @@ export default function NotificationCenter({
                     <button
                       type="button"
                       onClick={onClose}
-                      className={`flex h-7 w-7 items-center justify-center rounded-lg transition ${
+                      className={`flex h-10 w-10 min-h-[44px] min-w-[44px] items-center justify-center rounded-lg transition ${
                         isLightAppearance
                           ? "text-slate-400 hover:bg-slate-100 hover:text-slate-600"
                           : "text-slate-400 hover:bg-white/[0.06] hover:text-slate-200"
@@ -281,8 +304,12 @@ export default function NotificationCenter({
                     <div
                       className={`mx-auto flex h-11 w-11 items-center justify-center rounded-xl ${
                         isLightAppearance
-                          ? "bg-[linear-gradient(135deg,rgba(219,234,254,0.85)_0%,rgba(191,219,254,0.55)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.85),inset_0_-1px_0_rgba(220,165,90,0.18),0_0_0_1px_rgba(147,197,253,0.30),0_4px_14px_rgba(59,130,246,0.10),0_0_20px_rgba(220,140,50,0.14)]"
-                          : "bg-[linear-gradient(135deg,rgba(37,99,235,0.18)_0%,rgba(59,130,246,0.10)_100%)] shadow-[inset_0_1px_0_rgba(147,197,253,0.18),inset_0_-1px_0_rgba(220,165,90,0.18),0_0_0_1px_rgba(96,165,250,0.22),0_4px_18px_rgba(37,99,235,0.18),0_0_22px_rgba(220,140,50,0.18)]"
+                          ? // Light mode aligned to locked 2026-05-03 palette
+                            // (KI-066): cream inset, bronze rim, outer halo
+                            // tuned to rgba(196,130,45) per reconciled doctrine.
+                            "bg-[linear-gradient(135deg,rgba(219,234,254,0.85)_0%,rgba(191,219,254,0.55)_100%)] shadow-[inset_0_1px_0_rgba(252,240,208,0.82),inset_0_-1px_0_rgba(140,82,22,0.26),0_0_0_1px_rgba(147,197,253,0.30),0_4px_14px_rgba(59,130,246,0.10),0_0_20px_rgba(196,130,45,0.16)]"
+                          : // Dark empty-state plate aligned to locked palette (KI-066).
+                            "bg-[linear-gradient(135deg,rgba(37,99,235,0.18)_0%,rgba(59,130,246,0.10)_100%)] shadow-[inset_0_1px_0_rgba(147,197,253,0.18),inset_0_-1px_0_rgba(140,82,22,0.32),0_0_0_1px_rgba(96,165,250,0.22),0_4px_18px_rgba(37,99,235,0.18),0_0_22px_rgba(196,130,45,0.20)]"
                       }`}
                     >
                       <Bell

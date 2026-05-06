@@ -236,7 +236,7 @@ export default function MapLibreServiceCoverageMap({
           className={cn(
             "coverage-map-brand-badge rounded-full border px-1.5 py-0.5 text-[7px] font-semibold uppercase tracking-[0.10em] sm:px-2.5 sm:py-1 sm:text-[9px] sm:tracking-[0.12em]",
             tone === "light"
-              ? "border-blue-200/60 bg-white/80 text-blue-800/80"
+              ? "border-[rgba(140,82,22,0.32)] bg-[linear-gradient(180deg,rgba(247,232,194,0.85),rgba(232,238,248,0.80))] text-blue-800/85 shadow-[0_6px_16px_rgba(140,82,22,0.14),inset_0_1px_0_rgba(252,240,208,0.80)]"
               : "border-blue-200/18 bg-slate-950/70 text-blue-200/70"
           )}
         >

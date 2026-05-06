@@ -57,7 +57,7 @@ export default function BenefitsSection({
 
   return (
     <section
-      className="py-12 sm:py-16 md:py-20 relative overflow-hidden"
+      className="py-4 sm:py-8 md:py-10 relative overflow-hidden"
       style={{
         background: isLightAppearance
           ? "linear-gradient(182deg, #faf9f6 0%, #f5f4f0 42%, #f0eeea 100%)"
@@ -82,7 +82,7 @@ export default function BenefitsSection({
         className="absolute top-0 left-0 right-0 h-32 pointer-events-none"
         style={{
           background: isLightAppearance
-            ? "radial-gradient(ellipse 90% 100% at 50% 0%, rgba(220,140,50,0.16), transparent 70%)"
+            ? "radial-gradient(ellipse 90% 100% at 50% 0%, rgba(196, 130, 45,0.16), transparent 70%)"
             : "radial-gradient(ellipse 90% 100% at 50% 0%, rgba(180,90,30,0.20), transparent 70%)",
         }}
       />
@@ -106,7 +106,7 @@ export default function BenefitsSection({
             {/* Color atmosphere — deeper warm amber */}
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_25%_80%,rgba(230,180,100,0.26),transparent_60%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_45%_at_80%_20%,rgba(220,160,80,0.28),transparent_50%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_40%_at_50%_50%,rgba(220,165,90,0.18),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_40%_at_50%_50%,rgba(196, 144, 65,0.18),transparent_55%)]" />
             {/* Larger amber pools, deeper saturation */}
             <div className="absolute -top-10 right-[15%] w-72 h-72 bg-amber-300/[0.38] rounded-full blur-[120px]" />
             <div className="absolute bottom-0 left-[10%] w-56 h-56 bg-amber-200/[0.30] rounded-full blur-[130px]" />
@@ -173,18 +173,18 @@ export default function BenefitsSection({
       <div className="container mx-auto px-4 max-w-7xl relative">
         {/* Section badge */}
         <div
-          className={`text-center mb-6 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+          className={`text-center mb-4 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
         >
           <span
             className={`inline-flex items-center px-4 py-1.5 rounded-full backdrop-blur-sm text-sm font-medium ${isLightAppearance ? "border border-[rgba(200,165,80,0.30)] bg-[rgba(255,248,235,0.55)] text-amber-700 shadow-[inset_0_1px_0_rgba(255,250,235,0.7)]" : "border border-amber-400/45 bg-amber-500/[0.16] text-amber-100 shadow-[inset_0_1px_0_rgba(255,232,180,0.18),0_0_24px_rgba(240,170,70,0.18)]"}`}
           >
-            <span className="w-2 h-2 rounded-full mr-2 bg-amber-300 shadow-[0_0_10px_rgba(253,224,124,0.85)]" />
+            <span className="w-2 h-2 rounded-full mr-2 bg-[rgb(252,240,208)] shadow-[0_0_10px_rgba(196,144,65,0.75)]" />
             Built for Real Repairs
           </span>
         </div>
 
         <div
-          className={`text-center mb-8 md:mb-12 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+          className={`text-center mb-6 md:mb-8 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
           style={{ transitionDelay: "0.15s" }}
         >
           {/* Pass 13 — metallic-gold flanking accent extended to Benefits H3.
@@ -199,8 +199,8 @@ export default function BenefitsSection({
               className="hidden sm:block h-[2px] w-20 lg:w-28 rounded-full flex-shrink-0"
               style={{
                 background: isLightAppearance
-                  ? "linear-gradient(90deg, transparent 0%, rgba(184,134,11,0.10) 25%, rgba(218,165,32,0.85) 60%, rgba(184,134,11,0.55) 85%, transparent 100%)"
-                  : "linear-gradient(90deg, transparent 0%, rgba(180,140,40,0.20) 25%, rgba(253,224,124,0.90) 60%, rgba(218,165,32,0.55) 85%, transparent 100%)",
+                  ? "linear-gradient(90deg, transparent 0%, rgba(140,82,22,0.10) 25%, rgba(196,144,65,0.85) 60%, rgba(140,82,22,0.55) 85%, transparent 100%)"
+                  : "linear-gradient(90deg, transparent 0%, rgba(196,130,45,0.20) 25%, rgba(252,240,208,0.90) 60%, rgba(196,144,65,0.55) 85%, transparent 100%)",
               }}
             />
             <h3
@@ -230,8 +230,8 @@ export default function BenefitsSection({
               className="hidden sm:block h-[2px] w-20 lg:w-28 rounded-full flex-shrink-0"
               style={{
                 background: isLightAppearance
-                  ? "linear-gradient(90deg, transparent 0%, rgba(184,134,11,0.55) 15%, rgba(218,165,32,0.85) 40%, rgba(184,134,11,0.10) 75%, transparent 100%)"
-                  : "linear-gradient(90deg, transparent 0%, rgba(218,165,32,0.55) 15%, rgba(253,224,124,0.90) 40%, rgba(180,140,40,0.20) 75%, transparent 100%)",
+                  ? "linear-gradient(90deg, transparent 0%, rgba(140,82,22,0.55) 15%, rgba(196,144,65,0.85) 40%, rgba(140,82,22,0.10) 75%, transparent 100%)"
+                  : "linear-gradient(90deg, transparent 0%, rgba(196,144,65,0.55) 15%, rgba(252,240,208,0.90) 40%, rgba(196,130,45,0.20) 75%, transparent 100%)",
               }}
             />
           </div>
@@ -345,8 +345,8 @@ export default function BenefitsSection({
         className="absolute bottom-0 left-0 right-0 h-px pointer-events-none"
         style={{
           background: isLightAppearance
-            ? "linear-gradient(to right, transparent, rgba(220,165,90,0.22) 50%, transparent)"
-            : "linear-gradient(to right, transparent, rgba(220,165,90,0.28) 50%, transparent)",
+            ? "linear-gradient(to right, transparent, rgba(196, 144, 65,0.22) 50%, transparent)"
+            : "linear-gradient(to right, transparent, rgba(196, 144, 65,0.28) 50%, transparent)",
         }}
       />
     </section>

@@ -8,7 +8,7 @@ import {
   MessageSquare,
   Wrench,
 } from "lucide-react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import type { DashboardAppearanceMode } from "../../../routers/dashboard-router-types";
 
 type StepCompleteProps = {
@@ -29,6 +29,7 @@ export default function StepComplete({
   onFindShops,
 }: StepCompleteProps) {
   const isLightAppearance = appearanceMode === "light";
+  const reduceMotion = useReducedMotion();
   return (
     <div className="bd-report-step px-4 md:px-6 py-6 md:py-8">
       <div className="text-center mb-8">
@@ -159,7 +160,7 @@ export default function StepComplete({
           onClick={onFindShops}
           initial={{ opacity: 0, scale: 0.95, y: 8 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.4, ease: "easeOut" }}
+          transition={{ delay: 0.3, duration: reduceMotion ? 0 : 0.4, ease: "easeOut" }}
           whileTap={{ scale: 0.97 }}
           className="bd-report-primary-button w-full py-3 px-4 min-h-[44px] rounded-xl text-white font-semibold mb-3 inline-flex items-center justify-center gap-2"
           style={{

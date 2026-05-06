@@ -32,6 +32,9 @@ export function useCustomerEstimateResponseNotifications({
   useEffect(() => {
     if (userType !== "customer") return;
 
+    let mounted = true;
+    let unsubscribe: (() => void) | null = null;
+
     const handleEstimateUpdate = (estimate: RealtimeEstimatePayload) => {
       // Only notify for "responded" status (shop sent pricing back)
       if (estimate.status !== "responded") return;
@@ -51,10 +54,18 @@ export function useCustomerEstimateResponseNotifications({
       onEstimateResponseRef.current?.();
     };
 
-    const unsubscribe = realtimeEstimateService.subscribeToUpdates(handleEstimateUpdate);
+    function doSubscribe() {
+      // StrictMode-safe: defer subscribe by one microtask + `mounted` short-circuit.
+      // See useBidsForReport.ts for full mechanism + KI-057.
+      if (!mounted) return;
+      unsubscribe = realtimeEstimateService.subscribeToUpdates(handleEstimateUpdate);
+    }
+
+    queueMicrotask(doSubscribe);
 
     return () => {
-      unsubscribe();
+      mounted = false;
+      if (unsubscribe) unsubscribe();
     };
   }, [userType, notifications]);
 }

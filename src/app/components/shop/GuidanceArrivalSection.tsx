@@ -20,7 +20,7 @@ export function GuidanceArrivalCelebration({
 }: GuidanceArrivalCelebrationProps) {
   const glassChip = isDark
     ? "border-blue-400/30 bg-slate-950/75 text-white backdrop-blur-md hover:bg-slate-950/85 shadow-[0_0_16px_rgba(59,130,246,0.06)]"
-    : "border-black/8 bg-white/85 text-slate-700 backdrop-blur-md hover:bg-white/95";
+    : "border-[rgba(140,82,22,0.26)] bg-[linear-gradient(180deg,rgba(247,232,194,0.84),rgba(232,238,248,0.78))] text-slate-700 backdrop-blur-md shadow-[inset_0_1px_0_rgba(252,240,208,0.78)] hover:bg-[linear-gradient(180deg,rgba(247,232,194,0.94),rgba(232,238,248,0.88))]";
   const secondaryText = isDark ? "text-white/60" : "text-slate-500";
   const divider = isDark ? "border-white/10" : "border-black/8";
 

@@ -36,6 +36,24 @@ export type {
 
 export { getInsuranceDirectory };
 
+/**
+ * F-24 (KI-099): the shop directory currently sources entirely from
+ * `marketSeedShops.ts` (CORE_SHOPS) — fabricated names, ratings, reviews,
+ * certifications, and Unsplash photos. Used in the dashboard "Recommended
+ * Shops" surface, full map, AI matching, etc. Soft-launch trust risk.
+ *
+ * This flag drives the `<PreviewDirectoryNotice />` banner shown above
+ * recommended-shop surfaces, setting honest user expectations until the
+ * full-Supabase-swap (KI-100) is in place. Flip to `false` (or compute
+ * from the real-data path's resolved count) when `buildShopRecommendations`
+ * queries Supabase `public_partner_shops` directly.
+ *
+ * The landing-side "Coverage" surface is NOT affected — it already uses
+ * `useCoveragePartnerShops` which fetches real Supabase rows + falls back
+ * to demo only on DEV / `VITE_ENABLE_MAP_DEMO_FALLBACK=true`.
+ */
+export const SHOP_DIRECTORY_IS_PREVIEW = true;
+
 export function getShopDirectory() {
   return SHOPS;
 }

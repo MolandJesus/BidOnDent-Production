@@ -1,5 +1,5 @@
 import { ArrowRight, Award, Check } from "lucide-react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import type { ShopOnboardingFormData } from "../../types";
 
 const certificationOptions = [
@@ -45,6 +45,8 @@ export default function ShopOnboardingStep3({
   onNext,
   onBack,
 }: ShopOnboardingStep3Props) {
+  const reduceMotion = useReducedMotion();
+
   return (
     <div>
       <div className="mb-6">
@@ -153,7 +155,7 @@ export default function ShopOnboardingStep3({
           style={{ background: primaryColor }}
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.3, delay: 0.15 }}
+          transition={{ duration: reduceMotion ? 0 : 0.3, delay: 0.15 }}
         >
           Continue
           <ArrowRight className="w-5 h-5 ml-2" />

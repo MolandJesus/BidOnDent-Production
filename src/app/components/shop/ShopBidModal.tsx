@@ -40,10 +40,17 @@ export default function ShopBidModal({
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-4">
       <div
-        className={`rounded-t-2xl sm:rounded-2xl w-full max-w-md overflow-hidden border ${isLight ? "bg-white border-slate-200/60 shadow-xl" : "border-blue-300/20"}`}
+        className={`rounded-t-2xl sm:rounded-2xl w-full max-w-md overflow-hidden border ${isLight ? "border-[rgba(140,82,22,0.36)]" : "border-blue-300/20"}`}
         style={
           isLight
-            ? {}
+            ? {
+                background:
+                  "radial-gradient(ellipse 80% 50% at 50% 0%, rgba(196, 144, 65, 0.05), transparent 70%), linear-gradient(180deg, rgba(244, 250, 254, 0.84) 0%, rgba(226, 238, 252, 0.76) 100%)",
+                boxShadow:
+                  "0 -28px 80px -16px rgba(196, 144, 65, 0.18), 0 0 32px rgba(196, 130, 45, 0.10), 0 0 60px rgba(196, 130, 45, 0.06), inset 0 1px 0 rgba(252, 240, 208, 0.92), inset 0 -1px 0 rgba(140, 82, 22, 0.32), 0 24px 60px rgba(15, 30, 60, 0.18)",
+                backdropFilter: "blur(20px) saturate(1.4) brightness(1.02)",
+                WebkitBackdropFilter: "blur(20px) saturate(1.4) brightness(1.02)",
+              }
             : {
                 background:
                   "linear-gradient(180deg, rgba(11, 23, 47, 0.95) 0%, rgba(8, 18, 38, 0.92) 100%)",
@@ -76,7 +83,7 @@ export default function ShopBidModal({
                 value={bidAmount}
                 onChange={(e) => onBidAmountChange(e.target.value)}
                 placeholder="0.00"
-                className={`w-full pl-8 pr-4 py-3 border rounded-xl text-lg outline-none transition-colors ${isLight ? "border-slate-200 bg-white text-slate-800 placeholder:text-slate-400 focus:border-blue-400/60" : "border-blue-300/20 bg-white/8 text-slate-100 placeholder:text-blue-200/40 focus:border-blue-400/40 focus:ring-1 focus:ring-blue-400/20"}`}
+                className={`w-full pl-8 pr-4 py-3 border rounded-xl text-lg outline-none transition-colors ${isLight ? "border-[rgba(140,82,22,0.26)] bg-[linear-gradient(180deg,rgba(232,238,248,0.92),rgba(247,232,194,0.86))] text-slate-800 placeholder:text-slate-400 focus:border-blue-500/60 shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]" : "border-[rgba(96,165,250,0.20)] bg-[linear-gradient(180deg,rgba(15,23,42,0.74),rgba(8,16,33,0.78))] text-slate-100 placeholder:text-blue-200/40 focus:border-blue-400/60 focus:ring-1 focus:ring-blue-400/30 shadow-[inset_0_1px_0_rgba(196,144,65,0.16),inset_0_-1px_0_rgba(140,82,22,0.16)]"}`}
                 step="0.01"
                 min="0"
               />
@@ -97,7 +104,7 @@ export default function ShopBidModal({
               value={estimatedDays}
               onChange={(e) => onEstimatedDaysChange(e.target.value)}
               placeholder="e.g. 3"
-              className={`w-full px-4 py-3 border rounded-xl outline-none transition-colors ${isLight ? "border-slate-200 bg-white text-slate-800 placeholder:text-slate-400 focus:border-blue-400/60" : "border-blue-300/20 bg-white/8 text-slate-100 placeholder:text-blue-200/40 focus:border-blue-400/40 focus:ring-1 focus:ring-blue-400/20"}`}
+              className={`w-full px-4 py-3 border rounded-xl outline-none transition-colors ${isLight ? "border-[rgba(140,82,22,0.26)] bg-[linear-gradient(180deg,rgba(232,238,248,0.92),rgba(247,232,194,0.86))] text-slate-800 placeholder:text-slate-400 focus:border-blue-500/60 shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]" : "border-[rgba(96,165,250,0.20)] bg-[linear-gradient(180deg,rgba(15,23,42,0.74),rgba(8,16,33,0.78))] text-slate-100 placeholder:text-blue-200/40 focus:border-blue-400/60 focus:ring-1 focus:ring-blue-400/30 shadow-[inset_0_1px_0_rgba(196,144,65,0.16),inset_0_-1px_0_rgba(140,82,22,0.16)]"}`}
               min="1"
               max="90"
             />
@@ -113,14 +120,14 @@ export default function ShopBidModal({
               value={bidDescription}
               onChange={(e) => onBidDescriptionChange(e.target.value)}
               placeholder="Describe your repair approach, parts needed, etc."
-              className={`w-full px-4 py-3 border rounded-xl outline-none transition-colors resize-none ${isLight ? "border-slate-200 bg-white text-slate-800 placeholder:text-slate-400 focus:border-blue-400/60" : "border-blue-300/20 bg-white/8 text-slate-100 placeholder:text-blue-200/40 focus:border-blue-400/40 focus:ring-1 focus:ring-blue-400/20"}`}
+              className={`w-full px-4 py-3 border rounded-xl outline-none transition-colors resize-none ${isLight ? "border-[rgba(140,82,22,0.26)] bg-[linear-gradient(180deg,rgba(232,238,248,0.92),rgba(247,232,194,0.86))] text-slate-800 placeholder:text-slate-400 focus:border-blue-500/60 shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]" : "border-[rgba(96,165,250,0.20)] bg-[linear-gradient(180deg,rgba(15,23,42,0.74),rgba(8,16,33,0.78))] text-slate-100 placeholder:text-blue-200/40 focus:border-blue-400/60 focus:ring-1 focus:ring-blue-400/30 shadow-[inset_0_1px_0_rgba(196,144,65,0.16),inset_0_-1px_0_rgba(140,82,22,0.16)]"}`}
               rows={3}
               maxLength={500}
             />
           </div>
 
           <div
-            className={`mb-4 p-3 rounded-xl border ${isLight ? "bg-slate-50 border-slate-200" : "bg-white/5 border-blue-300/15"}`}
+            className={`mb-4 p-3 rounded-xl border ${isLight ? "bg-[linear-gradient(180deg,rgba(238,247,255,0.78),rgba(219,234,254,0.70))] border-[rgba(140,82,22,0.20)] shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]" : "bg-white/5 border-blue-300/15"}`}
           >
             <p className={`text-sm ${isLight ? "text-slate-700" : "text-blue-100/80"}`}>
               <strong className={isLight ? "text-slate-900" : "text-slate-200"}>Customer:</strong>{" "}
@@ -152,7 +159,7 @@ export default function ShopBidModal({
             <button
               onClick={onClose}
               disabled={isSubmitting}
-              className={`flex-1 py-3 min-h-[44px] rounded-xl font-medium transition-colors ${isLight ? "text-slate-700 border border-slate-200 hover:bg-slate-50" : "text-blue-100/80 bg-white/8 border border-blue-300/15 hover:bg-white/12"}`}
+              className={`flex-1 py-3 min-h-[44px] rounded-xl font-medium transition-colors ${isLight ? "text-slate-700 bg-[linear-gradient(180deg,rgba(238,247,255,0.84),rgba(219,234,254,0.78))] border border-[rgba(140,82,22,0.22)] shadow-[inset_0_1px_0_rgba(252,240,208,0.78)] hover:bg-[linear-gradient(180deg,rgba(238,247,255,0.96),rgba(219,234,254,0.90))] hover:border-[rgba(140,82,22,0.32)]" : "text-blue-100/80 bg-white/8 border border-blue-300/15 hover:bg-white/12"}`}
             >
               Cancel
             </button>

@@ -35,7 +35,7 @@ export default function InsurerClaimDenialModal({
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-4">
       <div
         className={`rounded-t-2xl sm:rounded-2xl w-full max-w-md overflow-hidden border ${
-          isLight ? "bg-white border-slate-200/60 shadow-xl" : "border-blue-300/20"
+          isLight ? "bg-[#fffefa] border-slate-200/60 shadow-xl" : "border-blue-300/20"
         }`}
         style={
           isLight
@@ -58,7 +58,11 @@ export default function InsurerClaimDenialModal({
             {selectedClaim.claimNumber} — {selectedClaim.customerName}
           </p>
 
-          <div className="mb-4 p-4 bg-white/5 rounded-xl border border-blue-300/15">
+          <div
+            className={`mb-4 p-4 rounded-xl border ${
+              isLight ? "bg-blue-50/60 border-blue-200/40" : "bg-white/5 border-blue-300/15"
+            }`}
+          >
             <div className="grid grid-cols-2 gap-3 text-sm">
               <div>
                 <p className={isLight ? "text-slate-500" : "text-blue-200/60"}>Vehicle</p>
@@ -124,7 +128,7 @@ export default function InsurerClaimDenialModal({
                 rows={3}
                 className={`w-full mt-2 px-3 py-2.5 rounded-xl border text-sm outline-none transition-colors resize-none ${
                   isLight
-                    ? "border-slate-200 bg-white text-slate-800 placeholder:text-slate-400 focus:border-rose-400/60"
+                    ? "border-slate-200 bg-[#fffefa] text-slate-800 placeholder:text-slate-400 focus:border-rose-400/60"
                     : "border-blue-300/20 bg-white/[0.08] text-slate-100 placeholder:text-blue-200/40 focus:border-rose-400/40"
                 }`}
               />

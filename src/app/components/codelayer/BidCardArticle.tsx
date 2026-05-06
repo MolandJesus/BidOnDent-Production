@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import {
   BadgeCheck,
   ChevronDown,
@@ -65,12 +65,13 @@ export default function BidCardArticle({
 }: BidCardArticleProps) {
   const isLight = appearanceMode === "light";
   const savings = bid.price - lowestPrice;
+  const reduceMotion = useReducedMotion();
 
   return (
     <motion.article
       variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}
       whileHover={{ y: -3, scale: 1.003 }}
-      transition={{ duration: 0.2 }}
+      transition={{ duration: reduceMotion ? 0 : 0.2 }}
       className={`bd-dashboard-section group relative overflow-hidden transition-all ${
         isActive ? "bd-dashboard-section--selected" : "bd-dashboard-section--interactive"
       }`}
@@ -166,7 +167,7 @@ export default function BidCardArticle({
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
+            transition={{ duration: reduceMotion ? 0 : 0.3, ease: "easeOut" }}
             className="overflow-hidden"
           >
             <div

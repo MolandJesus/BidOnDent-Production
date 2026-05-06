@@ -6,7 +6,7 @@
  * liked-shops, vehicles, shop-directory, new-claim, insurance-companies,
  * competitor-analysis, demo-switcher, and route fallback.
  */
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useMemo } from "react";
 import type { DashboardRouterProps } from "./dashboard-router-types";
 import { zipToCoordinates } from "../services/supabase/map";
@@ -34,12 +34,14 @@ const CompetitorAnalysisScreen = lazyWithRetry(
 const DemoAccountSwitcher = lazyWithRetry(() => import("../components/demo/DemoAccountSwitcher"));
 const MissingReportState = lazyWithRetry(() => import("../components/reports/MissingReportState"));
 
-const screenTransition = {
-  initial: { opacity: 0, x: -20 },
-  animate: { opacity: 1, x: 0 },
-  exit: { opacity: 0, x: 20, pointerEvents: "none" as const },
-  transition: { duration: 0.2 },
-};
+function makeScreenTransition(reduceMotion: boolean) {
+  return {
+    initial: { opacity: 0, x: -20 },
+    animate: { opacity: 1, x: 0 },
+    exit: { opacity: 0, x: 20, pointerEvents: "none" as const },
+    transition: { duration: reduceMotion ? 0 : 0.2 },
+  };
+}
 
 type Props = Pick<
   DashboardRouterProps,
@@ -92,6 +94,8 @@ export default function DashboardSecondaryViews({
   refetchCustomerEstimates,
   refetchShopBids,
 }: Props) {
+  const reduceMotion = useReducedMotion();
+  const screenTransition = useMemo(() => makeScreenTransition(!!reduceMotion), [reduceMotion]);
   // Compute report-based map center for shop directory when navigating from a report
   const reportMapCenter = useMemo(() => {
     const report = selectedReportId

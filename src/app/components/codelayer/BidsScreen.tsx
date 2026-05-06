@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { MapPin } from "lucide-react";
 import ShopRatingModal from "../shop/ShopRatingModal";
 import BidCardArticle from "./BidCardArticle";
 import AcceptedBidConfirmationSheet from "./AcceptedBidConfirmationSheet";
 import type { AcceptedBidInfo } from "./AcceptedBidConfirmationSheet";
-import { zipToCoordinates } from "../../services/supabase/map";
+import { useGeoCoordinates } from "../../hooks/useGeoCoordinates";
 import { defaultCoverageCenter } from "../landing/coverageData";
 import type { ReportPin } from "../dashboard/MapLibreDashboardMapPreview";
 import BidsEmptyState from "./BidsEmptyState";
@@ -32,6 +32,7 @@ export default function BidsScreen({
 }: BidsScreenProps) {
   const notifications = useNotifications();
   const isLight = appearanceMode === "light";
+  const reduceMotion = useReducedMotion();
   const [activeBid, setActiveBid] = useState<string | number | null>(null);
   const [acceptedBidId, setAcceptedBidId] = useState<string | number | null>(null);
   const [confirmedBid, setConfirmedBid] = useState<AcceptedBidInfo | null>(null);
@@ -63,6 +64,8 @@ export default function BidsScreen({
     return reports.find((report) => report.id === liveBids[0].reportId) || null;
   }, [liveBids, reports]);
 
+  const zipFallbackCoords = useGeoCoordinates(selectedReport?.zipCode);
+
   const reportCoords = useMemo(() => {
     if (!selectedReport) {
       return null;
@@ -70,8 +73,8 @@ export default function BidsScreen({
     if (selectedReport.latitude != null && selectedReport.longitude != null) {
       return { lat: selectedReport.latitude, lng: selectedReport.longitude };
     }
-    return zipToCoordinates(selectedReport.zipCode);
-  }, [selectedReport]);
+    return zipFallbackCoords;
+  }, [selectedReport, zipFallbackCoords]);
 
   const reportPins = useMemo<ReportPin[]>(() => {
     if (!selectedReport || !reportCoords) {
@@ -217,7 +220,7 @@ export default function BidsScreen({
   };
 
   return (
-    <div className="pb-20 px-4 md:px-6 py-4 md:py-5 space-y-4">
+    <div className="pb-6 md:pb-8 px-4 md:px-6 py-4 md:py-5 space-y-4">
       <BidsSummaryHeader
         isLight={isLight}
         bidCount={liveBids.length}
@@ -231,7 +234,7 @@ export default function BidsScreen({
       <motion.section
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.25, delay: 0.05 }}
+        transition={{ duration: reduceMotion ? 0 : 0.25, delay: 0.05 }}
         className="bd-dashboard-panel bd-dashboard-panel--deep p-3"
       >
         <div className="mb-3 flex items-start justify-between gap-3 px-1">
@@ -351,7 +354,7 @@ export default function BidsScreen({
           <motion.section
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.15 }}
+            transition={{ duration: reduceMotion ? 0 : 0.3, delay: 0.15 }}
             className="bd-dashboard-panel bd-dashboard-panel--accent-indigo p-5 text-center"
           >
             <div className="bd-dashboard-note bd-dashboard-note--deep mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full">

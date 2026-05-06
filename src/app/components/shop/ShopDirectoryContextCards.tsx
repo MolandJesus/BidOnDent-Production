@@ -19,7 +19,7 @@ export default function ShopDirectoryContextCards({
 }: ShopDirectoryContextCardsProps) {
   const isLight = appearanceMode === "light";
   const cardClass = isLight
-    ? "bg-white/80 border border-slate-200/60 shadow-sm rounded-2xl p-5"
+    ? "bg-[linear-gradient(180deg,rgba(247,232,194,0.80),rgba(232,238,248,0.74))] border border-[rgba(140,82,22,0.24)] shadow-[inset_0_1px_0_rgba(252,240,208,0.78),0_8px_22px_rgba(15,23,42,0.10)] rounded-2xl p-5"
     : "bd-glass-card p-5";
   const labelClass = `flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] ${
     isLight ? "text-blue-600/70" : "text-blue-200/50"

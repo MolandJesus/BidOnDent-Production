@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import {
   Inbox,
   Clock,
@@ -25,6 +25,7 @@ export default function ShopEstimateInboxScreen({
   onUpdateStatus,
 }: ShopEstimateInboxScreenProps) {
   const isLight = appearanceMode === "light";
+  const reduceMotion = useReducedMotion();
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState<
     "all" | "pending" | "viewed" | "responded" | "declined" | "accepted"
@@ -72,7 +73,9 @@ export default function ShopEstimateInboxScreen({
       <div
         className={cn(
           "border-b",
-          isLight ? "border-slate-200/60 bg-white/90" : "border-blue-300/15"
+          isLight
+            ? "border-[rgba(140,82,22,0.24)] bg-[linear-gradient(180deg,rgba(247,232,194,0.86),rgba(232,238,248,0.80))] shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]"
+            : "border-blue-300/15"
         )}
         style={
           isLight
@@ -212,7 +215,7 @@ export default function ShopEstimateInboxScreen({
                 key={req.id ?? i}
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.03, duration: 0.2 }}
+                transition={{ delay: i * 0.03, duration: reduceMotion ? 0 : 0.2 }}
               >
                 <button
                   type="button"
@@ -220,7 +223,7 @@ export default function ShopEstimateInboxScreen({
                   className={cn(
                     "w-full rounded-2xl p-4 text-left transition-colors",
                     isLight
-                      ? "bg-white border border-slate-200 hover:border-slate-300 shadow-sm"
+                      ? "bg-[linear-gradient(180deg,rgba(247,232,194,0.84),rgba(232,238,248,0.78))] border border-[rgba(140,82,22,0.26)] shadow-[inset_0_1px_0_rgba(252,240,208,0.78),0_4px_14px_rgba(15,23,42,0.08)] hover:border-[rgba(140,82,22,0.36)]"
                       : "bd-glass-card hover:bg-white/[0.06]"
                   )}
                 >
@@ -342,7 +345,7 @@ export default function ShopEstimateInboxScreen({
                             className={cn(
                               "w-full rounded-xl px-3 py-2.5 text-sm resize-none transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/40",
                               isLight
-                                ? "bg-white border border-slate-200 text-slate-800 placeholder:text-slate-400"
+                                ? "bg-[linear-gradient(180deg,rgba(232,238,248,0.88),rgba(247,232,194,0.82))] border border-[rgba(140,82,22,0.26)] text-slate-800 placeholder:text-slate-400 shadow-[inset_0_1px_0_rgba(252,240,208,0.78)]"
                                 : "bg-white/5 border border-white/10 text-slate-200 placeholder:text-slate-500"
                             )}
                           />

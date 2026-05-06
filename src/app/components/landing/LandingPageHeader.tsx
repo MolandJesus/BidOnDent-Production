@@ -95,7 +95,7 @@ export default function LandingPageHeader({
             : // Dark scrolled — adopts dashboard navy-lit-by-gold-lamp identity:
               // inset gold trim line at bottom + gold ambient glow, layered
               // over the existing cool-blue shadow.
-              "backdrop-blur-2xl border-b border-blue-400/15 shadow-[0_4px_24px_rgba(2,6,23,0.3),inset_0_-1px_0_rgba(220,165,90,0.20),0_0_28px_rgba(220,140,50,0.16)]"
+              "backdrop-blur-2xl border-b border-blue-400/15 shadow-[0_4px_24px_rgba(2,6,23,0.3),inset_0_-1px_0_rgba(196, 144, 65,0.20),0_0_28px_rgba(196, 130, 45,0.16)]"
           : "backdrop-blur-md border-b border-transparent"
       }`}
       style={{
@@ -307,10 +307,14 @@ export default function LandingPageHeader({
                     </button>
                     <button
                       role="menuitem"
-                      onClick={() => {
+                      onClick={async () => {
                         setMobileMenuOpen(false);
                         setShowProfileMenu(false);
-                        signOut({ redirectUrl: "/" });
+                        // KI-097: await signOut so the Promise can settle before
+                        // re-renders. ClerkProvider's afterSignOutUrl="/" (KI-096)
+                        // handles the hard navigation, so no per-call redirectUrl
+                        // needed here.
+                        await signOut();
                       }}
                       className={`w-full text-left px-3 py-2.5 text-sm flex items-center gap-2.5 transition-colors border-t ${isLightAppearance ? "text-rose-600 hover:bg-rose-50/60 border-[rgba(200,180,150,0.22)]" : "text-rose-400 hover:bg-rose-500/10 border-blue-400/15"}`}
                       type="button"
@@ -337,7 +341,7 @@ export default function LandingPageHeader({
               {/* Get Started CTA */}
               <SignUpButton mode="modal">
                 <button
-                  className="font-semibold text-sm text-white rounded-xl px-4 py-2.5 transition-all hover:brightness-110"
+                  className="inline-flex min-h-[44px] items-center justify-center font-semibold text-sm text-white rounded-xl px-4 py-2.5 transition-all hover:brightness-110"
                   style={{
                     background: `linear-gradient(135deg, ${primaryColor} 0%, #3b82f6 100%)`,
                     boxShadow: "0 2px 12px rgba(37, 99, 235, 0.3)",
@@ -425,7 +429,7 @@ export default function LandingPageHeader({
                 <button
                   onClick={() => setMobileMenuOpen(false)}
                   type="button"
-                  className={`flex-1 text-center font-medium text-sm px-4 py-2.5 rounded-xl border transition-colors ${isLightAppearance ? "border-[rgba(200,180,150,0.25)] bg-[rgba(255,251,245,0.5)] text-slate-700 hover:bg-[rgba(255,251,245,0.7)]" : "border-blue-400/25 bg-blue-500/10 text-blue-200 hover:bg-blue-500/20"}`}
+                  className={`inline-flex min-h-[44px] flex-1 items-center justify-center text-center font-medium text-sm px-4 py-2.5 rounded-xl border transition-colors ${isLightAppearance ? "border-[rgba(200,180,150,0.25)] bg-[rgba(255,251,245,0.5)] text-slate-700 hover:bg-[rgba(255,251,245,0.7)]" : "border-blue-400/25 bg-blue-500/10 text-blue-200 hover:bg-blue-500/20"}`}
                 >
                   Login
                 </button>
@@ -434,7 +438,7 @@ export default function LandingPageHeader({
                 <button
                   onClick={() => setMobileMenuOpen(false)}
                   type="button"
-                  className="flex-1 text-center font-semibold text-sm text-white rounded-xl px-4 py-2.5 transition-all hover:brightness-110"
+                  className="inline-flex min-h-[44px] flex-1 items-center justify-center text-center font-semibold text-sm text-white rounded-xl px-4 py-2.5 transition-all hover:brightness-110"
                   style={{
                     background: `linear-gradient(135deg, ${primaryColor} 0%, #3b82f6 100%)`,
                   }}

@@ -1,5 +1,5 @@
 import { Edit } from "lucide-react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import type { DashboardAppearanceMode } from "../../../routers/dashboard-router-types";
 
 type AccountInfoCardProps = {
@@ -23,6 +23,7 @@ export default function AccountInfoCard({
   onEditProfile,
 }: AccountInfoCardProps) {
   const isLightAppearance = appearanceMode === "light";
+  const reduceMotion = useReducedMotion();
   const hasPhone = Boolean(userInfo.phone && userInfo.phone.trim().length > 0);
   const hasVehicles = userType === "customer" ? userInfo.vehicles.length > 0 : true;
   const hasBusinessName =
@@ -87,7 +88,7 @@ export default function AccountInfoCard({
     <motion.section
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.25, delay: 0.05 }}
+      transition={{ duration: reduceMotion ? 0 : 0.25, delay: 0.05 }}
       className="bd-dashboard-panel bd-dashboard-panel--deep relative mb-5 overflow-hidden rounded-2xl p-5"
     >
       {/* Subtle decorative orb — D4: cool-blue tint instead of warm-cream */}

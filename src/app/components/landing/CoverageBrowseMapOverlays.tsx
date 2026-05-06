@@ -232,7 +232,7 @@ export default function CoverageBrowseMapOverlays({
                 disabled={!canStartNavigation}
                 className={cn(
                   theme.primaryButtonClassName,
-                  "min-h-[40px] px-5 py-2 text-xs disabled:opacity-50"
+                  "min-h-[44px] px-5 py-2 text-xs disabled:opacity-50"
                 )}
               >
                 <Compass className="h-3.5 w-3.5" />

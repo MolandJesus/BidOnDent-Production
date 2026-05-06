@@ -99,7 +99,7 @@ function toRouteOption(
     trafficLabel: buildTrafficLabel(preview, index, primaryDurationSeconds),
     totalDistanceMiles,
     totalDistanceLabel: formatDistanceLabel(totalDistanceMiles),
-    estimatedDurationMinutes: Math.max(1, Math.round(preview.durationSeconds / 60)),
+    estimatedDurationMinutes: Math.round(preview.durationSeconds / 60),
     accentColor: presentation.accentColor,
     polyline: preview.geometry.map((coordinate) => ({
       latitude: coordinate.lat,

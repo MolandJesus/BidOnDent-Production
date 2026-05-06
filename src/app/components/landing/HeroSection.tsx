@@ -139,7 +139,7 @@ export default function HeroSection({
                 from top, fading by mid-hero. Layered FIRST so the cool blue
                 radials below render on top in the body of the hero; the top
                 edge reads warm-lit, the body stays cool. */}
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_95%_45%_at_50%_-12%,rgba(220,165,90,0.26),transparent_65%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_95%_45%_at_50%_-12%,rgba(196, 144, 65,0.26),transparent_65%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_30%_at_50%_-6%,rgba(235,180,105,0.18),transparent_70%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_75%_55%_at_15%_-10%,rgba(59,130,246,0.26),transparent_60%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_55%_at_85%_90%,rgba(37,99,235,0.18),transparent_55%)]" />
@@ -467,14 +467,17 @@ export default function HeroSection({
                     <span>{statement}</span>
                   </p>
                 ))}
-                {/* Carousel dots — Pass 8 polish: larger, glow on active, clearer affordance */}
+                {/* Carousel dots — Pass 8 polish: larger, glow on active, clearer affordance.
+                    Pass 3 (mobile audit 2026-05-05): bumped tap target from h-10 w-8
+                    (40×32) → h-11 w-11 (44×44) for LAW touch-target compliance. The
+                    inner 8px/24px dot stays the same — only the invisible hit area grows. */}
                 <div className="absolute bottom-0 left-8 flex gap-1.5">
                   {VALUE_STATEMENTS.map((_, i) => (
                     <button
                       key={i}
                       type="button"
                       aria-label={`Value ${i + 1}`}
-                      className="flex h-10 w-8 items-center justify-center"
+                      className="flex h-11 w-11 items-center justify-center"
                       onClick={() => setActiveValue(i)}
                     >
                       <span
@@ -543,7 +546,7 @@ export default function HeroSection({
                     : "rgba(147,197,253,0.45)",
                   boxShadow: isLightAppearance
                     ? undefined
-                    : "inset 0 1px 0 rgba(220,165,90,0.18), inset 0 0 0 1px rgba(96,165,250,0.18)",
+                    : "inset 0 1px 0 rgba(196, 144, 65,0.18), inset 0 0 0 1px rgba(96,165,250,0.18)",
                 }}
                 type="button"
               >
@@ -552,22 +555,22 @@ export default function HeroSection({
               </button>
             </div>
 
-            {/* Trust microcopy */}
+            {/* Trust microcopy — footnote tier (Pass 9 Polish #1: demoted below CTA hierarchy) */}
             <div
-              className={`grid grid-cols-2 gap-2 pt-1 transition-all duration-700 sm:flex sm:flex-wrap sm:items-center ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+              className={`flex flex-col gap-1.5 pt-2 transition-all duration-700 sm:flex-row sm:flex-wrap sm:items-center ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
               style={{ transitionDelay: "0.9s" }}
             >
-              {["Now available in NY", "Transparent bids", "Free for customers"].map(
-                (item, index) => (
-                  <span
-                    key={item}
-                    className={`inline-flex min-h-[40px] items-center justify-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium backdrop-blur-sm sm:justify-start sm:px-2.5 sm:py-1 sm:text-sm ${index === 2 ? "col-span-2 sm:col-span-1" : ""} ${isLightAppearance ? "border-[rgba(200,180,150,0.25)] bg-[rgba(255,251,245,0.4)] text-slate-600 shadow-[inset_0_1px_0_rgba(255,250,240,0.6)]" : "border-blue-400/20 bg-blue-500/10 text-blue-100/80"}`}
-                  >
-                    <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
-                    {item}
-                  </span>
-                )
-              )}
+              {["Now available in NY", "Transparent bids", "Free for customers"].map((item) => (
+                <span
+                  key={item}
+                  className={`inline-flex items-center justify-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-medium tracking-[0.005em] backdrop-blur-sm sm:justify-start sm:px-2.5 sm:py-1 sm:text-[11px] ${isLightAppearance ? "border-[rgba(140,82,22,0.16)] bg-[rgba(232,238,248,0.55)] text-slate-600" : "border-blue-400/12 bg-blue-500/[0.06] text-blue-100/65"}`}
+                >
+                  <CheckCircle
+                    className={`h-3 w-3 ${isLightAppearance ? "text-slate-500/60" : "text-blue-200/50"}`}
+                  />
+                  {item}
+                </span>
+              ))}
             </div>
 
             {/* V2 — Mobile hero map intelligence strip.
@@ -587,10 +590,10 @@ export default function HeroSection({
               style={{
                 transitionDelay: "1.05s",
                 height: "200px",
-                background: isLightAppearance ? "#eef4fb" : "#0d1d3a",
+                background: isLightAppearance ? "#dbe7f5" : "#0d1d3a",
                 boxShadow: isLightAppearance
                   ? "0 14px 40px rgba(15, 30, 60, 0.10), 0 40px 90px rgba(15, 30, 60, 0.08), 0 0 50px rgba(37, 99, 235, 0.06), inset 0 1px 0 rgba(255,255,255,0.55), inset 0 0 0 1px rgba(190,210,235,0.22), inset 0 -1px 0 rgba(140,82,22,0.20), 0 0 80px rgba(196,130,45,0.05)"
-                  : "0 16px 48px rgba(2, 6, 23, 0.40), 0 50px 110px rgba(2, 6, 23, 0.18), 0 0 60px rgba(37, 99, 235, 0.12), inset 0 1px 0 rgba(220,165,90,0.20), inset 0 0 0 1px rgba(96, 165, 250, 0.14), inset 0 -1px 0 rgba(220,165,90,0.16), 0 0 100px rgba(228,140,55,0.08)",
+                  : "0 16px 48px rgba(2, 6, 23, 0.40), 0 50px 110px rgba(2, 6, 23, 0.18), 0 0 60px rgba(37, 99, 235, 0.12), inset 0 1px 0 rgba(196, 144, 65,0.20), inset 0 0 0 1px rgba(96, 165, 250, 0.14), inset 0 -1px 0 rgba(196, 144, 65,0.16), 0 0 100px rgba(196, 130, 45, 0.08)",
               }}
             >
               {/* Outer ambient bloom — bleeds the strip into the hero atmosphere */}
@@ -604,6 +607,20 @@ export default function HeroSection({
                 }}
               />
 
+              {/* Bucket 5.7 (KI-074 partial): dual-source counter-glow — cool
+                  blue sky catch at top-left + warm bronze lamp catch at
+                  bottom-right. Premium "lit at sunset" feel; locks the hero
+                  map into the same lamp-from-above + cool-floor convention
+                  the dashboard atmosphere D8/D9/D10 layers express. */}
+              <div
+                aria-hidden="true"
+                className="absolute -inset-4 rounded-[2rem] blur-2xl pointer-events-none -z-10"
+                style={{
+                  background:
+                    "radial-gradient(ellipse 50% 45% at 0% 0%, rgba(96, 165, 250, 0.12), transparent 65%), radial-gradient(ellipse 50% 45% at 100% 100%, rgba(196, 130, 45, 0.10), transparent 65%)",
+                }}
+              />
+
               {/* Layer 1 — stylized road network (mobile scale) */}
               <svg
                 aria-hidden="true"
@@ -611,31 +628,31 @@ export default function HeroSection({
                 viewBox="0 0 600 200"
                 preserveAspectRatio="xMidYMid slice"
               >
-                <rect width="600" height="200" fill={isLightAppearance ? "#eef4fb" : "#0d1d3a"} />
+                <rect width="600" height="200" fill={isLightAppearance ? "#dbe7f5" : "#0d1d3a"} />
                 <path
                   d="M 0,80 Q 150,90 300,75 T 600,90"
-                  stroke={isLightAppearance ? "#cbd5e1" : "#334155"}
+                  stroke={isLightAppearance ? "#94a3b8" : "#334155"}
                   strokeWidth="2.5"
                   fill="none"
                   opacity="0.85"
                 />
                 <path
                   d="M 0,140 Q 200,120 400,135 T 600,130"
-                  stroke={isLightAppearance ? "#cbd5e1" : "#334155"}
+                  stroke={isLightAppearance ? "#94a3b8" : "#334155"}
                   strokeWidth="2"
                   fill="none"
                   opacity="0.65"
                 />
                 <path
                   d="M 160,0 Q 175,100 165,200"
-                  stroke={isLightAppearance ? "#dde6f0" : "#293449"}
+                  stroke={isLightAppearance ? "#a8b8cb" : "#293449"}
                   strokeWidth="1.5"
                   fill="none"
                   opacity="0.55"
                 />
                 <path
                   d="M 440,0 Q 460,110 435,200"
-                  stroke={isLightAppearance ? "#dde6f0" : "#293449"}
+                  stroke={isLightAppearance ? "#a8b8cb" : "#293449"}
                   strokeWidth="1.5"
                   fill="none"
                   opacity="0.5"
@@ -701,14 +718,14 @@ export default function HeroSection({
               <div
                 className="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] backdrop-blur-md"
                 style={{
-                  background: isLightAppearance ? "rgba(255,255,255,0.78)" : "rgba(8,18,38,0.78)",
+                  background: isLightAppearance ? "rgba(238,247,255,0.86)" : "rgba(8,18,38,0.78)",
                   borderColor: isLightAppearance
                     ? "rgba(190,210,235,0.55)"
                     : "rgba(96,165,250,0.30)",
                   color: isLightAppearance ? "#1e3a8a" : "#bfdbfe",
                   boxShadow: isLightAppearance
-                    ? "inset 0 1px 0 rgba(220,165,90,0.20), 0 2px 8px rgba(15,30,60,0.08)"
-                    : "inset 0 1px 0 rgba(220,165,90,0.22), 0 2px 12px rgba(2,6,23,0.30)",
+                    ? "inset 0 1px 0 rgba(196, 144, 65,0.20), 0 2px 8px rgba(15,30,60,0.08)"
+                    : "inset 0 1px 0 rgba(196, 144, 65,0.22), 0 2px 12px rgba(2,6,23,0.30)",
                 }}
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
@@ -760,7 +777,13 @@ export default function HeroSection({
                 removed; replaced with a champagne top bezel + amber
                 bottom-edge lamp inset that catches the hero's gold-from-
                 above wash. */}
-            <div className="relative" aria-hidden="true">
+            <div className="relative">
+              {/* Wrapper aria-hidden removed (V-007 fix, 2026-05-05): this
+                  wrapper contains the focusable double-tap target button.
+                  aria-hidden on a focused-element ancestor blocks AT exposure
+                  AND triggers a Chrome focus-management warning. Decorative
+                  child layers below carry their own aria-hidden as needed.
+                  See docs/AUDIT_VISUAL_DEEP_2026-05-05_SONNET.md V-007. */}
               {/* Hero polish 2026-05-03 — outer bloom expanded so the map
                   card dissolves into the hero atmosphere instead of reading
                   as a discrete rectangle pasted on top. Three layers now:
@@ -781,8 +804,22 @@ export default function HeroSection({
                 className="absolute -inset-24 rounded-[3.25rem] blur-3xl pointer-events-none"
                 style={{
                   background: isLightAppearance
-                    ? "radial-gradient(ellipse 85% 75% at 50% 30%, rgba(220,165,90,0.14), transparent 68%)"
-                    : "radial-gradient(ellipse 85% 75% at 50% 25%, rgba(220,165,90,0.18), transparent 68%)",
+                    ? "radial-gradient(ellipse 85% 75% at 50% 30%, rgba(196, 144, 65,0.14), transparent 68%)"
+                    : "radial-gradient(ellipse 85% 75% at 50% 25%, rgba(196, 144, 65,0.18), transparent 68%)",
+                }}
+              />
+              {/* Bucket 5.7 (KI-074 partial): dual-source counter-glow on
+                  the desktop hero map shell — cool blue sky catch at top-left
+                  + warm bronze lamp catch at bottom-right. Mirrors the mobile
+                  hero counter-glow at wider scale to match the desktop hero's
+                  open atmosphere. Locks the map into the lamp-from-above +
+                  cool-floor convention. */}
+              <div
+                aria-hidden="true"
+                className="absolute -inset-16 rounded-[3rem] blur-3xl pointer-events-none"
+                style={{
+                  background:
+                    "radial-gradient(ellipse 55% 50% at 0% 0%, rgba(96, 165, 250, 0.12), transparent 65%), radial-gradient(ellipse 55% 50% at 100% 100%, rgba(196, 130, 45, 0.10), transparent 65%)",
                 }}
               />
               {/* Inner edge bleed — sits flush around the card, bridging
@@ -816,10 +853,10 @@ export default function HeroSection({
                 style={{
                   aspectRatio: "16/10",
                   maxHeight: "520px",
-                  background: isLightAppearance ? "#eef4fb" : "#0d1d3a",
+                  background: isLightAppearance ? "#dbe7f5" : "#0d1d3a",
                   boxShadow: isLightAppearance
-                    ? "0 18px 60px rgba(15, 30, 60, 0.10), 0 0 80px rgba(37, 99, 235, 0.10), 0 0 140px rgba(220,165,90,0.08), inset 0 1px 0 rgba(255,255,255,0.62), inset 0 -1px 0 rgba(220,165,90,0.18), inset 0 2px 12px rgba(255,255,255,0.20)"
-                    : "0 22px 70px rgba(2, 6, 23, 0.42), 0 0 90px rgba(37, 99, 235, 0.14), 0 0 160px rgba(220,165,90,0.10), inset 0 1px 0 rgba(220,165,90,0.18), inset 0 -1px 0 rgba(220,165,90,0.16), inset 0 2px 12px rgba(96, 165, 250, 0.10)",
+                    ? "0 18px 60px rgba(15, 30, 60, 0.10), 0 0 80px rgba(37, 99, 235, 0.10), 0 0 140px rgba(196, 144, 65,0.08), inset 0 1px 0 rgba(255,255,255,0.62), inset 0 -1px 0 rgba(196, 144, 65,0.18), inset 0 2px 12px rgba(255,255,255,0.20)"
+                    : "0 22px 70px rgba(2, 6, 23, 0.42), 0 0 90px rgba(37, 99, 235, 0.14), 0 0 160px rgba(196, 144, 65,0.10), inset 0 1px 0 rgba(196, 144, 65,0.18), inset 0 -1px 0 rgba(196, 144, 65,0.16), inset 0 2px 12px rgba(96, 165, 250, 0.10)",
                   WebkitMaskImage:
                     "linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.55) 4%, #000 11%, #000 100%)",
                   maskImage:
@@ -833,18 +870,18 @@ export default function HeroSection({
                   preserveAspectRatio="xMidYMid slice"
                   aria-hidden="true"
                 >
-                  <rect width="800" height="500" fill={isLightAppearance ? "#eef4fb" : "#0d1d3a"} />
+                  <rect width="800" height="500" fill={isLightAppearance ? "#dbe7f5" : "#0d1d3a"} />
                   {/* Major arteries */}
                   <path
                     d="M 0,180 Q 200,200 400,170 T 800,200"
-                    stroke={isLightAppearance ? "#cbd5e1" : "#334155"}
+                    stroke={isLightAppearance ? "#94a3b8" : "#334155"}
                     strokeWidth="3.5"
                     fill="none"
                     opacity="0.85"
                   />
                   <path
                     d="M 0,330 Q 250,290 500,320 T 800,310"
-                    stroke={isLightAppearance ? "#cbd5e1" : "#334155"}
+                    stroke={isLightAppearance ? "#94a3b8" : "#334155"}
                     strokeWidth="3"
                     fill="none"
                     opacity="0.7"
@@ -852,14 +889,14 @@ export default function HeroSection({
                   {/* Vertical secondary roads */}
                   <path
                     d="M 200,0 Q 230,200 210,500"
-                    stroke={isLightAppearance ? "#dde6f0" : "#293449"}
+                    stroke={isLightAppearance ? "#a8b8cb" : "#293449"}
                     strokeWidth="2"
                     fill="none"
                     opacity="0.6"
                   />
                   <path
                     d="M 580,0 Q 620,250 560,500"
-                    stroke={isLightAppearance ? "#dde6f0" : "#293449"}
+                    stroke={isLightAppearance ? "#a8b8cb" : "#293449"}
                     strokeWidth="2"
                     fill="none"
                     opacity="0.55"
@@ -867,14 +904,14 @@ export default function HeroSection({
                   {/* Small connector accents */}
                   <path
                     d="M 380,80 Q 420,90 470,75"
-                    stroke={isLightAppearance ? "#cbd5e1" : "#334155"}
+                    stroke={isLightAppearance ? "#94a3b8" : "#334155"}
                     strokeWidth="1.5"
                     fill="none"
                     opacity="0.4"
                   />
                   <path
                     d="M 100,420 Q 140,410 180,425"
-                    stroke={isLightAppearance ? "#cbd5e1" : "#334155"}
+                    stroke={isLightAppearance ? "#94a3b8" : "#334155"}
                     strokeWidth="1.5"
                     fill="none"
                     opacity="0.4"
@@ -978,10 +1015,10 @@ export default function HeroSection({
                     borderColor: isLightAppearance
                       ? "rgba(140,82,22,0.32)"
                       : "rgba(196,144,65,0.36)",
-                    color: isLightAppearance ? "#7c4a16" : "#fde6c0",
+                    color: isLightAppearance ? "#7c4a16" : "#fcefd0",
                     boxShadow: isLightAppearance
                       ? "inset 0 1px 0 rgba(252,240,212,0.92), 0 2px 10px rgba(15,30,60,0.10)"
-                      : "inset 0 1px 0 rgba(228,175,100,0.22), 0 2px 12px rgba(2,6,23,0.34)",
+                      : "inset 0 1px 0 rgba(196, 144, 65, 0.22), inset 0 -1px 0 rgba(140, 82, 22, 0.22), 0 0 0 1px rgba(96, 165, 250, 0.18), 0 16px 32px rgba(2, 6, 23, 0.30), 0 4px 12px rgba(2, 6, 23, 0.22), 0 0 60px rgba(196, 130, 45, 0.12)",
                   }}
                 >
                   Double-tap for full map
@@ -1002,10 +1039,11 @@ export default function HeroSection({
                 animationDelay: "2.5s",
                 borderColor: isLightAppearance ? "rgba(190,205,230,0.28)" : "rgba(96,165,250,0.18)",
                 background: isLightAppearance
-                  ? "linear-gradient(180deg, rgba(255, 255, 255, 0.86) 0%, rgba(248, 250, 253, 0.78) 100%)"
+                  ? // Cool blue-cream glass replaces near-white surface (LAW).
+                    "linear-gradient(180deg, rgba(238, 247, 255, 0.92) 0%, rgba(219, 234, 254, 0.84) 100%)"
                   : "linear-gradient(180deg, rgba(18, 36, 60, 0.92) 0%, rgba(12, 25, 41, 0.88) 100%)",
                 boxShadow: isLightAppearance
-                  ? "0 12px 36px rgba(15, 30, 60, 0.10), 0 2px 8px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.92), 0 0 24px rgba(59, 130, 246, 0.10)"
+                  ? "0 12px 36px rgba(15, 30, 60, 0.10), 0 2px 8px rgba(0,0,0,0.05), inset 0 1px 0 rgba(252, 240, 208, 0.92), 0 0 24px rgba(59, 130, 246, 0.10)"
                   : "0 10px 32px rgba(2, 6, 23, 0.34), inset 0 1px 0 rgba(96, 165, 250, 0.10), 0 0 28px rgba(59, 130, 246, 0.14)",
               }}
             >
@@ -1049,10 +1087,11 @@ export default function HeroSection({
                 animationDelay: "1.5s",
                 borderColor: isLightAppearance ? "rgba(190,205,230,0.26)" : "rgba(96,165,250,0.18)",
                 background: isLightAppearance
-                  ? "linear-gradient(180deg, rgba(255, 255, 255, 0.86) 0%, rgba(248, 250, 253, 0.78) 100%)"
+                  ? // Cool blue-cream glass replaces near-white surface (LAW).
+                    "linear-gradient(180deg, rgba(238, 247, 255, 0.92) 0%, rgba(219, 234, 254, 0.84) 100%)"
                   : "linear-gradient(180deg, rgba(18, 36, 60, 0.92) 0%, rgba(12, 25, 41, 0.88) 100%)",
                 boxShadow: isLightAppearance
-                  ? "0 14px 40px rgba(15, 30, 60, 0.10), 0 2px 8px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.92), 0 0 24px rgba(16, 185, 129, 0.10)"
+                  ? "0 14px 40px rgba(15, 30, 60, 0.10), 0 2px 8px rgba(0,0,0,0.05), inset 0 1px 0 rgba(252, 240, 208, 0.92), 0 0 24px rgba(16, 185, 129, 0.10)"
                   : "0 12px 36px rgba(2, 6, 23, 0.36), inset 0 1px 0 rgba(96, 165, 250, 0.10), 0 0 28px rgba(16, 185, 129, 0.14)",
               }}
             >
