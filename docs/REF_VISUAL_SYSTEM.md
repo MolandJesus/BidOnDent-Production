@@ -142,12 +142,28 @@ Adopted: report flow (StepDescription etc.), shop+insurer onboarding, auth (Logi
 
 ### Atmosphere & motion
 
-| Class                                      | Purpose                                                                                                       |
-| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
-| `bd-bloom-atmosphere`                      | Hero entry-bloom container. Renders atmosphere with a 700-ish ms ease-in. `is-hidden` / `is-visible` toggles. |
-| `bd-dashboard-atmosphere`                  | Dashboard root atmosphere. Top-anchored radial glow, cool-blue family, no animation.                          |
-| `bd-shell-header` (+ `--light` / `--dark`) | App shell header glass with gold-lamp trim.                                                                   |
-| `bd-section-eyebrow`                       | Section eyebrow badge styling.                                                                                |
+| Class                                      | Purpose                                                                                                                                                            |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `bd-bloom-atmosphere`                      | Hero entry-bloom container. Renders atmosphere with a 700-ish ms ease-in. `is-hidden` / `is-visible` toggles. No ambient drift (scroll-entry transition only).     |
+| `bd-dashboard-atmosphere`                  | Dashboard root atmosphere. Living premium gold liquid-glass lava — `::before` (top lamp + side bloom, `orbDrift 28s`) + `::after` (counter-glow, `orbDrift 36s reverse −9s`). Pass 15 (2026-05-06). |
+| `bd-landing-section-toplamp`               | Landing section top lamp. Living lava — `::before` (warm lamp, `orbDrift 32s`) + `::after` (off-axis bloom, `orbDrift 44s reverse −11s`). Pass 16a (2026-05-06).    |
+| `bd-landing-section-bottomwash`            | Landing section bottom depth wash. Living lava — `::before` (navy depth, `orbDrift 24s`) + `::after` (cyan companion, `orbDrift 38s reverse −7s`). Pass 16b (2026-05-06). |
+| `bd-shell-header` (+ `--light` / `--dark`) | App shell header glass with gold-lamp trim.                                                                                                                        |
+| `bd-section-eyebrow`                       | Section eyebrow badge styling.                                                                                                                                     |
+
+#### Living-lava period-spread rule (RULE — do not break)
+
+All ambient-drift atmosphere surfaces compose from the canonical `orbDrift` keyframe (per LAW Animation: "compose from this set FIRST"). Each surface uses a **different prime-relative period pair** so no two surfaces ever synchronize across the app:
+
+| Surface                         | `::before` period | `::after` period | Phase offset |
+| ------------------------------- | ----------------- | ---------------- | ------------ |
+| `bd-dashboard-atmosphere`       | 28s               | 36s reverse      | −9s          |
+| `bd-landing-section-toplamp`    | 32s               | 44s reverse      | −11s         |
+| `bd-landing-section-bottomwash` | 24s               | 38s reverse      | −7s          |
+
+Adding a new ambient-drift surface? Pick a **new period pair** that does not match any row above and is not a perceptible round number (avoid 30s, 45s, 60s). Same recipe: pseudo-element split, body `background: transparent` to honor the LAW 0.22 single-layer alpha cap on warm gold, `prefers-reduced-motion: reduce` block kills animation while pseudos still paint the static layered look. Update this table in the same pass.
+
+`.bd-bloom-atmosphere` is intentionally **excluded** from the period-spread rule because it already animates via scroll-entry transform/opacity transition; double-stacking with `orbDrift` is owner-gated.
 
 ### Liquid Map Intelligence layer (hero scene)
 
