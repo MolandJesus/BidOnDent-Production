@@ -296,7 +296,7 @@ Pass M/N/O alpha-lift trilogy shipped 2026-05-05 — owner visual verdict pendin
 
 ### Future: Landing sections — more gold areas + premium lighting (PARTIALLY IMPLEMENTED via Pass G/H/M/N/O)
 
-Owner directive captured 2026-05-04: "for future landing page design updates, sections still need work as well as more gold areas and lighting prmium." Verified visually by 2026-05-04 evening screenshots showing the cool navy "Opportunity Through Transparency" section's three trust cards reading as cool-blue glass without the premium gold lighting that the warm bronze "Why Choose BidOnDent?" section carries.
+Owner directive captured 2026-05-04: "for future landing page design updates, sections still need work as well as more gold areas and lighting premium." Verified visually by 2026-05-04 evening screenshots showing the cool navy "Opportunity Through Transparency" section's three trust cards reading as cool-blue glass without the premium gold lighting that the warm bronze "Why Choose BidOnDent?" section carries.
 
 Direction (originally planned, status updated inline):
 
