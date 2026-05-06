@@ -718,11 +718,20 @@ body {
 /* ── MapLibre GL popup theming (un-layered to override MapLibre defaults) ── */
 /* MapLibre's default CSS is un-layered; @layer rules cannot override it.    */
 
-/* Light mode popups — liquid glass treatment */
+/* Light mode popups — liquid glass treatment.
+   Pass 13f (2026-05-06) — migrated off pure-white-leaning chrome to the
+   cool blue glass family that matches `.bd-glass-card--dashboard` light
+   mode. Removes 4 pure-white LAW slips:
+     border          rgba(255, 255, 255, 0.72) → rgba(147, 197, 253, 0.54)
+     bg first stop   rgba(255, 255, 255, 0.82) → rgba(232, 242, 254, 0.84)
+     inset highlight rgba(255, 255, 255, 0.50) → rgba(252, 240, 208, 0.50)
+     (bottom inset slate 0.06 stays — under cap and adds depth)
+   Visual delta: very small. Popup still reads as light glass; the cool
+   tint matches the dashboard panel family + the surrounding map UI. */
 .maplibregl-popup-content {
-  border: 1px solid rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(147, 197, 253, 0.54);
   border-radius: 1.5rem;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(241, 245, 249, 0.76));
+  background: linear-gradient(180deg, rgba(232, 242, 254, 0.84), rgba(241, 245, 249, 0.76));
   color: rgb(15 23 42);
   padding: 0.9rem 1rem;
   backdrop-filter: blur(28px) saturate(1.12);
@@ -730,7 +739,7 @@ body {
   box-shadow:
     0 24px 60px rgba(15, 23, 42, 0.14),
     0 8px 26px rgba(59, 130, 246, 0.06),
-    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 1px 0 rgba(252, 240, 208, 0.5),
     inset 0 -1px 0 rgba(148, 163, 184, 0.06);
   font-family: "SF Pro Display", "SF Pro Text", "Segoe UI", sans-serif;
   animation: mapPopupEnter 280ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
@@ -782,7 +791,8 @@ body {
 }
 
 .maplibregl-popup-tip {
-  border-top-color: rgba(255, 255, 255, 0.72);
+  /* Pass 13f — matches the popup border migration above (cool blue 0.54). */
+  border-top-color: rgba(147, 197, 253, 0.54);
 }
 
 .maplibregl-popup-close-button {
