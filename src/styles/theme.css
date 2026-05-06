@@ -1820,6 +1820,21 @@ body {
     0 0 8px rgba(147, 197, 253, 0.1);
 }
 
+/* Pass 9 Polish #9 (2026-05-06): Dark-mode metallic-gold rim on primary CTA.
+   Base .bd-dashboard-primary-button rim is rgba(255,255,255,0.1) — white at
+   low alpha. In dark mode against navy surface the rim reads as a faint
+   white sliver while the existing gold inset (0.18) + gold halo (0.14) sit
+   underneath. This override completes the metallic look by promoting the
+   rim itself into the locked top-lamp gold family, matching the rim
+   alpha grammar set by Pass 9 #3-#5 (card 0.32 / panel 0.26 / badge 0.36 →
+   primary CTA 0.34, between card and badge per attention hierarchy).
+   Light mode untouched (.dark scoped). Hover keeps its existing cool-blue
+   structural ring (depth-bar criterion 8) — gold rim + cool ring layer
+   together on hover for a metallic-catches-light feel. */
+.dark .bd-dashboard-primary-button {
+  border-color: rgba(196, 144, 65, 0.34);
+}
+
 /* ─── Dark Glass Surface: Text Color Auto-Adaptation ─────────────────────────
    Glass surfaces get dark backgrounds via the .dark ancestor selector.
    Automatically remap common light-theme text utilities to dark-safe equivalents.

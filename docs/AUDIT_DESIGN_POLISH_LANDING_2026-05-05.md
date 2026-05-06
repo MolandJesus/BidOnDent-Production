@@ -196,3 +196,54 @@ Cool-blue body + royal-blue text preserved (badge identity unchanged). Locked Pr
 
 **Note logged for follow-up (NOT fixed in this polish):** `.bd-dashboard-atmosphere` dark rule (line 1768) contains `rgba(220, 150, 60, 0.14)` — not on the explicit forbidden list, but drifting close to the banned `220,140,50`. Pre-existing, owner-tuned. Out of scope here; flag for a future palette-conformance pass.
 
+
+---
+
+## Pass 9 Polish #9 — Dark-mode metallic-gold rim on `.bd-dashboard-primary-button` (2026-05-06)
+
+**HEAD at start:** `7e133b99`
+
+**Polish target (one sentence):** Base `.bd-dashboard-primary-button` (used by 48 components: Hero CTAs, dashboard primary actions, all CTA sections) has gold INSET trim (`rgba(196,144,65,0.18)` bottom inset) + gold OUTER halo (`rgba(196,130,45,0.14)`) but the actual border-color is `rgba(255,255,255,0.1)` — pure white. In dark mode against navy surface, the rim reads as a faint white sliver that does not catch light, so the button reads as "dark blue rectangle with gold under-glow" instead of "metallic gold-rimmed CTA tile" — incomplete metallic look. The reviewer's standing authorization (post-batch-#3-#5) explicitly approved "Hero CTA tile metallic-gold rim refinement" with the constraint "Dark mode only. Test light mode after to confirm zero regression."
+
+**Change applied:** [`src/styles/theme.css:1823-1834`](../src/styles/theme.css)
+
+Single new `.dark`-scoped rule, single property:
+
+```css
+.dark .bd-dashboard-primary-button {
+  border-color: rgba(196, 144, 65, 0.34);
+}
+```
+
+**Rim alpha grammar context:**
+
+| Surface | Rim alpha (Pass 9) | Polish # |
+| --- | --- | --- |
+| `.bd-glass-card` (base) | 0.32 | #3 |
+| `.bd-glass-panel` | 0.26 | #4 |
+| `.bd-glass-badge` | 0.36 | #5 |
+| `.bd-dashboard-primary-button` (new) | **0.34** | **#9** |
+
+Primary CTA at 0.34 sits between card (0.32, passive surface) and badge (0.36, micro-element) — appropriate for an attention-grabbing interactive surface that's neither maximally calm nor maximally tight.
+
+**Hover behavior unchanged:** `.bd-dashboard-primary-button:hover:not(:disabled)` already defines a cool-blue 1px structural ring at `rgba(96,165,250,0.32)` (depth-bar criterion 8). With the new gold rim at 0.34 underneath, hover now produces a layered effect — gold metallic rim + cool-blue structural ring lighting up at the same edge — which is the "metallic catches structural light" cue the family was missing.
+
+**Files touched:** 1 (`src/styles/theme.css` — single 12-line block insertion).
+
+**Surface area:** 48 component consumers across landing CTA sections, dashboard primary actions, About/InsurerPartnership/CTASection screens, error boundary recovery — all promoted to gold-rimmed in dark mode without component changes.
+
+**Validation:**
+
+- Build: ✓ clean (`63 entries (3827.21 KiB)` precached, no errors).
+- Diagnostics on `theme.css`: only the pre-existing duplicate-selector warning at L1919/L2800 (unrelated to this edit; was already there).
+- §9.1 forbidden-color sweep on `theme.css`: 0 hits for `220,165,90` / `254,248,220` / `160,95,25` / `220,140,50` — only locked Premium Gold Palette top-lamp value used (`196,144,65`).
+- §9.3 reduced-motion: no transform/animation added — `border-color` change only.
+- Light mode: untouched (rule is `.dark` scoped). White-rim base rule still applies in light mode where the gold inset + warm canvas already provide the metallic feel.
+- Apex canon (`MOLANDJESUS_DESIGN_DECISIONS.md`): unmodified.
+
+**Risk:** Lowest in Pass 9 so far. One property override on a `.dark`-scoped selector. Locked palette value. No motion change. Hover grammar preserved.
+
+**Cumulative Pass 9 status:** 9 polishes shipped (#1 trust pills, #2 hero badge, #3 base card, #4 panel, #5 badge, #6 quick-action hover, #7 landing CTA cards, #8 header dropdowns, #9 primary CTA rim) + 1 reverted attempt + KI-117 docs entry. Composite sweep `composite-after-batch-345/` (7 PNGs) covers state through #8.
+
+**Open observation (still pending owner ruling):** `rgba(220, 150, 60, *)` atmospheric gradient drift in 3 sites (`theme.css:1226`, `:1486`, `:1767`) — adjacent to but NOT on the explicit forbidden list. Per autopilot legality binary check, decision-state is not unchanged → autopilot must skip; surface for owner ruling.
+
