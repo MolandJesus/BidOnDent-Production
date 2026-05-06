@@ -142,14 +142,14 @@ Adopted: report flow (StepDescription etc.), shop+insurer onboarding, auth (Logi
 
 ### Atmosphere & motion
 
-| Class                                      | Purpose                                                                                                                                                            |
-| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `bd-bloom-atmosphere`                      | Hero entry-bloom container. Renders atmosphere with a 700-ish ms ease-in. `is-hidden` / `is-visible` toggles. No ambient drift (scroll-entry transition only).     |
+| Class                                      | Purpose                                                                                                                                                                                             |
+| ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `bd-bloom-atmosphere`                      | Hero entry-bloom container. Renders atmosphere with a 700-ish ms ease-in. `is-hidden` / `is-visible` toggles. No ambient drift (scroll-entry transition only).                                      |
 | `bd-dashboard-atmosphere`                  | Dashboard root atmosphere. Living premium gold liquid-glass lava — `::before` (top lamp + side bloom, `orbDrift 28s`) + `::after` (counter-glow, `orbDrift 36s reverse −9s`). Pass 15 (2026-05-06). |
-| `bd-landing-section-toplamp`               | Landing section top lamp. Living lava — `::before` (warm lamp, `orbDrift 32s`) + `::after` (off-axis bloom, `orbDrift 44s reverse −11s`). Pass 16a (2026-05-06).    |
-| `bd-landing-section-bottomwash`            | Landing section bottom depth wash. Living lava — `::before` (navy depth, `orbDrift 24s`) + `::after` (cyan companion, `orbDrift 38s reverse −7s`). Pass 16b (2026-05-06). |
-| `bd-shell-header` (+ `--light` / `--dark`) | App shell header glass with gold-lamp trim.                                                                                                                        |
-| `bd-section-eyebrow`                       | Section eyebrow badge styling.                                                                                                                                     |
+| `bd-landing-section-toplamp`               | Landing section top lamp. Living lava — `::before` (warm lamp, `orbDrift 32s`) + `::after` (off-axis bloom, `orbDrift 44s reverse −11s`). Pass 16a (2026-05-06).                                    |
+| `bd-landing-section-bottomwash`            | Landing section bottom depth wash. Living lava — `::before` (navy depth, `orbDrift 24s`) + `::after` (cyan companion, `orbDrift 38s reverse −7s`). Pass 16b (2026-05-06).                           |
+| `bd-shell-header` (+ `--light` / `--dark`) | App shell header glass with gold-lamp trim.                                                                                                                                                         |
+| `bd-section-eyebrow`                       | Section eyebrow badge styling.                                                                                                                                                                      |
 
 #### Living-lava period-spread rule (RULE — do not break)
 
