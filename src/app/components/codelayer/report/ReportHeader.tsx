@@ -38,7 +38,8 @@ export default function ReportHeader({
           }`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 14px 24px rgba(59, 130, 246, 0.10), inset 0 1px 0 rgba(255,255,255,0.8)"
+              ? // Pass 28: cream-gold top inset per locked Premium Gold Palette.
+                "0 14px 24px rgba(59, 130, 246, 0.10), inset 0 1px 0 rgba(252,240,208,0.8)"
               : "0 18px 28px rgba(2, 6, 23, 0.24), inset 0 1px 0 rgba(255,255,255,0.08)",
           }}
         >

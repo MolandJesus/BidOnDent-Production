@@ -322,7 +322,8 @@ export default function CoverageNearestShops({
             style={{
               boxShadow:
                 tone === "light"
-                  ? "0 6px 20px rgba(59,130,246,0.14), inset 0 1px 0 rgba(255,255,255,0.65)"
+                  ? // Pass 28: cream-gold inset highlight per locked Premium Gold Palette.
+                    "0 6px 20px rgba(59,130,246,0.14), inset 0 1px 0 rgba(252,240,208,0.65)"
                   : "0 0 22px rgba(59,130,246,0.22), inset 0 1px 0 rgba(147,197,253,0.20)",
             }}
           >
