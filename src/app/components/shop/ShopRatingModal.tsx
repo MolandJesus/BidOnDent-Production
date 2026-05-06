@@ -90,7 +90,11 @@ export default function ShopRatingModal({
           }`}
         >
           <h2 className="text-xl font-bold">Rate {shopName}</h2>
-          <button onClick={onClose} aria-label="Close rating" className="bd-glass-control--secondary p-1">
+          <button
+            onClick={onClose}
+            aria-label="Close rating"
+            className="bd-glass-control--secondary p-1"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>

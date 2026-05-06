@@ -42,51 +42,51 @@ export function useInsurerClaimNotifications({
       if (!mounted) return;
       currentUnsubscribe = realtimeReportService.subscribeToReportUpdates(
         (report: RealtimeReportPayload) => {
-        // We get ALL report updates — for insurers, all are relevant claims
-        const status = report.status ?? "";
+          // We get ALL report updates — for insurers, all are relevant claims
+          const status = report.status ?? "";
 
-        // Only notify for meaningful claim-lifecycle transitions
-        const isClaimEvent =
-          status === "in-review" || status === "completed" || status === "cancelled";
+          // Only notify for meaningful claim-lifecycle transitions
+          const isClaimEvent =
+            status === "in-review" || status === "completed" || status === "cancelled";
 
-        if (!isClaimEvent) return;
+          if (!isClaimEvent) return;
 
-        const vehicle = [report.vehicleYear, report.vehicleMake, report.vehicleModel]
-          .filter(Boolean)
-          .join(" ");
+          const vehicle = [report.vehicleYear, report.vehicleMake, report.vehicleModel]
+            .filter(Boolean)
+            .join(" ");
 
-        const title =
-          status === "completed"
-            ? "Claim resolved"
-            : status === "in-review"
-              ? "Claim under review"
-              : "Claim cancelled";
+          const title =
+            status === "completed"
+              ? "Claim resolved"
+              : status === "in-review"
+                ? "Claim under review"
+                : "Claim cancelled";
 
-        const body =
-          status === "completed"
-            ? vehicle
-              ? `${vehicle} — claim has been resolved.`
-              : "A claim has been resolved."
-            : status === "in-review"
+          const body =
+            status === "completed"
               ? vehicle
-                ? `${vehicle} — claim is being reviewed.`
-                : "A claim is being reviewed."
-              : vehicle
-                ? `${vehicle} — claim was cancelled.`
-                : "A claim was cancelled.";
+                ? `${vehicle} — claim has been resolved.`
+                : "A claim has been resolved."
+              : status === "in-review"
+                ? vehicle
+                  ? `${vehicle} — claim is being reviewed.`
+                  : "A claim is being reviewed."
+                : vehicle
+                  ? `${vehicle} — claim was cancelled.`
+                  : "A claim was cancelled.";
 
-        notifications.push({
-          category: "report",
-          title,
-          body,
-          payload: { reportId: report.id, status },
-          userId: "",
-          deepLink: { screen: "report", reportId: report.id },
-          priority: status === "completed" ? "high" : "normal",
-        });
+          notifications.push({
+            category: "report",
+            title,
+            body,
+            payload: { reportId: report.id, status },
+            userId: "",
+            deepLink: { screen: "report", reportId: report.id },
+            priority: status === "completed" ? "high" : "normal",
+          });
 
-        onChangeRef.current?.();
-      }
+          onChangeRef.current?.();
+        }
       );
     }
 
