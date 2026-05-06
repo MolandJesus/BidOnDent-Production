@@ -4319,22 +4319,70 @@ body {
   height: 320px;
   pointer-events: none;
   z-index: 0;
+  overflow: hidden;
   /* Pass H1.7 + H9 + N progression: H1.7 boosted 0.06 -> 0.10 light /
      0.10 -> 0.16 dark. H9 took one more step toward hero-parity within
      canon: 0.10 -> 0.13 light, 0.16 -> 0.20 dark. Pass N (2026-05-04)
      completes the Pass M lift pattern by bumping LIGHT 0.13 -> 0.18
      to address owner's zoomed-out screenshot wash thinness signal in
      light-mode landing. Dark unchanged (still 0.20). All still under
-     0.22a single-layer halo cap. */
+     0.22a single-layer halo cap.
+
+     Pass 16a (2026-05-06): living premium gold liquid-glass lava extends
+     from dashboard atmosphere to landing sections per owner standing
+     directive. Body becomes transparent so peak alpha never doubles when
+     ::before + ::after stack (preserves LAW 0.22 single-layer cap). Two
+     pseudo layers drift on crossing 32s + 44s orbDrift orbits — slower
+     than dashboard (28s + 36s) so landing reads even calmer than the
+     working surface. Reduced-motion: animation removed; pseudos still
+     paint the static lit-room look. */
+  background: transparent;
+}
+.bd-landing-section-toplamp::before,
+.bd-landing-section-toplamp::after {
+  content: "";
+  position: absolute;
+  inset: -8%;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+.bd-landing-section-toplamp::before {
+  /* Primary warm lamp — top-anchored gold cone (light: 0.18 / dark: 0.20). */
   background: radial-gradient(
     ellipse 80% 100% at 50% 0%,
     rgba(196, 144, 65, 0.18),
     transparent 70%
   );
+  animation: orbDrift 32s ease-in-out infinite;
+}
+.bd-landing-section-toplamp::after {
+  /* Secondary side bloom — off-axis warm halo (light: 0.10) drifting
+     opposite the lamp so the gold appears to circulate slowly across
+     the section width. */
+  background: radial-gradient(ellipse 50% 70% at 75% 20%, rgba(220, 150, 60, 0.1), transparent 65%);
+  animation: orbDrift 44s ease-in-out -11s infinite reverse;
 }
 [data-theme="dark"] .bd-landing-section-toplamp,
 .dark .bd-landing-section-toplamp {
+  background: transparent;
+}
+[data-theme="dark"] .bd-landing-section-toplamp::before,
+.dark .bd-landing-section-toplamp::before {
   background: radial-gradient(ellipse 80% 100% at 50% 0%, rgba(196, 144, 65, 0.2), transparent 70%);
+}
+[data-theme="dark"] .bd-landing-section-toplamp::after,
+.dark .bd-landing-section-toplamp::after {
+  /* Dark side bloom slightly brighter than light — preserves the warm
+     hero-parity feel without exceeding canon. */
+  background: radial-gradient(ellipse 50% 70% at 75% 20%, rgba(220, 150, 60, 0.14), transparent 65%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .bd-landing-section-toplamp::before,
+  .bd-landing-section-toplamp::after {
+    animation: none;
+    transform: none;
+    will-change: auto;
+  }
 }
 
 /* Pass H9 + O (KI-091): companion to .bd-landing-section-toplamp. Cool blue
@@ -4354,15 +4402,63 @@ body {
   height: 240px;
   pointer-events: none;
   z-index: 0;
+  overflow: hidden;
+  /* Pass 16b (2026-05-06): living-lava extension — primary navy depth
+     stays anchored at the bottom while a faint cyan companion drifts on
+     a slower opposite orbit. Bottom feels more settled than the top
+     lamp (24s primary vs 32s lamp; 38s companion vs 44s lamp side-bloom)
+     so the section reads as gold-from-above + breathing-cool-from-below.
+     Body transparent so layers don't double-stack. */
+  background: transparent;
+}
+.bd-landing-section-bottomwash::before,
+.bd-landing-section-bottomwash::after {
+  content: "";
+  position: absolute;
+  inset: -8%;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+.bd-landing-section-bottomwash::before {
+  /* Primary navy depth wash (light: 0.14) — preserves the existing
+     "lit room from above, cool depth below" canon. */
   background: radial-gradient(
     ellipse 90% 100% at 50% 100%,
     rgba(30, 58, 138, 0.14),
     transparent 70%
   );
+  animation: orbDrift 24s ease-in-out infinite;
+}
+.bd-landing-section-bottomwash::after {
+  /* Cyan companion — light cool counter (light: 0.06) drifting opposite
+     so the depth feels alive without violating the cool identity. */
+  background: radial-gradient(ellipse 60% 70% at 25% 90%, rgba(96, 165, 250, 0.06), transparent 65%);
+  animation: orbDrift 38s ease-in-out -7s infinite reverse;
 }
 [data-theme="dark"] .bd-landing-section-bottomwash,
 .dark .bd-landing-section-bottomwash {
+  background: transparent;
+}
+[data-theme="dark"] .bd-landing-section-bottomwash::before,
+.dark .bd-landing-section-bottomwash::before {
+  /* Dark depth preserves pre-existing 0.30 — the cool depth wash is
+     not bound by the cream/halo 0.22 cap (LAW: cool blue is identity,
+     gold is the lit accent). */
   background: radial-gradient(ellipse 90% 100% at 50% 100%, rgba(15, 30, 60, 0.3), transparent 70%);
+}
+[data-theme="dark"] .bd-landing-section-bottomwash::after,
+.dark .bd-landing-section-bottomwash::after {
+  /* Dark cyan companion slightly brighter than light so the under-glow
+     reads against deep navy without overpowering the lamp above. */
+  background: radial-gradient(ellipse 60% 70% at 25% 90%, rgba(96, 165, 250, 0.1), transparent 65%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .bd-landing-section-bottomwash::before,
+  .bd-landing-section-bottomwash::after {
+    animation: none;
+    transform: none;
+    will-change: auto;
+  }
 }
 
 /* Pass H7 (KI-091): landing CTA pill atmospheric glow. Applied to the
