@@ -26,6 +26,7 @@ export default function BidsScreen({
   userType = "customer",
   bids: incomingBids = [],
   bidsLoading = false,
+  connectionStatus = "idle",
   reports = [],
   onAcceptBid,
   onRejectBid,
@@ -228,6 +229,7 @@ export default function BidsScreen({
         lowestPrice={lowestPrice}
         averagePrice={averagePrice}
         fastestBidDays={fastestBidDays}
+        connectionStatus={connectionStatus}
         onBack={onBack}
       />
 

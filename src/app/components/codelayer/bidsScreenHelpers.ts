@@ -10,6 +10,12 @@ export type BidsScreenProps = {
   userType?: "customer" | "shop" | "insurer";
   bids?: Bid[];
   bidsLoading?: boolean;
+  /**
+   * Realtime channel status for the active report's bid stream.
+   * Surfaces via {@link BidsSummaryHeader} as a live/stale chip so users
+   * are not silently served cached data on Realtime disconnect (KI-012).
+   */
+  connectionStatus?: "connected" | "disconnected" | "error" | "idle";
   reports?: DamageReport[];
   onAcceptBid?: (details: {
     bidId: string;

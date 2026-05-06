@@ -1,6 +1,8 @@
 import { motion, useReducedMotion } from "motion/react";
 import { ArrowLeft, Sparkles } from "lucide-react";
 
+type BidsConnectionStatus = "connected" | "disconnected" | "error" | "idle";
+
 type BidsSummaryHeaderProps = {
   isLight: boolean;
   bidCount: number;
@@ -8,8 +10,49 @@ type BidsSummaryHeaderProps = {
   lowestPrice: number;
   averagePrice: number;
   fastestBidDays: number;
+  connectionStatus?: BidsConnectionStatus;
   onBack?: () => void;
 };
+
+function getLiveStatusChip(status: BidsConnectionStatus, isLight: boolean) {
+  // "idle" = seed/demo report or no active subscription. Hide chip entirely.
+  if (status === "idle") return null;
+
+  if (status === "connected") {
+    return {
+      label: "Live",
+      title: "Live updates connected. New bids appear instantly.",
+      dotClass: "bg-emerald-500",
+      ringClass: "shadow-[0_0_0_3px_rgba(16,185,129,0.18)]",
+      chipClass: isLight
+        ? "border border-emerald-300/60 bg-emerald-50/85 text-emerald-700"
+        : "border border-emerald-300/30 bg-emerald-400/10 text-emerald-200",
+    };
+  }
+
+  if (status === "error") {
+    return {
+      label: "Reconnecting…",
+      title: "Live updates interrupted. Retrying — values shown are the last known.",
+      dotClass: "bg-amber-500",
+      ringClass: "shadow-[0_0_0_3px_rgba(245,158,11,0.18)]",
+      chipClass: isLight
+        ? "border border-amber-300/60 bg-amber-50/85 text-amber-700"
+        : "border border-amber-300/30 bg-amber-400/10 text-amber-200",
+    };
+  }
+
+  // "disconnected"
+  return {
+    label: "Offline · last known",
+    title: "Realtime offline. Showing the last loaded bids — refresh to update.",
+    dotClass: "bg-slate-400",
+    ringClass: "",
+    chipClass: isLight
+      ? "border border-slate-300/60 bg-slate-100/85 text-slate-600"
+      : "border border-slate-300/25 bg-white/8 text-slate-200",
+  };
+}
 
 export default function BidsSummaryHeader({
   isLight,
@@ -18,9 +61,11 @@ export default function BidsSummaryHeader({
   lowestPrice,
   averagePrice,
   fastestBidDays,
+  connectionStatus = "idle",
   onBack,
 }: BidsSummaryHeaderProps) {
   const reduceMotion = useReducedMotion();
+  const liveChip = getLiveStatusChip(connectionStatus, isLight);
   const statToneClasses = [
     "bd-dashboard-section--accent-blue",
     "bd-dashboard-section--deep",
@@ -96,6 +141,19 @@ export default function BidsSummaryHeader({
             >
               {bidCount} offers
             </div>
+            {liveChip && (
+              <div
+                className={`bd-dashboard-chip inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${liveChip.chipClass}`}
+                title={liveChip.title}
+                aria-label={liveChip.title}
+              >
+                <span
+                  className={`inline-block h-2 w-2 rounded-full ${liveChip.dotClass} ${liveChip.ringClass}`}
+                  aria-hidden="true"
+                />
+                {liveChip.label}
+              </div>
+            )}
           </div>
         </div>
         <div className="hidden items-center gap-2 md:flex">
@@ -112,6 +170,19 @@ export default function BidsSummaryHeader({
           >
             {bidCount} offers
           </div>
+          {liveChip && (
+            <div
+              className={`bd-dashboard-chip inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium ${liveChip.chipClass}`}
+              title={liveChip.title}
+              aria-label={liveChip.title}
+            >
+              <span
+                className={`inline-block h-2.5 w-2.5 rounded-full ${liveChip.dotClass} ${liveChip.ringClass}`}
+                aria-hidden="true"
+              />
+              {liveChip.label}
+            </div>
+          )}
         </div>
       </div>
 
