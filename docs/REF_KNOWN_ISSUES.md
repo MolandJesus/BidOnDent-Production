@@ -1114,3 +1114,23 @@
 - **Status:** RESOLVED 2026-05-06 (Pass 13). Sonnet's "double unit conversion" theory was incorrect — the formatters (`formatDistance`, `computeETA`, `haversineDistanceMiles` in `src/app/features/navigation/computeNavigationMetrics.ts`) are clean. The actual root cause was `DEFAULT_COORDINATE_ANCHOR` in [`src/app/services/intelligence/directoryAdapterUtils.ts:29`](../src/app/services/intelligence/directoryAdapterUtils.ts#L29) being set to **Dallas, TX** (32.7767, -96.797). Any shop whose `(city, state)` did not match the locked NY metro `CITY_COORDINATE_DIRECTORY` (16 entries) fell back to Dallas + ±0.09°/±0.12° hash jitter. Result: route distances of 700–1500 mi for shops the user perceived as "in-frame" on a NY metro map view. Fix moves the anchor to **White Plains, NY** (41.0534, -73.7629) — the geographic center of the locked NY metro launch region per LAW_PROJECT_RULES.md. The matching test in [`directoryAdapterUtils.test.ts`](../src/app/services/intelligence/directoryAdapterUtils.test.ts) was updated to assert the new bounds.
 - **Discovery:** Pass 12 Phase 1 map coherence audit ([docs/map_coherence_audit_sonnet_2026-05-06.md](map_coherence_audit_sonnet_2026-05-06.md) HSF-1).
 - **Validation:** typecheck PASS, build PASS, vitest 5/5 PASS on `directoryAdapterUtils.test.ts`.
+
+### KI-119: Phase C MapTileSegmentedControl extraction declined (P7-TECHDEBT)
+
+- **Brief:** 2026-05-06 full-autopilot Phase C proposed extracting a shared `MapTileSegmentedControl` from `MapSurfaceControls.tsx` (segmented Map/Night/Satellite pill) and adopting it in a second consumer.
+- **On inspection:** Only ONE segmented-pill consumer exists (`MapSurfaceControls.tsx`). The shop-directory map (`ImmersiveMapTopBar.tsx` cycle button at L126–141) deliberately uses a single-icon CYCLE affordance optimized for the compact immersive top bar — not a 3-button pill. Replacing it with a segmented pill would materially change the affordance and break the compact top-bar layout. Sidebar mode label (`CoverageCommandCenterSidebar.tsx` L41) is read-only text, not a control.
+- **Decision:** Skip extraction. Extracting a 1-consumer component is anti-pattern. Unifying the two affordances is a taste call requiring owner approval, not a sanctioned narrow extraction.
+- **Status:** WONTFIX (intentional design separation between segmented-pill and cycle-button affordances).
+- **Severity:** P7-TECHDEBT (no user impact).
+
+### KI-120: Phase E MapRoutePreviewCard extraction declined (P7-TECHDEBT)
+
+- **Brief:** 2026-05-06 full-autopilot Phase E proposed extracting a shared `MapRoutePreviewCard` from `ShopDirectoryRoutePreviewCard.tsx` and adopting it in `CoverageBrowseExperience` to collapse an apparent "RECENT ROUTE / YOUR ROUTE" 2-card stack into a single floating card.
+- **On inspection:** The "RECENT ROUTE / YOUR ROUTE" pattern in `CoverageBrowseExperience` is NOT two floating map overlays of the same shape. It is two distinct sidebar metric panels with separate roles:
+  - `CoverageCommandCenterSidebar.tsx` L196 — "Recent Route" history strip (sidebar)
+  - `PlannerRoutePreview.tsx` L274 — "Your route" plan strip (sidebar, planner experience)
+- `ShopDirectoryRoutePreviewCard` is a floating map overlay (single active route preview) on the dashboard — different surface, different chrome (`bd-glass-card--map` floating), different role (live navigation preview vs. sidebar history/plan).
+- **Decision:** Skip extraction. Replacing the sidebar metric panels with a single floating map overlay would (a) move persistent metrics into a transient overlay obscuring map content, (b) lose the history-vs-plan distinction, (c) conflict with the existing sidebar role.
+- **Status:** WONTFIX (intentional surface separation between floating map overlays and sidebar metric panels).
+- **Severity:** P7-TECHDEBT (no user impact).
+
