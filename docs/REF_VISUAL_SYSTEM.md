@@ -163,7 +163,7 @@ All ambient-drift atmosphere surfaces compose from the canonical `orbDrift` keyf
 
 Adding a new ambient-drift surface? Pick a **new period pair** that does not match any row above and is not a perceptible round number (avoid 30s, 45s, 60s). Same recipe: pseudo-element split, body `background: transparent` to honor the LAW 0.22 single-layer alpha cap on warm gold, `prefers-reduced-motion: reduce` block kills animation while pseudos still paint the static layered look. Update this table in the same pass.
 
-`.bd-bloom-atmosphere` is intentionally **excluded** from the period-spread rule because it already animates via scroll-entry transform/opacity transition; double-stacking with `orbDrift` is owner-gated.
+`.bd-bloom-atmosphere` is intentionally **excluded** from the period-spread rule (Pass 17b, 2026-05-06): it is the documented **no-drift exception**. The surface already animates via scroll-entry `transform` (scale 0.94 → 1) + `opacity` transition driven by `useScrollAnimation` (`is-hidden` ↔ `is-visible`). Layering `orbDrift` on top would double-stack motion (scroll-entry scale interferes with drift transform; the eye reads it as drift wobble during entry instead of as living current). The scroll-entry transition is its only motion — bringing it into the living-lava ledger requires explicit owner taste-call approval.
 
 ### Liquid Map Intelligence layer (hero scene)
 
