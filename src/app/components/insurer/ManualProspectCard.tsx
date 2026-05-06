@@ -21,7 +21,7 @@ export default function ManualProspectCard({
           <h3 className={`text-lg font-semibold ${isLight ? "text-slate-900" : "text-slate-100"}`}>
             {prospect.name}
           </h3>
-          <span className="rounded-full border border-amber-400/30 bg-amber-400/15 px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-amber-300">
+          <span className="bd-status--warn rounded-full border px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.16em]">
             Manual lead
           </span>
         </div>

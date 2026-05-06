@@ -4435,3 +4435,32 @@ body {
     inset 0 -1px 0 rgba(140, 82, 22, 0.7),
     inset 0 1px 0 rgba(252, 240, 208, 0.35);
 }
+
+/* ============================================================
+   bd-status--warn — small warm status chip / pill (Pass 10 #3)
+   ------------------------------------------------------------
+   For low-prominence inline status indicators that need to
+   read as "warm/attention" without competing with primary
+   action surfaces. Smaller cousin of .bd-button--warn.
+
+   Color tokens only. Layout (px, py, rounded-full, font size,
+   weight, tracking, border) stays per call site so existing
+   chip shapes are preserved unchanged.
+
+   Migrated call sites:
+     - ManualProspectCard.tsx (Manual lead chip)
+     - InsurerClaimsScreen.tsx (mapped-count chip)
+     - InsurerClaimsScreen.tsx (insurance-claim legend pill)
+   ============================================================ */
+
+.bd-status--warn {
+  border-color: rgba(196, 144, 65, 0.34);
+  background: rgba(228, 140, 55, 0.16);
+  color: rgba(253, 220, 160, 1);
+}
+
+[data-appearance-mode="light"] .bd-status--warn {
+  border-color: rgba(140, 82, 22, 0.36);
+  background: rgba(252, 240, 208, 0.7);
+  color: rgba(110, 70, 18, 1);
+}

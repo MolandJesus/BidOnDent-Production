@@ -251,11 +251,7 @@ export default function InsurerClaimsScreen({
       {isSeedData && !reportsLoading && (
         <div className="mx-4 mt-4">
           <div
-            className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium ${
-              isLight
-                ? "bg-amber-50 border border-amber-200/60 text-amber-800"
-                : "bg-amber-500/10 border border-amber-400/20 text-amber-300"
-            }`}
+            className="bd-notice--warn flex items-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium"
           >
             <AlertCircle className="w-4 h-4 flex-shrink-0" />
             <span>
@@ -289,13 +285,7 @@ export default function InsurerClaimsScreen({
                     Geographic distribution of active insurance claims.
                   </p>
                 </div>
-                <span
-                  className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold ${
-                    isLight
-                      ? "bg-amber-50 text-amber-700 border border-amber-200/60"
-                      : "bg-amber-400/14 text-amber-200 border border-amber-300/20"
-                  }`}
-                >
+                <span className="bd-status--warn shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-semibold">
                   {claimPins.length}/{claimsSource.length} mapped
                 </span>
               </div>
@@ -313,12 +303,8 @@ export default function InsurerClaimsScreen({
                   />
                 </div>
                 <div className="flex flex-wrap items-center gap-2 p-3">
-                  <span
-                    className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium ${
-                      isLight ? "bg-amber-100 text-amber-700" : "bg-amber-500/20 text-amber-200"
-                    }`}
-                  >
-                    <span className="h-2 w-2 rounded-full bg-amber-400" />
+                  <span className="bd-status--warn inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-medium">
+                    <span className="h-2 w-2 rounded-full" style={{ background: "rgba(196, 144, 65, 1)" }} />
                     Insurance claim
                   </span>
                 </div>
