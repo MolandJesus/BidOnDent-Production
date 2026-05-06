@@ -1133,4 +1133,3 @@
 - **Decision:** Skip extraction. Replacing the sidebar metric panels with a single floating map overlay would (a) move persistent metrics into a transient overlay obscuring map content, (b) lose the history-vs-plan distinction, (c) conflict with the existing sidebar role.
 - **Status:** WONTFIX (intentional surface separation between floating map overlays and sidebar metric panels).
 - **Severity:** P7-TECHDEBT (no user impact).
-
