@@ -2969,9 +2969,12 @@ body {
      to locked 2026-05-03 premium gold palette (KI-066). Forbidden legacy:
      rgba(196, 144, 65, 0.62).
      Pass 7 (KI-081): dark default 0.62 -> 0.74 — premium gold trim line at
-     the top of every panel/section reads more clearly in dark mode. The
-     light-mode override below holds at 0.62 so light is untouched. */
-  background: linear-gradient(90deg, transparent, rgba(196, 144, 65, 0.74), transparent);
+     the top of every panel/section reads more clearly in dark mode.
+     Pass 11 #2 (owner directive 2026-05-06 "more atmospheric, gold
+     lighting"): dark default 0.74 -> 0.86 — the top trim line now reads
+     as a clear polished gold rail across every panel. Light-mode override
+     below holds at 0.62 (light is untouched). */
+  background: linear-gradient(90deg, transparent, rgba(196, 144, 65, 0.86), transparent);
   pointer-events: none;
 }
 
@@ -2980,7 +2983,6 @@ body {
   position: absolute;
   right: -12%;
   top: -28%;
-  width: 42%;
   aspect-ratio: 1;
   border-radius: 999px;
   /* D4 (final v2): stronger warm corner lamp glow over navy infill.
@@ -2988,10 +2990,14 @@ body {
      lamp uses rgba(196, 144, 65). Forbidden legacy: rgba(196, 130, 45).
      Pass 7 (KI-081): dark default 0.32 -> 0.40 + width 38% -> 42% so the
      corner lamp blob reads as a more atmospheric, larger pool of gold
-     light spilling onto the panel from the upper-right. The light-mode
-     override below holds at the original 0.32 alpha + width: 38% (light
-     is untouched per owner directive — light mode is "amazing as is"). */
-  background: radial-gradient(circle, rgba(196, 144, 65, 0.4) 0%, transparent 72%);
+     light spilling onto the panel from the upper-right.
+     Pass 11 #2 (owner directive 2026-05-06): dark default 0.40 -> 0.50 +
+     width 42% -> 48% — corner lamp now reads as a clear premium pool of
+     gold light. The light-mode override below holds at the original 0.32
+     alpha + width: 38% (light is untouched per owner directive — light
+     mode is "amazing as is"). */
+  background: radial-gradient(circle, rgba(196, 144, 65, 0.5) 0%, transparent 72%);
+  width: 48%;
   pointer-events: none;
 }
 
@@ -3032,13 +3038,16 @@ body {
 .bd-dashboard-panel--deep {
   background: linear-gradient(180deg, rgba(7, 16, 33, 0.96) 0%, rgba(5, 12, 26, 0.92) 100%);
   border-color: rgba(96, 165, 250, 0.22);
+  /* Pass 11 #2 — bring --deep to atmospheric parity with the accent
+     variants (Pass 6 cream sub-rim + halo at LAW cap). */
   box-shadow:
     0 32px 80px rgba(2, 6, 23, 0.46),
     0 12px 24px rgba(2, 6, 23, 0.32),
-    inset 0 1px 0 rgba(196, 144, 65, 0.28),
-    inset 0 -1px 0 rgba(140, 82, 22, 0.28),
+    inset 0 1px 0 rgba(196, 144, 65, 0.36),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.32),
+    inset 0 -2px 0 rgba(252, 240, 208, 0.06),
     0 0 0 1px rgba(96, 165, 250, 0.16),
-    0 0 60px rgba(196, 130, 45, 0.18);
+    0 0 60px rgba(196, 130, 45, 0.22);
 }
 
 /* Pass 6 (KI-081 extension, owner directive 2026-05-06: "more color and
