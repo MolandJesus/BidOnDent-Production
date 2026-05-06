@@ -34,7 +34,8 @@ export default function ReportLayerPopup({
     >
       <div className="min-w-[160px] space-y-1 p-1">
         <div
-          className={`text-[10px] font-semibold uppercase tracking-wider ${isDark ? "text-amber-400/80" : "text-amber-600"}`}
+          className="text-[10px] font-semibold uppercase tracking-wider"
+          style={{ color: isDark ? "rgba(253, 220, 160, 0.92)" : "rgba(110, 70, 18, 1)" }}
         >
           Your Report
         </div>
@@ -66,9 +67,7 @@ export default function ReportLayerPopup({
                   ? isDark
                     ? "bg-slate-700/50 text-slate-300"
                     : "bg-slate-100 text-slate-600"
-                  : isDark
-                    ? "bg-amber-900/50 text-amber-300"
-                    : "bg-amber-100 text-amber-700"
+                  : "bd-status--warn"
             }`}
           >
             {report.status.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
