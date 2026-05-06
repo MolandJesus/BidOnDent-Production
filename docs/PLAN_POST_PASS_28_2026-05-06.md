@@ -34,9 +34,9 @@ Map chrome unified at the `bd-glass-card--map` utility layer. Four surface migra
 
 `DEFAULT_COORDINATE_ANCHOR` moved Dallas TX → White Plains NY. 9 NY metro cities added to `CITY_COORDINATE_DIRECTORY`. 3 region aliases (westchester / hudson valley / new york). Verified at the user surface: dashboard "Find Shops" cards now show in-region NY shops at ~4.5 mi instead of 700+ mi cross-country fallback. **KI-118 RESOLVED.**
 
-### 1.3 LAW pure-white-inset slip cleanup (Pass 9a, 13d–13h, 24, 27, 28)
+### 1.3 LAW pure-white-inset slip cleanup (Pass 9a, 13d–13h, 24, 27, 28, 33)
 
-Every active map chrome + every `bd-*` utility surface + 6 inline `boxShadow` component sites migrated to locked Premium Gold Palette cream `rgba(252,240,208,Xα)`. Repo-wide grep on the canonical surgical pattern `inset 0 1px 0 rgba(255,255,255,0.5+)` across `src/app`: **zero hits.**
+Every active map chrome + every `bd-*` utility surface + 6 inline `boxShadow` component sites + the report progress shell migrated to locked Premium Gold Palette cream `rgba(252,240,208,Xα)`. **Repo-wide closure complete at Pass 33.**
 
 | Pass | Scope                                                                                    | Commit           |
 | ---- | ---------------------------------------------------------------------------------------- | ---------------- |
@@ -49,6 +49,7 @@ Every active map chrome + every `bd-*` utility surface + 6 inline `boxShadow` co
 | 24   | Base `.bd-glass-card` (theme.css)                                                        | `74b0d3a1`       |
 | 27   | `.bd-glass-badge` (theme.css)                                                            | `299e4646`       |
 | 28   | 7 inline `boxShadow` sites across 6 component files                                      | `774f6923`       |
+| 33   | `.bd-report-progress-node` + `.bd-report-progress-rail` (theme.css L2876 / L2889)        | `c4b8caf3`       |
 
 ### 1.4 Bid Realtime trust signal (Pass 14, 19)
 
@@ -124,9 +125,11 @@ Every open item below is gated. The taxonomy makes the gate explicit.
 
 ### 2C — Hard-NO scope (owner override required to unlock)
 
-| Scope                                                                                               | Why locked                                                                                                                                                                                                                              | Unlock cost                                                                          |
-| --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| `.bd-report-progress-*` cream migration (theme.css L2876 / L2889 light-mode insets at 0.96 / 0.98α) | Same exact pattern Pass 28 swept everywhere else, but on the brief's Hard-NO scope per Sonnet Pass 9a audit boundary. Intentional preservation of the report-shell visual identity as a "different surface" from the panel/badge family | Single owner approval; ~6 lines of CSS; completes the LAW slip story across the repo |
+**RESOLVED at Pass 33 (`c4b8caf3`).** Owner directive 2026-05-06 ("go full auto on building") authorized the unlock. Migration shipped with identical Pass 27/28 pattern (cream `rgba(252,240,208,Xα)` replacing forbidden `rgba(255,255,255,Xα)` insets, alpha preserved at 0.98 / 0.96).
+
+| Scope                                                                                               | Status                                                                                                                                                        |
+| --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `.bd-report-progress-*` cream migration (theme.css L2876 / L2889 light-mode insets at 0.96 / 0.98α) | **CLOSED** — Pass 33 commit `c4b8caf3`. Repo-wide LAW slip story now complete; zero remaining `.bd-*` light-mode surfaces emit forbidden white-inset specular |
 
 ### 2D — P2 architectural (sustainable feature dev; not launch blockers)
 
@@ -167,20 +170,20 @@ Everything else marked P0/P1 in REF_KNOWN_ISSUES.md is RESOLVED at HEAD `774f692
 
 Rank-ordered. Each item: name · gate type · AI-actionable? · blast radius · owner-decision needed?
 
-| #   | Item                                         | Gate | AI?                                   | Blast                           | Owner decision?                                                                   |
-| --- | -------------------------------------------- | ---- | ------------------------------------- | ------------------------------- | --------------------------------------------------------------------------------- |
-| 1   | **KI-002 email secret deploy**               | 2B   | No (owner only)                       | Tiny (env var)                  | Yes — single deploy action                                                        |
-| 2   | **`.bd-report-progress-*` Hard-NO unlock**   | 2C   | Yes (after approval)                  | ~6 lines CSS                    | Yes — single approval unlocks completion of the LAW slip story                    |
-| 3   | **Phase A Playwright visual evidence batch** | 2A   | Yes (if Playwright tools loaded)      | Audit-only, no code change      | Optional — useful for confidence before launch                                    |
-| 4   | **KI-053 map performance profiling**         | 2B   | Partial (AI analyzes captured trace)  | Diagnostic-only                 | Owner runs DevTools profiler                                                      |
-| 5   | **KI-051 CSP fix for overpass-api.de**       | 2B   | No (deploy)                           | Single CSP edit                 | Owner deploys                                                                     |
-| 6   | **KI-058 signed-URL persistence root-cause** | 2B   | Partial (AI can prep migration §3.17) | Migration + RLS                 | Owner runs SQL via dashboard                                                      |
-| 7   | **KI-060 delete legacy edge functions**      | 2B   | No (owner dashboard action)           | Tiny                            | Owner clicks delete                                                               |
-| 8   | **Pass 14 #8 / #9 re-evaluation**            | 2A   | Yes (after override)                  | Small                           | Owner reviews KI-119/120 decline rationale and chooses override or accept WONTFIX |
-| 9   | **Pass 18 #1 Liquid Map keyframe swap**      | 2A   | Yes (after approval)                  | Medium (motion identity change) | Yes — taste call between coherence and bespoke signature                          |
-| 10  | **KI-064 Honda Accord red rectangle**        | 2B   | No (data action)                      | Single record                   | Owner data action                                                                 |
+| #   | Item                                                                           | Gate | AI?                                   | Blast                           | Owner decision?                                                                   |
+| --- | ------------------------------------------------------------------------------ | ---- | ------------------------------------- | ------------------------------- | --------------------------------------------------------------------------------- |
+| 1   | **KI-002 email secret deploy**                                                 | 2B   | No (owner only)                       | Tiny (env var)                  | Yes — single deploy action                                                        |
+| 2   | ~~**`.bd-report-progress-*` Hard-NO unlock**~~ — **CLOSED Pass 33 `c4b8caf3`** | 2C   | Shipped                               | ~6 lines CSS                    | Resolved — owner authorized via "go full auto on building" directive 2026-05-06   |
+| 3   | **Phase A Playwright visual evidence batch**                                   | 2A   | Yes (if Playwright tools loaded)      | Audit-only, no code change      | Optional — useful for confidence before launch                                    |
+| 4   | **KI-053 map performance profiling**                                           | 2B   | Partial (AI analyzes captured trace)  | Diagnostic-only                 | Owner runs DevTools profiler                                                      |
+| 5   | **KI-051 CSP fix for overpass-api.de**                                         | 2B   | No (deploy)                           | Single CSP edit                 | Owner deploys                                                                     |
+| 6   | **KI-058 signed-URL persistence root-cause**                                   | 2B   | Partial (AI can prep migration §3.17) | Migration + RLS                 | Owner runs SQL via dashboard                                                      |
+| 7   | **KI-060 delete legacy edge functions**                                        | 2B   | No (owner dashboard action)           | Tiny                            | Owner clicks delete                                                               |
+| 8   | **Pass 14 #8 / #9 re-evaluation**                                              | 2A   | Yes (after override)                  | Small                           | Owner reviews KI-119/120 decline rationale and chooses override or accept WONTFIX |
+| 9   | **Pass 18 #1 Liquid Map keyframe swap**                                        | 2A   | Yes (after approval)                  | Medium (motion identity change) | Yes — taste call between coherence and bespoke signature                          |
+| 10  | **KI-064 Honda Accord red rectangle**                                          | 2B   | No (data action)                      | Single record                   | Owner data action                                                                 |
 
-**The top of this list is unambiguous:** unblock KI-002 (#1) and approve `.bd-report-progress-*` (#2). Those two actions close the last remaining surgical loops the AI sessions surfaced.
+**The top of this list is unambiguous:** unblock KI-002 (#1). (Item #2 closed at Pass 33 `c4b8caf3`.) KI-002 is the last remaining surgical loop the AI sessions can close without further owner approval beyond the secret deploy.
 
 ---
 
@@ -188,7 +191,7 @@ Rank-ordered. Each item: name · gate type · AI-actionable? · blast radius · 
 
 - **KI-002 deploy must happen before KI-051 CSP deploy.** Both are deploy actions; stacking them risks the email path being broken longer than necessary if the CSP change introduces a regression. Sequence: KI-002 first, verify email fires, then KI-051.
 - **KI-058 root-cause investigation should precede KI-060 cleanup.** Legacy edge functions may be implicated in the signed-URL persistence story; deleting them before root-cause confirmation removes diagnostic surface.
-- **`.bd-report-progress-*` unlock is independent of the launch path.** It completes the LAW slip story but does not block launch. Owner can defer indefinitely without consequence; the only cost is the inconsistency between the report shell and the panel/badge family.
+- ~~**`.bd-report-progress-*` unlock is independent of the launch path.**~~ **RESOLVED Pass 33** — LAW slip story repo-wide complete. The report shell / panel / badge family inconsistency is closed.
 - **Pass 18 #1 (Liquid Map keyframe swap) is independent of the launch path.** It is a coherence-vs-signature taste call and has no functional impact.
 
 ---
@@ -197,7 +200,7 @@ Rank-ordered. Each item: name · gate type · AI-actionable? · blast radius · 
 
 These are decisions only the owner can make. Each is a real fork.
 
-1. **`.bd-report-progress-*` cream migration:** should the report shell get the same cream migration that swept everywhere else through Passes 24/27/28, or is the report shell's white-inset specular intentional/grandfathered? **Both positions are defensible.** Argument for migration: completes the LAW slip story across the entire repo; eliminates the "different surface" exception that future audits will keep flagging. Argument for preservation: Sonnet Pass 9a audit boundary explicitly carved out the report shell as a different visual surface; the report shell carries trust weight (status / progress) and the high-α white inset reads as legitimate document-paper specular; migrating it changes the visual identity of a critical conversion surface.
+1. ~~**`.bd-report-progress-*` cream migration:**~~ **RESOLVED Pass 33 `c4b8caf3` (2026-05-06).** Owner directive ("go full auto on building") authorized the migration path. The report shell now carries the same cream specular as the panel/badge family. LAW slip story repo-wide complete.
 
 2. **Pass 18 #1 Liquid Map Intelligence keyframe swap:** should the bespoke `bdLiquidGoldFlow` / `mapLiquidSheenDrift` keyframes swap to the canonical `orbDrift` for atmosphere coherence with the living-lava family, or preserve the bespoke flow as the map's signature motion? Argument for swap: coherence — every other living-lava surface uses canonical periods (`orbDrift` 28+36 / 32+44 / 24+38). Argument for preservation: the map is the product's hero surface; bespoke motion reads as intentional craft, not drift.
 
