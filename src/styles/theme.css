@@ -4305,3 +4305,40 @@ body {
     opacity: 0 !important;
   }
 }
+
+/* ============================================================
+   bd-notice — informational notice color tokens
+   ============================================================
+   Color-only utility for inline banners/alerts. Layout stays
+   in Tailwind (px/py/rounded/gap/text-xs). Replaces Tailwind
+   amber-* call sites that were leaking the forbidden yellow-
+   amber register into user-visible alerts (HSF-1 from Pass 8
+   audit, dated 2026-05-06).
+
+   Locked Premium Gold Palette only:
+     - rgba(196, 144, 65, *) — gold/bronze halo family
+     - rgba(140, 82, 22, *)  — deep bronze trim family
+     - rgba(252, 240, 208, *)— cream highlight family
+     - rgba(228, 140, 55, *) — dark-mode warm wash family
+     - rgba(253, 220, 160, *)— dark-mode champagne text family
+     - rgba(110, 70, 18, *)  — light-mode bronze ink family
+
+   See LAW_PROJECT_RULES.md § Light-Mode Surface Rule + Premium
+   Gold Palette. Other bd-notice variants (--info, --success,
+   --error) can be added in their own pass; for now only
+   --warn is needed to migrate HSF-1.
+   ============================================================ */
+
+/* Default = dark mode (component renders inside dark-by-default
+   shell on map screens). Light overrides below. */
+.bd-notice--warn {
+  border-color: rgba(196, 144, 65, 0.32);
+  background: rgba(228, 140, 55, 0.10);
+  color: rgba(253, 220, 160, 1);
+}
+
+[data-appearance-mode="light"] .bd-notice--warn {
+  border-color: rgba(140, 82, 22, 0.32);
+  background: rgba(252, 240, 208, 0.55);
+  color: rgba(110, 70, 18, 1);
+}
