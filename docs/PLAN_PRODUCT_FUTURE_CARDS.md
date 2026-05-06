@@ -29,7 +29,7 @@ Read one card. Start work. Verify. Update the card.
 
 ## CARD: Navigation Productization
 
-(Currently a section header without body content — see archived original. Future-pass scope: turn-by-turn nav engine productization. Tracked in [`PLAN_FUTURE_NAV_AND_MAP_FUNCTIONALITY.md`](PLAN_FUTURE_NAV_AND_MAP_FUNCTIONALITY.md) for now; will be absorbed into `PLAN_MAP_MASTER.md` per Phase 1.5d.)
+(Currently a section header without body content — see archived original. Future-pass scope: turn-by-turn nav engine productization. Tracked in [`PLAN_FUTURE_NAV_AND_MAP_FUNCTIONALITY.md`](archive/PLAN_FUTURE_NAV_AND_MAP_FUNCTIONALITY_archived_2026-05-04.md) for now; will be absorbed into `PLAN_MAP_MASTER.md` per Phase 1.5d.)
 
 ---
 

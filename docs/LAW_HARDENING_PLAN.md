@@ -149,7 +149,7 @@ These items were identified during a four-pass deep system audit and are added a
 
 - Verified load-bearing in 3 runtime files: [App.tsx:61](src/app/App.tsx#L61), [services/supabase/runtime.ts:1](src/app/services/supabase/runtime.ts#L1), [utils/validateAppConfig.ts:8](src/app/utils/validateAppConfig.ts#L8). Deletion off the table.
 - Migrate all key reads to `.env`-driven runtime config.
-- Update all docs and error copy to stop telling users to edit source files: [README.md](README.md), [docs/SUPABASE_SETUP_GUIDE.md](docs/SUPABASE_SETUP_GUIDE.md), [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md), [AppShell.tsx:17](src/app/components/app/AppShell.tsx#L17) error copy.
+- Update all docs and error copy to stop telling users to edit source files: [README.md](README.md), [docs/SUPABASE_SETUP_GUIDE.md](docs/SUPABASE_SETUP_GUIDE.md), [docs/GETTING_STARTED.md](archive/GETTING_STARTED_archived_2026-05-04.md), [AppShell.tsx:17](src/app/components/app/AppShell.tsx#L17) error copy.
 - Enables clean staging vs prod key separation (ties directly into Group 7).
 
 **4d. Meta — verification discipline (locked as ongoing rule).** Strategic decisions can lock now. Destructive decisions (deletion, archival, source-of-truth changes, runtime assumptions) must be verified against live code as part of the planning group before finalizing. Do not defer load-bearing claims to execution time.
@@ -340,7 +340,7 @@ Work items (parallel-safe):
 
 - Migrate `clerkPublishableKey` and Supabase `projectId` / `publicAnonKey` from [utils/clerk/info.tsx](utils/clerk/info.tsx) and [utils/supabase/info.tsx](utils/supabase/info.tsx) into `.env`-driven runtime config.
 - Update the 3 verified callers: [App.tsx:61](src/app/App.tsx#L61), [runtime.ts:1](src/app/services/supabase/runtime.ts#L1), [validateAppConfig.ts:8](src/app/utils/validateAppConfig.ts#L8).
-- Update docs so nothing tells users to edit source files: [README.md](README.md), [docs/SUPABASE_SETUP_GUIDE.md](docs/SUPABASE_SETUP_GUIDE.md), [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md), and the error copy in [AppShell.tsx:17](src/app/components/app/AppShell.tsx#L17).
+- Update docs so nothing tells users to edit source files: [README.md](README.md), [docs/SUPABASE_SETUP_GUIDE.md](docs/SUPABASE_SETUP_GUIDE.md), [docs/GETTING_STARTED.md](archive/GETTING_STARTED_archived_2026-05-04.md), and the error copy in [AppShell.tsx:17](src/app/components/app/AppShell.tsx#L17).
 - Keep `info.tsx` files as thin re-exports from env, OR delete them after callers are migrated (prefer delete for cleanliness).
 - **Preserve current runtime behavior during the migration.** Config centralization is the goal; changing effective keys, environment resolution order, or fallback behavior is not. A successful `.env` migration must be indistinguishable from the prior hardcoded path at runtime.
 
