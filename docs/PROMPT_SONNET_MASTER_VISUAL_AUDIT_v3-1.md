@@ -47,17 +47,17 @@ Log: `Pre-flight PASS · HEAD <SHA> · port <PORT>`. Proceed.
 
 Use this to decide which files to inspect when on each route. This is data, not procedure.
 
-| Route | Migrated files reachable here |
-|---|---|
-| `/` | (visual baseline only) |
-| `/?demo=customer` | DashboardRouter, DashboardSecondaryViews, BidCardArticle, BidsScreen, BidsEmptyState, BidsGeographyMap, BidsSummaryHeader, AccountScreen, AccountHeader, AccountInfoCard, AccountMenu, ReportScreen, MissingReportState, ReportsListScreen, StepComplete, MobileBottomNav |
-| `/?demo=shop` | ShopActiveJobsScreen, ShopEstimateInboxScreen, ShopRequestsScreen, LikedShopsScreen, ImmersiveMapResultsDrawer, CompetitorAnalysisScreen, ShopOnboardingStep1–4 |
-| Sign-In modal | LoginModal, ClerkAccountTypeSelector, LoginLoginView, LoginMainView, LoginSignupView |
-| Insurer (auth-gated; skip if unreachable) | InsurerClaimsScreen, InsurerOnboarding, InsurerPartnerShopsScreen |
-| Admin (auth-gated; skip if unreachable) | AdminDashboard, AdminInfoPanel, AdminManagementPanel, AdminIntakeOperationsPanel, LinkedTestAccounts, QuickActions, SwitchBackPanel, AdminHeader, NewAccountForm |
-| Devtools route | StorageDebugPanel |
-| Bid acceptance trigger | AcceptedBidConfirmationSheet (overlay only) |
-| Shop card detail trigger | ShopDetailSheet (overlay only), PhotoGuide |
+| Route                                     | Migrated files reachable here                                                                                                                                                                                                                                             |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/`                                       | (visual baseline only)                                                                                                                                                                                                                                                    |
+| `/?demo=customer`                         | DashboardRouter, DashboardSecondaryViews, BidCardArticle, BidsScreen, BidsEmptyState, BidsGeographyMap, BidsSummaryHeader, AccountScreen, AccountHeader, AccountInfoCard, AccountMenu, ReportScreen, MissingReportState, ReportsListScreen, StepComplete, MobileBottomNav |
+| `/?demo=shop`                             | ShopActiveJobsScreen, ShopEstimateInboxScreen, ShopRequestsScreen, LikedShopsScreen, ImmersiveMapResultsDrawer, CompetitorAnalysisScreen, ShopOnboardingStep1–4                                                                                                           |
+| Sign-In modal                             | LoginModal, ClerkAccountTypeSelector, LoginLoginView, LoginMainView, LoginSignupView                                                                                                                                                                                      |
+| Insurer (auth-gated; skip if unreachable) | InsurerClaimsScreen, InsurerOnboarding, InsurerPartnerShopsScreen                                                                                                                                                                                                         |
+| Admin (auth-gated; skip if unreachable)   | AdminDashboard, AdminInfoPanel, AdminManagementPanel, AdminIntakeOperationsPanel, LinkedTestAccounts, QuickActions, SwitchBackPanel, AdminHeader, NewAccountForm                                                                                                          |
+| Devtools route                            | StorageDebugPanel                                                                                                                                                                                                                                                         |
+| Bid acceptance trigger                    | AcceptedBidConfirmationSheet (overlay only)                                                                                                                                                                                                                               |
+| Shop card detail trigger                  | ShopDetailSheet (overlay only), PhotoGuide                                                                                                                                                                                                                                |
 
 **Bucket C (covered by MotionConfig wrap; verify separately in §6):** AccountAdminOverlay, MobileBottomNav, ImmersiveMapResultsDrawer, PhotoGuide.
 
@@ -129,12 +129,12 @@ If selector cannot be located OR value cannot be read: `not observable in runtim
 
 For each of the 4 Bucket C files, navigate to its trigger surface and measure under reduce:
 
-| File | Trigger | Measure |
-|---|---|---|
-| AccountAdminOverlay | Open the overlay (admin route or admin demo) | Overlay `motion.div` `transition-duration === "0s"` |
-| MobileBottomNav | Narrow viewport in `?demo=customer`, tap a tab | `motion.button` snaps to `scale: 0.92` instantly (no spring bounce) |
-| ImmersiveMapResultsDrawer | `?demo=shop` → open drawer | `motion.div` body `transition-duration === "0s"` |
-| PhotoGuide | `?demo=customer` → new report → photo step → open guide | `motion.div` overlay `transition-duration === "0s"` |
+| File                      | Trigger                                                 | Measure                                                             |
+| ------------------------- | ------------------------------------------------------- | ------------------------------------------------------------------- |
+| AccountAdminOverlay       | Open the overlay (admin route or admin demo)            | Overlay `motion.div` `transition-duration === "0s"`                 |
+| MobileBottomNav           | Narrow viewport in `?demo=customer`, tap a tab          | `motion.button` snaps to `scale: 0.92` instantly (no spring bounce) |
+| ImmersiveMapResultsDrawer | `?demo=shop` → open drawer                              | `motion.div` body `transition-duration === "0s"`                    |
+| PhotoGuide                | `?demo=customer` → new report → photo step → open guide | `motion.div` overlay `transition-duration === "0s"`                 |
 
 Unreachable trigger → `not observable`. **All 4 unreachable = MAJOR_DRIFT** (MotionConfig wrap unverified).
 
@@ -142,12 +142,12 @@ Unreachable trigger → `not observable`. **All 4 unreachable = MAJOR_DRIFT** (M
 
 ## §7. VISUAL INTEGRITY (4 sub-checks)
 
-| Check | Method | PASS criterion |
-|---|---|---|
-| **No flash on mount** | Under reduce, screenshot at `domcontentloaded` AND `networkidle` on `?demo=customer` | Both screenshots show migrated motion components fully visible |
-| **No layout shift** | Screenshot under reduce, screenshot under no-preference (same scroll), pixel diff | ≤ 0.5% diff |
-| **BD design system intact** | Inspect computed styles on `/` landing | Found: `rgba(196, 144, 65, *)` halos · cyan accents · `backdrop-filter: blur` rendered · `bd-*` classes applied. NOT found: `rgba(220, 165, 90, *)`, `rgba(254, 248, 220, *)`, `rgba(160, 95, 25, *)` (forbidden values). |
-| **Interactive feedback preserved** | Under reduce: hover BidCardArticle, tap MobileBottomNav, focus a form input | Each shows visible state change (just instant, not animated) |
+| Check                              | Method                                                                               | PASS criterion                                                                                                                                                                                                            |
+| ---------------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **No flash on mount**              | Under reduce, screenshot at `domcontentloaded` AND `networkidle` on `?demo=customer` | Both screenshots show migrated motion components fully visible                                                                                                                                                            |
+| **No layout shift**                | Screenshot under reduce, screenshot under no-preference (same scroll), pixel diff    | ≤ 0.5% diff                                                                                                                                                                                                               |
+| **BD design system intact**        | Inspect computed styles on `/` landing                                               | Found: `rgba(196, 144, 65, *)` halos · cyan accents · `backdrop-filter: blur` rendered · `bd-*` classes applied. NOT found: `rgba(220, 165, 90, *)`, `rgba(254, 248, 220, *)`, `rgba(160, 95, 25, *)` (forbidden values). |
+| **Interactive feedback preserved** | Under reduce: hover BidCardArticle, tap MobileBottomNav, focus a form input          | Each shows visible state change (just instant, not animated)                                                                                                                                                              |
 
 ---
 
@@ -217,12 +217,12 @@ VERDICT: <CLEAN | MINOR_DRIFT | MAJOR_DRIFT | BLOCKED>
 
 ### Verdict rules (the ONE source of truth)
 
-| Verdict | All conditions must hold |
-|---|---|
-| **CLEAN** | I.FAIL=0 · II.S1=PASS · II.S3=PASS · III all non-zero · IV.0 FAIL · V.4/4 PASS · VI hydration=0, errors=0 |
-| **MINOR_DRIFT** | ≤ 2 FAILs total across I+IV+V · S1+S3 still PASS · 0 hydration mismatches · 0 console errors |
-| **MAJOR_DRIFT** | S1 OR S3 ∈ {FAIL, not observable} · OR ≥ 1 high-severity drift · OR Bucket C all 4 not observable |
-| **BLOCKED** | Pre-flight failed · OR browser/dev-server crashed · OR halt condition triggered |
+| Verdict         | All conditions must hold                                                                                  |
+| --------------- | --------------------------------------------------------------------------------------------------------- |
+| **CLEAN**       | I.FAIL=0 · II.S1=PASS · II.S3=PASS · III all non-zero · IV.0 FAIL · V.4/4 PASS · VI hydration=0, errors=0 |
+| **MINOR_DRIFT** | ≤ 2 FAILs total across I+IV+V · S1+S3 still PASS · 0 hydration mismatches · 0 console errors              |
+| **MAJOR_DRIFT** | S1 OR S3 ∈ {FAIL, not observable} · OR ≥ 1 high-severity drift · OR Bucket C all 4 not observable         |
+| **BLOCKED**     | Pre-flight failed · OR browser/dev-server crashed · OR halt condition triggered                           |
 
 Pick the worst applicable. No promotion.
 
@@ -233,7 +233,6 @@ Pick the worst applicable. No promotion.
 Append to `docs/OPS_KI_113_REDUCED_MOTION_SCOPE_CONTRACT_2026-05-05.md` close footer:
 
 ```markdown
-
 ---
 
 ### Closure-proof runtime verification (added <DATE>)
@@ -300,8 +299,8 @@ Output the report. Do not edit anything. Return control to owner.
 
 > 4e. **WAAPI cross-check** (mandatory): also capture `element.getAnimations()` filtered to `Animation` instances (excluding `CSSTransition`). For each WAAPI animation, capture `effect.getTiming().duration`. **PASS criteria:** ALL of the following must hold:
 >
->   1. `getComputedStyle(element).transitionDuration === "0s"` OR `transitionProperty === "none"` (CSS layer reduced), AND
->   2. Every WAAPI `Animation` instance returns `duration: 0` (or `getAnimations()` returns empty post-mount/post-hover) (motion/react WAAPI layer reduced)
+> 1. `getComputedStyle(element).transitionDuration === "0s"` OR `transitionProperty === "none"` (CSS layer reduced), AND
+> 2. Every WAAPI `Animation` instance returns `duration: 0` (or `getAnimations()` returns empty post-mount/post-hover) (motion/react WAAPI layer reduced)
 >
 > If WAAPI shows `duration: 0` BUT CSS shows non-zero `transitionDuration`: classify as **CSS-layer drift** (motion/react migration is correct; a CSS hover/focus transition is missing its `@media (prefers-reduced-motion: reduce)` override). Treat as MINOR_DRIFT not MAJOR_DRIFT (motion is suppressed at the WAAPI layer; CSS-layer is non-compliant with LAW §3 but not user-visible at runtime). Surface in §VII drift report under class **CSS reduce-guard miss** (sixth class beyond the five originally listed).
 

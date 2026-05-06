@@ -114,11 +114,11 @@ No KI entries created — all 3 vulns patched, none deferred. Future `npm audit`
 
 ### 6.1 GitHub Dependabot alerts (default branch = `main`)
 
-| # | Package | Severity | State | GHSA | Created |
-| --- | --- | --- | --- | --- | --- |
-| 20 | `@clerk/clerk-react` | high | **open** | (auth-bypass advisory) | 2026-04-30 |
-| 19 | `@clerk/shared` | high | **open** | (same advisory, transitive) | 2026-04-30 |
-| 18 | `postcss` | medium | **open** | (XSS via `</style>` in CSS Stringify) | 2026-04-30 |
+| #   | Package              | Severity | State    | GHSA                                  | Created    |
+| --- | -------------------- | -------- | -------- | ------------------------------------- | ---------- |
+| 20  | `@clerk/clerk-react` | high     | **open** | (auth-bypass advisory)                | 2026-04-30 |
+| 19  | `@clerk/shared`      | high     | **open** | (same advisory, transitive)           | 2026-04-30 |
+| 18  | `postcss`            | medium   | **open** | (XSS via `</style>` in CSS Stringify) | 2026-04-30 |
 
 These match the 3 vulnerabilities triaged on 2026-05-04 — same advisories, same packages.
 

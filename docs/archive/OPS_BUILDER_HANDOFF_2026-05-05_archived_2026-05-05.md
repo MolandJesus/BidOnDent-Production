@@ -55,17 +55,17 @@ Phase:       Soft Launch Hardening (no new features — harden + ship)
 
 In commit-order, with rationale:
 
-| SHA | What | Why it matters |
-|---|---|---|
-| `fae329d8` | KI-112 gating-chain unblock close | Phase 7.6 / KI-113 cleared reduced-motion contract; unblocks KI-112 sub-fixes if owner activates Path A later |
-| `baee9966` | Phase 8.5 close (Path Y, docs-only) | Map ambient/idle motion folded into KI-112 F4/F5/F6; canvas-side animation deferred to post-launch |
-| `40cc5b4e` | Dependabot triage 2026-05-05 | npm audit clean on Horizon-Beta; main-branch unpatched at moment of triage but resolves at merge |
-| `c75fe3d7` | Kernel append (Reusable Patterns) | **Read this** — current operating manual for autopilot work. Two patterns added: multi-source reconciliation + audit-pre-staging |
-| `708d0d38` | Doc cleanup pass | -1262 lines from archive bloat; **deliberate orphan link** in `PRE_REFACTOR_FULL_SITE_BASELINE` → deleted `BIDONDENT_HORIZON_MIGRATION` (do not "fix" if a future link-check flags it) |
-| `e4946e20` | KI-057 initial scope (`useBidsForReport.ts`) | First StrictMode realtime cycling fix |
-| `6e94c6a7` | KI-057 audit-driven full coverage | 7 more hooks + 8 sites total. Pattern: `queueMicrotask(doSubscribe)` + `if (!mounted) return` short-circuit |
-| `0828dbc8` | Visual+map audit ship (V-001..V-007) | Cross-AI coordination commit; KI-057↔M-004 cross-link added |
-| `08fe13a6` | Pass 3 mobile touch-target fixes (V-009..V-015) + handoff doc | Last commit before this correction — Pass 3 + master handoff briefing |
+| SHA        | What                                                          | Why it matters                                                                                                                                                                         |
+| ---------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `fae329d8` | KI-112 gating-chain unblock close                             | Phase 7.6 / KI-113 cleared reduced-motion contract; unblocks KI-112 sub-fixes if owner activates Path A later                                                                          |
+| `baee9966` | Phase 8.5 close (Path Y, docs-only)                           | Map ambient/idle motion folded into KI-112 F4/F5/F6; canvas-side animation deferred to post-launch                                                                                     |
+| `40cc5b4e` | Dependabot triage 2026-05-05                                  | npm audit clean on Horizon-Beta; main-branch unpatched at moment of triage but resolves at merge                                                                                       |
+| `c75fe3d7` | Kernel append (Reusable Patterns)                             | **Read this** — current operating manual for autopilot work. Two patterns added: multi-source reconciliation + audit-pre-staging                                                       |
+| `708d0d38` | Doc cleanup pass                                              | -1262 lines from archive bloat; **deliberate orphan link** in `PRE_REFACTOR_FULL_SITE_BASELINE` → deleted `BIDONDENT_HORIZON_MIGRATION` (do not "fix" if a future link-check flags it) |
+| `e4946e20` | KI-057 initial scope (`useBidsForReport.ts`)                  | First StrictMode realtime cycling fix                                                                                                                                                  |
+| `6e94c6a7` | KI-057 audit-driven full coverage                             | 7 more hooks + 8 sites total. Pattern: `queueMicrotask(doSubscribe)` + `if (!mounted) return` short-circuit                                                                            |
+| `0828dbc8` | Visual+map audit ship (V-001..V-007)                          | Cross-AI coordination commit; KI-057↔M-004 cross-link added                                                                                                                           |
+| `08fe13a6` | Pass 3 mobile touch-target fixes (V-009..V-015) + handoff doc | Last commit before this correction — Pass 3 + master handoff briefing                                                                                                                  |
 
 Total session: 9 commits, all on `BidOnDent-Horizon-Beta`. Pre-execution audit pattern: 9-for-9 + 1 audit-driven correction cycle. Containment doctrine held throughout — declined 7 iterations of framework-expansion pitches.
 
@@ -101,11 +101,13 @@ End-of-session ledger (binary-check family): 1 articulation + 5 constraining + 2
 ### 4.4 Audit-pre-staging (in kernel, commit `c75fe3d7`)
 
 Before claiming a phase/task is open, audit current state:
+
 - `git log` for prior work on relevant files
 - `REF_KNOWN_ISSUES.md` for KI status
 - Closed-phase audit footers (warning: these freeze in time — KI ledger is the live source)
 
 This pattern fired correctly TWICE this session:
+
 - Caught the KI-113 work-ledger violation (45 files already shipped, almost re-did)
 - Caught the KI-057 scope underestimation (1 of 8 vulnerable sites in initial scope)
 
@@ -124,6 +126,7 @@ External audits suggesting "use white panels", "neutral SaaS palette", "remove g
 ### 4.7 Multi-AI coordination (the AI_LOCK pattern)
 
 When working in parallel:
+
 - **Announce dirty files before editing** — list which files belong to you so the concurrent agent routes around them
 - **Hard non-action while concurrent work is in flight** — until owner explicitly extends authority
 - **Layer separation** — CSS/HTML/UI primitives vs hook layer / edge functions / migrations
@@ -190,12 +193,14 @@ Form fields, cards, buttons should use the `bd-*` utility set in [`src/styles/th
 - Warm gold/champagne pop tiles on Quick Actions row
 
 **Locked palette (warm role-based family):**
+
 - Top/corner lamp light: `rgba(196, 144, 65)`
 - Deeper outer/far halo: `rgba(196, 130, 45)`
 - Bronze trim: `rgba(140, 82, 22)`
 - Gold-tinted cream insets: `rgba(252, 238-240, 204-208)`
 
 **Forbidden palette (do not regress — each has reverted multiple times):**
+
 - `rgba(220, 165, 90)` — old halo
 - `rgba(254, 248, 220)` — old cream inset
 - `rgba(160, 95, 25)` — old trim
@@ -218,6 +223,7 @@ LAW touch-target rule. Exception: elements inside `overflow-x-auto` swipe carous
 ## 6. Current KI ledger snapshot
 
 **RESOLVED this session:**
+
 - KI-057 (StrictMode realtime cycling, 8/8 sites)
 - KI-113 (reduced-motion contract, 45 files in Phase 7.6)
 - V-001 / V-002 / V-003 / V-004 / V-005 / V-007 / V-009-V-015 (visual + touch-target fixes)
@@ -250,11 +256,13 @@ LAW touch-target rule. Exception: elements inside `overflow-x-auto` swipe carous
 | KI-040 | P3 | Rate limiting per-instance, not distributed |
 
 **OPEN — deferred (intentional, post-launch):**
+
 - KI-041, KI-042, KI-053, KI-075, KI-100, KI-089, KI-106
 - KI-112 (atmosphere/idle motion gap family — owner-taste-deferred sub-fixes F1/F2/F3/F4/F5/F6)
 - KI-114 (lower-impact `min-h-[36px]` shop carousel sweep — Pass 3 deferred follow-up)
 
 **OPEN — small-scope:**
+
 - KI-057 family is closed; previously named C-narrow lane is exhausted
 - No remaining open KI fits "single-commit, dev-only, no owner action mid-flight, ships end-to-end on Builder alone" without owner pivot
 
@@ -376,27 +384,34 @@ useEffect(() => {
 ### 9.2 Forbidden-color audit (per surface, Playwright)
 
 ```js
-const FORBIDDEN = [[220,165,90],[254,248,220],[160,95,25],[220,140,50]];
-function rgb(s){
-  const m=s.match(/rgba?\(\s*(\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
-  return m?{r:+m[1],g:+m[2],b:+m[3],a:m[4]?+m[4]:1}:null;
+const FORBIDDEN = [
+  [220, 165, 90],
+  [254, 248, 220],
+  [160, 95, 25],
+  [220, 140, 50],
+];
+function rgb(s) {
+  const m = s.match(/rgba?\(\s*(\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+  return m ? { r: +m[1], g: +m[2], b: +m[3], a: m[4] ? +m[4] : 1 } : null;
 }
-function tag(el){
-  const c=(el.className||'').toString().trim().split(/\s+/).slice(0,2).join('.');
-  return el.tagName.toLowerCase()+(c?'.'+c:'');
+function tag(el) {
+  const c = (el.className || "").toString().trim().split(/\s+/).slice(0, 2).join(".");
+  return el.tagName.toLowerCase() + (c ? "." + c : "");
 }
-const out = {whites:[], golds:[]};
-document.querySelectorAll('section, main > *, [class*="bd-glass"], [class*="bd-dashboard"], [class*="bd-landing"], header')
-  .forEach((el,i)=>{
-    if(i>40) return;
+const out = { whites: [], golds: [] };
+document
+  .querySelectorAll(
+    'section, main > *, [class*="bd-glass"], [class*="bd-dashboard"], [class*="bd-landing"], header'
+  )
+  .forEach((el, i) => {
+    if (i > 40) return;
     const cs = getComputedStyle(el);
     const c = rgb(cs.backgroundColor);
-    if (c && c.r===255 && c.g===255 && c.b===255 && c.a>=0.5)
-      out.whites.push(tag(el));
-    const all = cs.backgroundColor + ' ' + cs.backgroundImage;
-    FORBIDDEN.forEach(([R,G,B])=>{
+    if (c && c.r === 255 && c.g === 255 && c.b === 255 && c.a >= 0.5) out.whites.push(tag(el));
+    const all = cs.backgroundColor + " " + cs.backgroundImage;
+    FORBIDDEN.forEach(([R, G, B]) => {
       const re = new RegExp(`rgba?\\(\\s*${R}\\s*,\\s*${G}\\s*,\\s*${B}\\b`);
-      if (re.test(all)) out.golds.push({sel:tag(el), hit:`${R},${G},${B}`});
+      if (re.test(all)) out.golds.push({ sel: tag(el), hit: `${R},${G},${B}` });
     });
   });
 return JSON.stringify(out);
@@ -406,23 +421,33 @@ return JSON.stringify(out);
 
 ```js
 const seen = new Set();
-const out = {hScroll: document.documentElement.scrollWidth - document.documentElement.clientWidth, smallTouch: []};
-document.querySelectorAll('button, a[href], [role="button"]').forEach(el => {
+const out = {
+  hScroll: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+  smallTouch: [],
+};
+document.querySelectorAll('button, a[href], [role="button"]').forEach((el) => {
   const r = el.getBoundingClientRect();
   if (r.width < 1 || r.height < 1) return;
   if (r.bottom < 0 || r.top > 4000) return;
   // Ignore inside horizontal-scroll carousel parent
-  let p = el.parentElement, inCarousel = false;
-  for (let i=0; i<5 && p; i++) {
+  let p = el.parentElement,
+    inCarousel = false;
+  for (let i = 0; i < 5 && p; i++) {
     const ovx = getComputedStyle(p).overflowX;
-    if (ovx === 'auto' || ovx === 'scroll') { inCarousel = true; break; }
+    if (ovx === "auto" || ovx === "scroll") {
+      inCarousel = true;
+      break;
+    }
     p = p.parentElement;
   }
   if (inCarousel) return;
   if (r.height < 43.5 || r.width < 43.5) {
-    const txt = (el.textContent||'').trim().slice(0,28) || el.getAttribute('aria-label') || '?';
-    const k = el.tagName + '|' + (el.className||'').toString().slice(0,40) + '|' + txt;
-    if (!seen.has(k)) { seen.add(k); out.smallTouch.push({w: +r.width.toFixed(1), h: +r.height.toFixed(1), txt}); }
+    const txt = (el.textContent || "").trim().slice(0, 28) || el.getAttribute("aria-label") || "?";
+    const k = el.tagName + "|" + (el.className || "").toString().slice(0, 40) + "|" + txt;
+    if (!seen.has(k)) {
+      seen.add(k);
+      out.smallTouch.push({ w: +r.width.toFixed(1), h: +r.height.toFixed(1), txt });
+    }
   }
 });
 out.smallTouch = out.smallTouch.slice(0, 25);
@@ -432,25 +457,26 @@ return JSON.stringify(out);
 ### 9.4 Reduced-motion contract verification
 
 ```js
-await page.emulateMedia({reducedMotion:'reduce'});
+await page.emulateMedia({ reducedMotion: "reduce" });
 await page.waitForTimeout(500);
 const result = await page.evaluate(() => {
-  const targets = ['.bd-glass-card', '.bd-dashboard-panel', '.bd-dashboard-section'];
-  return targets.map(sel => {
+  const targets = [".bd-glass-card", ".bd-dashboard-panel", ".bd-dashboard-section"];
+  return targets.map((sel) => {
     const el = document.querySelector(sel);
-    if (!el) return {sel, found: false};
+    if (!el) return { sel, found: false };
     const cs = getComputedStyle(el);
-    const durs = cs.transitionDuration.split(',').map(d => parseFloat(d));
+    const durs = cs.transitionDuration.split(",").map((d) => parseFloat(d));
     return {
-      sel, found: true,
+      sel,
+      found: true,
       transitionDuration: cs.transitionDuration,
       animationName: cs.animationName,
       maxDur: Math.max(...durs),
-      pass: durs.every(d => d <= 0.05) && cs.animationName === 'none'
+      pass: durs.every((d) => d <= 0.05) && cs.animationName === "none",
     };
   });
 });
-await page.emulateMedia({reducedMotion:'no-preference'});
+await page.emulateMedia({ reducedMotion: "no-preference" });
 return JSON.stringify(result);
 ```
 
@@ -470,16 +496,16 @@ return JSON.stringify(result);
 
 When you change a load-bearing fact, update the docs it contradicts in the same pass:
 
-| Trigger | Must update |
-|---|---|
-| New migration applied | `REF_SYSTEM_STATE.md` |
-| New edge endpoint | `REF_SYSTEM_STATE.md` + `SUPABASE_SETUP_GUIDE.md` route map |
-| Bug found | `REF_KNOWN_ISSUES.md` (next free KI-### id) |
-| Bug fixed | `REF_KNOWN_ISSUES.md` mark RESOLVED with date |
-| New persisted media URL column | Hydrate via `hydrateSignedStorageUrl()` + document in `SUPABASE_SETUP_GUIDE.md` §16 |
-| Edge function deploy | Verify `verify_jwt: false` preserved. Never use `--verify-jwt` |
-| New reusable AI pattern surfaced | Add a skill in `~/.claude/skills/` and reference in CLAUDE.md |
-| Doc superseded | Move to `docs/archive/` with date suffix; update cross-refs in same pass |
+| Trigger                          | Must update                                                                         |
+| -------------------------------- | ----------------------------------------------------------------------------------- |
+| New migration applied            | `REF_SYSTEM_STATE.md`                                                               |
+| New edge endpoint                | `REF_SYSTEM_STATE.md` + `SUPABASE_SETUP_GUIDE.md` route map                         |
+| Bug found                        | `REF_KNOWN_ISSUES.md` (next free KI-### id)                                         |
+| Bug fixed                        | `REF_KNOWN_ISSUES.md` mark RESOLVED with date                                       |
+| New persisted media URL column   | Hydrate via `hydrateSignedStorageUrl()` + document in `SUPABASE_SETUP_GUIDE.md` §16 |
+| Edge function deploy             | Verify `verify_jwt: false` preserved. Never use `--verify-jwt`                      |
+| New reusable AI pattern surfaced | Add a skill in `~/.claude/skills/` and reference in CLAUDE.md                       |
+| Doc superseded                   | Move to `docs/archive/` with date suffix; update cross-refs in same pass            |
 
 ---
 
@@ -503,6 +529,7 @@ When you change a load-bearing fact, update the docs it contradicts in the same 
 - **AI_LOCK convention** held throughout this session — preserve it for any future parallel work
 
 When to ask for outgoing-Opus support:
+
 - Architecture / kernel work — adding to `OPS_AI_AGENT_PROMPT_DESIGN_KERNEL.md`, scoping new phases
 - Multi-file refactors with no UI — type signatures, hook contracts, service boundaries
 - Edge function logic — auth flow, storage hydration, error handling
@@ -541,12 +568,14 @@ Per [`docs/LAW_LAYERED_ARCHITECTURE.md`](LAW_LAYERED_ARCHITECTURE.md):
 - **L4 — Edge / Backend** — `supabase/functions/server/*`, `supabase/migrations/*`
 
 **File-size budgets:**
+
 - L1: typically <200 LOC
 - L2: typically <500 LOC; some screens up to 800
 - L3: typically <300 LOC for hooks; services can be larger
 - L4: handler files <250 LOC; utilities <150 LOC
 
 **Forbidden cross-layer flows:**
+
 - L4 → L3: edge handlers don't know about hooks
 - L1 → L3 or L4: tokens don't fetch
 - L2 → L4 directly: components route through hooks/services
@@ -570,17 +599,17 @@ Active map plan: [`docs/PLAN_MAP_MASTER.md`](PLAN_MAP_MASTER.md). Future nav eng
 
 ### 14.4 Past incidents that taught patterns (reference)
 
-| KI | What broke | Pattern learned |
-|---|---|---|
-| KI-058 | Persisted signed URLs expired after 24h | Storage pointer pattern (`storage://`) + sign-on-read |
-| KI-059 | Gateway `verify_jwt: true` 401'd Clerk JWTs | Pin `verify_jwt: false` in `config.toml`; verify inside handler |
-| KI-046 | Browser geocoding hit Nominatim directly (CSP) | Route through edge function |
-| KI-052 | Map invented zero-distance demo route times | Pure function honesty fix |
-| KI-055 | Customer data lost after Clerk ID rotation | Stable email-based fallback ID |
-| KI-057 | StrictMode realtime cycling | `queueMicrotask` defer + `mounted` short-circuit |
-| KI-058 (catch-block bypass) | Hydrate fallback returned raw `storage://` strings | Fail closed, return empty array |
-| KI-065 | Multiple raw `<img>` sites could leak `storage://` | `ImageWithFallback` everywhere |
-| KI-113 | 45 motion/react files ignored `prefers-reduced-motion` | `MotionConfig` root + per-file `useReducedMotion()` |
+| KI                          | What broke                                             | Pattern learned                                                 |
+| --------------------------- | ------------------------------------------------------ | --------------------------------------------------------------- |
+| KI-058                      | Persisted signed URLs expired after 24h                | Storage pointer pattern (`storage://`) + sign-on-read           |
+| KI-059                      | Gateway `verify_jwt: true` 401'd Clerk JWTs            | Pin `verify_jwt: false` in `config.toml`; verify inside handler |
+| KI-046                      | Browser geocoding hit Nominatim directly (CSP)         | Route through edge function                                     |
+| KI-052                      | Map invented zero-distance demo route times            | Pure function honesty fix                                       |
+| KI-055                      | Customer data lost after Clerk ID rotation             | Stable email-based fallback ID                                  |
+| KI-057                      | StrictMode realtime cycling                            | `queueMicrotask` defer + `mounted` short-circuit                |
+| KI-058 (catch-block bypass) | Hydrate fallback returned raw `storage://` strings     | Fail closed, return empty array                                 |
+| KI-065                      | Multiple raw `<img>` sites could leak `storage://`     | `ImageWithFallback` everywhere                                  |
+| KI-113                      | 45 motion/react files ignored `prefers-reduced-motion` | `MotionConfig` root + per-file `useReducedMotion()`             |
 
 These are the patterns that turn into kernel rules. Read `OPS_AI_AGENT_PROMPT_DESIGN_KERNEL.md` for the formalized versions.
 
@@ -588,17 +617,17 @@ These are the patterns that turn into kernel rules. Read `OPS_AI_AGENT_PROMPT_DE
 
 ## 15. Standing position at handoff
 
-| Layer | State |
-|---|---|
-| HEAD | this commit (correction + rename) — tracks `08fe13a6` Pass 3 + handoff briefing |
-| Tree | clean after this commit |
-| Pass 3 | shipped (V-009..V-015 touch-target fixes) |
-| Master handoff doc | this doc, live at `docs/OPS_BUILDER_HANDOFF_2026-05-05.md` |
-| Main Builder | you (Opus, VS Code surface, Playwright-equipped) |
-| Outgoing Opus | support role |
-| Cite ledger (binary-check family) | 1 articulation + 5 constraining + 2 framing + 0 independent |
-| Pre-execution audit pattern | 9-for-9 + 1 audit-driven correction cycle |
-| Containment doctrine | held throughout session |
+| Layer                             | State                                                                           |
+| --------------------------------- | ------------------------------------------------------------------------------- |
+| HEAD                              | this commit (correction + rename) — tracks `08fe13a6` Pass 3 + handoff briefing |
+| Tree                              | clean after this commit                                                         |
+| Pass 3                            | shipped (V-009..V-015 touch-target fixes)                                       |
+| Master handoff doc                | this doc, live at `docs/OPS_BUILDER_HANDOFF_2026-05-05.md`                      |
+| Main Builder                      | you (Opus, VS Code surface, Playwright-equipped)                                |
+| Outgoing Opus                     | support role                                                                    |
+| Cite ledger (binary-check family) | 1 articulation + 5 constraining + 2 framing + 0 independent                     |
+| Pre-execution audit pattern       | 9-for-9 + 1 audit-driven correction cycle                                       |
+| Containment doctrine              | held throughout session                                                         |
 
 ---
 

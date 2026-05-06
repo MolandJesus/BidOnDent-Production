@@ -62,17 +62,17 @@ For each surface route below, navigate, set `prefers-reduced-motion: reduce`, id
 
 Surface route map:
 
-| Route | Migrated files to inspect | Suggested DOM landmarks |
-|---|---|---|
-| `/` (landing → click "Sign In" or use `?demo=customer` shortcut if landing has one) | LoginModal | dialog `motion.div`, login form `motion.div` |
-| `/signin` (or wherever ClerkAccountTypeSelector renders) | ClerkAccountTypeSelector | role-card list, the variants stagger items |
-| Login screens (Clerk-provided container) | LoginLoginView, LoginMainView, LoginSignupView | view-container `motion.div` with explicit-duration transitions |
-| `?demo=customer` (dev demo, bypasses auth — see `src/app/utils/devDemoMode.ts`) | DemoAccountSwitcher (if shown), DashboardRouter (route container), DashboardSecondaryViews (overlay views), BidCardArticle, BidsScreen, BidsEmptyState, BidsGeographyMap, BidsSummaryHeader, AccountScreen, AccountHeader, AccountInfoCard, AccountMenu, ReportScreen, MissingReportState, ReportsListScreen, StepComplete, CompetitorAnalysisScreen | Bids screen card list, account menu items, report wizard `motion.div` |
-| `?demo=shop` | ShopActiveJobsScreen, ShopEstimateInboxScreen, ShopRequestsScreen, LikedShopsScreen, ShopOnboardingStep1–4 (if reachable in demo mode) | shop card lists, onboarding step containers |
-| Insurer demo if available, else authenticated insurer dashboard | InsurerClaimsScreen, InsurerOnboarding, InsurerPartnerShopsScreen | claims list, partner card list, onboarding step containers |
-| Admin route (`?demo=admin` if exists, else authenticated admin) | AdminDashboard, AdminInfoPanel, AdminManagementPanel, AdminIntakeOperationsPanel, LinkedTestAccounts, QuickActions, SwitchBackPanel, AdminHeader, NewAccountForm | admin card stagger, quick-actions panel |
-| Sheet flows (trigger acceptance flow if reachable) | AcceptedBidConfirmationSheet (overlay portion), ShopDetailSheet (overlay portion) | overlay backdrop `motion.div` (NOT the sheet body — that's spring, untouched) |
-| `/devtools` or whatever route mounts StorageDebugPanel | StorageDebugPanel | panel container `motion.div` |
+| Route                                                                               | Migrated files to inspect                                                                                                                                                                                                                                                                                                                            | Suggested DOM landmarks                                                       |
+| ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `/` (landing → click "Sign In" or use `?demo=customer` shortcut if landing has one) | LoginModal                                                                                                                                                                                                                                                                                                                                           | dialog `motion.div`, login form `motion.div`                                  |
+| `/signin` (or wherever ClerkAccountTypeSelector renders)                            | ClerkAccountTypeSelector                                                                                                                                                                                                                                                                                                                             | role-card list, the variants stagger items                                    |
+| Login screens (Clerk-provided container)                                            | LoginLoginView, LoginMainView, LoginSignupView                                                                                                                                                                                                                                                                                                       | view-container `motion.div` with explicit-duration transitions                |
+| `?demo=customer` (dev demo, bypasses auth — see `src/app/utils/devDemoMode.ts`)     | DemoAccountSwitcher (if shown), DashboardRouter (route container), DashboardSecondaryViews (overlay views), BidCardArticle, BidsScreen, BidsEmptyState, BidsGeographyMap, BidsSummaryHeader, AccountScreen, AccountHeader, AccountInfoCard, AccountMenu, ReportScreen, MissingReportState, ReportsListScreen, StepComplete, CompetitorAnalysisScreen | Bids screen card list, account menu items, report wizard `motion.div`         |
+| `?demo=shop`                                                                        | ShopActiveJobsScreen, ShopEstimateInboxScreen, ShopRequestsScreen, LikedShopsScreen, ShopOnboardingStep1–4 (if reachable in demo mode)                                                                                                                                                                                                               | shop card lists, onboarding step containers                                   |
+| Insurer demo if available, else authenticated insurer dashboard                     | InsurerClaimsScreen, InsurerOnboarding, InsurerPartnerShopsScreen                                                                                                                                                                                                                                                                                    | claims list, partner card list, onboarding step containers                    |
+| Admin route (`?demo=admin` if exists, else authenticated admin)                     | AdminDashboard, AdminInfoPanel, AdminManagementPanel, AdminIntakeOperationsPanel, LinkedTestAccounts, QuickActions, SwitchBackPanel, AdminHeader, NewAccountForm                                                                                                                                                                                     | admin card stagger, quick-actions panel                                       |
+| Sheet flows (trigger acceptance flow if reachable)                                  | AcceptedBidConfirmationSheet (overlay portion), ShopDetailSheet (overlay portion)                                                                                                                                                                                                                                                                    | overlay backdrop `motion.div` (NOT the sheet body — that's spring, untouched) |
+| `/devtools` or whatever route mounts StorageDebugPanel                              | StorageDebugPanel                                                                                                                                                                                                                                                                                                                                    | panel container `motion.div`                                                  |
 
 **Output per surface:** list every measured node, its CSS selector or component name, and the captured `transition-duration` + `transition-property` values.
 
@@ -115,6 +115,7 @@ If your runtime tool cannot reliably capture the in-transition value, capture in
 ### Task 6 — Recovery check (emulation off)
 
 Disable `prefers-reduced-motion` emulation. Reload. Re-visit:
+
 - 3 surfaces from Task 4 (your choice; pick high-traffic: BidsScreen, AccountScreen, AdminDashboard)
 - S1 (BidCardArticle hover)
 - S3 (DashboardRouter route transition)
@@ -135,6 +136,7 @@ When a `motion.div` with `initial={{ opacity: 0 }}` mounts under reduce, the `us
 - For Playwright: capture a screenshot at `domcontentloaded` and at `networkidle`. Both should show the component fully visible. Compare via pixel diff or visual inspection.
 
 Test surfaces (one each):
+
 - BidsScreen (BidCardArticle initial mount)
 - AccountScreen (AccountMenu initial mount)
 - AdminDashboard (admin card stagger initial mount)
@@ -150,12 +152,14 @@ The DOM tree, element positioning, and styling should be byte-identical between 
 If your tool supports `pixelmatch` or similar, use a low-tolerance diff (≤ 0.5%). If not, visual inspection: focus on element positions, font rendering, color values.
 
 Test surfaces (one each):
+
 - LikedShopsScreen
 - DashboardRouter post-navigation (settled state)
 
 #### NEW.3 — BD design system intact
 
 The KI-113 sweep should NOT have touched any visual styling. Verify on a representative sample:
+
 - Gold lamp halos on landing warm-register sections (BenefitsSection, AboutOpportunitySection) — still rendered, still using `rgba(196, 144, 65, *)` color values
 - Cyan section headings (per MOLANDJESUS canon) — still cyan
 - Glass surfaces (`backdrop-filter: blur(*)`) — still rendered
@@ -240,6 +244,7 @@ VERDICT: BLOCKED
 ```
 
 **`VERDICT: CLEAN` requires ALL of:**
+
 - Task 4: 0 FAIL elements (Not observable count is acceptable if the unreachable routes are auth-gated or missing demo modes; flag them but don't block)
 - Task 5: BOTH S1 and S3 = `PASS` (not `FAIL`, not `not observable`)
 - Task 6: 0 recovery FAIL; both S1 and S3 recovery measurements show non-zero transition-duration
@@ -261,18 +266,22 @@ Diff shape (approximate; preserve existing content):
 ### Closure-proof runtime verification (added 2026-05-05 by post-pipeline Sonnet sweep)
 
 **S1 — BidCardArticle hover under `prefers-reduced-motion: reduce`:**
+
 - Captured `transition-duration: <S1_VALUE>` (verbatim)
 - Verdict: PASS — closes Phase 7.5 falsification (original was FAIL at `200ms`)
 
 **S3 — DashboardRouter route transition under `prefers-reduced-motion: reduce`:**
+
 - Captured `transition-duration: <S3_VALUE>` (verbatim)
 - Verdict: PASS — closes Phase 7.5 falsification (original was FAIL inferred from same explicit-duration pattern)
 
 **Recovery check (emulation off):**
+
 - S1 recovery `transition-duration`: `<S1_RECOVERY>` (non-zero confirms reduce-state was the only trigger)
 - S3 recovery `transition-duration`: `<S3_RECOVERY>` (non-zero confirms reduce-state was the only trigger)
 
 **Visual Integrity Sweep:**
+
 - NEW.1 No flash on mount: PASS
 - NEW.2 No layout shift: PASS
 - NEW.3 BD design system intact: PASS
