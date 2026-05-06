@@ -247,3 +247,33 @@ Primary CTA at 0.34 sits between card (0.32, passive surface) and badge (0.36, m
 
 **Open observation (still pending owner ruling):** `rgba(220, 150, 60, *)` atmospheric gradient drift in 3 sites (`theme.css:1226`, `:1486`, `:1767`) — adjacent to but NOT on the explicit forbidden list. Per autopilot legality binary check, decision-state is not unchanged → autopilot must skip; surface for owner ruling.
 
+---
+
+## Pass 9 Polish #10 — Dark-mode metallic-gold rim on `.bd-dashboard-secondary-button` (2026-05-06)
+
+**HEAD at start:** `84f0e8f4`
+
+**Polish target (one sentence):** Sibling polish to #9. Secondary CTA already carries softer warm trim (inset `rgba(196,144,65,0.12)` + halo `rgba(196,130,45,0.10)` per `.bd-dashboard-secondary-button` base) but its rim resolves to cool `var(--bd-dashboard-secondary-border)` which reads slightly cold against dark navy lit by the gold lamp — incomplete metallic family membership.
+
+**Change applied:** [`src/styles/theme.css:1844-1855`](../src/styles/theme.css)
+
+```css
+.dark .bd-dashboard-secondary-button {
+  border-color: rgba(196, 144, 65, 0.22);
+}
+```
+
+**Rim alpha grammar:** Secondary at 0.22 (panel-grammar) sits calmer than primary 0.34 — preserves attention hierarchy (primary > secondary). Matches `.bd-glass-panel` post-dialback alpha from relay agent's `84f0e8f4`.
+
+**Validation:**
+
+- Build: ✓ clean (3.20s, 63 entries precached).
+- §9.1 forbidden-color sweep: 0 hits — only locked top-lamp `196,144,65` used.
+- §9.3 reduced-motion: no transform/animation — `border-color` only.
+- Light mode: untouched (`.dark` scoped).
+- Apex canon: unmodified.
+
+**Risk:** Lowest tier — single-property `.dark`-scoped override at panel-calmer alpha than primary sibling.
+
+**Cumulative Pass 9 status:** 10 polishes shipped + 1 reverted + KI-117. Owner-pending decisions: (1) #9 numbering audit-doc gap for relay's panel dial-back, (2) NavigationActiveManeuverCard:69 map-domain authorization, (3) Prettier trailing-zero drift global decision, (4) `rgba(220,150,60,*)` atmospheric drift ruling.
+

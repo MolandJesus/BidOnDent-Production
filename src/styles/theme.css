@@ -1841,6 +1841,18 @@ body {
   border-color: rgba(196, 144, 65, 0.34);
 }
 
+/* Pass 9 Polish #10 (2026-05-06): Dark-mode metallic-gold rim on secondary CTA.
+   Sibling to #9. Secondary already carries a softer warm trim (inset 0.12 +
+   halo 0.10 per .bd-dashboard-secondary-button base), but its rim resolves
+   to a cool var(--bd-dashboard-secondary-border) that reads slightly cold
+   against the dark navy lit by the gold lamp. This lifts the rim into the
+   locked top-lamp gold family at panel-grammar alpha (0.22) — calmer than
+   primary 0.34 to preserve attention hierarchy (primary > secondary).
+   Light mode untouched. */
+.dark .bd-dashboard-secondary-button {
+  border-color: rgba(196, 144, 65, 0.22);
+}
+
 /* ─── Dark Glass Surface: Text Color Auto-Adaptation ─────────────────────────
    Glass surfaces get dark backgrounds via the .dark ancestor selector.
    Automatically remap common light-theme text utilities to dark-safe equivalents.
