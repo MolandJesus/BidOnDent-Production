@@ -200,14 +200,7 @@ export default function PlannerAddressSearch({
         ) : null}
 
         {addressError ? (
-          <div
-            className={cn(
-              "rounded-[1rem] border px-3 py-2 text-sm",
-              tone === "light"
-                ? "border-amber-200 bg-amber-50 text-amber-900"
-                : "border-amber-300/20 bg-amber-500/10 text-amber-200"
-            )}
-          >
+          <div className="bd-notice--warn rounded-[1rem] border px-3 py-2 text-sm">
             {addressError}
           </div>
         ) : null}

@@ -196,14 +196,7 @@ export default function PlannerDiagnosticsPanel({
         </div>
         <div className="mt-1 opacity-90">{diagnosticsSignal.detail}</div>
         {staleTelemetryProviderSummary ? (
-          <div
-            className={cn(
-              "mt-2 rounded-[0.75rem] border px-2.5 py-2 text-[11px] leading-5",
-              tone === "light"
-                ? "border-amber-300 bg-amber-50 text-amber-950"
-                : "border-amber-300/40 bg-amber-500/15 text-amber-100"
-            )}
-          >
+          <div className="bd-notice--warn mt-2 rounded-[0.75rem] border px-2.5 py-2 text-[11px] leading-5">
             Provider telemetry for {providerLabel(staleTelemetryProviderSummary.provider)} is{" "}
             {formatAgeLabel(staleTelemetryProviderSummary.lastCheckedAgeMs)} old. Refresh live map
             activity or rerun diagnostics checks to restore current trust status.
