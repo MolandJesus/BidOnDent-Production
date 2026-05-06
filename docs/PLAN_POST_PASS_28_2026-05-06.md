@@ -92,6 +92,29 @@ Three Phase B/C/E proposals declined as no-fit + WONTFIX KIs per the brief's aut
 - Working tree: clean
 - Repo-wide `inset 0 1px 0 rgba(255,255,255,0.5+)` in `src/app`: **zero**
 
+### 1.10 Doc-hygiene cluster (Pass 34, 37, 38, 39, 40)
+
+Owner directive 2026-05-06 ("continue for hours in full hour without reporting after seeing what planner ai said") authorized continued autopilot through the polish/cleanup envelope. Five mechanical doc-hygiene passes shipped after Pass 33:
+
+| Pass | Scope                                                                                                                                  | Commit     |
+| ---- | -------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| 34   | Prettier sweep on 11 narrative docs (table padding, `*emphasis*`→`_emphasis_`, trailing whitespace; renderer-identical)                | `fa5ec7c1` |
+| 37   | `prmium`→`premium` typo in `REF_VISUAL_SYSTEM.md` owner-quote (P6-SPELL)                                                               | `08bd7487` |
+| 38   | Repoint 4 broken `PLAN_PHASE_4_MOBILE_SWEEP.md` links to archive path (`OPS_MOBILE_AUDIT_2026-05-04.md`)                               | `0d42e32d` |
+| 39   | Repoint 12 archived-doc references across 6 active docs (PLAN_PHASE_6_SCOPE, PLAN_DOC_CONSOLIDATION, PLAN_FUTURE_NAV, GETTING_STARTED) | `b1eee52c` |
+| 40   | KI-112 F6 path refresh: `ServiceCoverageMap.tsx` (deleted in Pass 448 Leaflet→MapLibre migration) → `MapLibreServiceCoverageMap.tsx`   | `525c8431` |
+
+Sub-passes that surfaced **zero work**: Pass 35 (console.log DEV-guard sweep — codebase already 100% guarded; flagged sites were multi-line guards mis-detected by per-line grep), Pass 36 (`as any` review — all 9 sites legitimate: 1 maplibre prototype patch, 1 devtool dynamic field, 6 test fixtures, 1 window global).
+
+### 1.11 Net state after Pass 40
+
+- `main` HEAD: `cd7e33e0`
+- branch HEAD: `525c8431`
+- build PASS (3.60s, 2920 modules) · PWA precache 63 entries (3834 KiB)
+- cspell on `src/**` + `docs/**`: 2 issues (both inside `docs/archive/` — intentionally frozen per archive immutability convention; active-doc cspell ZERO)
+- Working tree: clean
+- Active-doc broken-link count: dropped 484→464 (drop of 20 = Passes 38 + 39 + 40 mechanical fixes; remaining 464 are workspace-relative `docs/...` and `src/...` paths that resolve correctly under the chat surface but not under raw filesystem traversal — established convention, out of scope without owner direction)
+
 ---
 
 ## 2. Remaining work — classified by gate type
