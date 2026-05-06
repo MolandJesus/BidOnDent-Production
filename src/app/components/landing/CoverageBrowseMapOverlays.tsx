@@ -173,8 +173,11 @@ export default function CoverageBrowseMapOverlays({
         <div className="pointer-events-none absolute inset-x-3 bottom-4 z-[620] flex justify-center sm:inset-x-4 xl:inset-x-6 xl:bottom-6 2xl:inset-x-8">
           <div
             className={cn(
-              "map-liquid-card map-ui-enter pointer-events-auto w-full max-w-[680px] rounded-[1.25rem] border px-4 py-3 sm:rounded-[1.5rem] sm:px-5 sm:py-3.5 backdrop-blur-3xl",
-              theme.panelStrongClassName
+              // Pass 12 #3 — bottom strip absorbed into canonical bd-glass-card--map
+              // surface so the landing Coverage ETA card matches the dashboard
+              // ShopDirectory route preview surface (Pass 12 #4) under one
+              // grammar instead of the legacy white-heavy map-liquid-card.
+              "bd-glass-card--map map-ui-enter pointer-events-auto w-full max-w-[680px] rounded-[1.25rem] px-4 py-3 sm:rounded-[1.5rem] sm:px-5 sm:py-3.5"
             )}
           >
             <div className="grid grid-cols-3 gap-2 text-center">

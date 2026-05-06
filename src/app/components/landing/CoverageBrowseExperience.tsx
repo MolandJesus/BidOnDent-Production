@@ -385,11 +385,13 @@ export default function CoverageBrowseExperience({
           <div className="pointer-events-none absolute inset-y-4 left-3 z-[610] hidden w-[372px] lg:block xl:left-5 xl:w-[392px] 2xl:left-6 2xl:w-[408px]">
             <div
               className={cn(
-                "map-command-sidebar-shell pointer-events-auto relative h-full overflow-hidden rounded-[2rem] p-2.5",
-                theme.shellClassName,
-                tone === "dark"
-                  ? "shadow-[0_30px_80px_rgba(2,6,23,0.48)]"
-                  : "shadow-[0_32px_84px_rgba(15,23,42,0.14)]"
+                // Pass 12 #2 — replaces ad-hoc map-command-sidebar-shell + conditional
+                // drop-shadow with the canonical bd-glass-card--map utility so the
+                // landing Coverage sidebar carries the same Pass 11 #3/#4 atmospheric
+                // grammar (cream catchlight + bronze rim + warm gold halo + cool blue
+                // identity ring) as the rest of the map chrome.
+                "bd-glass-card--map pointer-events-auto relative h-full overflow-hidden rounded-[2rem] p-2.5",
+                theme.shellClassName
               )}
             >
               <div className="map-liquid-sheen pointer-events-none absolute inset-0 opacity-65" />
