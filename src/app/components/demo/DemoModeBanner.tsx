@@ -40,7 +40,7 @@ export default function DemoModeBanner({ demoAccountType }: DemoModeBannerProps)
     <div
       role="status"
       aria-live="polite"
-      className="bg-amber-500/90 text-slate-900 py-1.5 px-4 text-center text-xs font-semibold tracking-wide select-none shrink-0"
+      className="bd-banner--warn-prominent py-1.5 px-4 text-center text-xs font-semibold tracking-wide select-none shrink-0"
     >
       <span className="inline-flex items-center gap-1.5">
         <Info className="w-3.5 h-3.5" />

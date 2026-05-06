@@ -4333,7 +4333,7 @@ body {
    shell on map screens). Light overrides below. */
 .bd-notice--warn {
   border-color: rgba(196, 144, 65, 0.32);
-  background: rgba(228, 140, 55, 0.10);
+  background: rgba(228, 140, 55, 0.1);
   color: rgba(253, 220, 160, 1);
 }
 
@@ -4408,4 +4408,30 @@ body {
 [data-appearance-mode="light"] .bd-button--warn:focus-visible {
   outline: 2px solid rgba(140, 82, 22, 0.6);
   outline-offset: 2px;
+}
+
+/* ============================================================
+   bd-banner--warn-prominent — persistent app-wide warm banner
+   (Pass 10 #2)
+   ------------------------------------------------------------
+   For high-prominence app-shell banners that must remain
+   unmissable across both light and dark modes (e.g. Demo Mode
+   indicator). Locked Premium Gold Palette translation of the
+   legacy bg-amber-500/90 + text-slate-900 pattern.
+
+   Mode-agnostic: single token set for both light and dark
+   because the "warm prominent banner" role is the same in
+   both — a persistent unmissable warm strip lit by the gold
+   lamp. Tuned for ≥7:1 text contrast on the warm fill.
+
+   Migrated call sites:
+     - DemoModeBanner.tsx (Demo Mode indicator)
+   ============================================================ */
+
+.bd-banner--warn-prominent {
+  background: rgba(196, 144, 65, 1);
+  color: rgba(40, 24, 8, 1);
+  box-shadow:
+    inset 0 -1px 0 rgba(140, 82, 22, 0.7),
+    inset 0 1px 0 rgba(252, 240, 208, 0.35);
 }
