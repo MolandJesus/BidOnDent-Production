@@ -317,7 +317,7 @@ export default function DashboardHeader({
                   isLightAppearance
                     ? // Cool blue-cream glass replaces near-white surface (KI-066).
                       "border border-blue-200/45 bg-[linear-gradient(180deg,rgba(238,247,255,0.96)_0%,rgba(219,234,254,0.92)_100%)] shadow-[0_18px_44px_rgba(15,23,42,0.12),0_4px_10px_rgba(30,58,138,0.06),inset_0_1px_0_rgba(252,240,208,0.85)]"
-                    : "border border-blue-400/20 bg-[#0d1f35]/95 shadow-[0_18px_44px_rgba(2,6,23,0.45),inset_0_1px_0_rgba(147,197,253,0.10)]"
+                    : "border border-blue-400/20 bg-[#0d1f35]/95 shadow-[0_18px_44px_rgba(2,6,23,0.45),inset_0_1px_0_rgba(147,197,253,0.10),inset_0_-1px_0_rgba(196,144,65,0.16),0_0_22px_rgba(196,130,45,0.12)]"
                 }`}
               >
                 {searchResults.length === 0 ? (
@@ -465,7 +465,7 @@ export default function DashboardHeader({
                 id="dashboard-user-profile-menu"
                 role="menu"
                 aria-label="User profile menu"
-                className={`absolute right-0 mt-2 w-60 z-50 overflow-hidden rounded-2xl border backdrop-blur-xl ${isLightAppearance ? "border-blue-200/45 bg-[linear-gradient(180deg,rgba(238,247,255,0.96)_0%,rgba(219,234,254,0.92)_100%)] shadow-[0_18px_44px_rgba(15,23,42,0.14),0_4px_10px_rgba(30,58,138,0.07),inset_0_1px_0_rgba(252,240,208,0.85),0_0_0_1px_rgba(191,219,254,0.20)]" : "border-blue-400/22 bg-[linear-gradient(180deg,rgba(11,23,47,0.94)_0%,rgba(8,18,38,0.90)_100%)] shadow-[0_22px_56px_rgba(2,6,23,0.50),inset_0_1px_0_rgba(147,197,253,0.14),0_0_0_1px_rgba(96,165,250,0.18)]"}`}
+                className={`absolute right-0 mt-2 w-60 z-50 overflow-hidden rounded-2xl border backdrop-blur-xl ${isLightAppearance ? "border-blue-200/45 bg-[linear-gradient(180deg,rgba(238,247,255,0.96)_0%,rgba(219,234,254,0.92)_100%)] shadow-[0_18px_44px_rgba(15,23,42,0.14),0_4px_10px_rgba(30,58,138,0.07),inset_0_1px_0_rgba(252,240,208,0.85),0_0_0_1px_rgba(191,219,254,0.20)]" : "border-blue-400/22 bg-[linear-gradient(180deg,rgba(11,23,47,0.94)_0%,rgba(8,18,38,0.90)_100%)] shadow-[0_22px_56px_rgba(2,6,23,0.50),inset_0_1px_0_rgba(147,197,253,0.14),inset_0_-1px_0_rgba(196,144,65,0.18),0_0_0_1px_rgba(96,165,250,0.18),0_0_24px_rgba(196,130,45,0.14)]"}`}
               >
                 <div
                   className={`px-3 py-2.5 border-b ${isLightAppearance ? "border-blue-200/35" : "border-blue-400/15"}`}
