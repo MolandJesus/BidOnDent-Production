@@ -235,6 +235,25 @@
     "basemaps",
     "arcgisonline",
     "nosniff",
-    "SAMEORIGIN"
+    "SAMEORIGIN",
+    "Microtask",
+    "microtask",
+    "unhydrated",
+    "unrenderable",
+    "Renderable",
+    "ILIKE",
+    "callsites",
+    "buildout",
+    "greenlight",
+    "catchlights",
+    "desaturates",
+    "toplamp",
+    "bottomwash",
+    "unawaited",
+    "autoplay",
+    "tweens",
+    "autocorrection",
+    "Toyoto",
+    "Locatio"
   ]
 }
