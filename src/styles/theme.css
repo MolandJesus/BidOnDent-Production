@@ -3328,7 +3328,7 @@ body {
   aspect-ratio: 1;
   width: 38%;
   border-radius: 999px;
-  background: radial-gradient(circle, rgba(196, 144, 65, 0.30) 0%, transparent 72%);
+  background: radial-gradient(circle, rgba(196, 144, 65, 0.3) 0%, transparent 72%);
   pointer-events: none;
 }
 
@@ -3338,7 +3338,7 @@ body {
 [data-appearance-mode="light"] .bd-dashboard-section--accent-indigo::after,
 [data-appearance-mode="light"] .bd-dashboard-section--accent-rose::after {
   width: 30%;
-  background: radial-gradient(circle, rgba(196, 144, 65, 0.20) 0%, transparent 72%);
+  background: radial-gradient(circle, rgba(196, 144, 65, 0.2) 0%, transparent 72%);
 }
 
 /* Deeper-gold tile: warm pop tile per LAW. Body stays warm-brown, trim

@@ -135,7 +135,14 @@ export default function DashboardSidebar({
                       boxShadow: isLightAppearance
                         ? "inset 0 1px 0 rgba(252, 238, 204, 0.78), inset 0 -1px 0 rgba(140, 82, 22, 0.28), 0 0 0 1px rgba(140, 82, 22, 0.22), 0 0 0 1px rgba(96, 165, 250, 0.30), 0 4px 12px rgba(15, 30, 60, 0.12), 0 0 18px rgba(196, 130, 45, 0.14)"
                         : // Dark active tab aligned to locked palette (KI-066).
-                          "inset 0 1px 0 rgba(147, 197, 253, 0.14), inset 0 -1px 0 rgba(140, 82, 22, 0.32), 0 0 0 1px rgba(140, 82, 22, 0.20), 0 0 0 1px rgba(96, 165, 250, 0.20), 0 4px 14px rgba(37, 99, 235, 0.16), 0 0 28px rgba(196, 130, 45, 0.18)",
+                          // Pass 11 #6 (owner directive 2026-05-06 "more
+                          // atmospheric, gold lighting"): warm halo
+                          // 0.18 -> 0.26 + added second softer 44px outer
+                          // wash 0.16 + cream catchlight 0.14 -> 0.20 so
+                          // the active nav item reads as a clearly lit
+                          // gold-trimmed pill on every screen. Cool blue
+                          // identity ring preserved.
+                          "inset 0 1px 0 rgba(196, 144, 65, 0.20), inset 0 -1px 0 rgba(140, 82, 22, 0.36), 0 0 0 1px rgba(140, 82, 22, 0.24), 0 0 0 1px rgba(96, 165, 250, 0.22), 0 4px 14px rgba(37, 99, 235, 0.16), 0 0 28px rgba(196, 130, 45, 0.26), 0 0 44px rgba(196, 130, 45, 0.16)",
                     }
                   : {}
               }
