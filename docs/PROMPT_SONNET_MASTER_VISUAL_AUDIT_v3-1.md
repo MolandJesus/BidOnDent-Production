@@ -38,8 +38,8 @@ Log: `Pre-flight PASS · HEAD <SHA> · port <PORT>`. Proceed.
 
 1. `docs/REF_AI_BROWSER_NAVIGATION.md`
 2. `docs/LAW_ANIMATION_AND_ATMOSPHERE.md` §3 + §5
-3. `docs/OPS_KI_113_REDUCED_MOTION_SCOPE_CONTRACT_2026-05-05.md` close footer
-4. `docs/OPS_PHASE_7_5_PRE_EXECUTION_AUDIT_2026-05-04.md` Sonnet runtime verification section (the FAIL@200ms verdict you must close)
+3. `docs/archive/OPS_KI_113_REDUCED_MOTION_SCOPE_CONTRACT_2026-05-05_archived_2026-05-06.md` close footer
+4. `docs/archive/OPS_PHASE_7_5_PRE_EXECUTION_AUDIT_2026-05-04_archived_2026-05-06.md` Sonnet runtime verification section (the FAIL@200ms verdict you must close)
 
 ---
 
@@ -230,7 +230,7 @@ Pick the worst applicable. No promotion.
 
 ## §9. IF VERDICT = CLEAN: append + commit
 
-Append to `docs/OPS_KI_113_REDUCED_MOTION_SCOPE_CONTRACT_2026-05-05.md` close footer:
+Append to `docs/archive/OPS_KI_113_REDUCED_MOTION_SCOPE_CONTRACT_2026-05-05_archived_2026-05-06.md` close footer:
 
 ```markdown
 ---

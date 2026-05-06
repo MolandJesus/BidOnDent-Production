@@ -136,7 +136,7 @@ Positive-side catalog symmetric to anti-patterns. Each pattern surfaced from con
 
 **Worked example:**
 
-- Phase 8.5 close 2026-05-05: [`OPS_PHASE_8_5_PRE_EXECUTION_AUDIT_2026-05-05.md`](OPS_PHASE_8_5_PRE_EXECUTION_AUDIT_2026-05-05.md) §5 default-recommended Path Y; §8 enumerated close-commit shapes for both Path A and Path Y. Under autopilot directive with no explicit Path-A override, autopilot legally executed Path Y — folded findings F1+F2+F4 into KI-112 as F4+F5+F6 (audit F3 maps to existing KI-112 F2), 0 code edits. Commit `baee9966`. Without the audit's pre-staging, this would have been an owner-pick hard-stop.
+- Phase 8.5 close 2026-05-05: [`archive/OPS_PHASE_8_5_PRE_EXECUTION_AUDIT_2026-05-05_archived_2026-05-06.md`](archive/OPS_PHASE_8_5_PRE_EXECUTION_AUDIT_2026-05-05_archived_2026-05-06.md) §5 default-recommended Path Y; §8 enumerated close-commit shapes for both Path A and Path Y. Under autopilot directive with no explicit Path-A override, autopilot legally executed Path Y — folded findings F1+F2+F4 into KI-112 as F4+F5+F6 (audit F3 maps to existing KI-112 F2), 0 code edits. Commit `baee9966`. Without the audit's pre-staging, this would have been an owner-pick hard-stop.
 
 **Counter-example (no pre-staging is correct here):** KI-112 sub-fix activation has no Path A/B/Y framing. Its fix-direction reads _"Owner taste decisions required before any sub-fix activation."_ Autopilot cannot activate F1–F6 — there is no pre-staged default. This is the structural absence of the pattern, and it is correct: pre-staging only works when there's an autopilot-legal default. Pre-staging owner-taste decisions falsely implies the agent can execute without taste input.
 
@@ -203,7 +203,7 @@ These are tracked here so the next iteration of any execution-grade prompt can f
 
 - [`REF_AI_COLLABORATION_PROTOCOL.md`](REF_AI_COLLABORATION_PROTOCOL.md) — how to extract directives from multi-AI pastes (input layer)
 - [`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md) — non-negotiable rules every prompt must respect
-- [`OPS_KI_113_REDUCED_MOTION_SCOPE_CONTRACT_2026-05-05.md`](OPS_KI_113_REDUCED_MOTION_SCOPE_CONTRACT_2026-05-05.md) — the worked example that produced this kernel
+- [`archive/OPS_KI_113_REDUCED_MOTION_SCOPE_CONTRACT_2026-05-05_archived_2026-05-06.md`](archive/OPS_KI_113_REDUCED_MOTION_SCOPE_CONTRACT_2026-05-05_archived_2026-05-06.md) — the worked example that produced this kernel
 
 ---
 

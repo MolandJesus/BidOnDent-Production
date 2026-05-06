@@ -547,7 +547,7 @@ for (const f of findings) console.log(f.file + ":" + f.line + "  " + f.snippet);
 
 ## 10. AUDIT DOC CONVENTION
 
-- Filename: `docs/AUDIT_<TYPE>_<DATE>_<AUTHOR>.md` (e.g. `AUDIT_VISUAL_DEEP_2026-05-05_SONNET.md`)
+- Filename: `docs/AUDIT_<TYPE>_<DATE>_<AUTHOR>.md` (e.g. `archive/AUDIT_VISUAL_DEEP_2026-05-05_SONNET_archived_2026-05-06.md`)
 - Header:
   - `**HEAD:** <sha-at-audit-start>`
   - `**Date:** YYYY-MM-DD`
@@ -562,7 +562,7 @@ for (const f of findings) console.log(f.file + ":" + f.line + "  " + f.snippet);
 - Coverage gaps explicitly accepted (env-gated, mobile-emulation-floored, etc.)
 - **Pass N append, never rewrite:** subsequent passes append `## Pass N — <description>` sections
 
-Reference docs: [`AUDIT_VISUAL_DEEP_2026-05-05_SONNET.md`](AUDIT_VISUAL_DEEP_2026-05-05_SONNET.md), [`AUDIT_MAP_FUNCTIONALITY_2026-05-05_SONNET.md`](AUDIT_MAP_FUNCTIONALITY_2026-05-05_SONNET.md) (note: those headers say Sonnet but the actual auditor was Opus VS Code — preserve historical attribution).
+Reference docs: [`AUDIT_VISUAL_DEEP_2026-05-05_SONNET.md`](AUDIT_VISUAL_DEEP_2026-05-05_SONNET.md), [`archive/AUDIT_MAP_FUNCTIONALITY_2026-05-05_SONNET_archived_2026-05-06.md`](archive/AUDIT_MAP_FUNCTIONALITY_2026-05-05_SONNET_archived_2026-05-06.md) (note: those headers say Sonnet but the actual auditor was Opus VS Code — preserve historical attribution).
 
 ---
 

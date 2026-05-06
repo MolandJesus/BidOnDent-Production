@@ -1,9 +1,9 @@
 # BidOnDent Docs Operating Index
 
-**Last updated:** 2026-05-05 (doc cleanup pass — PLAN_DASHBOARD_REDESIGN + OPS_PHASE_6_SMOKE_TEST archived; 4 stale archive files deleted)
+**Last updated:** 2026-05-06 (closing-out doc-archive sweep — 11 Phase-completed OPS / KI-113 / map-diagnose / superseded-audit docs archived with 2026-05-06 date suffix; bare-filename refs repointed to archive paths across active docs in same pass per LAW co-update rule. Pass 12-41 polish arc complete on `main`: Pass 12 map chrome unification + Pass 13/13b/13c KI-118 mileage data integrity + Pass 13d-13h/24/27/28/33 LAW pure-white-inset slip story closed repo-wide + Pass 14/19 KI-012 bid realtime trust signal + Pass 15/16a/16b/17/17b living-lava atmosphere ledger + Pass 18 atmosphere coherence audit + Pass 20 cspell sweep + Pass 21/26/31/32/34 Prettier/format housekeeping + Pass 29 forward-looking plan doc + Pass 30/33b/41 doc co-updates + Pass 37-40 doc-hygiene cluster. Branch + main fully synced to `f46dfad8`.)
 **Status:** Active documentation operating index
-**Current phase:** Soft Launch Hardening (edge functions v50, `verify_jwt: false`, storage pointer pattern)
-**Current handoff:** see git log + active relay prompt context (per relay discipline: do NOT create new session-report docs — the git log + commit messages are the durable record)
+**Current phase:** Soft Launch Hardening (edge functions v50, `verify_jwt: false`, storage pointer pattern). KI-002 RESEND_API_KEY deploy is the only remaining code-side P0 launch blocker.
+**Current handoff:** see git log + [`PLAN_POST_PASS_28_2026-05-06.md`](PLAN_POST_PASS_28_2026-05-06.md) § 6 (4 owner-decision forks remaining; § 6 fork #1 closed by Pass 33 cream-migration unlock) + active relay prompt context (per relay discipline: do NOT create new session-report docs — the git log + commit messages are the durable record)
 
 BidOnDent is a **geo-native, map-first automotive repair marketplace**. Three user types (customer, shop, insurer) interact through a spatial bidding loop backed by Supabase and PostGIS.
 
@@ -104,7 +104,7 @@ These are the primary governing documents. Always start here.
 - **[`archive/OPS_PHASE_6_SMOKE_TEST_archived_2026-05-05.md`](archive/OPS_PHASE_6_SMOKE_TEST_archived_2026-05-05.md)** — three-environment smoke test (Local Docker / Hosted Staging / Production). Pre-Phase-6 prep template; Phase 6 closed via Path A (different scope from the 6.1+6.3 staging+prod runs this template was built for); never fully executed. **ARCHIVED 2026-05-05.** Available for re-activation if a future staging+prod smoke pass is wanted.
 - **[`OPS_MOBILE_AUDIT_2026-05-04.md`](OPS_MOBILE_AUDIT_2026-05-04.md)** — Phase 4 mobile audit findings (5 clusters audited, 2 fixes shipped: NotificationCenter close button + ShopDirectoryHero chip). 0 LAW promotions warranted. Status: COMPLETE.
 - **[`OPS_DEPENDABOT_TRIAGE_2026-05-04.md`](OPS_DEPENDABOT_TRIAGE_2026-05-04.md)** — Phase 3.6 dependabot triage snapshot. 3 vulnerabilities classified + patched (Clerk 5.61.5→5.61.6 high, postcss 8.5.6→8.5.14 moderate via override). `npm audit` final: 0 vulnerabilities.
-- **[`OPS_MAP_ARCHITECTURE_DIAGNOSE_2026-05-04.md`](OPS_MAP_ARCHITECTURE_DIAGNOSE_2026-05-04.md)** — Phase 5 read-only architectural audit of the map system. 4 findings (2 P3 grandfathered, 1 P5, 1 P6). 0 P0/P1/P2. Map system shippable as-is. Phase 8 = cleanup, not rescue.
+- **[`archive/OPS_MAP_ARCHITECTURE_DIAGNOSE_2026-05-04_archived_2026-05-06.md`](archive/OPS_MAP_ARCHITECTURE_DIAGNOSE_2026-05-04_archived_2026-05-06.md)** — Phase 5 read-only architectural audit of the map system. 4 findings (2 P3 grandfathered, 1 P5, 1 P6). 0 P0/P1/P2. Map system shippable as-is. Phase 8 = cleanup, not rescue.
 
 ### Setup & Operations (Supabase platform contract)
 
