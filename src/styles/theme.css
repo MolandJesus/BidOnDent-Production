@@ -403,10 +403,12 @@ body {
 
 @layer components {
   .coverage-map-brand-badge {
+    /* Pass 13h (2026-05-06) — top inset migrated from pure white 0.7 to
+       cream 0.7 per LAW Light-Mode Surface Rule (no pure-white insets). */
     backdrop-filter: blur(20px);
     box-shadow:
       0 10px 26px rgba(30, 58, 138, 0.16),
-      inset 0 1px 0 rgba(255, 255, 255, 0.7),
+      inset 0 1px 0 rgba(252, 240, 208, 0.7),
       0 0 16px rgba(59, 130, 246, 0.06);
   }
 
@@ -523,13 +525,15 @@ body {
     color: rgb(224 242 254);
   }
 
-  /* Scale control — glass treatment */
+  /* Scale control — glass treatment.
+     Pass 13h (2026-05-06) — bg first stop migrated off pure-white into the
+     cool blue glass family used by the popup + ctrl-group + ctrl-attrib. */
   .maplibregl-ctrl-scale {
     border-radius: 0.6rem !important;
     border: 1px solid rgba(191, 219, 254, 0.5) !important;
     background: linear-gradient(
       180deg,
-      rgba(255, 255, 255, 0.78),
+      rgba(232, 242, 254, 0.84),
       rgba(241, 245, 249, 0.72)
     ) !important;
     backdrop-filter: blur(16px);
