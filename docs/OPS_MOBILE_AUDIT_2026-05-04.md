@@ -6,7 +6,7 @@
 
 **Status:** **COMPLETE 2026-05-04.** All findings shipped. Phase 4 closed; re-authorization gate now active for Phase 4.5+.
 
-**Scope contract:** [`PLAN_PHASE_4_MOBILE_SWEEP.md`](PLAN_PHASE_4_MOBILE_SWEEP.md)
+**Scope contract:** [`PLAN_PHASE_4_MOBILE_SWEEP.md`](archive/PLAN_PHASE_4_MOBILE_SWEEP_archived_2026-05-05.md)
 
 **Method:** Static code audit (grep + Read) on touch targets, viewport overflow, modal traps, safe-area insets, gesture conflicts. No real-device QA. No Playwright run-through. Chrome DevTools emulation can verify any specific finding if needed.
 
@@ -82,7 +82,7 @@ Audited insurer screens. Buttons are `h-11`+ throughout (Approval / Denial modal
 
 ## Patterns observed (audit-only, NOT auto-promoted to LAW)
 
-The following patterns are consistently applied across the codebase. Documenting them here so the conditional `LAW_MOBILE_VIEWPORT_DOCTRINE.md` write (per [`PLAN_PHASE_4_MOBILE_SWEEP.md`](PLAN_PHASE_4_MOBILE_SWEEP.md) §7) is a small exercise IF the owner explicitly authorizes promotion:
+The following patterns are consistently applied across the codebase. Documenting them here so the conditional `LAW_MOBILE_VIEWPORT_DOCTRINE.md` write (per [`PLAN_PHASE_4_MOBILE_SWEEP.md`](archive/PLAN_PHASE_4_MOBILE_SWEEP_archived_2026-05-05.md) §7) is a small exercise IF the owner explicitly authorizes promotion:
 
 1. **Touch-target floor for clickable icons** — `h-10 w-10` baseline; `min-h-[44px] min-w-[44px]` when iOS HIG compliance is required (mobile-critical surfaces like landing hamburger, navigation chrome). The pattern is consistent in shipped code.
 2. **Decorative icon containers** can be smaller (`h-7`, `h-8`, `h-9`) when they sit inside a larger clickable parent.
@@ -107,13 +107,13 @@ Cluster A / C / E had no findings at audit time and shipped clean without commit
 
 **LAW promotion judgement (final):** No systemic pattern emerged that wasn't already shipped. The codebase was already mostly compliant; this phase brought 2 specific outliers to the established floor. **`LAW_MOBILE_VIEWPORT_DOCTRINE.md` is NOT being written.** If future audits find a systemic gap, the audit doc can flag it then. Current state holds.
 
-**Re-authorization gate active.** Phase 4.5 (animation pillar) requires separate explicit owner authorization per [`PLAN_PHASE_4_MOBILE_SWEEP.md`](PLAN_PHASE_4_MOBILE_SWEEP.md) §8. Parallel-AI work is now eligible per [`LAW_LAYERED_ARCHITECTURE.md`](LAW_LAYERED_ARCHITECTURE.md) — Phase 3 dry run + Phase 4 sequential execution both proved discipline holds.
+**Re-authorization gate active.** Phase 4.5 (animation pillar) requires separate explicit owner authorization per [`PLAN_PHASE_4_MOBILE_SWEEP.md`](archive/PLAN_PHASE_4_MOBILE_SWEEP_archived_2026-05-05.md) §8. Parallel-AI work is now eligible per [`LAW_LAYERED_ARCHITECTURE.md`](LAW_LAYERED_ARCHITECTURE.md) — Phase 3 dry run + Phase 4 sequential execution both proved discipline holds.
 
 ---
 
 ## Cross-references
 
-- [`PLAN_PHASE_4_MOBILE_SWEEP.md`](PLAN_PHASE_4_MOBILE_SWEEP.md) — scope contract this audit operates under
+- [`PLAN_PHASE_4_MOBILE_SWEEP.md`](archive/PLAN_PHASE_4_MOBILE_SWEEP_archived_2026-05-05.md) — scope contract this audit operates under
 - [`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md) — palette/glass canon (untouched by this sweep)
 - [`PLAN_DOC_INDEX_BY_PHASE.md`](PLAN_DOC_INDEX_BY_PHASE.md) — predicted Phase 4 doc surface (this doc + conditional LAW)
 - [`AI_LOCK.md`](../AI_LOCK.md) — coordination state during sweep
