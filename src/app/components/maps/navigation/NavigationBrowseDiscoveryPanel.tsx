@@ -284,7 +284,7 @@ export default function NavigationBrowseDiscoveryPanel({
                       type="button"
                       onClick={() => onOpenShopDirections(shop)}
                       className={cn(theme.compactIconButtonClassName)}
-                      title="Start route"
+                      title="Start Navigation"
                     >
                       <Navigation className="h-3.5 w-3.5" />
                     </button>
@@ -361,7 +361,7 @@ export default function NavigationBrowseDiscoveryPanel({
                         type="button"
                         onClick={() => onOpenShopDirections(guide.shop)}
                         className={cn(theme.compactIconButtonClassName)}
-                        title="Start route"
+                        title="Start Navigation"
                       >
                         <Navigation className="h-3.5 w-3.5" />
                       </button>
