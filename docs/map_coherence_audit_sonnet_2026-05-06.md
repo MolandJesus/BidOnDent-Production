@@ -11,10 +11,10 @@
 
 The four owner reference screenshots reveal **two completely separate map systems** living side-by-side in the codebase, not one shared system styled differently:
 
-| System | Used by | Renderer |
-|---|---|---|
-| **Coverage Map** (`CoverageMapDialog` + `CoverageBrowseExperience` + `CoverageActiveNavigationLayout`) | Landing inline, Landing fullscreen, Dashboard "Coverage command center" fullscreen | `MapLibreServiceCoverageMap` |
-| **Shop Directory Map** (`ShopDirectoryImmersiveMap` / `ShopDirectoryHybridStage` + `ShopDirectoryMapOverlays` + `ShopDirectoryMapPaneOverlays` + `MapPaneLegendPanel`) | Dashboard "Find Shops" inline + immersive view | `MapLibreShopDirectoryMapPane` |
+| System                                                                                                                                                                 | Used by                                                                            | Renderer                       |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ------------------------------ |
+| **Coverage Map** (`CoverageMapDialog` + `CoverageBrowseExperience` + `CoverageActiveNavigationLayout`)                                                                 | Landing inline, Landing fullscreen, Dashboard "Coverage command center" fullscreen | `MapLibreServiceCoverageMap`   |
+| **Shop Directory Map** (`ShopDirectoryImmersiveMap` / `ShopDirectoryHybridStage` + `ShopDirectoryMapOverlays` + `ShopDirectoryMapPaneOverlays` + `MapPaneLegendPanel`) | Dashboard "Find Shops" inline + immersive view                                     | `MapLibreShopDirectoryMapPane` |
 
 The owner's screenshot 3 (landing fullscreen "Mode Midnight 6 regions 6 live shops" + Coverage Command Center sidebar with Search/Explore/Saved/Shops tabs) and screenshot 4 (dashboard inline "ROUTE" card with `1005m / 1035m / 853.4 mi / 876.8 mi` + ALL/PENDING/APPROVED/IN REPAIR/RESOLVED/DONE legend) are not the same map at all — they are two architecturally separate component trees that happen to both show roads and pins.
 
@@ -26,29 +26,29 @@ This is the unification gap. "Make them coherent" means **converge two systems**
 
 ### Surface index
 
-| # | Surface | Component path | Renderer |
-|---|---|---|---|
-| 1 | **Landing inline** | [`src/app/components/landing/OperatingRegionsSection.tsx`](src/app/components/landing/OperatingRegionsSection.tsx) | `MapLibreServiceCoverageMap` directly |
-| 2 | **Landing fullscreen** | [`src/app/components/landing/CoverageMapDialog.tsx`](src/app/components/landing/CoverageMapDialog.tsx) → [`CoverageBrowseExperience.tsx`](src/app/components/landing/CoverageBrowseExperience.tsx) | `MapLibreServiceCoverageMap` (immersive) |
-| 3 | **Dashboard "Coverage" panel fullscreen** | [`src/app/components/dashboard/DashboardCoveragePanel.tsx`](src/app/components/dashboard/DashboardCoveragePanel.tsx) → `CoverageMapDialog` | `MapLibreServiceCoverageMap` (immersive) |
-| 4 | **Dashboard "Find Shops" inline** | [`src/app/components/shop/ShopDirectoryScreen.tsx`](src/app/components/shop/ShopDirectoryScreen.tsx) → `ShopDirectoryImmersiveMap` → [`ImmersiveMapViewport.tsx`](src/app/components/shop/ImmersiveMapViewport.tsx) → `ShopDirectoryMapOverlays` | `MapLibreShopDirectoryMapPane` |
-| 5 | **Dashboard "Find Shops" hybrid** (alt layout) | [`ShopDirectoryHybridStage.tsx`](src/app/components/shop/ShopDirectoryHybridStage.tsx) → [`ShopDirectoryHybridMapSection.tsx`](src/app/components/shop/ShopDirectoryHybridMapSection.tsx) | `MapLibreShopDirectoryMapPane` |
+| #   | Surface                                        | Component path                                                                                                                                                                                                                                   | Renderer                                 |
+| --- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------- |
+| 1   | **Landing inline**                             | [`src/app/components/landing/OperatingRegionsSection.tsx`](src/app/components/landing/OperatingRegionsSection.tsx)                                                                                                                               | `MapLibreServiceCoverageMap` directly    |
+| 2   | **Landing fullscreen**                         | [`src/app/components/landing/CoverageMapDialog.tsx`](src/app/components/landing/CoverageMapDialog.tsx) → [`CoverageBrowseExperience.tsx`](src/app/components/landing/CoverageBrowseExperience.tsx)                                               | `MapLibreServiceCoverageMap` (immersive) |
+| 3   | **Dashboard "Coverage" panel fullscreen**      | [`src/app/components/dashboard/DashboardCoveragePanel.tsx`](src/app/components/dashboard/DashboardCoveragePanel.tsx) → `CoverageMapDialog`                                                                                                       | `MapLibreServiceCoverageMap` (immersive) |
+| 4   | **Dashboard "Find Shops" inline**              | [`src/app/components/shop/ShopDirectoryScreen.tsx`](src/app/components/shop/ShopDirectoryScreen.tsx) → `ShopDirectoryImmersiveMap` → [`ImmersiveMapViewport.tsx`](src/app/components/shop/ImmersiveMapViewport.tsx) → `ShopDirectoryMapOverlays` | `MapLibreShopDirectoryMapPane`           |
+| 5   | **Dashboard "Find Shops" hybrid** (alt layout) | [`ShopDirectoryHybridStage.tsx`](src/app/components/shop/ShopDirectoryHybridStage.tsx) → [`ShopDirectoryHybridMapSection.tsx`](src/app/components/shop/ShopDirectoryHybridMapSection.tsx)                                                        | `MapLibreShopDirectoryMapPane`           |
 
 ### Divergence table
 
-| Aspect | Landing inline (#1) | Landing/Dashboard fullscreen (#2 + #3) | Dashboard inline (#4 / #5) |
-|---|---|---|---|
-| **Shared dialog** | n/a | ✅ `CoverageMapDialog` (one component) | ❌ separate stack |
-| **Tile mode control** | None visible inline (user must open fullscreen) | "Mode Midnight" text eyebrow + tone resolver via `tileMode === "night"` | Segmented pill `Map / Night / Satellite` ([`ShopDirectoryMapPaneOverlays.tsx`](src/app/components/shop/ShopDirectoryMapPaneOverlays.tsx)) |
-| **Search UX** | n/a inline | Full Coverage Command Center sidebar with tabs `Search / Explore / Saved / Shops` ([`CoverageCommandCenterSidebar.tsx`](src/app/components/maps/command-center/CoverageCommandCenterSidebar.tsx) + [`CoverageBrowseSidebarContent.tsx`](src/app/components/landing/CoverageBrowseSidebarContent.tsx)) | Floating "Search this area" pill ([`ShopDirectoryMapPaneOverlays.tsx`](src/app/components/shop/ShopDirectoryMapPaneOverlays.tsx#L344)) |
-| **Origin/address input** | Inline ZIP + address inputs in section card ([`CoverageSearchPanel.tsx`](src/app/components/landing/CoverageSearchPanel.tsx)) | "YOUR LOCATION City of Beacon" + "Search address or place" inside sidebar | None visible — address resolved via geolocation hook + `useShopDirectory*` |
-| **Route preview card** | n/a | Two-card stack: "RECENT ROUTE Elite Auto Works Google Maps · 8:36 PM" + "YOUR ROUTE BidOnDent Hudson Hub" + bottom strip with arrival/min/mi + Share ETA + Start Route ([`CoverageBrowseExperience.tsx`](src/app/components/landing/CoverageBrowseExperience.tsx) + [`CoverageBrowseMapOverlays`](src/app/components/landing/CoverageBrowseMapOverlays.tsx)) | Single floating "ROUTE" card with dual mileage chips (`1005m/853.4mi`, `1035m/876.8mi`), `LIVE ROUTE`, `My Locatio... 737.2 mi · 1264 min`, Request Estimate / Start Navigation buttons ([`ShopDirectoryRoutePreviewCard.tsx`](src/app/components/shop/ShopDirectoryRoutePreviewCard.tsx)) |
-| **Nav-start CTA label** | n/a | **"Start Route"** ([`CoverageBrowseMapOverlays`](src/app/components/landing/CoverageBrowseMapOverlays.tsx)) | **"Start Navigation"** (or "Get Directions" fallback, [`ShopDirectoryMapPaneOverlays.tsx#L288`](src/app/components/shop/ShopDirectoryMapPaneOverlays.tsx#L288), [`ShopDirectoryRoutePreviewCard.tsx#L314`](src/app/components/shop/ShopDirectoryRoutePreviewCard.tsx#L314)) |
-| **Legend** | None | None | `ALL / PENDING / APPROVED / IN REPAIR / RESOLVED / DONE` (report status colors) + `Top pick` ([`MapPaneLegendPanel.tsx`](src/app/components/shop/MapPaneLegendPanel.tsx)) |
-| **Filter chips above map** | None | None | `Selected · Top pick · Reports (3) · Saved · Routes` |
-| **Atmospheric chrome (Pass 11)** | Section uses `bd-landing-section-toplamp` + `bd-landing-section-bottomwash` (custom landing chrome). Coverage map shell uses `theme.shellClassName` from `getMapSurfaceTheme(tone, true)`. **No** Pass 11 cream catchlight / bronze rim / warm halo on the map shell. | Sidebar shell is bespoke (`map-command-sidebar-shell` + `map-liquid-sheen` + custom shadow `0_30px_80px_rgba(2,6,23,0.48)`). **No** Pass 11 utility class. Bottom strip card: bespoke. | Route card, legend panel, filter chips: bespoke shadows. **No** Pass 11 utility class. |
-| **Tone resolver** | `resolveMapSurfaceTone(tileMode)` (LAW-locked) | Same | Independent — uses `appearanceMode` prop directly in some cases |
-| **Default tile mode** | `night` if dark appearance, `roadmap` if light | inherits from invoker | Defaults to `roadmap` ([`DashboardCoveragePanel.tsx#L48`](src/app/components/dashboard/DashboardCoveragePanel.tsx#L48)); shop directory has its own default |
+| Aspect                           | Landing inline (#1)                                                                                                                                                                                                                                                   | Landing/Dashboard fullscreen (#2 + #3)                                                                                                                                                                                                                                                                                                                       | Dashboard inline (#4 / #5)                                                                                                                                                                                                                                                                 |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Shared dialog**                | n/a                                                                                                                                                                                                                                                                   | ✅ `CoverageMapDialog` (one component)                                                                                                                                                                                                                                                                                                                       | ❌ separate stack                                                                                                                                                                                                                                                                          |
+| **Tile mode control**            | None visible inline (user must open fullscreen)                                                                                                                                                                                                                       | "Mode Midnight" text eyebrow + tone resolver via `tileMode === "night"`                                                                                                                                                                                                                                                                                      | Segmented pill `Map / Night / Satellite` ([`ShopDirectoryMapPaneOverlays.tsx`](src/app/components/shop/ShopDirectoryMapPaneOverlays.tsx))                                                                                                                                                  |
+| **Search UX**                    | n/a inline                                                                                                                                                                                                                                                            | Full Coverage Command Center sidebar with tabs `Search / Explore / Saved / Shops` ([`CoverageCommandCenterSidebar.tsx`](src/app/components/maps/command-center/CoverageCommandCenterSidebar.tsx) + [`CoverageBrowseSidebarContent.tsx`](src/app/components/landing/CoverageBrowseSidebarContent.tsx))                                                        | Floating "Search this area" pill ([`ShopDirectoryMapPaneOverlays.tsx`](src/app/components/shop/ShopDirectoryMapPaneOverlays.tsx#L344))                                                                                                                                                     |
+| **Origin/address input**         | Inline ZIP + address inputs in section card ([`CoverageSearchPanel.tsx`](src/app/components/landing/CoverageSearchPanel.tsx))                                                                                                                                         | "YOUR LOCATION City of Beacon" + "Search address or place" inside sidebar                                                                                                                                                                                                                                                                                    | None visible — address resolved via geolocation hook + `useShopDirectory*`                                                                                                                                                                                                                 |
+| **Route preview card**           | n/a                                                                                                                                                                                                                                                                   | Two-card stack: "RECENT ROUTE Elite Auto Works Google Maps · 8:36 PM" + "YOUR ROUTE BidOnDent Hudson Hub" + bottom strip with arrival/min/mi + Share ETA + Start Route ([`CoverageBrowseExperience.tsx`](src/app/components/landing/CoverageBrowseExperience.tsx) + [`CoverageBrowseMapOverlays`](src/app/components/landing/CoverageBrowseMapOverlays.tsx)) | Single floating "ROUTE" card with dual mileage chips (`1005m/853.4mi`, `1035m/876.8mi`), `LIVE ROUTE`, `My Locatio... 737.2 mi · 1264 min`, Request Estimate / Start Navigation buttons ([`ShopDirectoryRoutePreviewCard.tsx`](src/app/components/shop/ShopDirectoryRoutePreviewCard.tsx)) |
+| **Nav-start CTA label**          | n/a                                                                                                                                                                                                                                                                   | **"Start Route"** ([`CoverageBrowseMapOverlays`](src/app/components/landing/CoverageBrowseMapOverlays.tsx))                                                                                                                                                                                                                                                  | **"Start Navigation"** (or "Get Directions" fallback, [`ShopDirectoryMapPaneOverlays.tsx#L288`](src/app/components/shop/ShopDirectoryMapPaneOverlays.tsx#L288), [`ShopDirectoryRoutePreviewCard.tsx#L314`](src/app/components/shop/ShopDirectoryRoutePreviewCard.tsx#L314))                |
+| **Legend**                       | None                                                                                                                                                                                                                                                                  | None                                                                                                                                                                                                                                                                                                                                                         | `ALL / PENDING / APPROVED / IN REPAIR / RESOLVED / DONE` (report status colors) + `Top pick` ([`MapPaneLegendPanel.tsx`](src/app/components/shop/MapPaneLegendPanel.tsx))                                                                                                                  |
+| **Filter chips above map**       | None                                                                                                                                                                                                                                                                  | None                                                                                                                                                                                                                                                                                                                                                         | `Selected · Top pick · Reports (3) · Saved · Routes`                                                                                                                                                                                                                                       |
+| **Atmospheric chrome (Pass 11)** | Section uses `bd-landing-section-toplamp` + `bd-landing-section-bottomwash` (custom landing chrome). Coverage map shell uses `theme.shellClassName` from `getMapSurfaceTheme(tone, true)`. **No** Pass 11 cream catchlight / bronze rim / warm halo on the map shell. | Sidebar shell is bespoke (`map-command-sidebar-shell` + `map-liquid-sheen` + custom shadow `0_30px_80px_rgba(2,6,23,0.48)`). **No** Pass 11 utility class. Bottom strip card: bespoke.                                                                                                                                                                       | Route card, legend panel, filter chips: bespoke shadows. **No** Pass 11 utility class.                                                                                                                                                                                                     |
+| **Tone resolver**                | `resolveMapSurfaceTone(tileMode)` (LAW-locked)                                                                                                                                                                                                                        | Same                                                                                                                                                                                                                                                                                                                                                         | Independent — uses `appearanceMode` prop directly in some cases                                                                                                                                                                                                                            |
+| **Default tile mode**            | `night` if dark appearance, `roadmap` if light                                                                                                                                                                                                                        | inherits from invoker                                                                                                                                                                                                                                                                                                                                        | Defaults to `roadmap` ([`DashboardCoveragePanel.tsx#L48`](src/app/components/dashboard/DashboardCoveragePanel.tsx#L48)); shop directory has its own default                                                                                                                                |
 
 ### Key observations
 
@@ -93,20 +93,23 @@ Reasoning: the two systems have different DATA models (coverage = partner-shop d
 /* DARK */
 border: 1px solid rgba(96, 165, 250, 0.22);
 box-shadow:
-  0 12px 44px rgba(2, 6, 23, 0.55),         /* contact / drop */
-  0 0 80px rgba(196, 130, 45, 0.22),        /* warm gold ambient (LAW cap) */
-  0 0 60px rgba(59, 130, 246, 0.12),        /* cool blue identity */
-  inset 0 1px 0 rgba(196, 144, 65, 0.36),   /* cream/gold catchlight */
-  inset 0 -1px 0 rgba(140, 82, 22, 0.32),   /* bronze rim */
-  inset 0 -2px 0 rgba(252, 240, 208, 0.06); /* polished sub-rim */
-background: linear-gradient(180deg, rgba(15,23,42,0.92), rgba(23,37,84,0.92));
+  0 12px 44px rgba(2, 6, 23, 0.55),
+  /* contact / drop */ 0 0 80px rgba(196, 130, 45, 0.22),
+  /* warm gold ambient (LAW cap) */ 0 0 60px rgba(59, 130, 246, 0.12),
+  /* cool blue identity */ inset 0 1px 0 rgba(196, 144, 65, 0.36),
+  /* cream/gold catchlight */ inset 0 -1px 0 rgba(140, 82, 22, 0.32),
+  /* bronze rim */ inset 0 -2px 0 rgba(252, 240, 208, 0.06); /* polished sub-rim */
+background: linear-gradient(180deg, rgba(15, 23, 42, 0.92), rgba(23, 37, 84, 0.92));
 backdrop-filter: blur(20px) saturate(150%);
 
 /* LIGHT — locked Premium Gold Palette, calm cream-paper */
-[data-appearance-mode="light"] .bd-glass-card--map { /* untouched cream-paper variant */ }
+[data-appearance-mode="light"] .bd-glass-card--map {
+  /* untouched cream-paper variant */
+}
 ```
 
 Apply to:
+
 - Coverage Command Center sidebar shell (replace `map-command-sidebar-shell` shadow)
 - Coverage bottom strip card (arrival/min/mi)
 - Shop directory route card (`ShopDirectoryRoutePreviewCard` outer wrap)
@@ -123,17 +126,17 @@ Currently `DashboardCoveragePanel` defaults to `roadmap` regardless of dark mode
 
 ## Phase 3 — migration plan (ranked, smallest blast radius first)
 
-| Pass | Scope | Files | Risk |
-|---|---|---|---|
-| **12 #1** | Add `bd-glass-card--map` utility to `theme.css` (definition only, not applied yet). | `src/styles/theme.css` | Zero — pure addition |
-| **12 #2** | Apply `bd-glass-card--map` to Coverage Command Center sidebar shell. | `CoverageBrowseExperience.tsx` (replace `map-command-sidebar-shell` shadow line) | Low — visual only, no behavior |
-| **12 #3** | Apply `bd-glass-card--map` to Coverage bottom strip card (arrival/min/mi). | `CoverageBrowseMapOverlays.tsx` | Low |
-| **12 #4** | Apply `bd-glass-card--map` to `ShopDirectoryRoutePreviewCard` outer wrap. | `ShopDirectoryRoutePreviewCard.tsx` | Low |
-| **12 #5** | Apply `bd-glass-card--map` to `MapPaneLegendPanel` + filter chips bar. | `MapPaneLegendPanel.tsx`, `ShopDirectoryMapPaneOverlays.tsx` | Low |
-| **12 #6** | Standardize nav-start CTA label to "Start Navigation" across coverage flow. | `CoverageBrowseMapOverlays.tsx`, `CoverageBrowseSidebarContent.tsx` (any "Start Route" sites) | Low — label only |
-| **12 #7** | Fix `DashboardCoveragePanel` default tile mode to follow `appearanceMode`. | `DashboardCoveragePanel.tsx` line 48 | Low — single state init |
-| **12 #8 (optional, larger)** | Extract `MapTileSegmentedControl` and adopt in `MapSurfaceControls`. | New file + 2 invokers updated | Medium — touches shared map renderer |
-| **12 #9 (optional, larger)** | Extract `MapRoutePreviewCard` shared component. | New file + 2 invoker updates | Medium — replaces two existing route card components |
+| Pass                         | Scope                                                                               | Files                                                                                         | Risk                                                 |
+| ---------------------------- | ----------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| **12 #1**                    | Add `bd-glass-card--map` utility to `theme.css` (definition only, not applied yet). | `src/styles/theme.css`                                                                        | Zero — pure addition                                 |
+| **12 #2**                    | Apply `bd-glass-card--map` to Coverage Command Center sidebar shell.                | `CoverageBrowseExperience.tsx` (replace `map-command-sidebar-shell` shadow line)              | Low — visual only, no behavior                       |
+| **12 #3**                    | Apply `bd-glass-card--map` to Coverage bottom strip card (arrival/min/mi).          | `CoverageBrowseMapOverlays.tsx`                                                               | Low                                                  |
+| **12 #4**                    | Apply `bd-glass-card--map` to `ShopDirectoryRoutePreviewCard` outer wrap.           | `ShopDirectoryRoutePreviewCard.tsx`                                                           | Low                                                  |
+| **12 #5**                    | Apply `bd-glass-card--map` to `MapPaneLegendPanel` + filter chips bar.              | `MapPaneLegendPanel.tsx`, `ShopDirectoryMapPaneOverlays.tsx`                                  | Low                                                  |
+| **12 #6**                    | Standardize nav-start CTA label to "Start Navigation" across coverage flow.         | `CoverageBrowseMapOverlays.tsx`, `CoverageBrowseSidebarContent.tsx` (any "Start Route" sites) | Low — label only                                     |
+| **12 #7**                    | Fix `DashboardCoveragePanel` default tile mode to follow `appearanceMode`.          | `DashboardCoveragePanel.tsx` line 48                                                          | Low — single state init                              |
+| **12 #8 (optional, larger)** | Extract `MapTileSegmentedControl` and adopt in `MapSurfaceControls`.                | New file + 2 invokers updated                                                                 | Medium — touches shared map renderer                 |
+| **12 #9 (optional, larger)** | Extract `MapRoutePreviewCard` shared component.                                     | New file + 2 invoker updates                                                                  | Medium — replaces two existing route card components |
 
 Recommend executing 12 #1–#7 as the first chrome-unification batch (each is its own narrow pass per project discipline). Defer 12 #8–#9 until after the owner sees the chrome changes land — they are the actual architectural unification and should be a separate decision.
 
@@ -144,6 +147,7 @@ Recommend executing 12 #1–#7 as the first chrome-unification batch (each is it
 ### HSF-1 — Mileage display is wrong on dashboard route card (REAL BUG, not chrome)
 
 Owner's screenshot 4 shows the dashboard "ROUTE" card displaying:
+
 - Two mileage chips: `1005m / 853.4 mi` and `1035m / 876.8 mi`
 - `LIVE ROUTE` strip: `My Locatio...  737.2 mi · 1264 min`
 
@@ -160,8 +164,9 @@ For an account based in NY-area with a "My Location" pin clearly inside the visi
 ### HSF-3 — No LAW violations found in map surface code
 
 I checked the relevant files for:
+
 - ❌ pure white surfaces — none
-- ❌ yellow-amber tokens (`amber-300/400/500`) — none in any map component (the amber-* sweep from Pass 10 already cleared these)
+- ❌ yellow-amber tokens (`amber-300/400/500`) — none in any map component (the amber-\* sweep from Pass 10 already cleared these)
 - ❌ off-locked gold values (220/165/90, 254/248/220, 160/95/25, 220/140/50) — none
 - ❌ data leaks via `storage://` — n/a (map components don't hydrate user media)
 - ❌ direct Supabase from component — n/a (`useCoveragePartnerShops` hook routes through edge function)
@@ -173,6 +178,7 @@ Map system is clean for LAW; the gap is purely chrome unification + label parity
 ## Files referenced
 
 ### Coverage system (shared landing + dashboard fullscreen)
+
 - [`src/app/components/landing/OperatingRegionsSection.tsx`](src/app/components/landing/OperatingRegionsSection.tsx) — landing inline invoker
 - [`src/app/components/landing/CoverageMapDialog.tsx`](src/app/components/landing/CoverageMapDialog.tsx) — shared fullscreen dialog
 - [`src/app/components/landing/CoverageBrowseExperience.tsx`](src/app/components/landing/CoverageBrowseExperience.tsx) — browse layout (sidebar + map)
@@ -185,6 +191,7 @@ Map system is clean for LAW; the gap is purely chrome unification + label parity
 - [`src/app/hooks/useOperatingRegionsCoverage.ts`](src/app/hooks/useOperatingRegionsCoverage.ts) — landing data hook (LAW boundary, do not touch)
 
 ### Shop Directory system (dashboard inline — divergent)
+
 - [`src/app/components/shop/ShopDirectoryScreen.tsx`](src/app/components/shop/ShopDirectoryScreen.tsx) — top-level screen
 - [`src/app/components/shop/ShopDirectoryImmersiveMap.tsx`](src/app/components/shop/ShopDirectoryImmersiveMap.tsx) — immersive layout
 - [`src/app/components/shop/ShopDirectoryHybridStage.tsx`](src/app/components/shop/ShopDirectoryHybridStage.tsx) — alt hybrid layout
@@ -198,6 +205,7 @@ Map system is clean for LAW; the gap is purely chrome unification + label parity
 - [`src/app/components/shop/MapLibreShopDirectoryMapPane.tsx`](src/app/components/shop/MapLibreShopDirectoryMapPane.tsx) — renderer
 
 ### Shared substrate (LAW-locked, do NOT touch internals)
+
 - [`src/app/components/maps/MapLibreServiceCoverageMap.tsx`](src/app/components/maps/MapLibreServiceCoverageMap.tsx) — coverage renderer
 - [`src/app/components/maps/MapSurfaceControls.tsx`](src/app/components/maps/MapSurfaceControls.tsx) — tile mode + reset controls
 - [`src/app/components/maps/mapSurfaceTheme.ts`](src/app/components/maps/mapSurfaceTheme.ts) — `resolveMapSurfaceTone`, `getMapSurfaceTheme` (LAW-locked)

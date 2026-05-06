@@ -4374,7 +4374,11 @@ body {
 .dark .bd-landing-section-toplamp::after {
   /* Dark side bloom slightly brighter than light — preserves the warm
      hero-parity feel without exceeding canon. */
-  background: radial-gradient(ellipse 50% 70% at 75% 20%, rgba(220, 150, 60, 0.14), transparent 65%);
+  background: radial-gradient(
+    ellipse 50% 70% at 75% 20%,
+    rgba(220, 150, 60, 0.14),
+    transparent 65%
+  );
 }
 @media (prefers-reduced-motion: reduce) {
   .bd-landing-section-toplamp::before,
@@ -4432,7 +4436,11 @@ body {
 .bd-landing-section-bottomwash::after {
   /* Cyan companion — light cool counter (light: 0.06) drifting opposite
      so the depth feels alive without violating the cool identity. */
-  background: radial-gradient(ellipse 60% 70% at 25% 90%, rgba(96, 165, 250, 0.06), transparent 65%);
+  background: radial-gradient(
+    ellipse 60% 70% at 25% 90%,
+    rgba(96, 165, 250, 0.06),
+    transparent 65%
+  );
   animation: orbDrift 38s ease-in-out -7s infinite reverse;
 }
 [data-theme="dark"] .bd-landing-section-bottomwash,

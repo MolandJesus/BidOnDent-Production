@@ -42,14 +42,14 @@ The codebase has **29 unique CSS keyframes** across two files. They are the cano
 
 ### A. Atmosphere / orb (6) — `src/styles/animations.css`
 
-| Keyframe         | Purpose                                  | Used by                                                                                                                                 |
-| ---------------- | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| `blobFloat`      | Slow large-radius drift for ambient orbs | Landing hero atmosphere                                                                                                                 |
+| Keyframe         | Purpose                                  | Used by                                                                                                                                                                                                                                                            |
+| ---------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `blobFloat`      | Slow large-radius drift for ambient orbs | Landing hero atmosphere                                                                                                                                                                                                                                            |
 | `orbDrift`       | Ambient orb horizontal drift             | Landing background atmosphere; dashboard `.bd-dashboard-atmosphere` living gold-lava layers (28s + 36s, crossing-phase, in `theme.css`); landing `.bd-landing-section-toplamp` (32s + 44s) and `.bd-landing-section-bottomwash` (24s + 38s) living-lava extensions |
-| `orbGlow`        | Slow opacity oscillation (light pulsing) | Landing + dashboard ambient orbs                                                                                                        |
-| `orbBreathe`     | Slow scale oscillation (breathing)       | Landing + dashboard ambient orbs                                                                                                        |
-| `orbFloat`       | Vertical float for ambient orbs          | Landing background atmosphere                                                                                                           |
-| `orbRotateDrift` | Combined slow rotation + drift           | Landing background atmosphere                                                                                                           |
+| `orbGlow`        | Slow opacity oscillation (light pulsing) | Landing + dashboard ambient orbs                                                                                                                                                                                                                                   |
+| `orbBreathe`     | Slow scale oscillation (breathing)       | Landing + dashboard ambient orbs                                                                                                                                                                                                                                   |
+| `orbFloat`       | Vertical float for ambient orbs          | Landing background atmosphere                                                                                                                                                                                                                                      |
+| `orbRotateDrift` | Combined slow rotation + drift           | Landing background atmosphere                                                                                                                                                                                                                                      |
 
 ### B. Float / parallax (3) — `src/styles/animations.css`
 

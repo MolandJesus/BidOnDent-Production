@@ -10,11 +10,11 @@
 
 ## Living-lava ledger as of Pass 17b (main HEAD `2c6e7a75`)
 
-| Surface                         | `::before` period | `::after` period | Phase offset | Pass |
-| ------------------------------- | ----------------- | ---------------- | ------------ | ---- |
-| `bd-dashboard-atmosphere`       | 28s               | 36s reverse      | −9s          | 15   |
-| `bd-landing-section-toplamp`    | 32s               | 44s reverse      | −11s         | 16a  |
-| `bd-landing-section-bottomwash` | 24s               | 38s reverse      | −7s          | 16b  |
+| Surface                         | `::before` period | `::after` period | Phase offset | Pass                                |
+| ------------------------------- | ----------------- | ---------------- | ------------ | ----------------------------------- |
+| `bd-dashboard-atmosphere`       | 28s               | 36s reverse      | −9s          | 15                                  |
+| `bd-landing-section-toplamp`    | 32s               | 44s reverse      | −11s         | 16a                                 |
+| `bd-landing-section-bottomwash` | 24s               | 38s reverse      | −7s          | 16b                                 |
 | `bd-bloom-atmosphere`           | n/a               | n/a              | n/a          | 17b — documented no-drift exception |
 
 `orbDrift` declarations in `theme.css` total **6** — exactly two per ledger surface. No undocumented usage. Period-spread invariant holds.
@@ -36,7 +36,7 @@ Every other surface in `theme.css` matching `atmosphere | lamp | wash | glow | h
 
 - **Current state:** `box-shadow` utilities (luminous halos for cards floating over map). Cool-blue family in dark mode, warm gold variants in light.
 - **Existing motion:** None.
-- **Geometric fit for `orbDrift`:** **Structurally impossible.** `orbDrift` keyframes animate `transform: translate + scale`. `box-shadow` is not transformable — only the element it's applied to would move, dragging the host card with the shadow. That would be motion on the *host*, not the atmosphere.
+- **Geometric fit for `orbDrift`:** **Structurally impossible.** `orbDrift` keyframes animate `transform: translate + scale`. `box-shadow` is not transformable — only the element it's applied to would move, dragging the host card with the shadow. That would be motion on the _host_, not the atmosphere.
 - **Verdict: EXCEPTION (structurally unsuitable — utility, not pseudo-layer).** Cannot join the ledger without a complete refactor into pseudo-element gradients, which would change every consumer of the utility. Owner taste call required for that scope of change; not recommended as it would lose the box-shadow's premium "thrown light" feel.
 
 ### 3. `.bd-liquid-gold-flow` (theme.css:~3995–4030)
