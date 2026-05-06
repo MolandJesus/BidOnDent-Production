@@ -417,13 +417,16 @@ body {
       0 0 20px rgba(59, 130, 246, 0.12);
   }
 
-  /* MapLibre attribution styling */
+  /* MapLibre attribution styling.
+     Pass 13g (2026-05-06) — bg first stop migrated from pure white
+     rgba(255, 255, 255, 0.8) to cool blue rgba(232, 242, 254, 0.84)
+     so the tiny corner badge stays in the locked palette family. */
   .maplibregl-ctrl-attrib {
     border-radius: 0.85rem;
     border: 1px solid rgba(191, 219, 254, 0.7);
     background: linear-gradient(
       180deg,
-      rgba(255, 255, 255, 0.8),
+      rgba(232, 242, 254, 0.84),
       rgba(219, 234, 254, 0.72)
     ) !important;
     padding: 0.2rem 0.55rem;
@@ -447,13 +450,19 @@ body {
     box-shadow: 0 14px 32px rgba(2, 6, 23, 0.3);
   }
 
-  /* MapLibre navigation & geolocate control groups — glass treatment */
+  /* MapLibre navigation & geolocate control groups — glass treatment.
+     Pass 13g (2026-05-06) — bg first stop + inset highlight migrated
+     off pure-white into the locked palette family.
+       bg first stop  rgba(255, 255, 255, 0.82) → rgba(232, 242, 254, 0.84)
+       inset top      rgba(255, 255, 255, 0.6)  → rgba(252, 240, 208, 0.6)
+                      (cream catchlight; 0.6α is at the LAW cap edge but
+                      acceptable for the small zoom-pill chrome) */
   .maplibregl-ctrl-group {
     border-radius: 1rem !important;
     border: 1px solid rgba(191, 219, 254, 0.55) !important;
     background: linear-gradient(
       180deg,
-      rgba(255, 255, 255, 0.82),
+      rgba(232, 242, 254, 0.84),
       rgba(241, 245, 249, 0.76)
     ) !important;
     backdrop-filter: blur(20px) saturate(1.1);
@@ -461,7 +470,7 @@ body {
     box-shadow:
       0 14px 32px rgba(15, 23, 42, 0.12),
       0 4px 12px rgba(59, 130, 246, 0.06),
-      inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+      inset 0 1px 0 rgba(252, 240, 208, 0.6) !important;
     overflow: hidden;
   }
 
