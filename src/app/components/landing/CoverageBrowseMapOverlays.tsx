@@ -239,7 +239,7 @@ export default function CoverageBrowseMapOverlays({
                 )}
               >
                 <Compass className="h-3.5 w-3.5" />
-                Start Route
+                Start Navigation
               </button>
             </div>
           </div>

@@ -115,7 +115,7 @@ export default function CoverageNearestShopCard({
             className={theme.primaryButtonClassName}
           >
             <Navigation className="h-3.5 w-3.5" />
-            Start Route
+            Start Navigation
           </button>
           {shop.phoneNumber ? (
             <a href={`tel:${shop.phoneNumber}`} className={theme.secondaryButtonClassName}>
@@ -180,7 +180,7 @@ export default function CoverageNearestShopCard({
           className={theme.primaryButtonClassName}
         >
           <Navigation className="h-3.5 w-3.5" />
-          Start Route
+          Start Navigation
         </button>
         {shop.phoneNumber ? (
           <a href={`tel:${shop.phoneNumber}`} className={theme.secondaryButtonClassName}>

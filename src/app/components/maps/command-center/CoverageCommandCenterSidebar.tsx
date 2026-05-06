@@ -135,7 +135,7 @@ export default function CoverageCommandCenterSidebar({
                   className={theme.primaryButtonClassName}
                 >
                   <Compass className="h-4 w-4" />
-                  Start Route
+                  Start Navigation
                 </button>
               </div>
             ) : null}

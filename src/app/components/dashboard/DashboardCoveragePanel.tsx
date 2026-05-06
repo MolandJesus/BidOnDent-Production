@@ -42,7 +42,12 @@ export default function DashboardCoveragePanel({
   const primeVoice = useNavigationVoicePriming();
   const { partnerShops, isLoadingShops } = useCoveragePartnerShops();
   const [isMapExpanded, setIsMapExpanded] = useState(false);
-  const [tileMode, setTileMode] = useState<MapTileMode>("roadmap");
+  // Pass 12 #7 — default tile mode follows appearanceMode so the dashboard
+  // Coverage map opens with a tile palette consistent with the surrounding
+  // chrome (light → roadmap, dark → night). User-driven changes via the
+  // tile-mode cycle button still take precedence; this only changes the
+  // initial value.
+  const [tileMode, setTileMode] = useState<MapTileMode>(isLight ? "roadmap" : "night");
   const [mapCenter, setMapCenter] = useState<[number, number]>(defaultCoverageCenter);
   const [mapZoom, setMapZoom] = useState(9);
   const [mapRevision, setMapRevision] = useState(0);

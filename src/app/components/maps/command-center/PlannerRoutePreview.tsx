@@ -249,7 +249,7 @@ export default function PlannerRoutePreview({
                 )}
               >
                 <Navigation className="h-3.5 w-3.5" />
-                Start Route
+                Start Navigation
               </button>
             )}
           </div>
@@ -277,7 +277,7 @@ export default function PlannerRoutePreview({
               </div>
               <div className={cn("mt-1 text-xs leading-relaxed", theme.secondaryTextClassName)}>
                 {routePreview
-                  ? "Route preview is ready. Tap Start Route when you\u2019re set."
+                  ? "Route preview is ready. Tap Start Navigation when you’re set."
                   : selectedShop
                     ? "Provide GPS location or search an address to build a route."
                     : "Open the Shops tab to choose a destination, then search an origin address."}
@@ -318,7 +318,7 @@ export default function PlannerRoutePreview({
                 )}
               >
                 <Navigation className="h-3.5 w-3.5" />
-                Start Route
+                Start Navigation
               </button>
             )}
           </div>
