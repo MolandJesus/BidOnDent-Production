@@ -2,9 +2,9 @@
 
 **Authority level:** REFERENCE — describes the current system as it actually works. Not a vision doc. Not a roadmap.
 
-**Last updated:** 2026-05-05 (Phase 7.6 close — KI-113 RESOLVED via 45-file `useReducedMotion()` sweep + `<MotionConfig reducedMotion="user">` wrap at app root. Phase 8 close — KI-109 RESOLVED via `useOperatingRegionsCoverage` 512→468 LOC helper extraction; KI-110 RESOLVED-WITH-RESIDUAL via `useShopMapListings` Y1-narrowed hook + 3 substantive caller migrations; KI-108 partial closure with documented selectivity policy. 4 new L3 hooks landed: `useGeoCoordinates`, `useHaversineDistance`, `useNavigationVoicePriming`, `useShopMapListings` + `useReportLayerData` relocation to `hooks/`. Pre-execution-audit pattern is now 8-for-8 across Phases 4 / 6 / 6.5 / 7 / 7.5 / 8 / 8.5 / KI-113. Visual system pointer to `REF_VISUAL_SYSTEM.md`; gold-lamp identity + mobile map-first doctrine locked.)
+**Last updated:** 2026-05-06 (closing-out — Pass 12-41 polish arc complete on `main` at `f46dfad8`. Pass 12 map chrome unification + Pass 13/13b/13c KI-118 mileage data integrity (anchor Dallas TX → White Plains NY + 9 NY metro cities + 3 region aliases) + Pass 13d-13h/24/27/28/33 LAW pure-white-inset slip story closed repo-wide (canonical `inset 0 1px 0 rgba(255,255,255,0.5+)` in `src/`: zero hits) + Pass 14/19 KI-012 bid realtime trust signal + Pass 15/16a/16b/17/17b living-lava atmosphere ledger locked with period-spread invariant (28+36 / 32+44 / 24+38) + Pass 18 atmosphere coherence audit + Pass 20 cspell domain-words sweep (138 added) + Pass 21/26/31/32/34 Prettier housekeeping + Pass 29 forward-looking plan doc + Pass 30/33b/41 doc co-updates + Pass 37-40 doc-hygiene cluster. Earlier this date: Phase 7.6/8 close — KI-113 RESOLVED, KI-109/110 RESOLVED, KI-108 partial closure. Pre-execution-audit pattern was 8-for-8 across Phases 4 / 6 / 6.5 / 7 / 7.5 / 8 / 8.5 / KI-113. Phase OPS audit docs archived 2026-05-06 to `docs/archive/`. Visual system pointer to `REF_VISUAL_SYSTEM.md`; gold-lamp identity + mobile map-first doctrine locked.)
 
-**Build:** 0 TS errors, 568/568 tests passing, ~3.4s
+**Build:** 0 TS errors, 569/569 tests passing, ~3.5s
 
 **Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable)
 
