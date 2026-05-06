@@ -1374,8 +1374,13 @@ body {
   font-weight: 500;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  /* Pass 27 (2026-05-06): cream-gold inset highlight per locked Premium Gold
+     Palette (LAW_PROJECT_RULES.md § Light-Mode Surface Rule). Replaces pure
+     white inset rgba(255,255,255,0.65) — same LAW slip pattern fixed in
+     Pass 24 for .bd-glass-card. Cool-blue body + warm gold trim already
+     correct; only the top inset hue shifts. Alpha preserved at 0.65. */
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.65),
+    inset 0 1px 0 rgba(252, 240, 208, 0.65),
     inset 0 -1px 0 rgba(196, 144, 65, 0.1),
     0 0 18px rgba(59, 130, 246, 0.18),
     0 4px 14px rgba(59, 130, 246, 0.1),
