@@ -13,6 +13,51 @@ import type { DamageReport } from "../../types";
 import { useNotifications } from "../../features/notifications/NotificationContext";
 import { useBidsForReport } from "../../hooks/useBidsForReport";
 
+type BidsConnectionStatus = "connected" | "disconnected" | "error" | "idle";
+
+// KI-012 parity: mirror BidsSummaryHeader's Live / Reconnecting / Offline chip
+// onto ReportDetailScreen so customers reading a single report see the same
+// realtime-trust signal they get on the bids list. Helper kept local (not
+// imported from BidsSummaryHeader) to avoid restructuring that surface — see
+// owner brief 2026-05-06 "no JSX restructuring".
+function getLiveStatusChip(status: BidsConnectionStatus, isLight: boolean) {
+  if (status === "idle") return null;
+
+  if (status === "connected") {
+    return {
+      label: "Live",
+      title: "Live updates connected. New bids appear instantly.",
+      dotClass: "bg-emerald-500",
+      ringClass: "shadow-[0_0_0_3px_rgba(16,185,129,0.18)]",
+      chipClass: isLight
+        ? "border border-emerald-300/60 bg-emerald-50/85 text-emerald-700"
+        : "border border-emerald-300/30 bg-emerald-400/10 text-emerald-200",
+    };
+  }
+
+  if (status === "error") {
+    return {
+      label: "Reconnecting\u2026",
+      title: "Live updates interrupted. Retrying \u2014 values shown are the last known.",
+      dotClass: "bg-amber-500",
+      ringClass: "shadow-[0_0_0_3px_rgba(245,158,11,0.18)]",
+      chipClass: isLight
+        ? "border border-amber-300/60 bg-amber-50/85 text-amber-700"
+        : "border border-amber-300/30 bg-amber-400/10 text-amber-200",
+    };
+  }
+
+  return {
+    label: "Offline \u00b7 last known",
+    title: "Realtime offline. Showing the last loaded bids \u2014 refresh to update.",
+    dotClass: "bg-slate-400",
+    ringClass: "",
+    chipClass: isLight
+      ? "border border-slate-300/60 bg-slate-100/85 text-slate-600"
+      : "border border-slate-300/25 bg-white/8 text-slate-200",
+  };
+}
+
 type ReportDetailScreenProps = {
   report: DamageReport;
   onBack: () => void;
@@ -51,8 +96,9 @@ export default function ReportDetailScreen({
   const submittedAt = report.submittedAt || new Date().toISOString();
 
   // Load live bids for this report; fall back to embedded report.bids if not yet fetched
-  const { bids: liveBids } = useBidsForReport(report.id);
+  const { bids: liveBids, connectionStatus: bidsConnectionStatus } = useBidsForReport(report.id);
   const bidsSource = liveBids.length > 0 ? liveBids : report.bids || [];
+  const liveChip = getLiveStatusChip(bidsConnectionStatus, isLight);
 
   // Detect accepted bid for active-repair card
   const acceptedBid = useMemo(() => bidsSource.find((b) => b.status === "accepted"), [bidsSource]);
@@ -135,6 +181,19 @@ export default function ReportDetailScreen({
               <p className={`text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}>
                 Report #{report.id}
               </p>
+              {liveChip && (
+                <div
+                  className={`bd-dashboard-chip mt-2 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${liveChip.chipClass}`}
+                  title={liveChip.title}
+                  aria-label={liveChip.title}
+                >
+                  <span
+                    className={`inline-block h-2 w-2 rounded-full ${liveChip.dotClass} ${liveChip.ringClass}`}
+                    aria-hidden="true"
+                  />
+                  {liveChip.label}
+                </div>
+              )}
             </div>
             <span
               className={`px-3 py-1 rounded-full text-xs font-medium ${
