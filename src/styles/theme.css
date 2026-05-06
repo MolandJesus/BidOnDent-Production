@@ -2992,16 +2992,27 @@ body {
     0 0 60px rgba(196, 130, 45, 0.18);
 }
 
+/* Pass 6 (KI-081 extension, owner directive 2026-05-06: "more color and
+   premium look... gold lighting and metallic gold trims"): align cool dark
+   accent panel variants up to the Pass 7 base panel trim baseline (top inset
+   0.30 -> 0.36 toward base 0.38, bottom bronze rim 0.28-0.30 -> 0.32 matching
+   base 0.30 + slight edge), and add a faint cream sub-rim catchlight
+   (inset 0 -2px 0 rgba(252,240,208,0.06)) immediately above the bronze rim
+   for the "polished metal trim" doubled-edge effect — bronze is the metal,
+   the cream above is light bouncing off the polished surface. Atmospheric
+   bronze halo bumped 0.18-0.20 -> 0.22 (LAW cap). Cool accent ring (blue/
+   cyan/indigo identity) preserved unchanged so accent identity reads. */
 .bd-dashboard-panel--accent-blue {
   background: linear-gradient(180deg, rgba(12, 35, 74, 0.94) 0%, rgba(9, 24, 52, 0.9) 100%);
   border-color: rgba(96, 165, 250, 0.26);
   box-shadow:
     0 32px 80px rgba(2, 6, 23, 0.44),
     0 12px 24px rgba(2, 6, 23, 0.32),
-    inset 0 1px 0 rgba(196, 144, 65, 0.3),
-    inset 0 -1px 0 rgba(140, 82, 22, 0.3),
+    inset 0 1px 0 rgba(196, 144, 65, 0.36),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.32),
+    inset 0 -2px 0 rgba(252, 240, 208, 0.06),
     0 0 0 1px rgba(96, 165, 250, 0.2),
-    0 0 60px rgba(196, 130, 45, 0.2),
+    0 0 60px rgba(196, 130, 45, 0.22),
     0 0 24px rgba(96, 165, 250, 0.14);
 }
 
@@ -3011,10 +3022,11 @@ body {
   box-shadow:
     0 32px 80px rgba(2, 6, 23, 0.42),
     0 12px 24px rgba(2, 6, 23, 0.3),
-    inset 0 1px 0 rgba(196, 144, 65, 0.3),
-    inset 0 -1px 0 rgba(140, 82, 22, 0.28),
+    inset 0 1px 0 rgba(196, 144, 65, 0.36),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.32),
+    inset 0 -2px 0 rgba(252, 240, 208, 0.06),
     0 0 0 1px rgba(96, 165, 250, 0.18),
-    0 0 60px rgba(196, 130, 45, 0.18),
+    0 0 60px rgba(196, 130, 45, 0.22),
     0 0 24px rgba(34, 211, 238, 0.14);
 }
 
@@ -3024,10 +3036,11 @@ body {
   box-shadow:
     0 32px 80px rgba(2, 6, 23, 0.44),
     0 12px 24px rgba(2, 6, 23, 0.32),
-    inset 0 1px 0 rgba(196, 144, 65, 0.3),
-    inset 0 -1px 0 rgba(140, 82, 22, 0.28),
+    inset 0 1px 0 rgba(196, 144, 65, 0.36),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.32),
+    inset 0 -2px 0 rgba(252, 240, 208, 0.06),
     0 0 0 1px rgba(96, 165, 250, 0.18),
-    0 0 60px rgba(196, 130, 45, 0.18),
+    0 0 60px rgba(196, 130, 45, 0.22),
     0 0 24px rgba(129, 140, 248, 0.14);
 }
 
@@ -3147,16 +3160,20 @@ body {
   border-radius: 1.15rem;
 }
 
+/* Pass 6: --deep section bumped to match Pass 7 base section trim alphas
+   (top inset 0.18 -> 0.24, bottom bronze rim 0.18 -> 0.26, bronze halo
+   0.10 -> 0.14) + cream sub-rim catchlight for polished-metal doubling. */
 .bd-dashboard-section--deep {
   background: linear-gradient(180deg, rgba(8, 18, 39, 0.95) 0%, rgba(7, 15, 31, 0.92) 100%);
   border-color: rgba(96, 165, 250, 0.2);
   box-shadow:
     0 22px 56px rgba(2, 6, 23, 0.36),
     0 8px 18px rgba(2, 6, 23, 0.26),
-    inset 0 1px 0 rgba(196, 144, 65, 0.18),
-    inset 0 -1px 0 rgba(140, 82, 22, 0.18),
+    inset 0 1px 0 rgba(196, 144, 65, 0.24),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.26),
+    inset 0 -2px 0 rgba(252, 240, 208, 0.05),
     0 0 0 1px rgba(96, 165, 250, 0.14),
-    0 0 44px rgba(196, 130, 45, 0.1);
+    0 0 44px rgba(196, 130, 45, 0.14);
 }
 
 /* Pass 3 (KI-078): cool accent variants get a slight bronze atmospheric halo
@@ -3166,16 +3183,25 @@ body {
    asymmetry preserved per LAW Light-Mode Surface Rule + champagne pop tile
    identity. Per cohesion overlay: borrow landing's "richer atmospheric
    layering" technique into dashboard atmosphere only (not panel paint). */
+/* Pass 6 (extending KI-081 / Pass 7): cool-register dark accent SECTION
+   variants (blue/cyan/indigo/rose) aligned up to the base section trim
+   baseline (top inset 0.20 -> 0.26 matching base 0.24 + slight edge,
+   bottom bronze rim 0.18-0.20 -> 0.26 matching base 0.26, bronze halo
+   0.14-0.16 -> 0.18 still under 0.22 cap) + cream sub-rim catchlight
+   inset 0 -2px 0 rgba(252,240,208,0.05) for the polished-metal doubled
+   edge. Cool accent identity ring (blue/cyan/indigo/rose) preserved at
+   original alpha so identity color still reads through. */
 .bd-dashboard-section--accent-blue {
   background: linear-gradient(180deg, rgba(16, 42, 84, 0.92) 0%, rgba(11, 29, 59, 0.88) 100%);
   border-color: rgba(96, 165, 250, 0.24);
   box-shadow:
     0 22px 56px rgba(2, 6, 23, 0.34),
     0 8px 18px rgba(2, 6, 23, 0.26),
-    inset 0 1px 0 rgba(196, 144, 65, 0.2),
-    inset 0 -1px 0 rgba(140, 82, 22, 0.2),
+    inset 0 1px 0 rgba(196, 144, 65, 0.26),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.26),
+    inset 0 -2px 0 rgba(252, 240, 208, 0.05),
     0 0 0 1px rgba(96, 165, 250, 0.18),
-    0 0 44px rgba(196, 130, 45, 0.16),
+    0 0 44px rgba(196, 130, 45, 0.18),
     0 0 18px rgba(96, 165, 250, 0.1);
 }
 
@@ -3185,10 +3211,11 @@ body {
   box-shadow:
     0 22px 56px rgba(2, 6, 23, 0.32),
     0 8px 18px rgba(2, 6, 23, 0.24),
-    inset 0 1px 0 rgba(196, 144, 65, 0.2),
-    inset 0 -1px 0 rgba(140, 82, 22, 0.18),
+    inset 0 1px 0 rgba(196, 144, 65, 0.26),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.26),
+    inset 0 -2px 0 rgba(252, 240, 208, 0.05),
     0 0 0 1px rgba(96, 165, 250, 0.16),
-    0 0 44px rgba(196, 130, 45, 0.14),
+    0 0 44px rgba(196, 130, 45, 0.18),
     0 0 18px rgba(34, 211, 238, 0.1);
 }
 
@@ -3198,10 +3225,11 @@ body {
   box-shadow:
     0 22px 56px rgba(2, 6, 23, 0.34),
     0 8px 18px rgba(2, 6, 23, 0.26),
-    inset 0 1px 0 rgba(196, 144, 65, 0.2),
-    inset 0 -1px 0 rgba(140, 82, 22, 0.18),
+    inset 0 1px 0 rgba(196, 144, 65, 0.26),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.26),
+    inset 0 -2px 0 rgba(252, 240, 208, 0.05),
     0 0 0 1px rgba(96, 165, 250, 0.16),
-    0 0 44px rgba(196, 130, 45, 0.14),
+    0 0 44px rgba(196, 130, 45, 0.18),
     0 0 18px rgba(129, 140, 248, 0.1);
 }
 
@@ -3211,42 +3239,52 @@ body {
   box-shadow:
     0 22px 56px rgba(2, 6, 23, 0.34),
     0 8px 18px rgba(2, 6, 23, 0.26),
-    inset 0 1px 0 rgba(196, 144, 65, 0.18),
-    inset 0 -1px 0 rgba(140, 82, 22, 0.18),
+    inset 0 1px 0 rgba(196, 144, 65, 0.26),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.26),
+    inset 0 -2px 0 rgba(252, 240, 208, 0.05),
     0 0 0 1px rgba(96, 165, 250, 0.16),
-    0 0 44px rgba(196, 130, 45, 0.14),
+    0 0 44px rgba(196, 130, 45, 0.18),
     0 0 18px rgba(244, 63, 94, 0.1);
 }
 
 /* Deeper-gold tile: warm pop tile per LAW. Body stays warm-brown, trim
    stays warm-bronze (cool blue would clash with the warm body). Inset
    bevel + outer halo aligned to locked palette. Pairs with --accent-
-   champagne for the cool/warm/cool/warm Quick Actions rhythm. */
+   champagne for the cool/warm/cool/warm Quick Actions rhythm.
+   Pass 6 (KI-081 ext, owner: "more color + metallic gold trim"): warm
+   pop tiles get the polished-metal treatment too — top cream catchlight
+   0.24 -> 0.34 (these ARE the warm tiles so cream-on-warm is the
+   premium reflection), bronze rim 0.34 -> 0.40, atmospheric halo
+   0.26 -> 0.30 (still under cap). The doubled cream sub-rim is NOT
+   added to warm tiles — they already have the cream top inset and a
+   second cream stripe would over-pale a warm-dominant surface. */
 .bd-dashboard-section--accent-gold {
   background: linear-gradient(180deg, rgba(38, 28, 12, 0.92) 0%, rgba(22, 16, 6, 0.88) 100%);
-  border-color: rgba(196, 144, 65, 0.4);
+  border-color: rgba(196, 144, 65, 0.44);
   box-shadow:
     0 22px 56px rgba(2, 6, 23, 0.36),
     0 8px 18px rgba(2, 6, 23, 0.28),
-    inset 0 1px 0 rgba(252, 240, 208, 0.24),
-    inset 0 -1px 0 rgba(140, 82, 22, 0.34),
-    0 0 0 1px rgba(140, 82, 22, 0.2),
-    0 0 44px rgba(196, 130, 45, 0.26),
-    0 0 18px rgba(196, 144, 65, 0.16);
+    inset 0 1px 0 rgba(252, 240, 208, 0.34),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.4),
+    0 0 0 1px rgba(140, 82, 22, 0.24),
+    0 0 44px rgba(196, 130, 45, 0.3),
+    0 0 18px rgba(196, 144, 65, 0.18);
 }
 
 /* Lighter champagne tile: warm pop tile per LAW. Same warm-trim treatment
-   as --accent-gold but with softer values. */
+   as --accent-gold but with softer values.
+   Pass 6: top cream catchlight 0.20 -> 0.28, bronze rim 0.28 -> 0.34,
+   atmospheric halo 0.20 -> 0.24 (cap). */
 .bd-dashboard-section--accent-champagne {
   background: linear-gradient(180deg, rgba(28, 24, 14, 0.9) 0%, rgba(16, 14, 8, 0.86) 100%);
-  border-color: rgba(196, 144, 65, 0.3);
+  border-color: rgba(196, 144, 65, 0.34);
   box-shadow:
     0 22px 56px rgba(2, 6, 23, 0.34),
     0 8px 18px rgba(2, 6, 23, 0.26),
-    inset 0 1px 0 rgba(252, 240, 208, 0.2),
-    inset 0 -1px 0 rgba(140, 82, 22, 0.28),
-    0 0 0 1px rgba(140, 82, 22, 0.16),
-    0 0 44px rgba(196, 130, 45, 0.2);
+    inset 0 1px 0 rgba(252, 240, 208, 0.28),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.34),
+    0 0 0 1px rgba(140, 82, 22, 0.2),
+    0 0 44px rgba(196, 130, 45, 0.24);
 }
 
 /* D4 (final v3.2): soft off-white liquid glass + more gold on every section. */
