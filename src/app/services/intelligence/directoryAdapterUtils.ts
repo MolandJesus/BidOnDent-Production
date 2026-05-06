@@ -24,6 +24,19 @@ export const CITY_COORDINATE_DIRECTORY: Record<string, Coordinates> = {
   "newburgh,ny": { latitude: 41.5034, longitude: -74.0104 },
   "carmel,ny": { latitude: 41.4298, longitude: -73.6824 },
   "brewster,ny": { latitude: 41.3951, longitude: -73.6182 },
+  // Pass 13b (2026-05-06) — extended coverage. Cross-checked against the
+  // NY metro test hub seed (nyMetroTestHubSeedData.ts) so every seeded
+  // city resolves to known coords instead of falling through to the
+  // default White Plains anchor. Coordinates from the seed entries.
+  "tarrytown,ny": { latitude: 41.076, longitude: -73.859 },
+  "mount kisco,ny": { latitude: 41.209, longitude: -73.724 },
+  "great neck,ny": { latitude: 40.801, longitude: -73.728 },
+  "cold spring,ny": { latitude: 41.417, longitude: -73.958 },
+  "scarsdale,ny": { latitude: 41.005, longitude: -73.787 },
+  "mamaroneck,ny": { latitude: 40.949, longitude: -73.734 },
+  "rye,ny": { latitude: 40.981, longitude: -73.683 },
+  "haverstraw,ny": { latitude: 41.198, longitude: -73.968 },
+  "rhinebeck,ny": { latitude: 41.927, longitude: -73.913 },
 };
 
 // KI-118 (2026-05-06) — anchor moved from Dallas, TX (32.7767, -96.797) to
