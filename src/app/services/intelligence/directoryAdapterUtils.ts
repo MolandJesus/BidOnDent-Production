@@ -37,6 +37,16 @@ export const CITY_COORDINATE_DIRECTORY: Record<string, Coordinates> = {
   "rye,ny": { latitude: 40.981, longitude: -73.683 },
   "haverstraw,ny": { latitude: 41.198, longitude: -73.968 },
   "rhinebeck,ny": { latitude: 41.927, longitude: -73.913 },
+  // Pass 13c (2026-05-06) — region-name aliases used by insurer demo
+  // "regional dispatch" partner shops in `partnerShopsData.ts`. These are
+  // not specific cities, but service-region labels that represent
+  // operationally distributed shop coverage. Each anchor is the
+  // geographic center of the named region inside the BidOnDent NY metro
+  // launch area so a region-anchored shop renders as "central in its
+  // region" instead of falling through to the White Plains default.
+  "westchester,ny": { latitude: 41.05, longitude: -73.77 }, // county center near WP/Tarrytown
+  "hudson valley,ny": { latitude: 41.7, longitude: -73.92 }, // mid-region around Poughkeepsie
+  "new york,ny": { latitude: 40.7128, longitude: -74.006 }, // NYC center (lower Manhattan)
 };
 
 // KI-118 (2026-05-06) — anchor moved from Dallas, TX (32.7767, -96.797) to
