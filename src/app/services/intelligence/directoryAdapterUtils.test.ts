@@ -69,11 +69,14 @@ describe("directoryAdapterUtils", () => {
       })
     );
 
+    // KI-118 fix: unknown cities fall back to White Plains, NY (the NY
+    // metro launch region center) instead of Dallas, TX. Jitter is
+    // ±0.09 lat / ±0.12 lon around the anchor (41.0534, -73.7629).
     const fallback = buildApproximateCoordinates("seed-2", "Atlanta", "GA");
-    expect(fallback.latitude).toBeGreaterThan(32.6);
-    expect(fallback.latitude).toBeLessThan(32.9);
-    expect(fallback.longitude).toBeGreaterThan(-96.95);
-    expect(fallback.longitude).toBeLessThan(-96.65);
+    expect(fallback.latitude).toBeGreaterThan(40.96);
+    expect(fallback.latitude).toBeLessThan(41.15);
+    expect(fallback.longitude).toBeGreaterThan(-73.89);
+    expect(fallback.longitude).toBeLessThan(-73.64);
   });
 
   it("infers capacity, ticket size, makes, and insurer programs from profile signals", () => {
