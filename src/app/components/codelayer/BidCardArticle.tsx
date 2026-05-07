@@ -108,9 +108,12 @@ export default function BidCardArticle({
                 {bid.shopName}
               </h3>
               {isRecommended && (
-                <span className="bd-dashboard-chip hidden items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold sm:inline-flex">
+                <span
+                  className="bd-dashboard-chip hidden items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold sm:inline-flex"
+                  title="Top shop by customer rating × review volume — does not factor price or timeline"
+                >
                   <BadgeCheck className="w-3 h-3" />
-                  Recommended
+                  Highest rated
                 </span>
               )}
             </div>

@@ -1133,3 +1133,14 @@
 - **Decision:** Skip extraction. Replacing the sidebar metric panels with a single floating map overlay would (a) move persistent metrics into a transient overlay obscuring map content, (b) lose the history-vs-plan distinction, (c) conflict with the existing sidebar role.
 - **Status:** WONTFIX (intentional surface separation between floating map overlays and sidebar metric panels).
 - **Severity:** P7-TECHDEBT (no user impact).
+
+### KI-121: Bids "Recommended" badge label/data mismatch (P1-UX, RESOLVED)
+
+- **Impact:** On the Bids comparison surface, a bid card displayed a `Recommended` badge while showing `+$125 vs lowest` and a slower timeline (`4-5 days` vs `3-4 days`) than the cheapest bid. The label implied a holistic recommendation but the underlying algorithm at [`BidsScreen.tsx:171-174`](../src/app/components/codelayer/BidsScreen.tsx#L171) sorts purely by `rating + reviews/200` — it does not factor price or timeline. Users could rationally read the badge as "the platform recommends paying more for slower service," undermining trust in the comparison engine. Surfaced by Phase A audit (see [`evidence/phase-a-2026-05-07/SUMMARY.md`](evidence/phase-a-2026-05-07/SUMMARY.md) § P1).
+- **Resolution (2026-05-07):** Two-line edit in [`BidCardArticle.tsx`](../src/app/components/codelayer/BidCardArticle.tsx) (chip near line 110):
+  1. Renamed badge text `Recommended` → `Highest rated` (label now describes what the algorithm actually computes).
+  2. Added `title="Top shop by customer rating × review volume — does not factor price or timeline"` for hover/tap disclosure of the criterion.
+- **Algorithm intentionally untouched.** Folding price/speed into the ranking would be a product decision, out of hardening scope per LAW_HARDENING_PLAN North Star ("no new features"). Rating + review-count data is already rendered inline directly below the shop name (lines 117-128), so the criterion is visually adjacent without a redundant subtitle inside the chip.
+- **Files touched:** `src/app/components/codelayer/BidCardArticle.tsx` only.
+- **Validation:** `npm run build` clean (3.52s). Visual verification at 1280 × {light, dark} captured at [`evidence/pass-43-2026-05-07/`](evidence/pass-43-2026-05-07/) (`bids_1280_*_before.png` + `bids_1280_*_after.png`). DOM accessibility snapshot confirms badge reads "Highest rated" with the criterion-disclosure tooltip attached.
+- **Status:** **RESOLVED 2026-05-07** (Pass 43).
