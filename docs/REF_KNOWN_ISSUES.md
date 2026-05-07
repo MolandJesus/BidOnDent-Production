@@ -674,7 +674,7 @@
 - **Impact:** Discovery gap. New users may never realize "Find Shops" and "Connect Insurance" exist.
 - **Fix direction:** Convert to horizontal-scroll carousel at mobile with momentum + scroll indicator. Pattern matches App Store / Apple Music. All 4 cards visible by swipe; first 1.5 cards always above the fold as visual hint.
 - **Severity:** **P3-UX.** Discovery polish.
-- **Status:** **OPEN — P3-UX.**
+- **Status:** **RESOLVED — Pass 77 (2026-05-07) — VERIFIED ALREADY HORIZONTAL-SCROLL.** Source read of [`HomeScreenSections.tsx`](../src/app/components/codelayer/HomeScreenSections.tsx) lines ~190-260 confirms the Quick Actions row is **already** a horizontal-scroll snap carousel on mobile: `flex gap-2 overflow-x-auto px-1 pb-1 snap-x snap-mandatory scrollbar-hide` with `w-[min(15rem,72vw)] shrink-0 snap-start` per tile + a right-edge gold-fade affordance hinting at more content. The grid only kicks in at `sm:grid sm:grid-cols-2 md:grid-cols-4`. Audit AI's "2-up grid at mobile" observation was a misread (likely viewport above the `sm` breakpoint at the moment of capture). No code change required.
 
 ### KI-143: Mobile Bids tab shows "Offline · last known" pill — verify intent (P3-VERIFY)
 
