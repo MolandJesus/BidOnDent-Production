@@ -22,6 +22,8 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
     isLoading: notifLoading,
     isSaving: notifSaving,
     update: updateNotif,
+    isUsingDefaults: notifUsingDefaults,
+    reload: notifReload,
   } = useNotificationPreferences();
 
   const togglePref = (key: keyof Omit<NotificationPreferences, "id" | "clerk_user_id">) => {
@@ -139,6 +141,28 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
                 </div>
               ) : notifPrefs ? (
                 <div className="mt-3 space-y-3">
+                  {/* Pass 83 (2026-05-07) — KI-138 client gap. When the
+                      initial GET fails (e.g. notification_preferences table
+                      missing in prod, edge function not deployed), the hook
+                      falls back to local defaults so the UI is still
+                      interactive. Surface that state to the user with a
+                      retry affordance instead of silently editing local-only
+                      state. */}
+                  {notifUsingDefaults ? (
+                    <div
+                      role="status"
+                      className={`flex flex-wrap items-center justify-between gap-2 rounded-lg border px-3 py-2 text-xs ${isLight ? "border-amber-300/60 bg-amber-50/70 text-amber-700" : "border-amber-400/30 bg-amber-500/10 text-amber-200"}`}
+                    >
+                      <span>Couldn’t load saved preferences. Editing local defaults — changes won’t persist until reconnected.</span>
+                      <button
+                        type="button"
+                        onClick={notifReload}
+                        className={`rounded-md px-2 py-1 text-xs font-semibold transition-colors ${isLight ? "bg-amber-100 text-amber-800 hover:bg-amber-200" : "bg-amber-400/20 text-amber-100 hover:bg-amber-400/30"}`}
+                      >
+                        Retry
+                      </button>
+                    </div>
+                  ) : null}
                   <div>
                     <p
                       className={`text-xs font-medium mb-1.5 ${isLight ? "text-slate-500" : "text-blue-100/72"}`}
