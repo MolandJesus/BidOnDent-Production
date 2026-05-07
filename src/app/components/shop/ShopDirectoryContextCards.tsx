@@ -29,7 +29,7 @@ export default function ShopDirectoryContextCards({
   }`;
   const bodyClass = `mt-2 text-sm leading-6 ${isLight ? "text-slate-600" : "text-slate-300/80"}`;
   return (
-    <section className="grid gap-4 xl:grid-cols-3">
+    <section className="grid gap-4 xl:grid-cols-3 animate-in fade-in slide-in-from-bottom-2 duration-400 motion-reduce:animate-none">
       <div className={cardClass}>
         <div className={labelClass}>
           <Building2 className="h-4 w-4" />
