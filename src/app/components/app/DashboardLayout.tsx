@@ -129,6 +129,12 @@ export default function DashboardLayout({
       data-theme={isLightAppearance ? "light" : "dark"}
       style={{ background: surfaceTheme.background }}
     >
+      {/* Pass 68 (2026-05-07) — KI-135: WCAG 2.4.1 skip-link. Hidden until
+          focused so keyboard-only users can bypass the sidebar + header on
+          first Tab. The visible state is styled via .bd-skip-link. */}
+      <a href="#main-content" className="bd-skip-link">
+        Skip to main content
+      </a>
       <DashboardAtmosphere isLightAppearance={isLightAppearance} />
       <div aria-hidden className="bd-dashboard-atmosphere" />
 
@@ -181,6 +187,8 @@ export default function DashboardLayout({
           />
 
           <main
+            id="main-content"
+            tabIndex={-1}
             className="px-3 md:px-8 py-4 md:py-6 pb-24 md:pb-8 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain"
             style={{
               background: isLightAppearance

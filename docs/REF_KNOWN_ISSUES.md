@@ -583,7 +583,7 @@
 - **Location:** App shell layout — likely `src/app/App.tsx` or the dashboard layout root. The skip-link should be the first focusable element on the page, visually hidden until focused.
 - **Fix direction:** Add `<a href="#main-content" class="bd-skip-link">Skip to main content</a>` as the first child of `<body>` (or app root). CSS: hidden via `clip: rect(0 0 0 0)` until `:focus`, then renders as a top-left pinned glass pill matching the bd-\* identity. Add `id="main-content"` to the appropriate landmark (likely `<main>`).
 - **Severity:** **P2-A11Y.** WCAG 2.4.1 violation. Low-effort fix, ~20 LOC + matching style.
-- **Status:** **OPEN — P2-A11Y.**
+- **Status:** **RESOLVED 2026-05-07 — Pass 68.** Skip-link added as the first child of [`DashboardLayout.tsx`](../src/app/components/app/DashboardLayout.tsx) (`<a href="#main-content" class="bd-skip-link">Skip to main content</a>`) with matching `id="main-content"` + `tabIndex={-1}` on the `<main>` element so the focus actually lands. New `.bd-skip-link` style appended to [`src/styles/theme.css`](../src/styles/theme.css) — visually hidden via `clip: rect(0 0 0 0)` until `:focus`/`:focus-visible`, then renders as a top-left pinned glass pill matching the bd-* identity (dark + light variants, light variant uses the locked premium gold trim).
 
 ### KI-136: Search input + BidOnDent logo button below 44pt touch-target threshold (P2-UX)
 

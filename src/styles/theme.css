@@ -4860,3 +4860,54 @@ body {
   /* Light: clean cream chip, no atmospheric depth. */
   box-shadow: none;
 }
+
+/* ------------------------------------------------------------------ */
+/* Pass 68 (2026-05-07) — KI-135: WCAG 2.4.1 skip-link.               */
+/* Hidden from sighted users until keyboard focus, then renders as a  */
+/* top-left pinned glass pill matching the bd-* identity.             */
+/* ------------------------------------------------------------------ */
+.bd-skip-link {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 9999;
+  /* Visually hidden — preserved for assistive tech and keyboard focus. */
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 0.625rem 1rem;
+  border-radius: 0.75rem;
+  background: rgba(15, 23, 42, 0.92);
+  color: rgb(241, 245, 249);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid rgba(96, 165, 250, 0.45);
+  box-shadow:
+    0 12px 28px rgba(2, 6, 23, 0.42),
+    0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+.bd-skip-link:focus,
+.bd-skip-link:focus-visible {
+  /* Reveal pinned glass pill on focus. */
+  clip: auto;
+  clip-path: none;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  outline: 2px solid rgb(147, 197, 253);
+  outline-offset: 2px;
+}
+
+[data-appearance-mode="light"] .bd-skip-link {
+  background: rgba(255, 253, 248, 0.96);
+  color: rgb(15, 23, 42);
+  border-color: rgba(196, 144, 65, 0.55);
+  box-shadow:
+    0 12px 28px rgba(15, 23, 42, 0.18),
+    0 0 0 1px rgba(196, 144, 65, 0.12);
+}
