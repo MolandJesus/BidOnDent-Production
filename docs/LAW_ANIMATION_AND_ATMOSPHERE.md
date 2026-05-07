@@ -99,7 +99,13 @@ The codebase has **29 unique CSS keyframes** across two files. They are the cano
 | `spinSlow`   | Slow rotation (loading indicators)      |
 | `bounceSoft` | Soft bounce (subtle, single-cycle only) |
 
-**Inventory total: 29 unique keyframes.**
+### G. Map cross-fade (1) — `src/styles/animations.css` (added 2026-05-07, Pass 93)
+
+| Keyframe     | Purpose                                                                       |
+| ------------ | ----------------------------------------------------------------------------- |
+| `bdTileFade` | One-shot tinted overlay flash masking MapLibre tile-style swap (night ↔ satellite ↔ roadmap). 600ms ease, 0 → 0.85 → 0 opacity. Reduce-motion guarded. |
+
+**Inventory total: 30 unique keyframes.**
 
 ---
 
