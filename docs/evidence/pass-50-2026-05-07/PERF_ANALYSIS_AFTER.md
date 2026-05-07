@@ -37,12 +37,12 @@ Implemented the change; re-ran the Pass 49 trace harness on `pass-50-2026-05-07/
 
 ## 4. Result — no measurable improvement
 
-| Surface | Pass 49 (baseline) | Pass 50 (with throttle) | Δ |
-|---|---:|---:|---:|
-| Landing 1280 noscroll | 892 ms | 926 ms | +34 ms (within noise) |
-| Landing 375 noscroll  | 1269 ms | 1352 ms | +83 ms (within noise) |
-| Landing 1280 scrolled | 670 ms | 699 ms | +29 ms (within noise) |
-| Landing 375 scrolled  | 597 ms | 617 ms | +20 ms (within noise) |
+| Surface               | Pass 49 (baseline) | Pass 50 (with throttle) |                     Δ |
+| --------------------- | -----------------: | ----------------------: | --------------------: |
+| Landing 1280 noscroll |             892 ms |                  926 ms | +34 ms (within noise) |
+| Landing 375 noscroll  |            1269 ms |                 1352 ms | +83 ms (within noise) |
+| Landing 1280 scrolled |             670 ms |                  699 ms | +29 ms (within noise) |
+| Landing 375 scrolled  |             597 ms |                  617 ms | +20 ms (within noise) |
 
 All four surfaces moved +3% to +6.5%, all within run-to-run noise on a single-sample harness. No measurable improvement from the throttle.
 
@@ -52,23 +52,23 @@ All four surfaces moved +3% to +6.5%, all within run-to-run noise on a single-sa
 
 ### Pass 50 — top events (1280 noscroll, ~3 s wall time)
 
-| Event | total ms |
-|---|---:|
-| `RunTask` (umbrella) | 4392.5 |
-| `GPUTask` | 617 |
-| `UpdateLayoutTree` | 293 |
-| `FunctionCall` | 195 |
-| `Layerize` | 192 |
+| Event                | total ms |
+| -------------------- | -------: |
+| `RunTask` (umbrella) |   4392.5 |
+| `GPUTask`            |      617 |
+| `UpdateLayoutTree`   |      293 |
+| `FunctionCall`       |      195 |
+| `Layerize`           |      192 |
 
 ### Pass 50 — top events (375 noscroll, ~3 s wall time)
 
-| Event | total ms |
-|---|---:|
-| `RunTask` (umbrella) | 5966 |
-| `GPUTask` | **1414** |
-| `FunctionCall` | 177 |
-| `EventDispatch` | 154 |
-| `V8.StackGuard` | 152 |
+| Event                | total ms |
+| -------------------- | -------: |
+| `RunTask` (umbrella) |     5966 |
+| `GPUTask`            | **1414** |
+| `FunctionCall`       |      177 |
+| `EventDispatch`      |      154 |
+| `V8.StackGuard`      |      152 |
 
 **The cost is in the rendering pipeline, not JS.** `GPUTask` + `UpdateLayoutTree` + `Layerize` are compositing / layout work driven by the heavy CSS atmosphere (large blurred gradient pools, backdrop-filter panels, layered transforms). `chunk-KDCVS43I.js` at 173-185 ms is a Vite dep chunk (React + framer-motion + upstream maplibre chunks bundled together by Vite's pre-bundler). None of these are fixable by changing the parallax hook.
 

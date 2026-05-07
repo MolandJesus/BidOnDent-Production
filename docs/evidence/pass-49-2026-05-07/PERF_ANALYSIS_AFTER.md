@@ -26,9 +26,9 @@ Behavior contract:
 
 Re-ran the Pass 48 trace harness in two scenarios per viewport:
 
-| Scenario | What the user does | What we expect |
-|---|---|---|
-| **noscroll** | Lands on `/`, does small scroll wiggles + hero hover, never scrolls to the map | Map stays unmounted; no MapLibre work in trace |
+| Scenario     | What the user does                                                                                                                                  | What we expect                                    |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| **noscroll** | Lands on `/`, does small scroll wiggles + hero hover, never scrolls to the map                                                                      | Map stays unmounted; no MapLibre work in trace    |
 | **scrolled** | Lands on `/`, scrolls down through the page until the map slot intersects the viewport, then performs Pass 48's pan/zoom/hover script on the canvas | Map mounts; trace mirrors Pass 48's landing trace |
 
 Outputs (committed):
@@ -53,21 +53,21 @@ Parser: `parse-traces-after.mjs`.
 
 Top URLs by attributed script time:
 
-| Trace | #1 URL | #1 ms | maplibre-gl.js in top 10? |
-|---|---|---:|---|
-| 1280-after-noscroll | `chunk-KDCVS43I.js` | 175.7 | **No** |
-| 1280-after-scrolled | `node_modules/.vite/deps/maplibre-gl.js` | **197.5** | Yes (#1) |
-| 375-after-noscroll  | `chunk-KDCVS43I.js` | 173.7 | **No** |
-| 375-after-scrolled  | `chunk-KDCVS43I.js` |   4.2 | (canvas mount lagged in this run; see §5) |
+| Trace               | #1 URL                                   |     #1 ms | maplibre-gl.js in top 10?                 |
+| ------------------- | ---------------------------------------- | --------: | ----------------------------------------- |
+| 1280-after-noscroll | `chunk-KDCVS43I.js`                      |     175.7 | **No**                                    |
+| 1280-after-scrolled | `node_modules/.vite/deps/maplibre-gl.js` | **197.5** | Yes (#1)                                  |
+| 375-after-noscroll  | `chunk-KDCVS43I.js`                      |     173.7 | **No**                                    |
+| 375-after-scrolled  | `chunk-KDCVS43I.js`                      |       4.2 | (canvas mount lagged in this run; see §5) |
 
 This is the headline result. **When the user does not scroll to the map, MapLibre never executes.** The full chain — module evaluation, style load, tile fetch, WebGL context creation, render loop — is skipped entirely. This is the durable architectural win of the pass; it does not depend on long-task arithmetic.
 
 ### 3b. Long-task burden — interpretation
 
-| Surface | Pass 48 (before) | Pass 49 noscroll | Pass 49 scrolled |
-|---|---:|---:|---:|
-| Landing 1280 | 687 ms | 892 ms¹ | 670 ms |
-| Landing 375  | 897 ms | 1269 ms¹ | 597 ms² |
+| Surface      | Pass 48 (before) | Pass 49 noscroll | Pass 49 scrolled |
+| ------------ | ---------------: | ---------------: | ---------------: |
+| Landing 1280 |           687 ms |          892 ms¹ |           670 ms |
+| Landing 375  |           897 ms |         1269 ms¹ |          597 ms² |
 
 ¹ The noscroll burden is **higher** than Pass 48 because the noscroll script exercises a different interaction pattern (scroll wheel + mouse hover across hero), which engages parallax / scroll observers more than Pass 48's pan-on-canvas pattern. **This is not a regression in landing chrome** — the script measures different work. The fair noscroll comparison would require re-tracing Pass 48 with the same script, which is out of scope here. Pass 50 (F.2 throttle `useParallaxOffset`) and Pass 51 (F.3 passive listeners audit) target the parallax / scroll cost directly.
 

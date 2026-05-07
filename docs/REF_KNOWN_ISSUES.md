@@ -280,7 +280,6 @@
 - **Remaining work:** F.2 (throttle `useParallaxOffset`), F.3 (passive listeners audit), F.4 (defer/idle GPS speed-limit init off the landing render path), F.5 (provider-side investigation — out of pre-launch scope). Each scoped as a separate pass. F.2 is the next planned step.
 - **Status:** PARTIAL RESOLUTION (2026-05-07, Pass 49) — F.1 shipped; F.2-F.5 still open. P4 (polish; no functional regression).
 
-
 ### KI-056: Realtime live updates not flowing for Clerk-authenticated channels
 
 - **Impact:** Authenticated subscribers (browser-side, Clerk-issued JWT) successfully connected to Supabase Realtime but `postgres_changes` events never delivered. Customer Bids tab and shop Active Jobs tab silently failed to update on cross-account writes; the only way to see new bids was to refresh the page.
