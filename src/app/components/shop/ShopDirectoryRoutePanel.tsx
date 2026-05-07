@@ -155,7 +155,7 @@ export default function ShopDirectoryRoutePanel({
               : "border-blue-400/20 bg-blue-400/10 text-blue-100"
           }`}
         >
-          <LoaderCircle className="h-4 w-4 animate-spin" />
+          <LoaderCircle className="h-4 w-4 animate-spin motion-reduce:animate-none" />
           Refreshing the {usingLiveRoutes || isGuidanceMode ? "live route" : "route preview"}...
         </div>
       ) : null}

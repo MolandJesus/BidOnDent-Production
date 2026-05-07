@@ -212,7 +212,7 @@ export function MapPaneBottomOverlay({
                       : "border-blue-200 bg-blue-50 text-blue-700"
                   }`}
                 >
-                  <LoaderCircle className="h-3 w-3 animate-spin" />
+                  <LoaderCircle className="h-3 w-3 animate-spin motion-reduce:animate-none" />
                   Refreshing
                 </span>
               ) : null}

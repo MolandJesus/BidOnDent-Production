@@ -139,7 +139,7 @@ export default function ShopDirectoryGuidanceCard({
             <span
               className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] ${refreshBadge}`}
             >
-              <LoaderCircle className="h-3 w-3 animate-spin" />
+              <LoaderCircle className="h-3 w-3 animate-spin motion-reduce:animate-none" />
               Refreshing
             </span>
           ) : null}
