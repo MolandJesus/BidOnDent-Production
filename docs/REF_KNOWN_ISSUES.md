@@ -830,7 +830,7 @@
   ```
   Then add specific elevations only on jobs that need them (e.g. `permissions: { contents: write }` on a release job). ~5 LOC.
 - **Severity:** **P2-INFRA.** Joins Phase 3 polish bundle.
-- **Status:** **OPEN — P2-INFRA.** Audit-AI can ship this via signed-in GitHub UI per owner's pass-7 authority grant.
+- **Status:** **RESOLVED — Pass 74 (2026-05-07).** Added top-level `permissions: { contents: read, pull-requests: read }` block to [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) between the `concurrency:` and `jobs:` sections. Build-and-test job only checks out, installs, formats, tests, and builds — no write-side calls — so the minimum-viable scope is sufficient. CodeQL alert should clear on next workflow run.
 
 ### KI-144 sub-items partially RESOLVED (search_path lock applied — 4 of 14 sub-items)
 
