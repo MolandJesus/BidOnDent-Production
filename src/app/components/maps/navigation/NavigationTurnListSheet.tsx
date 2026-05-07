@@ -55,32 +55,50 @@ export default function NavigationTurnListSheet({
         </div>
 
         <div className="mt-4 max-h-[44vh] space-y-2 overflow-y-auto pr-1 sm:max-h-[56vh]">
-          {steps.map((step, index) => (
-            <div
-              key={step.id}
-              className={cn(
-                "map-liquid-card",
-                index === currentStepIndex
-                  ? theme.selectedListCardClassName
-                  : theme.listCardClassName
-              )}
-            >
-              <div className={theme.metricLabelClassName}>
-                {index === currentStepIndex ? "Active step" : `Step ${index + 1}`}
-              </div>
+          {steps.length === 0 ? (
+            // Pass 167 (2026-05-07) — Phase 7 map-program-feel #19 (audit AI
+            // spec): friendly empty state when no active route. Previously the
+            // sheet opened to a header-only body, which read as "broken." Now
+            // surfaces "Pick a destination to see step-by-step turns" so the
+            // sheet has informational value even before guidance starts.
+            <div className={cn("map-liquid-card", theme.listCardClassName)}>
+              <div className={theme.metricLabelClassName}>No active route</div>
               <div className={cn("mt-2 text-base font-semibold leading-6", theme.titleClassName)}>
-                {step.instruction}
+                Pick a destination to see step-by-step turns.
               </div>
-              <div className={cn("mt-1 text-xs", theme.secondaryTextClassName)}>
-                {[
-                  formatTurnDistance(step.distanceMeters),
-                  formatDurationMinutes(step.durationSeconds),
-                ]
-                  .filter(Boolean)
-                  .join(" • ")}
+              <div className={cn("mt-2 text-xs", theme.secondaryTextClassName)}>
+                Search for a shop or address, then start navigation. Turns will appear here in real
+                time.
               </div>
             </div>
-          ))}
+          ) : (
+            steps.map((step, index) => (
+              <div
+                key={step.id}
+                className={cn(
+                  "map-liquid-card",
+                  index === currentStepIndex
+                    ? theme.selectedListCardClassName
+                    : theme.listCardClassName
+                )}
+              >
+                <div className={theme.metricLabelClassName}>
+                  {index === currentStepIndex ? "Active step" : `Step ${index + 1}`}
+                </div>
+                <div className={cn("mt-2 text-base font-semibold leading-6", theme.titleClassName)}>
+                  {step.instruction}
+                </div>
+                <div className={cn("mt-1 text-xs", theme.secondaryTextClassName)}>
+                  {[
+                    formatTurnDistance(step.distanceMeters),
+                    formatDurationMinutes(step.durationSeconds),
+                  ]
+                    .filter(Boolean)
+                    .join(" • ")}
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>
