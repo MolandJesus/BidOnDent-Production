@@ -413,8 +413,7 @@ export function useShopDirectoryNavigation({
         if (request) {
           // Snapshot the current routePreview.fetchedAt so the effect below
           // can detect when the refresh has produced a NEW route.
-          pendingRerouteFetchedAtRef.current =
-            shopGuidancePreview.routePreview?.fetchedAt ?? "";
+          pendingRerouteFetchedAtRef.current = shopGuidancePreview.routePreview?.fetchedAt ?? "";
           // Force a fresh route calculation from the user's current GPS position
           shopGuidancePreview.refreshRoutePreview();
         }
