@@ -707,3 +707,96 @@
   5. Wrap `auth.uid()` calls in `(SELECT auth.uid())` across 21 RLS policies.
 - **Severity:** **P3-INFRA, batched.** None launch-blocking. Drop-3-duplicate-indexes is the cleanest SQL win — safe for audit-AI fix-authority.
 - **Status:** **OPEN — P3-INFRA, batched.** Owner-action surface for the security wins; builder-AI write migration for `search_path` fix.
+
+### KI-145: Drop 3 duplicate indexes on `kv_store_85e96b22` (RESOLVED 2026-05-07)
+
+> **Added 2026-05-07 — external audit AI pass 6 safe-fix.** Resolved same-day under owner-granted fix-authority for safe SQL data corrections / cleanup. Splits from KI-144 batch as the cleanest-leverage win that's worth its own RESOLVED record for the audit trail.
+
+- **Impact:** `public.kv_store_85e96b22` had 4 byte-identical btree indexes on `(key text_pattern_ops)` + a PK index using a different operator class. Wasted disk + write amplification on every kv-store mutation.
+- **Resolution (2026-05-07):** External audit AI verified all 4 `kv_store_85e96b22_key_idx*` indexes were byte-identical via `pg_indexes` query, then dropped 3 redundant via Supabase MCP:
+  ```sql
+  DROP INDEX IF EXISTS public.kv_store_85e96b22_key_idx1;
+  DROP INDEX IF EXISTS public.kv_store_85e96b22_key_idx2;
+  DROP INDEX IF EXISTS public.kv_store_85e96b22_key_idx3;
+  ```
+- **Verification:** Planner-AI confirmed independently 2026-05-07 via `execute_sql` against `pg_indexes`: table now has exactly 2 indexes (`kv_store_85e96b22_pkey` + `kv_store_85e96b22_key_idx`). Five → two indexes, zero behavior change, pure perf cleanup.
+- **Status:** **RESOLVED 2026-05-07.** Move to RESOLVED archive on next docs hygiene pass.
+- **Skill:** None — pure DB cleanup; safe-fix authority precedent extended.
+
+### KI-146: KI-138 graceful-degrade fix code already written but not deployed (P1-OPS, owner-action)
+
+> **Added 2026-05-07 — external audit AI pass 6 GitHub source read.** Audit AI inspected `supabase/functions/server/handlers/notification_preferences.ts` at HEAD via signed-in GitHub browser tab. Discovered the KI-138 graceful-degrade fix is **already committed in the source repo** at commit `0df5d4c` ("fix(notifications): F-04 — graceful fallback + diagnostic logging"). The handler has `FALLBACK_PREFERENCES` const (16 columns) + `isPersistenceUnavailable(error)` checking Postgres codes 42P01/42501/0LP01 + HTTP 200 fallback response on schema-missing errors.
+
+- **Impact:** Production server function is at v50 (per audit AI Supabase MCP). The fix is at HEAD on main but not deployed. This means **one `supabase functions deploy server` command would fix the KI-138 UI infinite-loading symptom immediately, even before the migration lands**. Schema-side fix is still required for full resolution but UX fix is one command away.
+- **Captured FALLBACK_PREFERENCES schema (16 columns)** — informs the migration owner needs to write:
+  - `id text DEFAULT ''` (UUID-shaped in real rows; consider `text PRIMARY KEY DEFAULT gen_random_uuid()::text` per `feedback_supabase_cli_pg17`)
+  - `clerk_user_id text NOT NULL` (with UNIQUE constraint or PK if id is generated)
+  - `in_app_bid_updates boolean DEFAULT true`
+  - `in_app_report_updates boolean DEFAULT true`
+  - `in_app_nearby_reports boolean DEFAULT true`
+  - `in_app_estimate_updates boolean DEFAULT true`
+  - `email_bid_updates boolean DEFAULT true`
+  - `email_report_updates boolean DEFAULT true`
+  - `email_nearby_reports boolean DEFAULT true`
+  - `email_estimate_updates boolean DEFAULT true`
+  - `sms_bid_updates boolean DEFAULT false`
+  - `sms_report_updates boolean DEFAULT false`
+  - `email_enabled boolean DEFAULT true` (master toggle)
+  - `sms_enabled boolean DEFAULT false` (master toggle)
+  - `share_data_with_shops boolean DEFAULT true` (privacy)
+  - `show_profile_to_insurers boolean DEFAULT false` (privacy)
+  - Plus implicit `created_at timestamptz DEFAULT now()`, `updated_at timestamptz DEFAULT now()`
+- **Code comment lineage:** handler line 14 references "Mirrors the DEFAULT clauses in migration 20251230000001_full_schema.sql §3.17" — section either was never added to the migration file or was added but never applied to prod.
+- **Owner action sequence (in order):**
+  1. `supabase functions deploy server --project-ref wmdcnjgtsppftrofaqqa` — deploys v51 with graceful-degrade. UI UX fixes immediately.
+  2. Write fresh migration `supabase/migrations/<TS>_create_notification_preferences.sql` with the 16-column schema above + RLS policies matching `website_preferences` patterns.
+  3. Apply migration via Supabase Studio per `feedback_supabase_cli_pg17`.
+  4. Verify: `curl -H "Authorization: Bearer <jwt>" https://<project>.supabase.co/functions/v1/server/notification-preferences` returns `{preferences:{...},success:true}` (NOT `fallback:true`).
+- **Status:** **OPEN — P1-OPS.** Owner-action: deploy edge function v51 + write/apply migration. Splits from KI-138 because the deploy is one-command and unblocks UX without the schema work.
+
+### KI-147: Fullscreen map mode itself does not exit on ESC (P2-A11Y, KI-118 cluster expansion)
+
+> **Added 2026-05-07 — external audit AI pass 6 Smart Shop Map fullscreen test.** Audit AI tapped 4-corner expand button at mobile, entered fullscreen map mode. Verified: bottom nav remains accessible (✓), legend overlay auto-declutters (✓), back-arrow exits fullscreen (✓). **ESC key does NOT exit fullscreen.** Same KI-118 sheet-pattern issue extended to the fullscreen-map overlay surface.
+
+- **Impact:** Keyboard-only users have only the back-arrow as exit. Standard "ESC closes overlay" pattern broken at the fullscreen-map level too.
+- **Fix direction:** Same `useEscapeToClose(open, onClose)` hook proposed for KI-118 — apply to the fullscreen-map exit handler. Should be 6th application site after Voice Controls + Navigation Settings + Turn List drawer + Results drawer + (one more sheet to verify).
+- **Severity:** **P2-A11Y.** Companion to KI-118 cluster.
+- **Status:** **OPEN — P2-A11Y.** Folds into KI-118 fix scope (single hook applied to ALL overlays needing ESC).
+
+### KI-148: Fullscreen map entry triggers a SECOND phantom deviation event (P1-RUNTIME, KI-116 cluster expansion)
+
+> **Added 2026-05-07 — external audit AI pass 6 fullscreen test.** Beyond the persistent off-route banner (KI-116), audit AI observed that **entering fullscreen map mode triggers a NEW phantom deviation event** — a second "Off route" pill (yellow warning + dismiss-X) appears top-right when transitioning into fullscreen. So the deviation engine fires not just on initial mount but ALSO on viewport-mode transitions.
+
+- **Impact:** Confirms the deviation engine is mounted at multiple call sites, each firing on its own lifecycle event. Strengthens KI-116 fix scope: builder needs to gate ALL `intelligence.evaluate()` call sites, not just one.
+- **Fix direction:** Same as KI-116 root cause fix. This finding adds a regression-test requirement to Pass 61: enter fullscreen map without an active session, verify no new deviation event fires.
+- **Status:** **OPEN — P1-RUNTIME.** Folds into KI-116 fix scope; regression-test addition.
+
+### KI-149: "Previous session restored" toast fires on every page load — visual confirmation of KI-134 silent re-auth (P3-UX)
+
+> **Added 2026-05-07 — external audit AI pass 6 page-load observation.** A "Previous session restored" toast renders on every page load, including post-sign-out + reload. Visible artifact of KI-134's `__clerk_db_jwt` silent re-auth.
+
+- **Impact:** The toast itself acknowledges the silent re-auth to the user. This is honest but normalizes the behavior. Either:
+  - The toast IS the design intent ("we remembered you across sessions") — in which case the Sign Out copy should be honest about this ("Switch Accounts" rename per KI-134 option 2), AND the toast can stay.
+  - The toast is a leak — in which case it should be suppressed AND KI-134 should ship full-destroy semantic (option 1).
+- **Fix direction:** Tied to KI-134 owner decision. If "Switch Accounts" rename: replace toast copy with "Welcome back, Molalign" (one-time per cold session, not on every reload). If full-destroy: suppress toast post-sign-out flow.
+- **Severity:** **P3-UX.** Companion to KI-134; ships in same pass.
+- **Status:** **OPEN — P3-UX.**
+
+### KI-150: PWA service worker exists in repo `public/` but not registered in dev — KI-130 likely RESOLVED at production (P3-VERIFY)
+
+> **Added 2026-05-07 — external audit AI pass 6 GitHub repo browse.** Audit AI noted "Pass 829 added PWA service worker + manifest + offline shell in repo's public/ folder (last month)". Browser shows `navigator.serviceWorker.controller === null` because Vite dev server doesn't register SW. Production likely does.
+
+- **Impact:** KI-130 was filed as P3-INFRA "no service worker registered". Audit AI's source-side finding suggests the SW exists; only dev-mode render is unregistered.
+- **Verification needed:** Builder confirms via `vite preview` build OR owner Lighthouse run captures whether `navigator.serviceWorker.controller` is non-null in production-mode.
+- **Status:** **OPEN — P3-VERIFY.** Likely RESOLVED at source; needs production-build verification.
+
+### KI-151: Repo "Security and quality" GitHub tab shows 2 active alerts (P3-INVESTIGATE)
+
+> **Added 2026-05-07 — external audit AI pass 6 GitHub repo browse.** Audit AI saw 2 active alerts in the repo's Security tab header. Not investigated this pass (out of scope).
+
+- **Impact:** Unknown until investigated. Could be:
+  - Dependabot vulnerability alert (npm package CVE)
+  - CodeQL static analysis finding
+  - Secret scanning hit (false positive most likely)
+- **Fix direction:** Owner reviews via `gh pr` or GitHub UI. Each alert has its own remediation per type.
+- **Status:** **OPEN — P3-INVESTIGATE.** Owner-action.
