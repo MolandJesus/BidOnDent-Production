@@ -232,6 +232,17 @@ export default function MapLibreShopDirectoryMapPane({
       }
     >
       <MapPaneAtmosphereOverlays isNight={isNight} isSatellite={isSatellite} />
+      {/* Pass 100 — KI-112 F6: extend landing-side bd-liquid-gold-flow sheen to
+          the map surface frame so the marketplace activity ribbon reads kin
+          to the landing surfaces. Very subtle opacity (0.18 dark / 0.10 light)
+          so the map remains the dominant signal. Reduce-motion users get
+          static (animation suppressed by the existing @media block in
+          theme.css §bd-liquid-gold-flow). */}
+      <div
+        aria-hidden="true"
+        className={`bd-liquid-gold-flow ${isDark ? "bd-liquid-gold-flow--dark" : "bd-liquid-gold-flow--light"} pointer-events-none absolute inset-0 z-[205]`}
+        style={{ opacity: isDark ? 0.18 : 0.1 }}
+      />
       {/* Pass 93: tile-mode cross-fade overlay (key forces remount per swap) */}
       {tileFadeKey > 0 && (
         <div

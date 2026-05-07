@@ -176,6 +176,18 @@ export default function MapLibreServiceCoverageMap({
           theme.ambientOverlayClassName
         )}
       />
+      {/* Pass 100 — KI-112 F6: extend landing-side bd-liquid-gold-flow sheen
+          to the coverage map frame so map surfaces share the same ambient
+          marketplace ribbon. Very subtle (0.18 dark / 0.10 light) so the
+          map remains the dominant signal. */}
+      <div
+        aria-hidden="true"
+        className={cn(
+          "bd-liquid-gold-flow pointer-events-none absolute inset-0 z-[249]",
+          tone === "light" ? "bd-liquid-gold-flow--light" : "bd-liquid-gold-flow--dark"
+        )}
+        style={{ opacity: tone === "light" ? 0.1 : 0.18 }}
+      />
 
       {showNightBackdrop ? (
         <div
