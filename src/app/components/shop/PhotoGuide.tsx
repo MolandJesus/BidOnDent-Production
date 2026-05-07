@@ -5,6 +5,14 @@ import type { DashboardAppearanceMode } from "../../routers/dashboard-router-typ
 type PhotoGuideProps = {
   onClose: () => void;
   onComplete: () => void;
+  /**
+   * Pass 62 (2026-05-07) — KI-128: distinct handler for the "Skip for now"
+   * footer button so it can advance the wizard instead of just dismissing
+   * the modal. Defaults to `onClose` so existing call sites that don't
+   * supply it preserve previous behavior. Backdrop tap and the corner X
+   * still call `onClose` (true cancel — stay on the current screen).
+   */
+  onSkip?: () => void;
   primaryColor?: string;
   appearanceMode?: DashboardAppearanceMode;
 };
@@ -30,10 +38,12 @@ const TIPS = [
 export default function PhotoGuide({
   onClose,
   onComplete,
+  onSkip,
   primaryColor = "#003d82",
   appearanceMode = "map-dark",
 }: PhotoGuideProps) {
   const isLight = appearanceMode === "light";
+  const handleSkip = onSkip ?? onClose;
 
   return (
     <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center">
@@ -208,7 +218,7 @@ export default function PhotoGuide({
             <ChevronRight className="w-4 h-4 opacity-70" />
           </button>
           <button
-            onClick={onClose}
+            onClick={handleSkip}
             className={`w-full mt-2 py-2 text-sm font-medium rounded-lg transition-colors min-h-[44px] ${
               isLight
                 ? "text-slate-500 hover:text-slate-700 hover:bg-slate-100"

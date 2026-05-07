@@ -427,7 +427,7 @@
 - **Location:** [`src/app/components/maps/navigation/NavigationVoiceControlsSheet.tsx`](../src/app/components/maps/navigation/NavigationVoiceControlsSheet.tsx) (no `onKeyDown` / `useEffect` listener for `Escape`). Same pattern likely in [`src/app/components/maps/navigation/NavigationSettingsSheet.tsx`](../src/app/components/maps/navigation/NavigationSettingsSheet.tsx).
 - **Fix direction:** Add `useEffect` listener for `keydown` → `event.key === "Escape"` → call `onClose()`. Standard React pattern, ~10 LOC per file. Should also focus-trap within the panel while open (focus does not currently move into panel).
 - **Severity:** **P2-A11Y.** Real keyboard accessibility blocker. Small, mechanical fix.
-- **Status:** **OPEN — P2-A11Y.**
+- **Status:** **RESOLVED 2026-05-07 — Pass 63.** New shared hook [`src/app/hooks/useEscapeKey.ts`](../src/app/hooks/useEscapeKey.ts) (`useEscapeKey(enabled, onEscape)`). Wired into [`NavigationVoiceControlsSheet.tsx`](../src/app/components/maps/navigation/NavigationVoiceControlsSheet.tsx) and [`NavigationSettingsSheet.tsx`](../src/app/components/maps/navigation/NavigationSettingsSheet.tsx). Listener auto-detaches when `open` flips false. Focus-trap improvement deferred. KI-147 (fullscreen ESC exit) tracked separately — same hook, different mount site, will close in a follow-up pass.
 
 ### KI-122: Fullscreen map in-canvas "Light" tile mode renders pure white empty canvas (P2-VISUAL)
 
@@ -510,7 +510,7 @@
 - **Location:** The Photo Tips modal component + its Skip handler. Likely the Skip handler only calls `onClose()` without also advancing the wizard step. Got it handler likely calls `onClose()` + `goToNextStep()`.
 - **Fix direction:** Skip for now should call BOTH `onClose()` AND `goToNextStep()` so the user lands on Step 4 with photos empty. Got it should also advance to Step 4 (with photo picker open by default). Two-line fix. Test the back button from Step 4 — should return to Step 3, not the modal.
 - **Severity:** **P1-UX.** Real flow blocker for users who tap Skip. Affects the core conversion funnel (report submission).
-- **Status:** **OPEN — P1-UX.**
+- **Status:** **RESOLVED 2026-05-07 — Pass 62.** Added distinct `onSkip` prop to [`PhotoGuide.tsx`](../src/app/components/shop/PhotoGuide.tsx) (defaults to `onClose` for back-compat). [`ReportScreen.tsx`](../src/app/components/codelayer/ReportScreen.tsx) passes a Skip handler that closes the modal AND calls `form.nextStep()` AND sets `hasSeenGuideThisSession(true)` so it does not re-open on next Continue tap. Backdrop tap and corner X still call the original `onClose` (true cancel). `hasSeenPhotoGuide` persistence flag is intentionally NOT set on Skip — user skipped, did not acknowledge.
 
 ### KI-129: Report flow Step 1 — required-field visual asterisks but `required: false` on HTML inputs (P2-DATA/A11Y)
 
