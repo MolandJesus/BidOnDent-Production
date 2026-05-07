@@ -327,7 +327,7 @@ export default function ProfileDropdown({
                     </p>
                   </div>
                   {!notification.read && (
-                    <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-1.5" />
+                    <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-1.5 animate-in fade-in zoom-in-95 duration-200 motion-reduce:animate-none" />
                   )}
                 </div>
               </button>

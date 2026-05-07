@@ -369,7 +369,7 @@ export default function NotificationCenter({
                                 {visual.label}
                               </span>
                               {!notification.read && (
-                                <span className="inline-flex h-1.5 w-1.5 rounded-full bg-blue-500" />
+                                <span className="inline-flex h-1.5 w-1.5 rounded-full bg-blue-500 animate-in fade-in zoom-in-95 duration-200 motion-reduce:animate-none" />
                               )}
                             </div>
                             <p
