@@ -405,6 +405,9 @@
     "unmuted",
     "unscrolled",
     "violat",
-    "vulns"
+    "vulns",
+    "overscan",
+    "desyncs",
+    "topbar"
   ]
 }

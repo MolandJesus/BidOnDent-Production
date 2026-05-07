@@ -53,10 +53,8 @@ body {
   }
 }
 
-/* Control Hierarchy Variants */
-.bd-glass-control--primary {
-  /* Inherit .bd-glass-control, but can be used for clarity */
-}
+/* Control Hierarchy Variants — `.bd-glass-control--primary` is implied by the
+   base `.bd-glass-control` rule; only the secondary variant carries overrides. */
 
 .bd-glass-control--secondary {
   border: none;
@@ -352,6 +350,15 @@ body {
 
   .animate-slide-in-right {
     animation: slide-in-right 0.3s ease-out;
+  }
+
+  /* Pass 56 (2026-05-07) — LAW §3 reduce-guard for the slide-in-right toast
+     keyframe. See docs/evidence/pass-56-2026-05-07/ANIMATION_KEYFRAME_AUDIT.md
+     §C Gap-2. Consumers: NotificationToast.tsx, AccountOverlays.tsx. */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-slide-in-right {
+      animation: none !important;
+    }
   }
 
   /* ============================================================================
