@@ -2,7 +2,7 @@
 
 **Authority level:** REFERENCE — describes current known gaps, bugs, and structural issues.
 
-**Last updated:** 2026-05-07 (External audit AI deep audit — 6 new KIs added: KI-116 nav-engine-on-passive-surfaces P0 umbrella, KI-117 stale planning session, KI-118 ESC keyboard handling, KI-122 fullscreen tile-mode "Light" broken, KI-123 notification badge desync, KI-124 polish bundle. KI-101 confirmed RESOLVED. Numbering jump 118 → 122 to avoid collision with archived KIs 119/120/121 in `archive/RESOLVED_KIS_2026-05-07.md`. **Pass 55** earlier today archived 70 RESOLVED/WONTFIX entries; **Pass 53** added KI-075 description correction; **Pass 54** fixed reroute confirm-timing bug.)
+**Last updated:** 2026-05-07 (External audit AI continued Report flow walkthrough — 3 more KIs added: KI-125 vehicle picker placeholder/value mismatch P1, KI-126 Report Steps 2/3 heading clipped P2, KI-127 off-route toast/avatar overlap P2. **KI-101 RE-OPENED** — earlier same-day RESOLVED status was based on dashboard-list observation; deeper audit confirmed the `vehicles` row is still misspelled as visible in the Report flow vehicle picker. Earlier today: 6 new KIs (KI-116 nav-engine-on-passive-surfaces P0 umbrella, KI-117 stale planning session, KI-118 ESC keyboard handling, KI-122 fullscreen tile-mode "Light" broken, KI-123 notification badge desync, KI-124 polish bundle). Numbering jump 118 → 122 to avoid collision with archived KIs 119/120/121 in `archive/RESOLVED_KIS_2026-05-07.md`. **Pass 55** earlier today archived 70 RESOLVED/WONTFIX entries; **Pass 53** added KI-075 description correction; **Pass 54** fixed reroute confirm-timing bug.)
 
 **Update rules:**
 
@@ -210,13 +210,14 @@
 - **Skill:** `bd-design-identity` (semantic exception class).
 - **Audit context:** 2026-05-05 fresh-eyes scan also confirmed: ZERO off-canon goldenrod values in landing/shop/dashboard component paint (only HowItWorksSection.tsx:88 has them inside a doc-comment about prior Pass I swap, not actual paint). ZERO fire-and-forget signOut/Promise patterns post-KI-097. ZERO storage hydration gaps — `vehicles.image_url`, `profiles.profile_image_url`, `damage_reports.photo_urls` all properly hydrate via `hydrateSignedStorageUrl(s)` in their respective handlers.
 
-### KI-101: F-01 — "Toyoto" misspelled vehicle make persisted in DB (RESOLVED 2026-05-07)
+### KI-101: F-01 — "Toyoto" misspelled vehicle make persisted in DB (RE-OPEN 2026-05-07)
 
-- **Impact:** Audit AI F-01 (P6-SPELL): the 2021 Toyota Camry vehicle record was saved with the make field as "Toyoto" (misspelled). Propagated to every display of this vehicle/report — dashboard "Your Reports" h3, Account tab Vehicles list, Report creation flow Step 1 vehicle selector, Make field pre-fill. Make input placeholder correctly showed "Toyota" — field hint correct but no enforcement.
-- **Resolution (2026-05-07):** External audit AI confirmed via dashboard inspection: "Toyota Camry" displays with correct spelling on the dashboard "Recent Reports" list. Owner corrected the underlying `vehicles` row OR the record was replaced. Code improvement (canonical-makes validation) remains deferred.
-- **Location:** `vehicles` table — confirmed clean as of 2026-05-07.
-- **Status:** **RESOLVED 2026-05-07** — verified via external audit. Move to archive on next docs hygiene pass.
-- **Skill:** None — pure data hygiene confirmed.
+- **Impact:** Audit AI F-01 (P6-SPELL): the 2021 Toyota Camry vehicle record was saved with the make field as "Toyoto" (misspelled). Propagates to every display sourced from the `vehicles` table — Account tab Vehicles list, Report creation flow Step 1 vehicle picker, Make field pre-fill. Make input placeholder correctly shows "Toyota" — field hint correct but no enforcement.
+- **2026-05-07 status correction:** Earlier this same day this KI was incorrectly marked RESOLVED based on the audit AI observing "Toyota Camry" on the dashboard "Recent Reports" list. **That observation was misleading** — `damage_reports.vehicle_*` fields are written at report-submit time and may differ from `vehicles` table values. Subsequent audit AI walk through the Report flow Step 1 vehicle picker confirmed "2021 Toyoto Camry" still renders from the `vehicles` row. The underlying DB row is **still misspelled**.
+- **Location:** `vehicles` table row for the affected user. Code-side: vehicle entry form has placeholder hint but no validation/autocorrect.
+- **Fix direction:** **Owner action:** UPDATE the `vehicles` table row to correct "Toyoto" → "Toyota" via Supabase Dashboard SQL Editor (single UPDATE statement). **Code improvement (deferred, optional):** add make validation/autocorrection against a canonical makes list. See KI-125 for the related vehicle-picker placeholder/value display bug.
+- **Status:** **RE-OPEN 2026-05-07** — owner DB action pending. Earlier same-day RESOLVED status reverted after deeper audit evidence.
+- **Skill:** None — pure data hygiene + future schema decision.
 
 ### KI-102: F-03 — Cat photo as damage report thumbnail (P2-DATA — owner action)
 
@@ -452,3 +453,41 @@
   10. **Missing "Cancel navigation" / "End session" affordance in fullscreen UI** — no way to clear planning state from the fullscreen UI. Add a clear-route control. P2-UX.
 - **Severity:** Mix of P2-COPY / P2-UX / P3. None are launch-blocking.
 - **Status:** **OPEN — bundled.**
+
+### KI-125: Report flow Step 1 vehicle picker — placeholder text matches saved vehicle but input `value` is empty (P1-DATA/UX)
+
+> **Added 2026-05-07 — external audit AI Report flow walkthrough.** When the user lands on Report Step 1 with a saved vehicle, the input fields render with placeholder text that LOOKS LIKE pre-filled data ("Toyota", "Camry", "2021"), but the actual `value` attribute is `""` (empty). Audit AI confirmed via DOM inspection.
+
+- **Impact:** User sees what looks like pre-filled vehicle data and clicks "Continue" assuming the form is complete. Form submission fails or sends empty values. Confusing data integrity bug. Two distinct hypotheses for root cause:
+  1. The "Use" button on a saved-vehicle card is supposed to fill the inputs but isn't firing the controlled-component updater. Saved-vehicle data is rendered as placeholder hint only.
+  2. The placeholder text is templated from saved-vehicle data deliberately, but the form expects user to confirm by typing — a dark-pattern UX even if it works downstream.
+- **Location:** Report flow Step 1 vehicle entry component(s). Pre-existing report entry path. Audit AI's exact words: "fields show `value: ""` but placeholders match user's saved vehicle. So the visual is misleading — Toyota/Camry/2021 LOOK filled but aren't."
+- **Fix direction:** Verify the "Use" CTA on saved-vehicle cards: does it actually copy the saved vehicle data into the controlled inputs? If not, fix the click handler to call `setValue` for make/model/year. Alternative: use distinct placeholder text ("e.g. Toyota") rather than echoing the saved vehicle, so users don't read placeholder as filled.
+- **Severity:** **P1-DATA/UX.** Real user-facing risk of submitting empty form. Test coverage gap — Pass 61 should include a regression test for "saved-vehicle Use button populates form values."
+- **Status:** **OPEN — P1-DATA/UX.**
+
+### KI-126: Report flow Steps 2 + 3 — heading text clipped at left edge (P2-LAYOUT)
+
+> **Added 2026-05-07 — external audit AI Report flow walkthrough.** Two consecutive Report flow steps render their primary heading with leading characters cut off:
+> - Step 2: "Where's the damage?" → renders "ere's the damage?"
+> - Step 3: "Where shops should see this report" → renders "re shops should see this report"
+
+- **Impact:** Headings are the user's primary anchor in a multi-step form. Clipped headings make the step appear half-rendered or broken. Trust hit. May be a CSS overflow / negative margin / `clip-path` regression on a wrapper. May be a recent layout change; visual regression test would have caught.
+- **Location:** Report flow Steps 2 + 3 (likely shared layout shell — same root cause for both). Possible suspects: container `overflow: hidden` clipping a heading with negative margin; CSS Grid template column starting before viewport; `text-indent` / `padding-inline-start` typo. Builder verifies via DevTools Elements panel + computed styles.
+- **Fix direction:** Open Step 2 in DevTools, inspect the clipped heading element, identify the clipping ancestor, fix the CSS. Likely 1-line fix (e.g., remove `overflow: hidden` from the wrong wrapper or fix a negative margin). Same root cause should fix Step 3.
+- **Severity:** **P2-LAYOUT.** User-visible polish bug, not blocking but reads as broken. Low-effort fix.
+- **Status:** **OPEN — P2-LAYOUT.**
+
+### KI-127: "Off route" toast overlaps user avatar in dashboard header (P2-LAYOUT)
+
+> **Added 2026-05-07 — external audit AI dashboard scroll walkthrough.** The persistent off-route toast (driven by KI-116) overlaps the user avatar / notification bell area in the header at certain viewport widths.
+
+- **Impact:** Two layout concerns combined:
+  1. Toast z-index sits on top of header chrome → user can't click their avatar / notification bell
+  2. Visual hierarchy collision — two attention-seeking elements in the same screen region
+- **Note:** This bug becomes invisible once KI-116 is fixed (toast won't render on dashboard at all). But if KI-116 is fixed by gating the toast at the wrong boundary (e.g., still allowing toast on dashboard but only when active), the layout collision remains a real issue. Builder validates after KI-116 fix that any persistent toast in this region either:
+  - Re-anchors to a different position (bottom of viewport with safe-area inset, or below the header)
+  - Is dismissable (unlike the current persistent banner)
+- **Location:** Toast z-index / position styles + header layout. Visible at the viewport audit AI was at (likely 1280×900 desktop after previous resize attempts).
+- **Severity:** **P2-LAYOUT.** Will likely become moot when KI-116 ships; track as a follow-up validation after that fix lands.
+- **Status:** **OPEN — P2-LAYOUT (depends on KI-116).**
