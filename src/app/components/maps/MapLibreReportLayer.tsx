@@ -95,7 +95,13 @@ export default function MapLibreReportLayer({
         if (source && clusterId != null) {
           source.getClusterExpansionZoom(Number(clusterId), (_err, zoom) => {
             const coords = (feature.geometry as GeoJSON.Point).coordinates;
-            e.target.flyTo({ center: [coords[0], coords[1]], zoom: Math.min(zoom, 17) });
+            // Pass 95: tighten cluster-expand fly to match Pass 89 premium feel
+            e.target.flyTo({
+              center: [coords[0], coords[1]],
+              zoom: Math.min(zoom, 17),
+              duration: 850,
+              curve: 1.4,
+            });
           });
         }
         return;
