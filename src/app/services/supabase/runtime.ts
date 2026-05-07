@@ -85,6 +85,7 @@ export const SUPABASE_EDGE_ROUTES = {
   migrateDatabase: "/migrate-database",
   navigationSession: "/navigation-session",
   navigationSavedPlaces: "/navigation-saved-places",
+  shopAvailability: "/shop-availability",
   reports: "/reports",
   shopInterest: "/intake/shop-interest",
   shopProfile: "/shop-profile",

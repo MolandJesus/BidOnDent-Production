@@ -28,6 +28,10 @@ import {
   upsertNavigationSavedPlace,
 } from './handlers/navigation_saved_places.ts'
 import {
+  getShopAvailability,
+  updateOwnShopAvailability,
+} from './handlers/shop_availability.ts'
+import {
   saveVehicle,
   getVehicles,
   deleteVehicleByPost,
@@ -183,6 +187,15 @@ Deno.serve(async (req) => {
     if (path.startsWith('/navigation-saved-places/') && req.method === 'DELETE') {
       const clientId = decodeURIComponent(path.slice('/navigation-saved-places/'.length))
       return await deleteNavigationSavedPlace(req, supabase, respond, clientId)
+    }
+
+    if (path === '/shop-availability' && req.method === 'PUT') {
+      return await updateOwnShopAvailability(req, supabase, respond)
+    }
+
+    if (path.startsWith('/shop-availability/') && req.method === 'GET') {
+      const shopId = decodeURIComponent(path.slice('/shop-availability/'.length))
+      return await getShopAvailability(req, supabase, respond, shopId)
     }
 
     if (path === '/admin/setup-admin' && req.method === 'POST') {

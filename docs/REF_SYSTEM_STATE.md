@@ -272,14 +272,14 @@ Persisted media URLs in `damage_reports.photo_urls` (text[]), `*.profile_image_u
 
 > **Status correction (2026-05-07, Pass 60):** the navigation system was previously listed as "Built but Frozen" through Pass 41. Pass 49 lazy-mount + Pass 50-58 work re-activated it as a first-class product surface for the shop-directory flow. The table below tracks current status per component.
 
-| Component                                           | Purpose                       | Status                            |
-| --------------------------------------------------- | ----------------------------- | --------------------------------- |
-| OSRM routing integration                            | Turn-by-turn directions       | **Active** — wired into shop directory navigation; off-route detection consolidated via `suppressOffRouteRefetch` (Pass 57). |
-| Web Speech API voice navigation                     | British voice guidance        | **Active** — wired into navigation engine; consumed by `useNavigationVoiceAlerts` + `useNavigationRoutePreview`. |
-| navigation_sessions table + API                     | Real-time navigation tracking | **Active** — cloud-sync of in-flight nav sessions. |
-| navigation_saved_places table + API                 | Cloud-sync of pinned home/work/saved/recent places | **Pass 58 scaffolding shipped**, owner-apply pending (KI-114). Hook degrades to localStorage-only until applied. |
-| useNavigationLaunch / useNavigationLifecycleEffects | Navigation state management   | **Active** — lazy-mounted via Pass 49 architecture decision; orchestrated by `useShopDirectoryNavigation` + `useCoverageNavigationExperience`. |
-| useNavigationReroute                                | Manual reroute lifecycle (eligible → pending → cooldown) | **Active** — Pass 54 confirm-timing fix + Pass 57 silent-path suppression. |
+| Component                                           | Purpose                                                  | Status                                                                                                                                         |
+| --------------------------------------------------- | -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| OSRM routing integration                            | Turn-by-turn directions                                  | **Active** — wired into shop directory navigation; off-route detection consolidated via `suppressOffRouteRefetch` (Pass 57).                   |
+| Web Speech API voice navigation                     | British voice guidance                                   | **Active** — wired into navigation engine; consumed by `useNavigationVoiceAlerts` + `useNavigationRoutePreview`.                               |
+| navigation_sessions table + API                     | Real-time navigation tracking                            | **Active** — cloud-sync of in-flight nav sessions.                                                                                             |
+| navigation_saved_places table + API                 | Cloud-sync of pinned home/work/saved/recent places       | **Pass 58 scaffolding shipped**, owner-apply pending (KI-114). Hook degrades to localStorage-only until applied.                               |
+| useNavigationLaunch / useNavigationLifecycleEffects | Navigation state management                              | **Active** — lazy-mounted via Pass 49 architecture decision; orchestrated by `useShopDirectoryNavigation` + `useCoverageNavigationExperience`. |
+| useNavigationReroute                                | Manual reroute lifecycle (eligible → pending → cooldown) | **Active** — Pass 54 confirm-timing fix + Pass 57 silent-path suppression.                                                                     |
 
 **Map tile sources:** CARTO Voyager (light), CARTO Dark All (night), Esri Satellite.
 

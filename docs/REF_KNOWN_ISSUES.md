@@ -356,3 +356,23 @@
   3. Verify with: `curl -H "Authorization: Bearer <clerk_jwt>" https://<project>.supabase.co/functions/v1/server/navigation-saved-places` → expect `{"places":[],"success":true}`.
 - **Removal trigger:** Owner applies migration + verifies edge response no longer carries `fallback:true`. Move to RESOLVED archive when confirmed.
 - **Status:** **OPEN — P5-DOC.** Awaiting owner apply.
+
+### KI-115: shop_availability migration scaffolded but not applied (P5-DOC, owner action)
+
+> **Added 2026-05-07 — Pass 59 close.** Pass 59 shipped scaffolding for real-time partner-shop availability (extends `shop_profiles` with `is_available`, `available_until`, `availability_updated_at`, `availability_note` columns + adds `shop_profiles` to the `supabase_realtime` publication) without applying the migration. Local Supabase CLI db push is broken under PG17 (see repo memory `supabase-cli-pg17-notes.md`). Owner applies via Supabase Studio. Mirrors KI-114 exactly.
+
+- **Impact:** Until owner applies `supabase/migrations/20260507000002_add_shop_availability_columns.sql` against prod, every PUT to `/shop-availability` returns `42703 undefined_column` → handler degrades to `{ success: true, fallback: true }` (HTTP 200), client circuit-breaker (60s backoff) kicks in, and `useShopAvailability` viewer-mode realtime channel never receives events (because `shop_profiles` is not yet in `supabase_realtime`). No user-visible breakage this Pass — there is no UI consumer yet (Pass 62 scope). Owner may apply at any time without coordinating with code.
+- **Severity:** P5-DOC / owner-action. Not blocking. Not a code defect. Self-healing once migration applied + edge function restarted.
+- **Location:**
+  - Migration: [`supabase/migrations/20260507000002_add_shop_availability_columns.sql`](../supabase/migrations/20260507000002_add_shop_availability_columns.sql)
+  - Handler: [`supabase/functions/server/handlers/shop_availability.ts`](../supabase/functions/server/handlers/shop_availability.ts)
+  - Client service: [`src/app/services/supabase/shopAvailability.ts`](../src/app/services/supabase/shopAvailability.ts)
+  - Hook: [`src/app/hooks/useShopAvailability.ts`](../src/app/hooks/useShopAvailability.ts)
+- **Apply steps:**
+  1. Open Supabase Studio → SQL editor → paste migration body → run. Confirm `RAISE NOTICE 'added public.shop_profiles to supabase_realtime publication'` (or "already in") fires.
+  2. Restart `server` edge function (Studio → Edge Functions → server → Restart, or redeploy).
+  3. Verify with: `curl -H "Authorization: Bearer <clerk_jwt>" -X PUT -H "Content-Type: application/json" -d '{"isAvailable": true}' https://<project>.supabase.co/functions/v1/server/shop-availability` → expect `{"availability":{"isAvailable":true,...},"success":true}` (NOT `fallback:true`).
+  4. Verify GET works: `curl https://<project>.supabase.co/functions/v1/server/shop-availability/<shop_uuid>` → expect `{"availability":{"isAvailable":true,...},"success":true}`.
+- **Removal trigger:** Owner applies migration + verifies edge response no longer carries `fallback:true` + a smoke realtime subscription (Studio → Database → Replication → supabase_realtime publication → confirm shop_profiles listed). Move to RESOLVED archive when confirmed.
+- **Pass 62 dependency:** Marker UI integration (color-coded availability dots, dashboard toggle) requires this migration to be applied first. Pass 62 should not ship UI consuming the realtime data while KI-115 is OPEN.
+- **Status:** **OPEN — P5-DOC.** Awaiting owner apply.
