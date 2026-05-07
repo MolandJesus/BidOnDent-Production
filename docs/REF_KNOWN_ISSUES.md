@@ -654,7 +654,7 @@
   2. Add scroll-indicator dots/arrows to the status pill row OR convert to a horizontal-scroll segmented control with momentum.
   3. Bonus: the legend overlay should auto-hide after 3s of no interaction, re-show on tap.
 - **Severity:** **P2-UX.** Mobile usability hit on a primary surface.
-- **Status:** **OPEN — P2-UX.**
+- **Status:** **RESOLVED — Pass 78 (2026-05-07).** [`MapPaneLegendPanel.tsx`](../src/app/components/shop/MapPaneLegendPanel.tsx) now collapses to a single tap-to-expand "Legend" pill (rounded-full, layers icon + chevron) when `density === "compact"` (mobile fullscreen map call sites). Default state is collapsed; users opt in to the full panel + status filter row by tapping. Expanded state gains an inline collapse button (chevron-up) for symmetry. Non-compact (desktop / wider panes) keeps the original always-on layout so power users do not lose density. Map surface is now visible by default on mobile.
 
 ### KI-141: Mobile header drops page title — users lose orientation between tabs (P3-UX)
 
