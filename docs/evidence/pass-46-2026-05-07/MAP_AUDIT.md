@@ -13,46 +13,46 @@ The map program is delivered through **100 map-related source files** totalling 
 
 ### A.1 User-visible map surfaces (delivered today)
 
-| # | Surface | Entry component | Parent route | Notes |
-|---|---------|-----------------|--------------|-------|
-| 1 | Landing hero demo map (mobile + desktop) | [HeroSection.tsx](../../../src/app/components/landing/HeroSection.tsx) | `/` (anonymous + authed) | Custom CSS map (NOT MapLibre) — KI-105 light palette resolved 2026-05-05. |
-| 2 | Landing inline coverage preview | [DashboardCoveragePanel.tsx](../../../src/app/components/dashboard/DashboardCoveragePanel.tsx) → [CoverageMapDialog](../../../src/app/components/landing/CoverageMapDialog.tsx) | `/` | Inline trigger opens fullscreen dialog. |
-| 3 | Landing fullscreen — Search mode | [CoverageMapDialog.tsx](../../../src/app/components/landing/CoverageMapDialog.tsx) (`browse` presentation) | `/` | Uses `CoverageSearchPanel` — KI-083 fixed. |
-| 4 | Landing fullscreen — Explore mode | same | `/` | Place discovery via Overpass API (KI-051 resolved). |
-| 5 | Landing fullscreen — Saved mode | same | `/` | Saved places via `useSavedNavigationLocations` (localStorage; cloud deferred under KI-075). |
-| 6 | Landing fullscreen — Shops mode | same | `/` | Real `public_partner_shops` via `useCoveragePartnerShops` (DEV demo gated). |
-| 7 | Landing fullscreen — Active navigation | [CoverageActiveNavigationLayout.tsx](../../../src/app/components/landing/CoverageActiveNavigationLayout.tsx) | `/` | Route preview + guidance shell. KI-052 fabricated-distance family closed. |
-| 8 | Operating Regions section embed | [OperatingRegionsSection.tsx](../../../src/app/components/landing/OperatingRegionsSection.tsx) | `/` | Mode-badges spine; KI-069 dark depth bar applied. |
-| 9 | Customer dashboard Smart Shop Map | [CustomerMapWidget.tsx](../../../src/app/components/dashboard/CustomerMapWidget.tsx) | `/dashboard` | Inline preview → fullscreen via dialog. KI-074 bezel + canvas sheen. |
-| 10 | Shop dashboard Smart Shop Map | [ShopMapWidget.tsx](../../../src/app/components/dashboard/ShopMapWidget.tsx) | `/dashboard` (shop) | Same shell; role tone variant. |
-| 11 | Insurer dashboard map widget | [InsurerMapWidget.tsx](../../../src/app/components/dashboard/InsurerMapWidget.tsx) | `/dashboard` (insurer) | Same shell; role tone variant. |
-| 12 | Shop directory immersive map | `src/app/components/shop/ShopDirectoryHybridStage.tsx` + [MapLibreShopDirectoryMapPane](../../../src/app/components/shop/) | `/shops` (customer) | KI-068 white-surface sweep complete. |
-| 13 | ImmersiveMapResultsDrawer | `src/app/components/shop/ImmersiveMapResultsDrawer.tsx` | `/shops` | Mobile sheet UI. |
-| 14 | MobileMapBottomSheet (landing) | [MobileMapBottomSheet.tsx](../../../src/app/components/landing/MobileMapBottomSheet.tsx) | `/` | KI-067 partial (peek-state reshape still HOLD). |
-| 15 | MapBidSheet (bid from map pin) | [MapBidSheet.tsx](../../../src/app/components/maps/MapBidSheet.tsx) | various | KI-083 fixed (no pure white). |
-| 16 | Report layer pins on coverage map | [MapLibreReportLayer.tsx](../../../src/app/components/maps/MapLibreReportLayer.tsx) | various | Opt-in only on coverage browse (hardening guard). |
-| 17 | Partner-shop layer | [MapLibrePartnerShopLayer.tsx](../../../src/app/components/maps/MapLibrePartnerShopLayer.tsx) | various | Real Supabase-backed; popup uses dark depth bar. |
-| 18 | Discovery places layer | [MapLibreDiscoveryPlaceLayer.tsx](../../../src/app/components/maps/MapLibreDiscoveryPlaceLayer.tsx) | landing fullscreen Explore | Overpass-fed; POI markers. |
+| #   | Surface                                  | Entry component                                                                                                                                                                 | Parent route               | Notes                                                                                       |
+| --- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- | ------------------------------------------------------------------------------------------- |
+| 1   | Landing hero demo map (mobile + desktop) | [HeroSection.tsx](../../../src/app/components/landing/HeroSection.tsx)                                                                                                          | `/` (anonymous + authed)   | Custom CSS map (NOT MapLibre) — KI-105 light palette resolved 2026-05-05.                   |
+| 2   | Landing inline coverage preview          | [DashboardCoveragePanel.tsx](../../../src/app/components/dashboard/DashboardCoveragePanel.tsx) → [CoverageMapDialog](../../../src/app/components/landing/CoverageMapDialog.tsx) | `/`                        | Inline trigger opens fullscreen dialog.                                                     |
+| 3   | Landing fullscreen — Search mode         | [CoverageMapDialog.tsx](../../../src/app/components/landing/CoverageMapDialog.tsx) (`browse` presentation)                                                                      | `/`                        | Uses `CoverageSearchPanel` — KI-083 fixed.                                                  |
+| 4   | Landing fullscreen — Explore mode        | same                                                                                                                                                                            | `/`                        | Place discovery via Overpass API (KI-051 resolved).                                         |
+| 5   | Landing fullscreen — Saved mode          | same                                                                                                                                                                            | `/`                        | Saved places via `useSavedNavigationLocations` (localStorage; cloud deferred under KI-075). |
+| 6   | Landing fullscreen — Shops mode          | same                                                                                                                                                                            | `/`                        | Real `public_partner_shops` via `useCoveragePartnerShops` (DEV demo gated).                 |
+| 7   | Landing fullscreen — Active navigation   | [CoverageActiveNavigationLayout.tsx](../../../src/app/components/landing/CoverageActiveNavigationLayout.tsx)                                                                    | `/`                        | Route preview + guidance shell. KI-052 fabricated-distance family closed.                   |
+| 8   | Operating Regions section embed          | [OperatingRegionsSection.tsx](../../../src/app/components/landing/OperatingRegionsSection.tsx)                                                                                  | `/`                        | Mode-badges spine; KI-069 dark depth bar applied.                                           |
+| 9   | Customer dashboard Smart Shop Map        | [CustomerMapWidget.tsx](../../../src/app/components/dashboard/CustomerMapWidget.tsx)                                                                                            | `/dashboard`               | Inline preview → fullscreen via dialog. KI-074 bezel + canvas sheen.                        |
+| 10  | Shop dashboard Smart Shop Map            | [ShopMapWidget.tsx](../../../src/app/components/dashboard/ShopMapWidget.tsx)                                                                                                    | `/dashboard` (shop)        | Same shell; role tone variant.                                                              |
+| 11  | Insurer dashboard map widget             | [InsurerMapWidget.tsx](../../../src/app/components/dashboard/InsurerMapWidget.tsx)                                                                                              | `/dashboard` (insurer)     | Same shell; role tone variant.                                                              |
+| 12  | Shop directory immersive map             | `src/app/components/shop/ShopDirectoryHybridStage.tsx` + [MapLibreShopDirectoryMapPane](../../../src/app/components/shop/)                                                      | `/shops` (customer)        | KI-068 white-surface sweep complete.                                                        |
+| 13  | ImmersiveMapResultsDrawer                | `src/app/components/shop/ImmersiveMapResultsDrawer.tsx`                                                                                                                         | `/shops`                   | Mobile sheet UI.                                                                            |
+| 14  | MobileMapBottomSheet (landing)           | [MobileMapBottomSheet.tsx](../../../src/app/components/landing/MobileMapBottomSheet.tsx)                                                                                        | `/`                        | KI-067 partial (peek-state reshape still HOLD).                                             |
+| 15  | MapBidSheet (bid from map pin)           | [MapBidSheet.tsx](../../../src/app/components/maps/MapBidSheet.tsx)                                                                                                             | various                    | KI-083 fixed (no pure white).                                                               |
+| 16  | Report layer pins on coverage map        | [MapLibreReportLayer.tsx](../../../src/app/components/maps/MapLibreReportLayer.tsx)                                                                                             | various                    | Opt-in only on coverage browse (hardening guard).                                           |
+| 17  | Partner-shop layer                       | [MapLibrePartnerShopLayer.tsx](../../../src/app/components/maps/MapLibrePartnerShopLayer.tsx)                                                                                   | various                    | Real Supabase-backed; popup uses dark depth bar.                                            |
+| 18  | Discovery places layer                   | [MapLibreDiscoveryPlaceLayer.tsx](../../../src/app/components/maps/MapLibreDiscoveryPlaceLayer.tsx)                                                                             | landing fullscreen Explore | Overpass-fed; POI markers.                                                                  |
 
 ### A.2 Navigation-system surfaces
 
-| Surface | File | Status |
-|---------|------|--------|
-| Navigation HUD (top bar maneuver card host) | [MapNavigationHud.tsx](../../../src/app/components/maps/MapNavigationHud.tsx) | Visual chrome shipped; turn-by-turn engine NOT wired (KI-075). |
-| Active maneuver card | [navigation/NavigationActiveManeuverCard.tsx](../../../src/app/components/maps/navigation/NavigationActiveManeuverCard.tsx) | Reads from `useNavigationRoutePreview` + diagnostics; renders next maneuver if present. |
-| Action rail | [NavigationActionRail.tsx](../../../src/app/components/maps/navigation/NavigationActionRail.tsx) | Settings / Voice / End buttons; voice toggle present, TTS engine deferred. |
-| Voice controls sheet | [NavigationVoiceControlsSheet.tsx](../../../src/app/components/maps/navigation/NavigationVoiceControlsSheet.tsx) | UI only — speech synthesis NOT implemented. |
-| Settings sheet | [NavigationSettingsSheet.tsx](../../../src/app/components/maps/navigation/NavigationSettingsSheet.tsx) | Toggles persisted to localStorage. |
-| Turn list sheet | [NavigationTurnListSheet.tsx](../../../src/app/components/maps/navigation/NavigationTurnListSheet.tsx) | Renders OSRM step list when present. |
-| Summary sheet | [NavigationSummarySheet.tsx](../../../src/app/components/maps/navigation/NavigationSummarySheet.tsx) | Pre-departure summary (ETA / distance / route preview). |
-| Discovery panel | [NavigationBrowseDiscoveryPanel.tsx](../../../src/app/components/maps/navigation/NavigationBrowseDiscoveryPanel.tsx) | Overpass POI list. |
-| Saved-places panel | [NavigationSavedPlacesPanel.tsx](../../../src/app/components/maps/navigation/NavigationSavedPlacesPanel.tsx) | localStorage-backed (cloud deferred — KI-075). |
-| Speed-limit badge | [navigation/SpeedLimitBadge.tsx](../../../src/app/components/maps/navigation/SpeedLimitBadge.tsx) | KI-106 documented exception (real-world signage white). |
-| Current-speed badge | [navigation/CurrentSpeedBadge.tsx](../../../src/app/components/maps/navigation/CurrentSpeedBadge.tsx) | GPS-driven via `useNavigationGpsTracking`. |
-| Deviation prompt | [navigation/NavigationDeviationPrompt.tsx](../../../src/app/components/maps/navigation/NavigationDeviationPrompt.tsx) | UI shipped; deviation detection logic is stub (KI-075). |
-| Arrival section | `GuidanceArrivalSection.tsx` (shop dir) | Renders on `hasArrived`. |
-| Diagnostics panel | `command-center/PlannerDiagnosticsPanel.tsx` | Provider/health observability. |
-| External nav handoff | [services/navigation/externalNavigation.ts](../../../src/app/services/navigation/externalNavigation.ts) | Apple/Google/Waze deep links — FUNCTIONAL today. |
+| Surface                                     | File                                                                                                                        | Status                                                                                  |
+| ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Navigation HUD (top bar maneuver card host) | [MapNavigationHud.tsx](../../../src/app/components/maps/MapNavigationHud.tsx)                                               | Visual chrome shipped; turn-by-turn engine NOT wired (KI-075).                          |
+| Active maneuver card                        | [navigation/NavigationActiveManeuverCard.tsx](../../../src/app/components/maps/navigation/NavigationActiveManeuverCard.tsx) | Reads from `useNavigationRoutePreview` + diagnostics; renders next maneuver if present. |
+| Action rail                                 | [NavigationActionRail.tsx](../../../src/app/components/maps/navigation/NavigationActionRail.tsx)                            | Settings / Voice / End buttons; voice toggle present, TTS engine deferred.              |
+| Voice controls sheet                        | [NavigationVoiceControlsSheet.tsx](../../../src/app/components/maps/navigation/NavigationVoiceControlsSheet.tsx)            | UI only — speech synthesis NOT implemented.                                             |
+| Settings sheet                              | [NavigationSettingsSheet.tsx](../../../src/app/components/maps/navigation/NavigationSettingsSheet.tsx)                      | Toggles persisted to localStorage.                                                      |
+| Turn list sheet                             | [NavigationTurnListSheet.tsx](../../../src/app/components/maps/navigation/NavigationTurnListSheet.tsx)                      | Renders OSRM step list when present.                                                    |
+| Summary sheet                               | [NavigationSummarySheet.tsx](../../../src/app/components/maps/navigation/NavigationSummarySheet.tsx)                        | Pre-departure summary (ETA / distance / route preview).                                 |
+| Discovery panel                             | [NavigationBrowseDiscoveryPanel.tsx](../../../src/app/components/maps/navigation/NavigationBrowseDiscoveryPanel.tsx)        | Overpass POI list.                                                                      |
+| Saved-places panel                          | [NavigationSavedPlacesPanel.tsx](../../../src/app/components/maps/navigation/NavigationSavedPlacesPanel.tsx)                | localStorage-backed (cloud deferred — KI-075).                                          |
+| Speed-limit badge                           | [navigation/SpeedLimitBadge.tsx](../../../src/app/components/maps/navigation/SpeedLimitBadge.tsx)                           | KI-106 documented exception (real-world signage white).                                 |
+| Current-speed badge                         | [navigation/CurrentSpeedBadge.tsx](../../../src/app/components/maps/navigation/CurrentSpeedBadge.tsx)                       | GPS-driven via `useNavigationGpsTracking`.                                              |
+| Deviation prompt                            | [navigation/NavigationDeviationPrompt.tsx](../../../src/app/components/maps/navigation/NavigationDeviationPrompt.tsx)       | UI shipped; deviation detection logic is stub (KI-075).                                 |
+| Arrival section                             | `GuidanceArrivalSection.tsx` (shop dir)                                                                                     | Renders on `hasArrived`.                                                                |
+| Diagnostics panel                           | `command-center/PlannerDiagnosticsPanel.tsx`                                                                                | Provider/health observability.                                                          |
+| External nav handoff                        | [services/navigation/externalNavigation.ts](../../../src/app/services/navigation/externalNavigation.ts)                     | Apple/Google/Waze deep links — FUNCTIONAL today.                                        |
 
 ### A.3 Supporting service / hook layer (selected)
 
@@ -148,14 +148,14 @@ The 2026-04-17 master-plan note locked seven user-visible map states under a sha
 
 Per [`KI-075`](../../REF_KNOWN_ISSUES.md):
 
-| Capability | UI shipped? | Engine wired? | Owner-unlock required? |
-|------------|-------------|---------------|------------------------|
-| Turn-by-turn step rendering from OSRM | ✅ | Partial (renders if `routePreview.steps` populated; no live progression engine) | YES |
-| Voice TTS announcements | ✅ (toggle + sheet) | ❌ (no SpeechSynthesis call) | YES |
-| Off-route deviation detection + reroute | ✅ (prompt UI) | ❌ (stub) | YES |
-| Saved-places cloud sync | ✅ (panel) | ❌ (localStorage only) | YES |
-| Per-role map layer activation rules | partial | partial | YES |
-| Real-time partner-shop availability on markers | ✅ (popup chrome) | ❌ (static availability) | YES |
+| Capability                                     | UI shipped?         | Engine wired?                                                                   | Owner-unlock required? |
+| ---------------------------------------------- | ------------------- | ------------------------------------------------------------------------------- | ---------------------- |
+| Turn-by-turn step rendering from OSRM          | ✅                  | Partial (renders if `routePreview.steps` populated; no live progression engine) | YES                    |
+| Voice TTS announcements                        | ✅ (toggle + sheet) | ❌ (no SpeechSynthesis call)                                                    | YES                    |
+| Off-route deviation detection + reroute        | ✅ (prompt UI)      | ❌ (stub)                                                                       | YES                    |
+| Saved-places cloud sync                        | ✅ (panel)          | ❌ (localStorage only)                                                          | YES                    |
+| Per-role map layer activation rules            | partial             | partial                                                                         | YES                    |
+| Real-time partner-shop availability on markers | ✅ (popup chrome)   | ❌ (static availability)                                                        | YES                    |
 
 These are the deferred KI-075 items. The owner-stated 4 unlock triggers are NOT met this session — these stay flagged, NOT built.
 
@@ -171,22 +171,22 @@ These are the deferred KI-075 items. The owner-stated 4 unlock triggers are NOT 
 
 ## E. Known-Issues Parity (Map-Related)
 
-| KI | Title | Status | Map relevance | Hardening-safe action this pass? |
-|----|-------|--------|---------------|----------------------------------|
-| KI-045 | Navigation session cloud sync — missing prod table | MITIGATED | Direct | No — owner DB action |
-| KI-051 | CSP missing overpass-api.de | RESOLVED 2026-04-29 | Direct | None |
-| KI-052 family | Fabricated zero-distance ETA / mins | RESOLVED 2026-05-04 | Direct | None |
-| KI-053 | Map performance budget overruns | OPEN P4 | Direct | DEFER — needs dedicated perf pass |
-| KI-056 / KI-057 | Realtime auth + StrictMode | RESOLVED | Indirect | None |
-| KI-067 | Mobile fullscreen coverage map sheet-first | PARTIAL (HOLD) | **Direct, highest-leverage** | DEFER — explicit owner approval required |
-| KI-068 | Shop family pure-white in light | RESOLVED 2026-05-03 | Direct | None |
-| KI-069 | Dark panel depth bar | RESOLVED 2026-05-03 | Direct (map-adjacent) | None |
-| KI-074 | Map widgets premium glass redesign | RESOLVED 2026-05-03 | Direct | None |
-| KI-075 | Future nav engine + functional buildout | **DEFERRED** — needs 4 owner triggers | Direct | **NO — ceiling holds** |
-| KI-083 | Map program light pure-white violations | RESOLVED 2026-05-04 | Direct | None |
-| KI-099 / KI-100 | Demo shop data on dashboard map | RESOLVED (mitigated) / DEFERRED | Direct | None this pass |
-| KI-105 | Hero demo map too pale (light) | RESOLVED 2026-05-05 | Direct | None |
-| KI-106 | SpeedLimitBadge solid white (semantic) | OPEN — INTENTIONAL EXCEPTION | Direct | None — documented |
+| KI              | Title                                              | Status                                | Map relevance                | Hardening-safe action this pass?         |
+| --------------- | -------------------------------------------------- | ------------------------------------- | ---------------------------- | ---------------------------------------- |
+| KI-045          | Navigation session cloud sync — missing prod table | MITIGATED                             | Direct                       | No — owner DB action                     |
+| KI-051          | CSP missing overpass-api.de                        | RESOLVED 2026-04-29                   | Direct                       | None                                     |
+| KI-052 family   | Fabricated zero-distance ETA / mins                | RESOLVED 2026-05-04                   | Direct                       | None                                     |
+| KI-053          | Map performance budget overruns                    | OPEN P4                               | Direct                       | DEFER — needs dedicated perf pass        |
+| KI-056 / KI-057 | Realtime auth + StrictMode                         | RESOLVED                              | Indirect                     | None                                     |
+| KI-067          | Mobile fullscreen coverage map sheet-first         | PARTIAL (HOLD)                        | **Direct, highest-leverage** | DEFER — explicit owner approval required |
+| KI-068          | Shop family pure-white in light                    | RESOLVED 2026-05-03                   | Direct                       | None                                     |
+| KI-069          | Dark panel depth bar                               | RESOLVED 2026-05-03                   | Direct (map-adjacent)        | None                                     |
+| KI-074          | Map widgets premium glass redesign                 | RESOLVED 2026-05-03                   | Direct                       | None                                     |
+| KI-075          | Future nav engine + functional buildout            | **DEFERRED** — needs 4 owner triggers | Direct                       | **NO — ceiling holds**                   |
+| KI-083          | Map program light pure-white violations            | RESOLVED 2026-05-04                   | Direct                       | None                                     |
+| KI-099 / KI-100 | Demo shop data on dashboard map                    | RESOLVED (mitigated) / DEFERRED       | Direct                       | None this pass                           |
+| KI-105          | Hero demo map too pale (light)                     | RESOLVED 2026-05-05                   | Direct                       | None                                     |
+| KI-106          | SpeedLimitBadge solid white (semantic)             | OPEN — INTENTIONAL EXCEPTION          | Direct                       | None — documented                        |
 
 **Net:** the map program is in its strongest visual-canon state to date. Open map-relevant items are **KI-053 (perf, P4)**, **KI-067 (mobile sheet-first, HOLD)**, **KI-075 (engine, DEFERRED)**, and **KI-099/100 fake-shop data swap (DEFERRED)**. None are unilateral autopilot territory.
 

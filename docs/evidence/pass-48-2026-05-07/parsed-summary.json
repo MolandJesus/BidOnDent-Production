@@ -1,0 +1,871 @@
+{
+  "trace-landing-1280.json": {
+    "eventCount": 204956,
+    "completeEventCount": 75914,
+    "longTaskMs": 687,
+    "totalMs": 6590,
+    "topByName": [
+      {
+        "key": "RunTask",
+        "totalMs": 4244.7,
+        "count": 29303,
+        "maxMs": 172.7,
+        "avgMs": 0.14
+      },
+      {
+        "key": "UpdateLayoutTree",
+        "totalMs": 398.5,
+        "count": 663,
+        "maxMs": 1.2,
+        "avgMs": 0.6
+      },
+      {
+        "key": "GPUTask",
+        "totalMs": 325.3,
+        "count": 1218,
+        "maxMs": 1,
+        "avgMs": 0.27
+      },
+      {
+        "key": "FunctionCall",
+        "totalMs": 217.4,
+        "count": 790,
+        "maxMs": 21.3,
+        "avgMs": 0.28
+      },
+      {
+        "key": "V8.StackGuard",
+        "totalMs": 201.6,
+        "count": 259,
+        "maxMs": 171.3,
+        "avgMs": 0.78
+      },
+      {
+        "key": "V8.HandleInterrupts",
+        "totalMs": 201.4,
+        "count": 249,
+        "maxMs": 171.3,
+        "avgMs": 0.81
+      },
+      {
+        "key": "V8.InvokeApiInterruptCallbacks",
+        "totalMs": 192.5,
+        "count": 4,
+        "maxMs": 171.3,
+        "avgMs": 48.11
+      },
+      {
+        "key": "FireAnimationFrame",
+        "totalMs": 175.7,
+        "count": 219,
+        "maxMs": 2.6,
+        "avgMs": 0.8
+      },
+      {
+        "key": "Paint",
+        "totalMs": 121,
+        "count": 5610,
+        "maxMs": 0.3,
+        "avgMs": 0.02
+      },
+      {
+        "key": "Layerize",
+        "totalMs": 112.3,
+        "count": 654,
+        "maxMs": 0.6,
+        "avgMs": 0.17
+      }
+    ],
+    "topByUrl": [
+      {
+        "key": "http://localhost:5173/node_modules/.vite/deps/maplibre-gl.js",
+        "totalMs": 182.1,
+        "count": 374,
+        "maxMs": 2.6,
+        "avgMs": 0.49
+      },
+      {
+        "key": "(blob)",
+        "totalMs": 22.6,
+        "count": 14,
+        "maxMs": 21.3,
+        "avgMs": 1.61
+      },
+      {
+        "key": "http://localhost:5173/node_modules/.vite/deps/chunk-KDCVS43I.js",
+        "totalMs": 11.3,
+        "count": 396,
+        "maxMs": 1,
+        "avgMs": 0.03
+      },
+      {
+        "key": "http://localhost:5173/src/app/hooks/useNavigationGpsTracking.ts",
+        "totalMs": 0.6,
+        "count": 2,
+        "maxMs": 0.6,
+        "avgMs": 0.32
+      },
+      {
+        "key": "http://localhost:5173/src/app/components/landing/HeroSection.tsx",
+        "totalMs": 0.6,
+        "count": 2,
+        "maxMs": 0.6,
+        "avgMs": 0.31
+      },
+      {
+        "key": "https://joint-oarfish-23.clerk.accounts.dev/npm/@clerk/clerk-js@5/dist/clerk.browser.js",
+        "totalMs": 0.2,
+        "count": 2,
+        "maxMs": 0.2,
+        "avgMs": 0.1
+      },
+      {
+        "key": "(inline data:)",
+        "totalMs": 0,
+        "count": 1,
+        "maxMs": 0,
+        "avgMs": 0.02
+      }
+    ],
+    "topByFunction": [
+      {
+        "key": "dispatchContinuousEvent",
+        "totalMs": 5.7,
+        "count": 236,
+        "maxMs": 0.5,
+        "avgMs": 0.02
+      },
+      {
+        "key": "handleEvent",
+        "totalMs": 5.1,
+        "count": 70,
+        "maxMs": 0.5,
+        "avgMs": 0.07
+      },
+      {
+        "key": "handleWindowEvent",
+        "totalMs": 4.1,
+        "count": 59,
+        "maxMs": 0.4,
+        "avgMs": 0.07
+      },
+      {
+        "key": "performWorkUntilDeadline",
+        "totalMs": 2.4,
+        "count": 3,
+        "maxMs": 1,
+        "avgMs": 0.79
+      },
+      {
+        "key": "dispatchEvent",
+        "totalMs": 1.2,
+        "count": 120,
+        "maxMs": 0.1,
+        "avgMs": 0.01
+      },
+      {
+        "key": "dispatchDiscreteEvent",
+        "totalMs": 0.7,
+        "count": 34,
+        "maxMs": 0.1,
+        "avgMs": 0.02
+      },
+      {
+        "key": "Tp._channel.port2.onmessage",
+        "totalMs": 0.2,
+        "count": 6,
+        "maxMs": 0.1,
+        "avgMs": 0.04
+      },
+      {
+        "key": "o",
+        "totalMs": 0.2,
+        "count": 1,
+        "maxMs": 0.2,
+        "avgMs": 0.18
+      },
+      {
+        "key": "suppressClickInternal",
+        "totalMs": 0,
+        "count": 4,
+        "maxMs": 0,
+        "avgMs": 0.01
+      }
+    ],
+    "longestTasks": [
+      {
+        "name": "RunTask",
+        "ms": 172.7,
+        "url": "(no-url)"
+      },
+      {
+        "name": "V8.StackGuard",
+        "ms": 171.3,
+        "url": "(no-url)"
+      },
+      {
+        "name": "V8.HandleInterrupts",
+        "ms": 171.3,
+        "url": "(no-url)"
+      },
+      {
+        "name": "V8.InvokeApiInterruptCallbacks",
+        "ms": 171.3,
+        "url": "(no-url)"
+      }
+    ]
+  },
+  "trace-dialog-1280.json": {
+    "eventCount": 194290,
+    "completeEventCount": 67743,
+    "longTaskMs": 0,
+    "totalMs": 4583,
+    "topByName": [
+      {
+        "key": "RunTask",
+        "totalMs": 3287.3,
+        "count": 24967,
+        "maxMs": 37.7,
+        "avgMs": 0.13
+      },
+      {
+        "key": "UpdateLayoutTree",
+        "totalMs": 387.4,
+        "count": 652,
+        "maxMs": 1.3,
+        "avgMs": 0.59
+      },
+      {
+        "key": "GPUTask",
+        "totalMs": 214.3,
+        "count": 965,
+        "maxMs": 1.3,
+        "avgMs": 0.22
+      },
+      {
+        "key": "Layerize",
+        "totalMs": 123.9,
+        "count": 643,
+        "maxMs": 0.6,
+        "avgMs": 0.19
+      },
+      {
+        "key": "Paint",
+        "totalMs": 117,
+        "count": 5833,
+        "maxMs": 0.3,
+        "avgMs": 0.02
+      },
+      {
+        "key": "Commit",
+        "totalMs": 93.6,
+        "count": 643,
+        "maxMs": 0.4,
+        "avgMs": 0.15
+      },
+      {
+        "key": "PrePaint",
+        "totalMs": 77.2,
+        "count": 803,
+        "maxMs": 0.3,
+        "avgMs": 0.1
+      },
+      {
+        "key": "V8.StackGuard",
+        "totalMs": 39.6,
+        "count": 15,
+        "maxMs": 37,
+        "avgMs": 2.64
+      },
+      {
+        "key": "V8.HandleInterrupts",
+        "totalMs": 39.6,
+        "count": 15,
+        "maxMs": 37,
+        "avgMs": 2.64
+      },
+      {
+        "key": "V8.InvokeApiInterruptCallbacks",
+        "totalMs": 38.7,
+        "count": 3,
+        "maxMs": 37,
+        "avgMs": 12.9
+      }
+    ],
+    "topByUrl": [
+      {
+        "key": "http://localhost:5173/node_modules/.vite/deps/chunk-KDCVS43I.js",
+        "totalMs": 13.9,
+        "count": 108,
+        "maxMs": 2,
+        "avgMs": 0.13
+      },
+      {
+        "key": "http://localhost:5173/src/app/components/landing/LandingPageHeader.tsx",
+        "totalMs": 4.3,
+        "count": 6,
+        "maxMs": 0.8,
+        "avgMs": 0.72
+      },
+      {
+        "key": "http://localhost:5173/node_modules/.vite/deps/maplibre-gl.js",
+        "totalMs": 3.1,
+        "count": 44,
+        "maxMs": 0.4,
+        "avgMs": 0.07
+      },
+      {
+        "key": "(blob)",
+        "totalMs": 1.8,
+        "count": 2,
+        "maxMs": 1.8,
+        "avgMs": 0.92
+      },
+      {
+        "key": "...int-oarfish-23.clerk.accounts.dev/npm/@clerk/clerk-js@5.125.10/dist/framework_clerk.browser_75d171_5.125.10.js",
+        "totalMs": 0.4,
+        "count": 1,
+        "maxMs": 0.4,
+        "avgMs": 0.43
+      },
+      {
+        "key": "http://localhost:5173/src/app/hooks/useParallaxOffset.ts",
+        "totalMs": 0.4,
+        "count": 24,
+        "maxMs": 0.1,
+        "avgMs": 0.02
+      },
+      {
+        "key": "https://joint-oarfish-23.clerk.accounts.dev/npm/@clerk/clerk-js@5/dist/clerk.browser.js",
+        "totalMs": 0.1,
+        "count": 2,
+        "maxMs": 0.1,
+        "avgMs": 0.07
+      },
+      {
+        "key": "http://localhost:5173/src/app/components/landing/HeroSection.tsx",
+        "totalMs": 0.1,
+        "count": 1,
+        "maxMs": 0.1,
+        "avgMs": 0.06
+      },
+      {
+        "key": "http://localhost:5173/src/app/hooks/useScrollAnimation.ts",
+        "totalMs": 0,
+        "count": 2,
+        "maxMs": 0,
+        "avgMs": 0.02
+      },
+      {
+        "key": "http://localhost:5173/src/app/hooks/useNavigationGpsTracking.ts",
+        "totalMs": 0,
+        "count": 2,
+        "maxMs": 0,
+        "avgMs": 0.02
+      }
+    ],
+    "topByFunction": [
+      {
+        "key": "performWorkUntilDeadline",
+        "totalMs": 12.1,
+        "count": 9,
+        "maxMs": 2,
+        "avgMs": 1.35
+      },
+      {
+        "key": "handleScroll",
+        "totalMs": 4.4,
+        "count": 18,
+        "maxMs": 0.8,
+        "avgMs": 0.25
+      },
+      {
+        "key": "handleWindowEvent",
+        "totalMs": 3.1,
+        "count": 44,
+        "maxMs": 0.4,
+        "avgMs": 0.07
+      },
+      {
+        "key": "dispatchEvent",
+        "totalMs": 1.3,
+        "count": 92,
+        "maxMs": 0.1,
+        "avgMs": 0.01
+      },
+      {
+        "key": "nO",
+        "totalMs": 0.4,
+        "count": 1,
+        "maxMs": 0.4,
+        "avgMs": 0.43
+      },
+      {
+        "key": "dispatchDiscreteEvent",
+        "totalMs": 0.2,
+        "count": 3,
+        "maxMs": 0.1,
+        "avgMs": 0.08
+      },
+      {
+        "key": "dispatchContinuousEvent",
+        "totalMs": 0.2,
+        "count": 4,
+        "maxMs": 0.1,
+        "avgMs": 0.05
+      },
+      {
+        "key": "o",
+        "totalMs": 0.1,
+        "count": 1,
+        "maxMs": 0.1,
+        "avgMs": 0.13
+      },
+      {
+        "key": "IntersectionObserver.threshold.threshold",
+        "totalMs": 0,
+        "count": 2,
+        "maxMs": 0,
+        "avgMs": 0.02
+      }
+    ],
+    "longestTasks": []
+  },
+  "trace-landing-375.json": {
+    "eventCount": 151940,
+    "completeEventCount": 57538,
+    "longTaskMs": 897,
+    "totalMs": 6143,
+    "topByName": [
+      {
+        "key": "RunTask",
+        "totalMs": 4248.9,
+        "count": 28871,
+        "maxMs": 231.2,
+        "avgMs": 0.15
+      },
+      {
+        "key": "GPUTask",
+        "totalMs": 242.1,
+        "count": 1239,
+        "maxMs": 1.7,
+        "avgMs": 0.2
+      },
+      {
+        "key": "V8.StackGuard",
+        "totalMs": 198.5,
+        "count": 298,
+        "maxMs": 166.4,
+        "avgMs": 0.67
+      },
+      {
+        "key": "V8.HandleInterrupts",
+        "totalMs": 198.2,
+        "count": 291,
+        "maxMs": 166.4,
+        "avgMs": 0.68
+      },
+      {
+        "key": "V8.InvokeApiInterruptCallbacks",
+        "totalMs": 188.6,
+        "count": 4,
+        "maxMs": 166.4,
+        "avgMs": 47.15
+      },
+      {
+        "key": "FunctionCall",
+        "totalMs": 188.4,
+        "count": 766,
+        "maxMs": 22.2,
+        "avgMs": 0.25
+      },
+      {
+        "key": "Layerize",
+        "totalMs": 145.2,
+        "count": 627,
+        "maxMs": 0.6,
+        "avgMs": 0.23
+      },
+      {
+        "key": "FireAnimationFrame",
+        "totalMs": 142,
+        "count": 195,
+        "maxMs": 2.2,
+        "avgMs": 0.73
+      },
+      {
+        "key": "UpdateLayoutTree",
+        "totalMs": 112.5,
+        "count": 637,
+        "maxMs": 0.6,
+        "avgMs": 0.18
+      },
+      {
+        "key": "V8.GC_MC_BACKGROUND_MARKING",
+        "totalMs": 86.9,
+        "count": 51,
+        "maxMs": 3.5,
+        "avgMs": 1.7
+      }
+    ],
+    "topByUrl": [
+      {
+        "key": "http://localhost:5173/node_modules/.vite/deps/maplibre-gl.js",
+        "totalMs": 150.6,
+        "count": 368,
+        "maxMs": 2.2,
+        "avgMs": 0.41
+      },
+      {
+        "key": "(blob)",
+        "totalMs": 25.9,
+        "count": 32,
+        "maxMs": 22.2,
+        "avgMs": 0.81
+      },
+      {
+        "key": "http://localhost:5173/node_modules/.vite/deps/chunk-KDCVS43I.js",
+        "totalMs": 11.4,
+        "count": 360,
+        "maxMs": 1,
+        "avgMs": 0.03
+      },
+      {
+        "key": "http://localhost:5173/src/app/components/landing/HeroSection.tsx",
+        "totalMs": 0.4,
+        "count": 2,
+        "maxMs": 0.3,
+        "avgMs": 0.2
+      },
+      {
+        "key": "https://joint-oarfish-23.clerk.accounts.dev/npm/@clerk/clerk-js@5/dist/clerk.browser.js",
+        "totalMs": 0.1,
+        "count": 2,
+        "maxMs": 0.1,
+        "avgMs": 0.07
+      },
+      {
+        "key": "http://localhost:5173/src/app/hooks/useNavigationGpsTracking.ts",
+        "totalMs": 0.1,
+        "count": 2,
+        "maxMs": 0,
+        "avgMs": 0.03
+      },
+      {
+        "key": "(inline data:)",
+        "totalMs": 0,
+        "count": 1,
+        "maxMs": 0,
+        "avgMs": 0.02
+      }
+    ],
+    "topByFunction": [
+      {
+        "key": "dispatchContinuousEvent",
+        "totalMs": 5.5,
+        "count": 236,
+        "maxMs": 0.4,
+        "avgMs": 0.02
+      },
+      {
+        "key": "handleEvent",
+        "totalMs": 4.9,
+        "count": 70,
+        "maxMs": 0.6,
+        "avgMs": 0.07
+      },
+      {
+        "key": "handleWindowEvent",
+        "totalMs": 3.8,
+        "count": 59,
+        "maxMs": 0.2,
+        "avgMs": 0.06
+      },
+      {
+        "key": "Tp._channel.port2.onmessage",
+        "totalMs": 2.5,
+        "count": 15,
+        "maxMs": 0.4,
+        "avgMs": 0.16
+      },
+      {
+        "key": "performWorkUntilDeadline",
+        "totalMs": 2.4,
+        "count": 3,
+        "maxMs": 1,
+        "avgMs": 0.79
+      },
+      {
+        "key": "dispatchDiscreteEvent",
+        "totalMs": 1.1,
+        "count": 34,
+        "maxMs": 0.4,
+        "avgMs": 0.03
+      },
+      {
+        "key": "dispatchEvent",
+        "totalMs": 0.9,
+        "count": 84,
+        "maxMs": 0.1,
+        "avgMs": 0.01
+      },
+      {
+        "key": "o",
+        "totalMs": 0.1,
+        "count": 1,
+        "maxMs": 0.1,
+        "avgMs": 0.11
+      },
+      {
+        "key": "suppressClickInternal",
+        "totalMs": 0.1,
+        "count": 4,
+        "maxMs": 0,
+        "avgMs": 0.01
+      }
+    ],
+    "longestTasks": [
+      {
+        "name": "RunTask",
+        "ms": 231.2,
+        "url": "(no-url)"
+      },
+      {
+        "name": "RunTask",
+        "ms": 166.9,
+        "url": "(no-url)"
+      },
+      {
+        "name": "V8.StackGuard",
+        "ms": 166.4,
+        "url": "(no-url)"
+      },
+      {
+        "name": "V8.HandleInterrupts",
+        "ms": 166.4,
+        "url": "(no-url)"
+      },
+      {
+        "name": "V8.InvokeApiInterruptCallbacks",
+        "ms": 166.4,
+        "url": "(no-url)"
+      }
+    ]
+  },
+  "trace-dialog-375.json": {
+    "eventCount": 153947,
+    "completeEventCount": 53553,
+    "longTaskMs": 0,
+    "totalMs": 3547,
+    "topByName": [
+      {
+        "key": "RunTask",
+        "totalMs": 2578.3,
+        "count": 25841,
+        "maxMs": 33.1,
+        "avgMs": 0.1
+      },
+      {
+        "key": "Layerize",
+        "totalMs": 158.5,
+        "count": 644,
+        "maxMs": 0.4,
+        "avgMs": 0.25
+      },
+      {
+        "key": "GPUTask",
+        "totalMs": 153.7,
+        "count": 853,
+        "maxMs": 1.8,
+        "avgMs": 0.18
+      },
+      {
+        "key": "UpdateLayoutTree",
+        "totalMs": 109.1,
+        "count": 653,
+        "maxMs": 0.7,
+        "avgMs": 0.17
+      },
+      {
+        "key": "V8.GC_MC_BACKGROUND_MARKING",
+        "totalMs": 102.8,
+        "count": 60,
+        "maxMs": 3.4,
+        "avgMs": 1.71
+      },
+      {
+        "key": "Commit",
+        "totalMs": 63.1,
+        "count": 644,
+        "maxMs": 0.3,
+        "avgMs": 0.1
+      },
+      {
+        "key": "Paint",
+        "totalMs": 56.6,
+        "count": 1286,
+        "maxMs": 0.5,
+        "avgMs": 0.04
+      },
+      {
+        "key": "PrePaint",
+        "totalMs": 53.3,
+        "count": 838,
+        "maxMs": 0.1,
+        "avgMs": 0.06
+      },
+      {
+        "key": "V8.HandleInterrupts",
+        "totalMs": 33.7,
+        "count": 10,
+        "maxMs": 32.6,
+        "avgMs": 3.37
+      },
+      {
+        "key": "V8.StackGuard",
+        "totalMs": 33.7,
+        "count": 10,
+        "maxMs": 32.6,
+        "avgMs": 3.37
+      }
+    ],
+    "topByUrl": [
+      {
+        "key": "http://localhost:5173/node_modules/.vite/deps/chunk-KDCVS43I.js",
+        "totalMs": 14.1,
+        "count": 82,
+        "maxMs": 1.9,
+        "avgMs": 0.17
+      },
+      {
+        "key": "http://localhost:5173/node_modules/.vite/deps/maplibre-gl.js",
+        "totalMs": 3,
+        "count": 44,
+        "maxMs": 0.1,
+        "avgMs": 0.07
+      },
+      {
+        "key": "http://localhost:5173/src/app/components/landing/LandingPageHeader.tsx",
+        "totalMs": 1.2,
+        "count": 6,
+        "maxMs": 0.2,
+        "avgMs": 0.2
+      },
+      {
+        "key": "(blob)",
+        "totalMs": 0.7,
+        "count": 2,
+        "maxMs": 0.7,
+        "avgMs": 0.35
+      },
+      {
+        "key": "...int-oarfish-23.clerk.accounts.dev/npm/@clerk/clerk-js@5.125.10/dist/framework_clerk.browser_75d171_5.125.10.js",
+        "totalMs": 0.4,
+        "count": 1,
+        "maxMs": 0.4,
+        "avgMs": 0.38
+      },
+      {
+        "key": "http://localhost:5173/src/app/hooks/useParallaxOffset.ts",
+        "totalMs": 0.3,
+        "count": 24,
+        "maxMs": 0,
+        "avgMs": 0.01
+      },
+      {
+        "key": "http://localhost:5173/src/app/components/landing/HeroSection.tsx",
+        "totalMs": 0.2,
+        "count": 2,
+        "maxMs": 0.1,
+        "avgMs": 0.09
+      },
+      {
+        "key": "https://joint-oarfish-23.clerk.accounts.dev/npm/@clerk/clerk-js@5/dist/clerk.browser.js",
+        "totalMs": 0.1,
+        "count": 2,
+        "maxMs": 0.1,
+        "avgMs": 0.06
+      },
+      {
+        "key": "http://localhost:5173/src/app/hooks/useNavigationGpsTracking.ts",
+        "totalMs": 0,
+        "count": 2,
+        "maxMs": 0,
+        "avgMs": 0.02
+      },
+      {
+        "key": "http://localhost:5173/src/app/hooks/useScrollAnimation.ts",
+        "totalMs": 0,
+        "count": 1,
+        "maxMs": 0,
+        "avgMs": 0.03
+      }
+    ],
+    "topByFunction": [
+      {
+        "key": "performWorkUntilDeadline",
+        "totalMs": 12.8,
+        "count": 9,
+        "maxMs": 1.9,
+        "avgMs": 1.42
+      },
+      {
+        "key": "handleWindowEvent",
+        "totalMs": 3,
+        "count": 44,
+        "maxMs": 0.1,
+        "avgMs": 0.07
+      },
+      {
+        "key": "handleScroll",
+        "totalMs": 1.3,
+        "count": 18,
+        "maxMs": 0.2,
+        "avgMs": 0.07
+      },
+      {
+        "key": "dispatchEvent",
+        "totalMs": 0.9,
+        "count": 66,
+        "maxMs": 0.3,
+        "avgMs": 0.01
+      },
+      {
+        "key": "nO",
+        "totalMs": 0.4,
+        "count": 1,
+        "maxMs": 0.4,
+        "avgMs": 0.38
+      },
+      {
+        "key": "dispatchDiscreteEvent",
+        "totalMs": 0.2,
+        "count": 3,
+        "maxMs": 0.1,
+        "avgMs": 0.08
+      },
+      {
+        "key": "dispatchContinuousEvent",
+        "totalMs": 0.2,
+        "count": 4,
+        "maxMs": 0.1,
+        "avgMs": 0.04
+      },
+      {
+        "key": "o",
+        "totalMs": 0.1,
+        "count": 1,
+        "maxMs": 0.1,
+        "avgMs": 0.1
+      },
+      {
+        "key": "IntersectionObserver.threshold.threshold",
+        "totalMs": 0,
+        "count": 1,
+        "maxMs": 0,
+        "avgMs": 0.03
+      }
+    ],
+    "longestTasks": []
+  }
+}
