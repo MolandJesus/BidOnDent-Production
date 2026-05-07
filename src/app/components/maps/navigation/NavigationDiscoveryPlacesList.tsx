@@ -96,7 +96,7 @@ export default function NavigationDiscoveryPlacesList({
   if (!activeSearchTarget) {
     return (
       <div className={cn("p-4 text-sm", theme.panelClassName)}>
-        Real market places appear after an active ZIP or live-location search exists.
+        Search a ZIP or use your location to see nearby places.
       </div>
     );
   }
@@ -140,7 +140,7 @@ export default function NavigationDiscoveryPlacesList({
   if (discoveryPlaces.length === 0) {
     return (
       <div className={cn("p-4 text-sm", theme.panelClassName)}>
-        No live places were returned for this role lens in the current area.
+        No nearby places found in this area yet.
       </div>
     );
   }
@@ -151,7 +151,7 @@ export default function NavigationDiscoveryPlacesList({
         <div className={cn("p-4", theme.accentPanelClassName)}>
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <div className={theme.metricLabelClassName}>Selected live place</div>
+              <div className={theme.metricLabelClassName}>Selected place</div>
               <div className={cn("mt-2 text-lg font-semibold", theme.titleClassName)}>
                 {selectedDiscoveryPlace.label}
               </div>
@@ -173,7 +173,7 @@ export default function NavigationDiscoveryPlacesList({
             <span className={theme.softBadgeClassName}>
               {selectedDiscoveryPlace.distanceMiles.toFixed(1)} miles away
             </span>
-            <span className={theme.softBadgeClassName}>OpenStreetMap live data</span>
+            <span className={theme.softBadgeClassName}>Live OpenStreetMap data</span>
             <span
               className={cn(
                 "rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em]",
@@ -258,7 +258,7 @@ export default function NavigationDiscoveryPlacesList({
             </span>
           </div>
           <div className={cn("mt-3 text-xs", theme.secondaryTextClassName)}>
-            {place.distanceMiles.toFixed(1)} miles away • OpenStreetMap live data •{" "}
+            {place.distanceMiles.toFixed(1)} miles away • Live OpenStreetMap data •{" "}
             {place.qualityLabel} quality ({place.qualityScore})
           </div>
           <div className="mt-3 flex flex-wrap gap-2">
