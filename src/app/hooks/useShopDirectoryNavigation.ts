@@ -20,7 +20,7 @@ import {
   useNavigationVoiceAlerts,
 } from "../features/navigation";
 import {
-  getPreferredVoiceLabel,
+  getNavigationVoicePersonaLabel,
   supportsVoiceGuidance,
 } from "../services/navigation/voiceGuidance";
 import { navigationDestinationToSessionWaypoint } from "../services/navigation/navigationDestinationAdapters";
@@ -523,7 +523,11 @@ export function useShopDirectoryNavigation({
 
     voiceMode: guidanceSettings.voiceMode,
     voiceVolumePreset: guidanceSettings.voiceVolumePreset,
-    preferredVoiceLabel: getPreferredVoiceLabel(guidanceSettings.voicePersona),
+    // Pass 72 (2026-05-07) — KI-124 #5: surface the stable persona display
+    // label ("British (smooth)"), not the OS-resolved voice.name ("Google UK
+    // English Female") which varies by browser/platform. The resolved voice
+    // name remains available via getPreferredVoiceLabel for diagnostics.
+    preferredVoiceLabel: getNavigationVoicePersonaLabel(guidanceSettings.voicePersona),
     voiceGuidanceSupported: supportsVoiceGuidance(),
     onVoiceModeChange: handleVoiceModeChange,
     onVoiceVolumePresetChange: handleVoiceVolumePresetChange,
