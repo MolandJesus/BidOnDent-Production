@@ -153,7 +153,10 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
                       role="status"
                       className={`flex flex-wrap items-center justify-between gap-2 rounded-lg border px-3 py-2 text-xs ${isLight ? "border-amber-300/60 bg-amber-50/70 text-amber-700" : "border-amber-400/30 bg-amber-500/10 text-amber-200"}`}
                     >
-                      <span>Couldn’t load saved preferences. Editing local defaults — changes won’t persist until reconnected.</span>
+                      <span>
+                        Couldn’t load saved preferences. Editing local defaults — changes won’t
+                        persist until reconnected.
+                      </span>
                       <button
                         type="button"
                         onClick={notifReload}
