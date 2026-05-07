@@ -7,7 +7,7 @@
  * - useShopDirectorySession = search/filter/map state
  * - useShopDirectoryNavigation = navigation lifecycle + guidance + route intelligence
  */
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { WebsiteIdentity } from "../services/auth/websiteIdentity";
 import type { MarketUserType } from "../services/intelligence/marketIntelligence";
 import type { ShopMapListing } from "../services/intelligence/shopMapExperience";
@@ -402,16 +402,48 @@ export function useShopDirectoryNavigation({
     });
   };
 
+  // Pass 54: defer reroute confirmation (and cooldown start) until the OSRM
+  // refresh actually delivers a new route. If OSRM fails (routeError set),
+  // cancel the reroute so the user isn't stuck in cooldown without a new route.
+  const pendingRerouteFetchedAtRef = useRef<string | null>(null);
+
   const handleReviewRoute = reroute.isEligible
     ? () => {
         const request = reroute.requestReroute(session.selectedRouteId);
         if (request) {
+          // Snapshot the current routePreview.fetchedAt so the effect below
+          // can detect when the refresh has produced a NEW route.
+          pendingRerouteFetchedAtRef.current =
+            shopGuidancePreview.routePreview?.fetchedAt ?? "";
           // Force a fresh route calculation from the user's current GPS position
           shopGuidancePreview.refreshRoutePreview();
-          reroute.confirmReroute();
         }
       }
     : undefined;
+
+  useEffect(() => {
+    if (reroute.state.status !== "pending") return;
+    const baseline = pendingRerouteFetchedAtRef.current;
+    if (baseline === null) return;
+
+    const nextFetchedAt = shopGuidancePreview.routePreview?.fetchedAt ?? null;
+    if (nextFetchedAt && nextFetchedAt !== baseline) {
+      pendingRerouteFetchedAtRef.current = null;
+      reroute.confirmReroute();
+      return;
+    }
+
+    if (shopGuidancePreview.routeError) {
+      pendingRerouteFetchedAtRef.current = null;
+      reroute.cancelReroute();
+    }
+  }, [
+    reroute.state.status,
+    shopGuidancePreview.routePreview?.fetchedAt,
+    shopGuidancePreview.routeError,
+    reroute.confirmReroute,
+    reroute.cancelReroute,
+  ]);
 
   return {
     navigationMode,
