@@ -2,7 +2,7 @@
 
 **Authority level:** REFERENCE — describes current known gaps, bugs, and structural issues.
 
-**Last updated:** 2026-05-07 (External audit AI continued Report flow walkthrough — 3 more KIs added: KI-125 vehicle picker placeholder/value mismatch P1, KI-126 Report Steps 2/3 heading clipped P2, KI-127 off-route toast/avatar overlap P2. **KI-101 RE-OPENED** — earlier same-day RESOLVED status was based on dashboard-list observation; deeper audit confirmed the `vehicles` row is still misspelled as visible in the Report flow vehicle picker. Earlier today: 6 new KIs (KI-116 nav-engine-on-passive-surfaces P0 umbrella, KI-117 stale planning session, KI-118 ESC keyboard handling, KI-122 fullscreen tile-mode "Light" broken, KI-123 notification badge desync, KI-124 polish bundle). Numbering jump 118 → 122 to avoid collision with archived KIs 119/120/121 in `archive/RESOLVED_KIS_2026-05-07.md`. **Pass 55** earlier today archived 70 RESOLVED/WONTFIX entries; **Pass 53** added KI-075 description correction; **Pass 54** fixed reroute confirm-timing bug.)
+**Last updated:** 2026-05-07 (External audit AI passes 4-5 — 7 more KIs added: KI-138 notification_preferences table missing (P1, ROOT CAUSE confirmed via Supabase MCP — `notification_preferences` table does not exist in production; edge handler 500s on every call), KI-139 reduced-motion CSS coverage gap (40 keyframes vs 23 guards; P2), KI-140 mobile map legend density (P2), KI-141 mobile header missing title (P3), KI-142 mobile Quick Actions discoverability (P3), KI-143 "Offline · last known" pill verification (P3), KI-144 Supabase advisor lint cluster (13 security + 198 perf; P3-batched). **KI-101 RESOLVED** — audit AI applied SQL fix via Supabase MCP under owner fix-authority; planner verified independently via Supabase MCP query. **KI-118 expanded scope** — confirmed sheet-pattern-class issue, single `useEscapeToClose` hook fix. **KI-126 re-scoped** — desktop two-column-grid empty-state only; mobile single-column unaffected. Earlier today: KIs 116/117/122/123/124/125/126/127 (passes 1-2), 128/129/130/131/132/133 (pass 3), 134/135/136/137 (post-pass-3). Numbering jump 118 → 122 to avoid collision with archived KIs 119/120/121. **Pass 55** archived 70 RESOLVED/WONTFIX entries; **Pass 53** added KI-075 description correction; **Pass 54** fixed reroute confirm-timing bug.)
 
 **Update rules:**
 
@@ -210,14 +210,18 @@
 - **Skill:** `bd-design-identity` (semantic exception class).
 - **Audit context:** 2026-05-05 fresh-eyes scan also confirmed: ZERO off-canon goldenrod values in landing/shop/dashboard component paint (only HowItWorksSection.tsx:88 has them inside a doc-comment about prior Pass I swap, not actual paint). ZERO fire-and-forget signOut/Promise patterns post-KI-097. ZERO storage hydration gaps — `vehicles.image_url`, `profiles.profile_image_url`, `damage_reports.photo_urls` all properly hydrate via `hydrateSignedStorageUrl(s)` in their respective handlers.
 
-### KI-101: F-01 — "Toyoto" misspelled vehicle make persisted in DB (RE-OPEN 2026-05-07)
+### KI-101: F-01 — "Toyoto" misspelled vehicle make persisted in DB (RESOLVED 2026-05-07)
 
-- **Impact:** Audit AI F-01 (P6-SPELL): the 2021 Toyota Camry vehicle record was saved with the make field as "Toyoto" (misspelled). Propagates to every display sourced from the `vehicles` table — Account tab Vehicles list, Report creation flow Step 1 vehicle picker, Make field pre-fill. Make input placeholder correctly shows "Toyota" — field hint correct but no enforcement.
-- **2026-05-07 status correction:** Earlier this same day this KI was incorrectly marked RESOLVED based on the audit AI observing "Toyota Camry" on the dashboard "Recent Reports" list. **That observation was misleading** — `damage_reports.vehicle_*` fields are written at report-submit time and may differ from `vehicles` table values. Subsequent audit AI walk through the Report flow Step 1 vehicle picker confirmed "2021 Toyoto Camry" still renders from the `vehicles` row. The underlying DB row is **still misspelled**.
-- **Location:** `vehicles` table row for the affected user. Code-side: vehicle entry form has placeholder hint but no validation/autocorrect.
-- **Fix direction:** **Owner action:** UPDATE the `vehicles` table row to correct "Toyoto" → "Toyota" via Supabase Dashboard SQL Editor (single UPDATE statement). **Code improvement (deferred, optional):** add make validation/autocorrection against a canonical makes list. See KI-125 for the related vehicle-picker placeholder/value display bug.
-- **Status:** **RE-OPEN 2026-05-07** — owner DB action pending. Earlier same-day RESOLVED status reverted after deeper audit evidence.
-- **Skill:** None — pure data hygiene + future schema decision.
+- **Impact (historical):** The 2021 Toyota Camry vehicle record was saved with `make="Toyoto"`. Propagated to `vehicles` table → Account Vehicles list + Report Step 1 picker, AND `damage_reports.vehicle_make` (denormalized at submit time). Two surfaces, two DB rows.
+- **Resolution (2026-05-07):** External audit AI applied the fix directly via Supabase MCP under owner-granted "fix authority" for safe data corrections. Two SQL UPDATEs against project `wmdcnjgtsppftrofaqqa`:
+  ```sql
+  UPDATE public.vehicles SET make='Toyota' WHERE id='c7260d31-31a4-4dbc-9657-616abc4f4a34';
+  UPDATE public.damage_reports SET vehicle_make='Toyota' WHERE vehicle_id='c7260d31-31a4-4dbc-9657-616abc4f4a34';
+  ```
+  **Planner-AI verified independently 2026-05-07** via Supabase MCP `execute_sql`: `SELECT make FROM vehicles WHERE id='c7260d31...'` now returns `make: "Toyota"`. Audit AI also visually confirmed "2021 Toyota Camry" renders on mobile Report Step 1.
+- **Code improvement (deferred):** Add canonical-makes validation in vehicle entry form. Non-trivial — touches report wizard Step 1 + account vehicle entry. Tracked separately if needed.
+- **Status:** **RESOLVED 2026-05-07** — both DB rows fixed; verified independently by planner. Move to archive on next docs hygiene pass.
+- **Skill:** None — pure data hygiene; safe-fix authority precedent for audit AI.
 
 ### KI-102: F-03 — Cat photo as damage report thumbnail (P2-DATA — owner action)
 
@@ -608,3 +612,98 @@
   - Visual: Delete Account always uses destructive-tone (red trim), Sign Out uses neutral-tone.
 - **Severity:** **P2-UX.** Standard SaaS Account-page pattern violation.
 - **Status:** **OPEN — P2-UX.**
+
+### KI-138: Notification preferences endpoint returns 500 + UI stuck on infinite loading — `notification_preferences` table missing in production (P1-RUNTIME)
+
+> **Added 2026-05-07 — external audit AI pass 4 + pass 4 extended.** Discovered via DevTools Network capture during Appearance Settings modal → Notifications section. Endpoint `https://wmdcnjgtsppftrofaqqa.supabase.co/functions/v1/server/notification-preferences` returns HTTP 500. UI shows "Loading preferences…" with spinner indefinitely (>8s waited). No error toast, no retry, no fallback to defaults.
+
+> **ROOT CAUSE (Supabase MCP audit pass 4 extended):** The `notification_preferences` table **does not exist in production**. The edge handler at `supabase/functions/server/handlers/notification_preferences.ts` queries `from('notification_preferences').select('*').eq('clerk_user_id', ...)`. Postgres returns `42P01 undefined_table`. Handler catches and returns 500. **KI-095's graceful-degradation pattern is not catching it** — the UI infinite-loading state never falls back to defaults. Two bugs in one: server schema gap + client error-handling gap.
+>
+> **Planner verified independently 2026-05-07** via `execute_sql` on `information_schema.tables`: zero rows for `notification%` patterns in `public` schema (only `public.website_preferences` exists, which is a different table for a different concern).
+
+- **Impact:** User cannot adjust notification preferences via Appearance Settings. Modal renders three working sections (Privacy / Appearance / Language) and one silently-dead section (Notifications). Erodes trust on every visit to Account → Appearance Settings.
+- **Fix direction (TWO required, in this order):**
+  1. **Owner-action: write + apply notification_preferences migration.** Schema needs at minimum: `clerk_user_id text PRIMARY KEY`, plus boolean preference fields matching the UI (`email_enabled`, `email_bid_updates`, `email_report_updates`, `email_nearby_reports`, `email_estimate_updates`, `sms_enabled`), `created_at timestamptz DEFAULT now()`, `updated_at timestamptz DEFAULT now()`. Plus RLS policies matching `website_preferences` patterns. Apply via Supabase Studio per `feedback_supabase_cli_pg17`.
+  2. **Code-side: fix client error-handling.** Wrap the load handler in try/catch. On failure, render checkboxes with default-on values + small banner "Couldn't load preferences. Using defaults — try again?" + Retry button. Defensive UX even if backend works correctly.
+- **Severity:** **P1-RUNTIME.** User-blocking on the Notification Preferences UX. Real backend gap + real client gap.
+- **Status:** **OPEN — P1-RUNTIME.** Builder-AI fix on client side; owner-action on schema apply.
+
+### KI-139: prefers-reduced-motion CSS coverage gap — 40 keyframes vs 23 reduce-motion guards (P2-A11Y)
+
+> **Added 2026-05-07 — external audit AI pass 4 CSS audit.** Counted: 40 `@keyframes` definitions in stylesheets loaded on Dashboard. 23 selectors inside `@media (prefers-reduced-motion: reduce)` blocks. **Coverage gap of up to 17 keyframes.** Pass 56 added missing reduce-guards but addition of new keyframes since (likely Pass 49-59 navigation/coverage work) may have outpaced the contract.
+
+- **Impact:** Vestibular-sensitive users may still experience animation under `prefers-reduced-motion: reduce`. Direct LAW_ANIMATION_AND_ATMOSPHERE §3 violation if confirmed.
+- **Approach (audit AI's recommendation):** ~50-LOC Node script that:
+  1. Greps `@keyframes <name>` patterns out of `src/styles/*.css`.
+  2. Greps `@media (prefers-reduced-motion: reduce)` blocks and the `animation-name` / `animation-duration: 0s` overrides within them.
+  3. For each keyframe, verifies a guard exists.
+  4. Mismatches → CI failure.
+  Add to lint workflow.
+- **Severity:** **P2-A11Y.** Verifies LAW §3 contract holds against drift.
+- **Status:** **OPEN — P2-A11Y.** Small builder pass before Phase 6 design polish lands.
+
+### KI-140: Mobile Smart Shop Map legend overlay too dense — 5 dots + 6 pills + checkbox + eye icon obscure the map (P2-UX)
+
+> **Added 2026-05-07 — external audit AI pass 5 mobile audit.** At 555×922 viewport, the Smart Shop Map renders a legend overlay containing: 5 category dots (Origin/Selected/Top pick/Reports/Saved/Routes), Routes checkbox, eye-icon toggle, and a 6-pill horizontal status filter row (ALL/PENDING/APPROVED/IN REPAIR/RESOLVED/DONE). The "DONE" pill is visibly clipped at viewport edge. The overlay obscures the actual map.
+
+- **Impact:** Map-first product where the map itself is partially obscured by chrome. Status pills overflow horizontally without visible scrollbar indicator. Adds cognitive load on a small screen.
+- **Fix direction:**
+  1. Collapse legend to a single pill "Legend (5)" that expands a sheet on tap, mirroring the Apple Maps pattern.
+  2. Add scroll-indicator dots/arrows to the status pill row OR convert to a horizontal-scroll segmented control with momentum.
+  3. Bonus: the legend overlay should auto-hide after 3s of no interaction, re-show on tap.
+- **Severity:** **P2-UX.** Mobile usability hit on a primary surface.
+- **Status:** **OPEN — P2-UX.**
+
+### KI-141: Mobile header drops page title — users lose orientation between tabs (P3-UX)
+
+> **Added 2026-05-07 — external audit AI pass 5 mobile audit.** At mobile viewport, the header chrome shows BidOnDent logo (left) + bell + avatar (right). The desktop "Dashboard" / "Bids" / "Account" page title label is removed at mobile. Audit AI: "users lose context of which page they're on."
+
+- **Impact:** Bottom nav shows the active tab via top-edge accent, but the header is silent on context. Users mid-tab may briefly second-guess where they are.
+- **Fix direction:** Add small page-title label below logo OR next to avatar at mobile. Either:
+  - Static label tied to active tab.
+  - Breadcrumb pattern for nested views (e.g., Dashboard › Bids).
+- **Severity:** **P3-UX.** Lower priority than KI-140 but a real polish gap.
+- **Status:** **OPEN — P3-UX.**
+
+### KI-142: Mobile Quick Actions row becomes 2-up grid — 3 of 4 actions require scroll to discover (P3-UX)
+
+> **Added 2026-05-07 — external audit AI pass 5 mobile audit.** Dashboard Quick Actions card row is 4-across at desktop, 2-up grid at mobile. With 4 cards total, mobile users see only 2 above the fold; remaining 2 require vertical scroll to reach.
+
+- **Impact:** Discovery gap. New users may never realize "Find Shops" and "Connect Insurance" exist.
+- **Fix direction:** Convert to horizontal-scroll carousel at mobile with momentum + scroll indicator. Pattern matches App Store / Apple Music. All 4 cards visible by swipe; first 1.5 cards always above the fold as visual hint.
+- **Severity:** **P3-UX.** Discovery polish.
+- **Status:** **OPEN — P3-UX.**
+
+### KI-143: Mobile Bids tab shows "Offline · last known" pill — verify intent (P3-VERIFY)
+
+> **Added 2026-05-07 — external audit AI pass 5 mobile audit.** At mobile viewport on Bids tab, audit AI observed an "Offline · last known" pill in the Bid Comparison header. Pill not visible at desktop. Audit AI flags as "either intentional mobile-only feature or a real connectivity issue surfacing."
+
+- **Impact:** Unclear. If intentional offline indicator that's mobile-only by design, low concern (could even be a feature worth promoting to desktop). If an unintended surfacing of stale data, real concern.
+- **Fix direction:** Builder verifies in source code whether pill is conditionally rendered on mobile-only OR on offline-state-only. If mobile-only by design, document; if state-only, investigate why it triggered during audit AI's session (was the audit AI offline? or is the pill firing a false positive?).
+- **Severity:** **P3-VERIFY.** Investigation pass; severity adjusts after finding.
+- **Status:** **OPEN — P3-VERIFY.**
+
+### KI-144: Supabase advisor lint cluster — 13 security + 198 performance lints (P3-INFRA, batched)
+
+> **Added 2026-05-07 — external audit AI pass 4 extended Supabase MCP audit.** Captured production advisor lints. Quantified, with concrete remediations.
+
+- **Security lints (13):**
+  - INFO × 4: RLS-enabled-no-policy on `estimate_requests`, `job_assignments`, `kv_store_85e96b22`, `kv_store_9f243523`. Currently locked (deny-by-default). If admin-only intentional, OK; otherwise needs policies.
+  - WARN × 4: `function_search_path_mutable` on `requesting_clerk_user_id`, `safe_auth_uid`, `handle_updated_at`, `update_updated_at_column`. Real security risk — set `SET search_path = public` on each function.
+  - WARN × 4: `rls_policy_always_true` (overly permissive). Three intentional public-form INSERT funnels (`shop_interest_submissions`, `insurer_interest_submissions`, `platform_activity_events`); one suspicious (`kv_store_baa15238` ALL with USING + WITH CHECK true bypasses RLS entirely).
+  - WARN × 1: `auth_leaked_password_protection` disabled — Supabase Auth's HaveIBeenPwned check is OFF. Trivial enable in Studio.
+- **Performance lints (198):**
+  - WARN × 102: `multiple_permissive_policies` — many tables have multiple RLS policies for same action+role. Slow at scale.
+  - INFO × 69: `unused_index` — drop never-used indexes.
+  - WARN × 21: `auth_rls_initplan` — RLS policies re-evaluating `auth.uid()` per row. Standard fix: wrap in `(SELECT auth.uid())`.
+  - INFO × 3: `unindexed_foreign_keys`.
+  - WARN × 2: `duplicate_index` — `kv_store_85e96b22` has 4 IDENTICAL indexes; drop 3.
+  - INFO × 1: `auth_db_connections_absolute` — Auth server connection-config style.
+- **Highest-leverage fixes (planner-recommended order):**
+  1. Drop 3 of 4 duplicate `kv_store_85e96b22` indexes (zero-risk perf win).
+  2. Enable HaveIBeenPwned in Studio (zero-risk security win).
+  3. Set `search_path` on 4 functions (write migration).
+  4. Audit `kv_store_baa15238` always-true policy (intentional or bug?).
+  5. Wrap `auth.uid()` calls in `(SELECT auth.uid())` across 21 RLS policies.
+- **Severity:** **P3-INFRA, batched.** None launch-blocking. Drop-3-duplicate-indexes is the cleanest SQL win — safe for audit-AI fix-authority.
+- **Status:** **OPEN — P3-INFRA, batched.** Owner-action surface for the security wins; builder-AI write migration for `search_path` fix.
