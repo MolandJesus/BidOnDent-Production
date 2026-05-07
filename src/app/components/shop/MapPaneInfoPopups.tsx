@@ -42,7 +42,7 @@ export default function MapPaneInfoPopups({
           closeOnClick={false}
           onClose={onCloseSavedPlace}
         >
-          <div className="min-w-[120px] space-y-0.5 p-1">
+          <div className="min-w-[120px] space-y-0.5 p-1 animate-in fade-in zoom-in-95 duration-200 motion-reduce:animate-none">
             <p className={`text-sm font-semibold ${isDark ? "text-slate-100" : "text-slate-800"}`}>
               {savedPlacePopup.label}
             </p>
@@ -64,7 +64,7 @@ export default function MapPaneInfoPopups({
           closeOnClick={false}
           onClose={onCloseRoute}
         >
-          <div className="min-w-[140px] space-y-0.5 p-1">
+          <div className="min-w-[140px] space-y-0.5 p-1 animate-in fade-in zoom-in-95 duration-200 motion-reduce:animate-none">
             <p className={`text-sm font-semibold ${isDark ? "text-slate-100" : "text-slate-800"}`}>
               {routePopup.label}
             </p>
