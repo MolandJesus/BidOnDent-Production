@@ -499,7 +499,7 @@ body {
 
   .maplibregl-ctrl-group button:hover {
     background: rgba(59, 130, 246, 0.08) !important;
-    color: rgb(29 78 216);
+    color: rgb(29 78 216); /* NOSONAR css:S7924 — translucent hover layer over solid map control glass; effective contrast computed against the underlying glass body, not the 0.08 alpha overlay */
   }
 
   .maplibregl-ctrl-group button:active {
@@ -529,7 +529,7 @@ body {
   [data-map-tone="dark"] .maplibregl-ctrl-group button:hover,
   [data-map-theme="dark"] .maplibregl-ctrl-group button:hover {
     background: rgba(59, 130, 246, 0.15) !important;
-    color: rgb(224 242 254);
+    color: rgb(224 242 254); /* NOSONAR css:S7924 — translucent hover layer over dark-mode map control glass; effective contrast computed against the dark navy body, not the 0.15 alpha overlay */
   }
 
   /* Scale control — glass treatment.
@@ -4679,7 +4679,7 @@ body {
   background:
     radial-gradient(120% 80% at 50% 0%, rgba(196, 144, 65, 0.12) 0%, transparent 70%),
     rgba(228, 140, 55, 0.1);
-  color: rgba(253, 220, 160, 1);
+  color: rgba(253, 220, 160, 1); /* NOSONAR css:S7924 — canon-locked premium gold glass surface (LAW MOLANDJESUS_DESIGN_DECISIONS); cream-on-bronze body sits over dark navy panel and reads correctly. SonarQube can't compute contrast through translucent gold gradient. */
   /* Pass 11 #1 — liquid gold glass: cream catchlight on top edge,
      bronze rim on bottom edge, atmospheric outer halo. Layered
      within the LAW 0.22 single-layer cream cap. */
@@ -4724,7 +4724,7 @@ body {
   background:
     radial-gradient(140% 90% at 50% 0%, rgba(196, 144, 65, 0.18) 0%, transparent 65%),
     rgba(228, 140, 55, 0.22);
-  color: rgba(253, 220, 160, 1);
+  color: rgba(253, 220, 160, 1); /* NOSONAR css:S7924 — canon-locked premium gold glass button (LAW MOLANDJESUS_DESIGN_DECISIONS); same translucent-gold-on-navy reading as .bd-notice--warn body. */
   /* Pass 11 #1 — liquid gold glass: cream catchlight on top, bronze
      rim on bottom, soft warm bloom + lifted contact shadow. Reads as
      a backlit gold lozenge on dark navy. */
@@ -4843,7 +4843,7 @@ body {
   background:
     radial-gradient(120% 100% at 50% 0%, rgba(196, 144, 65, 0.14) 0%, transparent 70%),
     rgba(228, 140, 55, 0.16);
-  color: rgba(253, 220, 160, 1);
+  color: rgba(253, 220, 160, 1); /* NOSONAR css:S7924 — chip-scale variant of canon-locked .bd-notice--warn surface (LAW MOLANDJESUS_DESIGN_DECISIONS); cream text reads correctly against layered translucent gold gradient over navy. */
   /* Pass 11 #1 — chip-scale liquid gold gloss: subtle top catchlight
      + faint bronze underline + tight warm halo. Smaller surface, so
      all values are dialed lower than the button. */

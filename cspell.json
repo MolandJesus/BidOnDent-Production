@@ -408,6 +408,8 @@
     "vulns",
     "overscan",
     "desyncs",
-    "topbar"
+    "topbar",
+    "NOSONAR",
+    "Qube"
   ]
 }
