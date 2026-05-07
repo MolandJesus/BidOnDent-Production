@@ -13,14 +13,14 @@ dependencies:    { prod: 210, dev: 532, optional: 74, peer: 11, total: 744 }
 
 ## npm outdated — security-relevant runtime deps
 
-| Package | Current | Wanted (semver) | Latest | Notes |
-|---|---|---|---|---|
-| `@sentry/react` | 10.45.0 | 10.51.0 | 10.51.0 | Patch behind. Safe minor bump if desired post-launch. |
-| `@supabase/supabase-js` | 2.95.3 | 2.105.3 | 2.105.3 | Minor behind (10 patch versions). No CVE. |
-| `maplibre-gl` | 5.21.1 | 5.24.0 | 5.24.0 | Patch behind. No CVE. |
-| `react` | 18.3.1 | 18.3.1 | **19.2.6** | Held at 18 deliberately. React 19 is a breaking upgrade. |
-| `react-dom` | 18.3.1 | 18.3.1 | **19.2.6** | Held at 18 with `react`. |
-| `vite` | 6.4.2 | 6.4.2 | **8.0.11** | Held. Vite 7+8 are major upgrades. No active CVE on 6.4.2. |
+| Package                 | Current | Wanted (semver) | Latest     | Notes                                                      |
+| ----------------------- | ------- | --------------- | ---------- | ---------------------------------------------------------- |
+| `@sentry/react`         | 10.45.0 | 10.51.0         | 10.51.0    | Patch behind. Safe minor bump if desired post-launch.      |
+| `@supabase/supabase-js` | 2.95.3  | 2.105.3         | 2.105.3    | Minor behind (10 patch versions). No CVE.                  |
+| `maplibre-gl`           | 5.21.1  | 5.24.0          | 5.24.0     | Patch behind. No CVE.                                      |
+| `react`                 | 18.3.1  | 18.3.1          | **19.2.6** | Held at 18 deliberately. React 19 is a breaking upgrade.   |
+| `react-dom`             | 18.3.1  | 18.3.1          | **19.2.6** | Held at 18 with `react`.                                   |
+| `vite`                  | 6.4.2   | 6.4.2           | **8.0.11** | Held. Vite 7+8 are major upgrades. No active CVE on 6.4.2. |
 
 **No critical or high-severity runtime CVEs.** All "outdated" entries are version drift, not security advisories.
 

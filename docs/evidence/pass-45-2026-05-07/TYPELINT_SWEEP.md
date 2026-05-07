@@ -28,10 +28,10 @@ If a future pass adds ESLint (PLAN-tier work, not LAW), it should integrate with
 
 ## Findings summary
 
-| Check | Errors | Warnings |
-|---|---|---|
-| `tsc --noEmit` | 0 | 0 |
-| ESLint | n/a — not configured | n/a |
+| Check          | Errors               | Warnings |
+| -------------- | -------------------- | -------- |
+| `tsc --noEmit` | 0                    | 0        |
+| ESLint         | n/a — not configured | n/a      |
 
 ## Hard-stop check
 
