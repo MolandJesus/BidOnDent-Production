@@ -65,7 +65,7 @@ export default function MapPaneLegendPanel({
   return (
     <>
       <div
-        className={`bd-glass-card--map ${isCompactDensity ? "rounded-lg px-1.5 py-1 text-[8px] @xl:px-1.5 @xl:py-1 @xl:text-[8px] @3xl:px-2 @3xl:text-[9px]" : "rounded-xl px-2 py-1 text-[9px] @xl:px-2.5 @xl:py-1.5 @xl:text-[10px] @3xl:px-3 @3xl:py-2 @3xl:text-[11px]"} ${legendCardText}`}
+        className={`bd-glass-card--map animate-in fade-in zoom-in-95 duration-200 motion-reduce:animate-none ${isCompactDensity ? "rounded-lg px-1.5 py-1 text-[8px] @xl:px-1.5 @xl:py-1 @xl:text-[8px] @3xl:px-2 @3xl:text-[9px]" : "rounded-xl px-2 py-1 text-[9px] @xl:px-2.5 @xl:py-1.5 @xl:text-[10px] @3xl:px-3 @3xl:py-2 @3xl:text-[11px]"} ${legendCardText}`}
       >
         <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
           {isCompactDensity && (
