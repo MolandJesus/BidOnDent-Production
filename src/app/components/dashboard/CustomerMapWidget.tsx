@@ -326,7 +326,7 @@ export default function CustomerMapWidget({
           </div>
         ) : !isLoadingShops && fetchError ? (
           <div
-            className={`bd-dashboard-note flex items-center gap-2 rounded-xl px-3 py-2.5 ${
+            className={`bd-dashboard-note flex items-center gap-2 rounded-xl px-3 py-2.5 animate-in fade-in slide-in-from-top-1 duration-200 motion-reduce:animate-none ${
               isLight ? "text-rose-700" : "text-rose-200"
             }`}
           >

@@ -175,7 +175,7 @@ export default function InsurerMapWidget({
 
         {fetchError && (
           <div
-            className={`bd-dashboard-note mt-2.5 flex items-center gap-2 rounded-xl px-3 py-2 ${
+            className={`bd-dashboard-note mt-2.5 flex items-center gap-2 rounded-xl px-3 py-2 animate-in fade-in slide-in-from-top-1 duration-200 motion-reduce:animate-none ${
               isLight ? "text-rose-700" : "text-rose-200"
             }`}
           >
