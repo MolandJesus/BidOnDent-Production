@@ -411,6 +411,7 @@
     "topbar",
     "NOSONAR",
     "Qube",
-    "rescoped"
+    "rescoped",
+    "dismissable"
   ]
 }
