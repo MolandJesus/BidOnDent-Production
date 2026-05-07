@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Layer, Source, useMap } from "react-map-gl/maplibre";
 import type { NavigationRouteStep } from "../../types/navigation";
 import ShopDirectoryShopPinLayers from "./ShopDirectoryShopPinLayers";
@@ -124,6 +124,96 @@ export default function ShopDirectoryMapLayers({
 
   const showHeadingCone =
     isGuidanceActive && typeof userHeadingDegrees === "number" && userCoordsGeoJson !== null;
+
+  /* ── Pass 90: Route polyline draw-on animation (owner real-map directive)
+   *
+   * Real navigation apps (Apple Maps, Google Maps, Waze) animate the route
+   * polyline drawing from origin to destination when a route first appears.
+   * We use MapLibre's `line-trim-offset` paint property to trim the line
+   * from [0, 1] (fully hidden) down to [0, 0] (fully visible) over ~1100ms
+   * with an ease-out cubic curve.
+   *
+   * Why imperative: `line-trim-offset` is intentionally absent from the
+   * declarative <Layer paint> below, so react-map-gl does not overwrite it
+   * on subsequent renders. We only fire the animation when the SELECTED
+   * route signature changes (new destination), not on every paint diff.
+   *
+   * Accessibility: respects OS prefers-reduced-motion — when reduce is set
+   * we skip the animation and leave the line fully visible immediately.
+   * LAW §3 contract preserved at the OS layer.
+   */
+  const selectedRouteSignature = useMemo(() => {
+    const selected = routesGeoJson.features.find((f) => f.properties.isSelected === 1);
+    if (!selected) return null;
+    const coords = selected.geometry.coordinates;
+    if (!coords || coords.length === 0) return null;
+    const [firstLng, firstLat] = coords[0];
+    const [lastLng, lastLat] = coords[coords.length - 1];
+    return `${coords.length}|${firstLng.toFixed(4)},${firstLat.toFixed(4)}|${lastLng.toFixed(4)},${lastLat.toFixed(4)}`;
+  }, [routesGeoJson]);
+
+  const drawAnimRafRef = useRef<number | null>(null);
+  useEffect(() => {
+    if (!map || !selectedRouteSignature) return;
+    const m = map.getMap?.() ?? map;
+    if (!m || typeof m.setPaintProperty !== "function") return;
+
+    const reduceMotion =
+      typeof window !== "undefined" &&
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const layerIds = [ROUTE_SELECTED_LAYER, "route-selected-outline", "route-selected-glow"];
+
+    const setTrim = (t: number) => {
+      for (const id of layerIds) {
+        try {
+          if (m.getLayer && !m.getLayer(id)) continue;
+          m.setPaintProperty(id, "line-trim-offset", [0, t]);
+        } catch {
+          // Layer may not yet be loaded; safe to ignore — next signature will retry
+        }
+      }
+    };
+
+    if (reduceMotion) {
+      setTrim(0);
+      return;
+    }
+
+    const start = performance.now();
+    const duration = 1100;
+    const tick = (now: number) => {
+      const elapsed = now - start;
+      const p = Math.min(1, elapsed / duration);
+      // ease-out cubic
+      const eased = 1 - Math.pow(1 - p, 3);
+      const trim = 1 - eased; // 1 → 0
+      setTrim(trim);
+      if (p < 1) {
+        drawAnimRafRef.current = requestAnimationFrame(tick);
+      } else {
+        drawAnimRafRef.current = null;
+      }
+    };
+
+    // Start fully trimmed, then animate
+    setTrim(1);
+    // Defer one frame so the trim:1 paints before we begin easing it back
+    drawAnimRafRef.current = requestAnimationFrame(() => {
+      drawAnimRafRef.current = requestAnimationFrame(tick);
+    });
+
+    return () => {
+      if (drawAnimRafRef.current !== null) {
+        cancelAnimationFrame(drawAnimRafRef.current);
+        drawAnimRafRef.current = null;
+      }
+      // Ensure the line is fully visible on cleanup so a stale trim doesn't
+      // leave the route hidden after unmount-then-remount.
+      setTrim(0);
+    };
+  }, [map, selectedRouteSignature]);
 
   return (
     <>
