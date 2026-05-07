@@ -277,7 +277,11 @@ export default function MapBidSheet({
           )}
         >
           {isSubmitting ? (
-            <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+            <svg
+              className="h-4 w-4 animate-spin motion-reduce:animate-none"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
               <circle
                 cx="12"
                 cy="12"
