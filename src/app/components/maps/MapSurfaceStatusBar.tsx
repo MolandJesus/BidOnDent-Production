@@ -88,7 +88,7 @@ export default function MapSurfaceStatusBar({
 
   return (
     <div
-      className="pointer-events-none absolute inset-x-0 bottom-0 z-[400] flex flex-wrap items-end justify-between gap-1.5 px-2 pb-2 sm:gap-3 sm:px-4 sm:pb-4"
+      className="pointer-events-none absolute inset-x-0 bottom-0 z-[400] flex flex-wrap items-end justify-between gap-1.5 px-2 pb-2 sm:gap-3 sm:px-4 sm:pb-4 animate-in fade-in slide-in-from-bottom-2 duration-400 motion-reduce:animate-none"
       style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px) + 0.5rem, 0.5rem)" }}
     >
       {/* Branded info strip — compact single row */}
