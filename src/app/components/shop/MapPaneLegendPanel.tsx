@@ -53,7 +53,7 @@ export default function MapPaneLegendPanel({
         onClick={() => setIsExpanded(true)}
         aria-label="Expand map legend"
         aria-expanded={false}
-        className={`bd-glass-card--map pointer-events-auto inline-flex min-h-[36px] items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide ${legendCardText}`}
+        className={`bd-glass-card--map pointer-events-auto inline-flex min-h-[36px] items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide animate-in fade-in zoom-in-95 duration-200 motion-reduce:animate-none ${legendCardText}`}
       >
         <Layers className="h-3.5 w-3.5 opacity-80" />
         <span>Legend</span>
