@@ -147,7 +147,7 @@ export function MapPaneBottomOverlay({
       >
         {selectedShop && !compact && (
           <div
-            className={`w-full max-w-[calc(100vw-1.5rem)] rounded-2xl border ${isCompactDensity ? "p-2 @xl:max-w-[15rem] @3xl:max-w-[16.5rem]" : "p-2 @lg:p-2.5 @3xl:p-3 @xl:max-w-sm @3xl:max-w-md"} ${t.shopCardCls}`}
+            className={`w-full max-w-[calc(100vw-1.5rem)] rounded-2xl border animate-in fade-in slide-in-from-bottom-3 duration-300 motion-reduce:animate-none ${isCompactDensity ? "p-2 @xl:max-w-[15rem] @3xl:max-w-[16.5rem]" : "p-2 @lg:p-2.5 @3xl:p-3 @xl:max-w-sm @3xl:max-w-md"} ${t.shopCardCls}`}
           >
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0 flex-1">
