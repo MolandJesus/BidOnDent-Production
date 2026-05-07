@@ -110,12 +110,12 @@ export default function NavigationDiscoveryPlacesList({
             className={cn("space-y-3 rounded-[1rem] p-4", theme.panelClassName)}
           >
             <div className="flex items-start justify-between gap-3">
-              <div className="h-4 w-28 animate-pulse rounded bg-slate-300/40" />
-              <div className="h-5 w-16 animate-pulse rounded-full bg-slate-300/40" />
+              <div className="h-4 w-28 animate-pulse motion-reduce:animate-none rounded bg-slate-300/40" />
+              <div className="h-5 w-16 animate-pulse motion-reduce:animate-none rounded-full bg-slate-300/40" />
             </div>
-            <div className="h-3 w-full animate-pulse rounded bg-slate-300/40" />
-            <div className="h-3 w-4/5 animate-pulse rounded bg-slate-300/40" />
-            <div className="h-3 w-1/2 animate-pulse rounded bg-slate-300/40" />
+            <div className="h-3 w-full animate-pulse motion-reduce:animate-none rounded bg-slate-300/40" />
+            <div className="h-3 w-4/5 animate-pulse motion-reduce:animate-none rounded bg-slate-300/40" />
+            <div className="h-3 w-1/2 animate-pulse motion-reduce:animate-none rounded bg-slate-300/40" />
           </div>
         ))}
       </div>
