@@ -248,7 +248,7 @@ export default function DashboardHeader({
           )}
           <div ref={searchRef} className="relative hidden lg:block">
             <div
-              className={`flex items-center gap-2 px-3 py-2 min-w-[260px] rounded-xl border transition-colors ${
+              className={`flex items-center gap-2 px-3 py-2 min-h-[44px] min-w-[260px] rounded-xl border transition-colors ${
                 searchOpen
                   ? isLightAppearance
                     ? "border-blue-400/55 bg-blue-50/85 ring-2 ring-blue-300/25 shadow-[0_2px_8px_rgba(15,30,60,0.12),inset_0_1px_0_rgba(252,238,204,0.78)]"
