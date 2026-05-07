@@ -1,0 +1,166 @@
+{
+  "mode": "unauth-fallback",
+  "capturedAt": "2026-05-07T04:00:43.078Z",
+  "entries": [
+    {
+      "file": "dashboard_375_light.png",
+      "viewport": "375x812",
+      "theme": "light",
+      "requestedSurface": "dashboard",
+      "finalUrl": "http://localhost:5173/dashboard?cb=1778126366475",
+      "authResolved": true
+    },
+    {
+      "file": "account_375_light.png",
+      "viewport": "375x812",
+      "theme": "light",
+      "requestedSurface": "account",
+      "finalUrl": "http://localhost:5173/dashboard?cb=1778126370969",
+      "authResolved": true
+    },
+    {
+      "file": "bids_375_light.png",
+      "viewport": "375x812",
+      "theme": "light",
+      "requestedSurface": "bids",
+      "finalUrl": "http://localhost:5173/dashboard?cb=1778126374624",
+      "authResolved": true
+    },
+    {
+      "file": "report_375_light.png",
+      "viewport": "375x812",
+      "theme": "light",
+      "requestedSurface": "report",
+      "finalUrl": "http://localhost:5173/dashboard?cb=1778126378176",
+      "authResolved": true
+    },
+    {
+      "file": "findshops_375_light.png",
+      "viewport": "375x812",
+      "theme": "light",
+      "requestedSurface": "findshops",
+      "finalUrl": "http://localhost:5173/dashboard?cb=1778126381774",
+      "authResolved": true
+    },
+    {
+      "file": "dashboard_375_dark.png",
+      "viewport": "375x812",
+      "theme": "dark",
+      "requestedSurface": "dashboard",
+      "finalUrl": "http://localhost:5173/dashboard?cb=1778126386558",
+      "authResolved": true
+    },
+    {
+      "file": "account_375_dark.png",
+      "viewport": "375x812",
+      "theme": "dark",
+      "requestedSurface": "account",
+      "finalUrl": "http://localhost:5173/dashboard?cb=1778126390326",
+      "authResolved": true
+    },
+    {
+      "file": "bids_375_dark.png",
+      "viewport": "375x812",
+      "theme": "dark",
+      "requestedSurface": "bids",
+      "finalUrl": "http://localhost:5173/dashboard?cb=1778126393966",
+      "authResolved": true
+    },
+    {
+      "file": "report_375_dark.png",
+      "viewport": "375x812",
+      "theme": "dark",
+      "requestedSurface": "report",
+      "finalUrl": "http://localhost:5173/dashboard?cb=1778126397526",
+      "authResolved": true
+    },
+    {
+      "file": "findshops_375_dark.png",
+      "viewport": "375x812",
+      "theme": "dark",
+      "requestedSurface": "findshops",
+      "finalUrl": "http://localhost:5173/dashboard?cb=1778126401136",
+      "authResolved": true
+    },
+    {
+      "file": "dashboard_768_light.png",
+      "viewport": "768x1024",
+      "theme": "light",
+      "requestedSurface": "dashboard",
+      "finalUrl": "http://localhost:5173/dashboard?cb=1778126405757",
+      "authResolved": true
+    },
+    {
+      "file": "account_768_light.png",
+      "viewport": "768x1024",
+      "theme": "light",
+      "requestedSurface": "account",
+      "finalUrl": "http://localhost:5173/dashboard?cb=1778126409410",
+      "authResolved": true
+    },
+    {
+      "file": "bids_768_light.png",
+      "viewport": "768x1024",
+      "theme": "light",
+      "requestedSurface": "bids",
+      "finalUrl": "http://localhost:5173/dashboard?cb=1778126412895",
+      "authResolved": true
+    },
+    {
+      "file": "report_768_light.png",
+      "viewport": "768x1024",
+      "theme": "light",
+      "requestedSurface": "report",
+      "finalUrl": "http://localhost:5173/dashboard?cb=1778126416325",
+      "authResolved": true
+    },
+    {
+      "file": "findshops_768_light.png",
+      "viewport": "768x1024",
+      "theme": "light",
+      "requestedSurface": "findshops",
+      "finalUrl": "http://localhost:5173/dashboard?cb=1778126419764",
+      "authResolved": true
+    },
+    {
+      "file": "dashboard_768_dark.png",
+      "viewport": "768x1024",
+      "theme": "dark",
+      "requestedSurface": "dashboard",
+      "finalUrl": "http://localhost:5173/dashboard?cb=1778126424652",
+      "authResolved": true
+    },
+    {
+      "file": "account_768_dark.png",
+      "viewport": "768x1024",
+      "theme": "dark",
+      "requestedSurface": "account",
+      "finalUrl": "http://localhost:5173/dashboard?cb=1778126428172",
+      "authResolved": true
+    },
+    {
+      "file": "bids_768_dark.png",
+      "viewport": "768x1024",
+      "theme": "dark",
+      "requestedSurface": "bids",
+      "finalUrl": "http://localhost:5173/dashboard?cb=1778126431652",
+      "authResolved": true
+    },
+    {
+      "file": "report_768_dark.png",
+      "viewport": "768x1024",
+      "theme": "dark",
+      "requestedSurface": "report",
+      "finalUrl": "http://localhost:5173/dashboard?cb=1778126435097",
+      "authResolved": true
+    },
+    {
+      "file": "findshops_768_dark.png",
+      "viewport": "768x1024",
+      "theme": "dark",
+      "requestedSurface": "findshops",
+      "finalUrl": "http://localhost:5173/dashboard?cb=1778126438518",
+      "authResolved": true
+    }
+  ]
+}
