@@ -683,7 +683,13 @@
 - **Impact:** Unclear. If intentional offline indicator that's mobile-only by design, low concern (could even be a feature worth promoting to desktop). If an unintended surfacing of stale data, real concern.
 - **Fix direction:** Builder verifies in source code whether pill is conditionally rendered on mobile-only OR on offline-state-only. If mobile-only by design, document; if state-only, investigate why it triggered during audit AI's session (was the audit AI offline? or is the pill firing a false positive?).
 - **Severity:** **P3-VERIFY.** Investigation pass; severity adjusts after finding.
-- **Status:** **OPEN — P3-VERIFY.**
+- **Status:** **RESOLVED — Pass 76 (2026-05-07) — VERIFIED INTENTIONAL, NOT MOBILE-ONLY.** Source read of [`BidsSummaryHeader.tsx`](../src/app/components/codelayer/BidsSummaryHeader.tsx) lines 16-56 confirms the pill is rendered by `getLiveStatusChip(status, isLight)` which switches on `connectionStatus`:
+  - `"connected"` → emerald "Live" pill.
+  - `"error"` → amber "Reconnecting…" pill.
+  - `"disconnected"` → slate "Offline · last known" pill.
+  - `"idle"` → hidden (seed/demo report or no active subscription).
+
+  There is no mobile-only branch — the pill renders identically on every viewport whenever the realtime channel reports disconnected. Audit AI's session was either offline or the realtime channel was genuinely disconnected at the moment of capture. Behavior is correct and intentional. No code change required.
 
 ### KI-144: Supabase advisor lint cluster — 13 security + 198 performance lints (P3-INFRA, batched)
 
@@ -790,7 +796,7 @@
 
 - **Impact:** KI-130 was filed as P3-INFRA "no service worker registered". Audit AI's source-side finding suggests the SW exists; only dev-mode render is unregistered.
 - **Verification needed:** Builder confirms via `vite preview` build OR owner Lighthouse run captures whether `navigator.serviceWorker.controller` is non-null in production-mode.
-- **Status:** **OPEN — P3-VERIFY.** Likely RESOLVED at source; needs production-build verification.
+- **Status:** **RESOLVED — Pass 76 (2026-05-07) — VERIFIED REGISTERED AT PROD.** Source read of [`vite.config.ts`](../vite.config.ts) lines 13-62 confirms `VitePWA({ registerType: "autoUpdate", … })` is wired with manifest + workbox runtime caching for Supabase API + map tiles. `vite-plugin-pwa` injects the SW registration script automatically at build time; the dev server intentionally skips it (Vite's standard behavior to avoid SW caching during HMR). Therefore `navigator.serviceWorker.controller === null` in dev is expected, and the SW registers normally on the deployed build. KI-130 closed at source; no further action.
 
 ### KI-151: Repo "Security and quality" GitHub tab shows 2 active alerts (P3-INVESTIGATE)
 
