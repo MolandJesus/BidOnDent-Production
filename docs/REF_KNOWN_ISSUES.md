@@ -474,15 +474,15 @@
 - **Severity:** **P1-DATA/UX.** Real user-facing risk of submitting empty form. Test coverage gap — Pass 61 should include a regression test for "saved-vehicle Use button populates form values."
 - **Status:** **OPEN — P1-DATA/UX.**
 
-### KI-126: Report flow Step 3 (Location) — empty-state-only heading + label clipping at left edge (P2-LAYOUT)
+### KI-126: Report flow wizard — empty-state layout overflow on ALL form steps before inputs are populated (P1-LAYOUT, RE-SCOPED)
 
-> **Added 2026-05-07 — external audit AI Report flow walkthrough. Refined 2026-05-07 — empty-state-specific.** Initial observation flagged Steps 2 + 3 both. Continued audit confirmed: **Step 2 lays out cleanly**, **Step 3 ONLY clips in empty state** (before user enters ZIP). Once ZIP is filled, the Step 3 layout reflows into a proper two-column grid with no clipping. This is a width/positioning rule that fires when the form has no value — likely a `transform: translateX(...)` or absolute-position rule that depends on a populated state.
+> **Added 2026-05-07 — external audit AI Report flow walkthrough. Re-scoped 2026-05-07 third pass — confirmed systemic across wizard steps, NOT step-specific.** Original observation was Step 3 only; deep audit found Step 4 (Photos) shows the SAME empty-state clipping ("nage photos" missing "Da", "ridence" missing "Ev", "one clear photo" missing "Take", "ighting and close-up" missing "L"). Step 2 only renders cleanly because its "form" is a 6-button picker with the buttons pre-populated. Conclusion: **the empty-state overflow rule fires on every wizard step whose form panel has no input content**. One layout fix repairs every step.
 
-- **Impact:** Step 3 first-paint shows heading "re shops should see this report" with "Whe" clipped, plus several labels clipped identically (`tails`, `rst.`, `ss (optional)`, `lyn, NY`, `act location is only shared`, `add location later`). Right-side map preview card renders fine. Reads as half-broken on first arrival. Once user types in the ZIP field the layout corrects.
-- **Location:** Report flow Step 3 location form's left card. Specific to the empty/initial render state. Step 2 ("Where's the damage?") is now confirmed clean — earlier observation was likely a re-render artifact during audit AI's interaction.
-- **Fix direction:** Identify the empty-state CSS rule on the form card. Likely a `min-content` width interacting with negative left positioning, or a transform/translateX rule that targets the empty form. DevTools: inspect the form card with empty inputs vs filled inputs; diff the computed styles. Single-rule fix expected.
-- **Severity:** **P2-LAYOUT.** First-paint trust hit on Step 3 specifically. Low-effort fix.
-- **Status:** **OPEN — P2-LAYOUT.**
+- **Impact:** First-paint Steps 3 + 4 (and presumably Step 5 if it has a form panel) render with heading + labels clipped at left edge. Step 3 fixes itself once ZIP is entered; Step 4 likely fixes itself when first photo is added. Reads as half-broken on every wizard arrival until user starts typing/uploading.
+- **Location:** Wizard form-card left-edge positioning rule. Empty-state-conditional. Audit AI's hypothesis: a `transform: translateX(-N)` rule keyed off `:not(:has(input:not(:placeholder-shown)))` or similar miscalibrated content-conditional positioning. Single shared CSS rule, single shared fix.
+- **Fix direction:** Identify the rule via DevTools Elements panel — open Step 3 with empty form, inspect the heading element, walk up to the clipping ancestor, capture the computed transform/positioning. Then test if the same selector matches Step 4. Single-rule fix expected to repair all wizard steps. **PROMOTED to P1** based on Step-4-also-affected confirmation — every Report flow user hits this on every wizard step until inputs are filled.
+- **Severity:** **P1-LAYOUT** (was P2; promoted on third-pass evidence). Affects core conversion funnel.
+- **Status:** **OPEN — P1-LAYOUT, RE-SCOPED.**
 
 ### KI-127: "Off route" toast overlaps user avatar in dashboard header (P2-LAYOUT)
 
@@ -557,3 +557,54 @@
 - **Fix direction:** Use a fixed key name (`bidondent_user`) and store the user identifier in the value (JSON). OR: scope to `sessionStorage` so the key dies when the tab closes. OR: hash/UUID the user ID in the key name.
 - **Severity:** **P3-PRIVACY.** Low-blast-radius privacy concern. Lower than KI-117 cleanup but companion fix.
 - **Status:** **OPEN — P3-PRIVACY.**
+
+### KI-134: Clerk silent re-auth after Sign Out — `__clerk_db_jwt` cookie persists, auto-restores session on next load (P1-SECURITY)
+
+> **Added 2026-05-07 — external audit AI third pass.** After Sign Out + reload, audit AI clicked the Login link and was returned to the dashboard immediately without entering credentials. Investigation confirmed: a lingering `__clerk_db_jwt` cookie was being used by Clerk to silently re-authenticate. The Sign Out flow drops 7 → 4 cookies (3 Clerk session cookies cleared) but `__clerk_db_jwt` survives. **This means Sign Out is not a true session destroy.** Anyone with browser access after a "signed out" state can resume the prior user's session by reloading.
+
+- **Impact:** Real security concern on shared devices. The user's expectation of "Sign Out" is "the next person to use this browser cannot get to my account." Current behavior fails that expectation. Combined with KI-117 (stale localStorage) + KI-133 (email-in-key-name), the post-sign-out residue is substantial.
+- **Open question for owner:** Is this **intended** Clerk behavior (long-lived refresh token for "stay signed in" UX) that just isn't being labeled as such? If so, the fix is renaming "Sign Out" to "Switch Accounts" or surfacing a "Forget this device" affordance. If it's NOT intended, the fix is calling Clerk's `signOut({ session: true, application: true })` (or whichever Clerk API destroys the device-level token) on the Sign Out flow.
+- **Location:** Clerk integration, sign-out handler. Likely calls `clerk.signOut()` with default options that preserve the device JWT for "remember me" UX.
+- **Fix direction:** Two paths depending on owner intent:
+  1. **Full destroy:** call `clerk.signOut({ sessionId: ..., redirectUrl: '/' })` plus explicit cookie clear for `__clerk_db_jwt` + `__client_uat`. Forces re-auth on next visit.
+  2. **Honest naming:** rename "Sign Out" to "Switch Accounts" + add "Forget this device" link that does the full destroy. Acknowledges the long-lived-session UX.
+- **Severity:** **P1-SECURITY.** Owner decides between full-destroy and honest-naming.
+- **Status:** **OPEN — P1-SECURITY.** Pairs with KI-117 + KI-133 in the post-sign-out cleanup cluster.
+
+### KI-135: No skip-link for keyboard-only users — first Tab goes to logo, not "Skip to main content" (P2-A11Y)
+
+> **Added 2026-05-07 — external audit AI keyboard tab order audit.** From a fresh load, pressing Tab focuses the BidOnDent logo button. There is no `<a href="#main">Skip to main content</a>` skip-link affordance. Screen reader and keyboard-only users must traverse every sidebar nav item, header bell, and avatar menu before reaching content.
+
+- **Impact:** WCAG 2.4.1 Bypass Blocks — users need a way to skip repeated content. Currently they don't. Compounds with KI-118 (ESC handlers missing) — the keyboard accessibility story has gaps.
+- **Location:** App shell layout — likely `src/app/App.tsx` or the dashboard layout root. The skip-link should be the first focusable element on the page, visually hidden until focused.
+- **Fix direction:** Add `<a href="#main-content" class="bd-skip-link">Skip to main content</a>` as the first child of `<body>` (or app root). CSS: hidden via `clip: rect(0 0 0 0)` until `:focus`, then renders as a top-left pinned glass pill matching the bd-* identity. Add `id="main-content"` to the appropriate landmark (likely `<main>`).
+- **Severity:** **P2-A11Y.** WCAG 2.4.1 violation. Low-effort fix, ~20 LOC + matching style.
+- **Status:** **OPEN — P2-A11Y.**
+
+### KI-136: Search input + BidOnDent logo button below 44pt touch-target threshold (P2-UX)
+
+> **Added 2026-05-07 — external audit AI touch-target audit.** Audit AI measured every tabbable element on Dashboard. Two elements fall below the WCAG 2.5.5 / Apple HIG 44×44 minimum:
+> - Search reports input: 260×34 (height short by 10pt)
+> - BidOnDent logo button: 148×40 (height short by 4pt)
+>
+> Both will still be sub-44 at 375 mobile viewport because the heights are typography-driven, not viewport-conditional.
+
+- **Impact:** Fingertip mis-tap risk on mobile. The 9 other elements that flagged in the audit (notification bell, View on map, Delete report, etc.) are exactly 44×44 — they pass. These two are the real misses.
+- **Location:**
+  - Search input — likely `src/app/components/dashboard/SearchReportsInput.tsx` or similar. Input height is set by font-size + padding; needs `min-height: 44px` or matching padding.
+  - Logo button — likely the header logo. Wrapping link/button needs taller hit area.
+- **Fix direction:** Add `min-height: 44px` to both elements, or increase vertical padding to satisfy. Ensure the visual design doesn't break when height grows. Logo can keep visual size of 40px but expand the click area via `padding-block: 2px 2px` and `display: inline-flex; align-items: center`.
+- **Severity:** **P2-UX.** Real mobile usability hit. Trivial CSS fix.
+- **Status:** **OPEN — P2-UX.**
+
+### KI-137: Sign Out and Delete Account share the SESSION section — mis-tap risk (P2-UX)
+
+> **Added 2026-05-07 — external audit AI Account tab walkthrough.** The Account → Settings section labeled "SESSION" contains both Sign Out (everyday action) and Delete Account (destructive action) as immediate neighbors. Audit AI's exact words: "putting them next to each other invites mis-tap."
+
+- **Impact:** Real risk. Sign Out is a common action; Delete Account is permanent. Adjacency is dangerous UX.
+- **Fix direction:**
+  - Move Sign Out to the bottom-left sidebar pill area (one-click, like every other product). Already there in some products' designs.
+  - Keep Delete Account in a separate "Danger Zone" section deeper in Settings, with explicit confirmation (type your email, then click).
+  - Visual: Delete Account always uses destructive-tone (red trim), Sign Out uses neutral-tone.
+- **Severity:** **P2-UX.** Standard SaaS Account-page pattern violation.
+- **Status:** **OPEN — P2-UX.**
