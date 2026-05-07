@@ -1,4 +1,4 @@
-import { Loader2, Save, X } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useNotificationPreferences } from "../../../hooks/useNotificationPreferences";
@@ -336,7 +336,12 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
                     name="appearance-mode"
                     value="map-dark"
                     checked={selectedAppearanceMode === "map-dark"}
-                    onChange={() => setSelectedAppearanceMode("map-dark")}
+                    onChange={() => {
+                      // Pass 67 (2026-05-07) — KI-124 #4: helper text promises
+                      // "save immediately" so commit on toggle, not on Save.
+                      setSelectedAppearanceMode("map-dark");
+                      setAppearanceMode("map-dark");
+                    }}
                     className="mt-1 w-4 h-4"
                     style={{ accentColor: primaryColor }}
                   />
@@ -365,7 +370,10 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
                     name="appearance-mode"
                     value="light"
                     checked={selectedAppearanceMode === "light"}
-                    onChange={() => setSelectedAppearanceMode("light")}
+                    onChange={() => {
+                      setSelectedAppearanceMode("light");
+                      setAppearanceMode("light");
+                    }}
                     className="mt-1 w-4 h-4"
                     style={{ accentColor: primaryColor }}
                   />
@@ -429,13 +437,13 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
             className="px-4 py-2 text-white rounded-lg flex items-center gap-2"
             style={{ backgroundColor: primaryColor }}
             onClick={() => {
-              setAppearanceMode(selectedAppearanceMode);
+              // Appearance already committed on toggle (Pass 67 / KI-124 #4);
+              // this is now a Done button, not a save.
               onClose();
             }}
             type="button"
           >
-            <Save className="w-4 h-4" />
-            Save Appearance
+            Done
           </button>
         </div>
       </div>

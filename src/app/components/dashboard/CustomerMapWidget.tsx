@@ -356,7 +356,7 @@ export default function CustomerMapWidget({
           <button
             type="button"
             onClick={onViewShops}
-            className="bd-dashboard-primary-button group/cta mt-2.5 flex w-full items-center justify-between rounded-xl px-4 py-3 text-sm font-semibold text-white active:scale-[0.98]"
+            className="bd-dashboard-primary-button group/cta mt-2.5 flex w-full items-center justify-between overflow-hidden rounded-xl px-4 py-3 text-sm font-semibold text-white active:scale-[0.98]"
             style={{
               background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
             }}
