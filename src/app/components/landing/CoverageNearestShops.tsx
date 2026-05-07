@@ -31,9 +31,10 @@ export default function CoverageNearestShops({
 
   return (
     <div
-      className={
-        className || cn(isLandingShowcase ? "p-4 lg:p-5" : "p-3", theme.panelStrongClassName)
-      }
+      className={cn(
+        className || cn(isLandingShowcase ? "p-4 lg:p-5" : "p-3", theme.panelStrongClassName),
+        "animate-in fade-in slide-in-from-bottom-2 duration-400 motion-reduce:animate-none"
+      )}
     >
       {isLandingShowcase ? (
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
