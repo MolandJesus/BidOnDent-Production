@@ -53,7 +53,7 @@ export default function MapNavigationHud({
 
   const theme = getMapSurfaceTheme(tone);
   return (
-    <div className="pointer-events-none absolute inset-x-4 bottom-20 z-[430] flex justify-end sm:inset-x-auto sm:right-4">
+    <div className="pointer-events-none absolute inset-x-4 bottom-20 z-[430] flex justify-end sm:inset-x-auto sm:right-4 animate-in fade-in slide-in-from-right-3 duration-400 motion-reduce:animate-none">
       <div className={cn("w-full max-w-[320px] p-4 sm:w-[320px]", theme.panelStrongClassName)}>
         <div className="flex items-start justify-between gap-3">
           <div>
