@@ -769,7 +769,7 @@
 - **Impact:** Keyboard-only users have only the back-arrow as exit. Standard "ESC closes overlay" pattern broken at the fullscreen-map level too.
 - **Fix direction:** Same `useEscapeToClose(open, onClose)` hook proposed for KI-118 — apply to the fullscreen-map exit handler. Should be 6th application site after Voice Controls + Navigation Settings + Turn List drawer + Results drawer + (one more sheet to verify).
 - **Severity:** **P2-A11Y.** Companion to KI-118 cluster.
-- **Status:** **OPEN — P2-A11Y.** Folds into KI-118 fix scope (single hook applied to ALL overlays needing ESC).
+- **Status:** **RESOLVED — Pass 81 (2026-05-07).** Wired the existing `useEscapeKey` hook (Pass 63) into [`ShopDirectoryScreen.tsx`](../src/app/components/shop/ShopDirectoryScreen.tsx) at the top level — gated by `session.isImmersive`, calls `setMapViewMode("hybrid")` on ESC, mirrors the on-screen back-arrow behavior. KI-118 cluster now covers Voice Controls + Navigation Settings sheets (Pass 63) AND the immersive fullscreen-map surface itself (this pass). Sheet-level overlay sheets that mount inside the immersive layer continue to use their own ESC handling (sheets stop-propagate before the screen-level handler fires) so closing a Voice Controls overlay no longer drops the user out of fullscreen by accident.
 
 ### KI-148: Fullscreen map entry triggers a SECOND phantom deviation event (P1-RUNTIME, KI-116 cluster expansion)
 
