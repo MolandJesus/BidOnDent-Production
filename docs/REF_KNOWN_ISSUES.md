@@ -957,3 +957,55 @@
 - **KI-156 (photo labeling):** [`StepPhotos.tsx:120-124`](../src/app/components/codelayer/report/StepPhotos.tsx#L120) renders `{isCloud ? "Cloud photo" : "Local photo"}` — a ternary that ALWAYS produces a caption. There is no code path where Photo 1 has no caption. Audit AI may have missed Photo 1's "Local photo" caption visually.
 - **KI-157 (slow wizard transitions):** [`ReportScreen.tsx:291`](../src/app/components/codelayer/ReportScreen.tsx#L291) declares `transition={{ duration: reduceMotion ? 0 : 0.22 }}` — that's 220ms with proper reduce-motion gate. NOT 3-5 seconds. The "ghosted UI" audit AI saw was likely tool-side render lag.
 - **Status all three:** **NEEDS-REPRODUCTION-IN-REAL-CHROME.** Pause without committing fix. Owner or audit AI verifies in real Chrome (NOT VS Code Simple Browser per KI-154) by sizing window to 1280-1422 px exactly + opening Report flow Step 4 + measuring with DevTools Elements panel. If reproducible, rotate KIs back to OPEN with concrete repro steps. If not, archive as audit-tool artifacts.
+
+### KI-158: handle_updated_at search_path lock wiped on every edge function cold start (P2-SECURITY-DRIFT — SOURCE-PATCHED 2026-05-07)
+
+> **Added 2026-05-07 — audit AI Pass 9 §2 ROOT CAUSE TRACED + master builder Pass 174 source-patched same turn.**
+>
+> Audit AI Pass 9 §2 confirmed `function_search_path_mutable` advisor returned on `public.handle_updated_at` even after Pass 7 ALTER FUNCTION + Pass 8 re-application. Hypothesized recurring cold-start bootstrap rewrite. Master builder Pass 174 traced root cause to [`supabase/functions/server/database_init.tsx:56-63`](../supabase/functions/server/database_init.tsx#L56) — the edge function bootstrap reissues `CREATE OR REPLACE FUNCTION public.handle_updated_at()` on every cold start without `SET search_path = public`, wiping the lock.
+
+- **Pattern (decay loop):**
+  1. Pass 7 / Pass 8 / Pass 9 §2 / [audit AI 'Testing BidOnDent website locally'] applies `ALTER FUNCTION ... SET search_path = public`
+  2. Edge function cold start fires `database_init.tsx` bootstrap
+  3. `CREATE OR REPLACE FUNCTION public.handle_updated_at()` (without `SET search_path` clause) wipes the lock
+  4. Advisor flags `function_search_path_mutable` again
+  5. GOTO 1
+- **Pass 174 source patch (this turn — master builder):**
+  1. `supabase/functions/server/database_init.tsx:56-63` — append `SET search_path = public` inside the `CREATE OR REPLACE` clause. **Load-bearing fix.** Survives future cold starts.
+  2. `supabase/migrations/20251230000001_full_schema.sql:22-28` — same patch in the canonical schema migration for source-of-truth correctness.
+  3. `ALTER FUNCTION public.handle_updated_at() SET search_path = public` re-applied via Supabase MCP **as immediate stopgap** until owner deploys edge function v51. Verified: `proconfig: ["search_path=public"]`.
+- **Owner action required:** deploy edge function v51 (`supabase functions deploy server --project-ref wmdcnjgtsppftrofaqqa`). After deploy, next cold start preserves the lock; no more drift. Source patch is committed in this pass; deploy is the gating step.
+- **Severity:** **P2-SECURITY-DRIFT — SOURCE-PATCHED 2026-05-07.** Stopgap lock holds today; permanent fix lands when edge function v51 deploys.
+- **Status:** **OPEN — pending owner edge function deploy.** Auto-resolves on deploy. Cross-AI handoff: `[Testing BidOnDent website locally — Pass 9 §2]` traced; `[planner-AI Pass 174]` patched.
+
+### KI-159: auth_rls_initplan family — ~21 RLS policies re-evaluating auth.uid() per row (P2-PERFORMANCE — AUTHORIZED for next pass)
+
+> **Added 2026-05-07 — audit AI Pass 9 §2 backend audit refresh.** Every RLS policy on `profiles`, `vehicles`, `damage_reports`, `shop_profiles`, `insurer_profiles`, `bids` calls `auth.uid()` (or `auth.role()` / `current_setting()`) directly in USING/WITH CHECK expressions. Postgres re-evaluates per row; wrapping in `(select auth.<fn>())` evaluates once per query. Pure perf win, zero semantic change, well-documented Supabase pattern.
+
+- **Impact:** ~21 advisor warnings; real perf cost at scale on auth-heavy paths (vehicles, damage_reports, bids queries).
+- **Fix direction:** single transaction with `ALTER POLICY ... USING/WITH CHECK ((select auth.uid()))` wrapping. **MUST verify exact policy bodies via `pg_get_expr(polqual, polrelid)` + `pg_get_expr(polwithcheck, polrelid)` BEFORE applying** — the names alone don't capture the full expression. Audit AI staged candidate SQL in their Pass 9 §2 report.
+- **Authorization:** **AUTHORIZED for audit AI to ship next pass under safe-fix authority precedent (KI-145, KI-144 search_path).** Verification gate: `pg_get_expr` reads first to lock exact expressions; same-shape `(select ...)` wrapper applied; single transaction; reversible via dropping the wrapper.
+- **Severity:** **P2-PERFORMANCE.**
+- **Status:** **OPEN — AUTHORIZED for next audit-AI pass.**
+
+### KI-160: multiple_permissive_policies — ~25 duplicate RLS policy pairs causing ~110 advisor warnings (P2-PERFORMANCE — PARTIAL AUTHORIZED)
+
+> **Added 2026-05-07 — audit AI Pass 9 §2.** Migration drift: every table has two RLS policies expressing identical intent under different names (older `<role> can <verb> own <noun>` vs newer `Users can <verb> their own <noun>s`). Both fire on every query. Pick one canonical name per pair; drop the other.
+
+- **AUTHORIZED for autonomous drop (mechanical duplicates — same logic, same surface):**
+  - `vehicles` — drop "Users can <verb> own vehicles" (4 verbs); keep "Users can <verb> their own vehicles" (canonical)
+  - `damage_reports` — pick ONE of "Customers can <verb> own reports" / "Users can <verb> their own damage reports"; drop the other (consistent across 4 verbs)
+  - `shop_profiles` SELECT — drop "Shop users can view own profile" (subsumed by "All users can view shop profiles")
+  - `insurer_profiles` SELECT — drop "Insurer users can view own profile" (subsumed by "All users can view insurer profiles")
+  - `profiles` INSERT — drop "Allow profile creation for admin setup" + "Users can insert own profile"; keep "Users can insert their own profile"
+  - `profiles` UPDATE — drop "Users can update own profile"; keep "Users can update their own profile"
+- **HOLD for owner approval (visibility-surface change):**
+  - `profiles` SELECT — "Users can read all profiles" (overly permissive — verify intentional)
+  - `damage_reports` SELECT — "Customers can view own reports" + "Insurers can view all reports" + "Shops can view all reports" (subsumption assertion needs role-mapping verification)
+  - `bids` SELECT/DELETE/INSERT/UPDATE — "Authenticated shops can manage bids" + "Authenticated users can read bids" (verify against narrower per-role policies)
+- **Severity:** **P2-PERFORMANCE (mechanical drops) + P2-SECURITY (owner-gated drops).**
+- **Status:** **OPEN — PARTIAL AUTHORIZED.** Audit AI ships mechanical drops next pass; owner-gated rows wait.
+
+### KI-152 status correction 2026-05-07 — 100-event audit window too narrow
+
+> **Update 2026-05-07 — audit AI Pass 9 §2 correction.** Pass 8 service-role log audit (100 events) covered ~30-90 seconds depending on traffic. Too narrow to claim "clean for visible window." Recommend pg_audit setup or wider Studio Logs Explorer sweep (90-day filter) before downgrading severity. Service Role Key rotation owner-action remains the load-bearing remediation regardless of audit findings.
