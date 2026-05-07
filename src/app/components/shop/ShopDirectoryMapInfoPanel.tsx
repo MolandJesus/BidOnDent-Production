@@ -159,7 +159,7 @@ export default function ShopDirectoryMapInfoPanel({
 
   return (
     <aside
-      className={`pointer-events-auto absolute left-3 top-[8.5rem] z-[525] hidden max-h-[calc(100dvh-9.5rem)] w-[300px] overflow-y-auto rounded-2xl border shadow-2xl sm:block ${panelBg}`}
+      className={`pointer-events-auto absolute left-3 top-[8.5rem] z-[525] hidden max-h-[calc(100dvh-9.5rem)] w-[300px] overflow-y-auto rounded-2xl border shadow-2xl sm:block animate-in fade-in slide-in-from-left-3 duration-300 motion-reduce:animate-none ${panelBg}`}
       role="complementary"
       aria-label="Selected shop info"
     >
