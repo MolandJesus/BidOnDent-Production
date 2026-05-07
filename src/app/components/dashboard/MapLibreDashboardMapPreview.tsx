@@ -236,6 +236,7 @@ export default function MapLibreDashboardMapPreview({
             className="bd-map-tooltip"
           >
             <span
+              className="animate-in fade-in zoom-in-95 duration-200 motion-reduce:animate-none"
               style={{
                 display: "block",
                 maxWidth: 180,
