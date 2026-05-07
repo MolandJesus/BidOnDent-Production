@@ -92,27 +92,13 @@ export default function PlannerRoutePreview({
                 <div className={cn("rounded-[0.875rem] px-2.5 py-2", theme.panelClassName)}>
                   <div
                     className={cn(
-                      "h-2.5 w-16 animate-pulse rounded",
+                      "h-2.5 w-16 animate-pulse motion-reduce:animate-none rounded",
                       tone === "light" ? "bg-slate-300/50" : "bg-slate-500/30"
                     )}
                   />
                   <div
                     className={cn(
-                      "mt-1.5 h-5 w-12 animate-pulse rounded",
-                      tone === "light" ? "bg-slate-300/50" : "bg-slate-500/30"
-                    )}
-                  />
-                </div>
-                <div className={cn("rounded-[0.875rem] px-2.5 py-2", theme.panelClassName)}>
-                  <div
-                    className={cn(
-                      "h-2.5 w-20 animate-pulse rounded",
-                      tone === "light" ? "bg-slate-300/50" : "bg-slate-500/30"
-                    )}
-                  />
-                  <div
-                    className={cn(
-                      "mt-1.5 h-5 w-14 animate-pulse rounded",
+                      "mt-1.5 h-5 w-12 animate-pulse motion-reduce:animate-none rounded",
                       tone === "light" ? "bg-slate-300/50" : "bg-slate-500/30"
                     )}
                   />
@@ -120,13 +106,27 @@ export default function PlannerRoutePreview({
                 <div className={cn("rounded-[0.875rem] px-2.5 py-2", theme.panelClassName)}>
                   <div
                     className={cn(
-                      "h-2.5 w-12 animate-pulse rounded",
+                      "h-2.5 w-20 animate-pulse motion-reduce:animate-none rounded",
                       tone === "light" ? "bg-slate-300/50" : "bg-slate-500/30"
                     )}
                   />
                   <div
                     className={cn(
-                      "mt-1.5 h-5 w-10 animate-pulse rounded",
+                      "mt-1.5 h-5 w-14 animate-pulse motion-reduce:animate-none rounded",
+                      tone === "light" ? "bg-slate-300/50" : "bg-slate-500/30"
+                    )}
+                  />
+                </div>
+                <div className={cn("rounded-[0.875rem] px-2.5 py-2", theme.panelClassName)}>
+                  <div
+                    className={cn(
+                      "h-2.5 w-12 animate-pulse motion-reduce:animate-none rounded",
+                      tone === "light" ? "bg-slate-300/50" : "bg-slate-500/30"
+                    )}
+                  />
+                  <div
+                    className={cn(
+                      "mt-1.5 h-5 w-10 animate-pulse motion-reduce:animate-none rounded",
                       tone === "light" ? "bg-slate-300/50" : "bg-slate-500/30"
                     )}
                   />
