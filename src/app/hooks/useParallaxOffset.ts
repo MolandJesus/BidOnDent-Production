@@ -34,7 +34,15 @@ export function useParallaxOffset(speed: number): number {
       if (pending) return;
       pending = true;
       rafId = window.requestAnimationFrame(() => {
-        setOffset(window.scrollY * speed);
+        // Pass 85 (2026-05-07) — KI-053 F.2 follow-up. Quantize to integer
+        // pixels and skip state updates when the offset hasn't moved. Sub-
+        // pixel scroll deltas were re-rendering the parallax consumers
+        // (HeroSection + OperatingRegionsSection) on every animation frame
+        // even when the visual transform was identical. Cheaper React work
+        // = lower main-thread contention with MapLibre on the landing
+        // surface (per `evidence/pass-48-2026-05-07/PERF_ANALYSIS.md`).
+        const next = Math.round(window.scrollY * speed);
+        setOffset((prev) => (prev === next ? prev : next));
         pending = false;
       });
     };
