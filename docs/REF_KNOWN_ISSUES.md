@@ -642,7 +642,7 @@
   4. Mismatches → CI failure.
      Add to lint workflow.
 - **Severity:** **P2-A11Y.** Verifies LAW §3 contract holds against drift.
-- **Status:** **OPEN — P2-A11Y.** Small builder pass before Phase 6 design polish lands.
+- **Status:** **RESOLVED 2026-05-07 — Pass 71.** Added [`scripts/audit-reduced-motion.mjs`](../scripts/audit-reduced-motion.mjs) and `npm run audit:reduced-motion`. Script does a real coverage analysis (not a flat regex count): for every `@keyframes` it identifies the consumer selectors via `animation` / `animation-name` references, then verifies each consumer is also targeted inside a `@media (prefers-reduced-motion: reduce)` block by an animation-disabling rule (or covered by a wildcard reduce rule). Audit AI's "23 vs 40" count was a flat grep — actual coverage today is **34/34 keyframes guarded** (script reports `exit=0`). Script blocks future drift; can be wired into CI.
 
 ### KI-140: Mobile Smart Shop Map legend overlay too dense — 5 dots + 6 pills + checkbox + eye icon obscure the map (P2-UX)
 
