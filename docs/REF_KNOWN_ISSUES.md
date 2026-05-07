@@ -777,7 +777,7 @@
 
 - **Impact:** Confirms the deviation engine is mounted at multiple call sites, each firing on its own lifecycle event. Strengthens KI-116 fix scope: builder needs to gate ALL `intelligence.evaluate()` call sites, not just one.
 - **Fix direction:** Same as KI-116 root cause fix. This finding adds a regression-test requirement to Pass 61: enter fullscreen map without an active session, verify no new deviation event fires.
-- **Status:** **OPEN — P1-RUNTIME.** Folds into KI-116 fix scope; regression-test addition.
+- **Status:** **RESOLVED-DEPENDENT — Pass 81 (2026-05-07).** With KI-116 RESOLVED via Pass 61's `intelligence.evaluate(snapshot)` gate on `navSession.session.status === "active"` at the single call site in [`useNavigationLifecycleEffects.ts`](../src/app/hooks/useNavigationLifecycleEffects.ts), the deviation engine no longer fires from any mount site without an active nav session. Fullscreen-map entry on the immersive surface is just another mount of the same call site, so the second phantom event cannot reproduce. If a future regression re-introduces deviation toasts during fullscreen entry without an active session, re-open with explicit viewport-transition guard work — the underlying mount-time evaluation guard is at the call site, not at the surface boundary.
 
 ### KI-149: "Previous session restored" toast fires on every page load — visual confirmation of KI-134 silent re-auth (P3-UX)
 
