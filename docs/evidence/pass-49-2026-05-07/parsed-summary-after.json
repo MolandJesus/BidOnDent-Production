@@ -1,0 +1,861 @@
+{
+  "trace-landing-1280-after-noscroll.json": {
+    "eventCount": 144677,
+    "completeEventCount": 52986,
+    "longTaskMs": 892,
+    "totalMs": 6164,
+    "topByName": [
+      {
+        "key": "RunTask",
+        "totalMs": 4044.6,
+        "count": 22587,
+        "maxMs": 150.3,
+        "avgMs": 0.18
+      },
+      {
+        "key": "GPUTask",
+        "totalMs": 570.8,
+        "count": 1177,
+        "maxMs": 3.6,
+        "avgMs": 0.48
+      },
+      {
+        "key": "UpdateLayoutTree",
+        "totalMs": 263.3,
+        "count": 585,
+        "maxMs": 0.9,
+        "avgMs": 0.45
+      },
+      {
+        "key": "FunctionCall",
+        "totalMs": 179.8,
+        "count": 293,
+        "maxMs": 148.4,
+        "avgMs": 0.61
+      },
+      {
+        "key": "Layerize",
+        "totalMs": 179.3,
+        "count": 585,
+        "maxMs": 0.6,
+        "avgMs": 0.31
+      },
+      {
+        "key": "EventDispatch",
+        "totalMs": 156.3,
+        "count": 132,
+        "maxMs": 148.6,
+        "avgMs": 1.18
+      },
+      {
+        "key": "V8.StackGuard",
+        "totalMs": 151,
+        "count": 57,
+        "maxMs": 148.3,
+        "avgMs": 2.65
+      },
+      {
+        "key": "V8.HandleInterrupts",
+        "totalMs": 150.9,
+        "count": 57,
+        "maxMs": 148.3,
+        "avgMs": 2.65
+      },
+      {
+        "key": "V8.InvokeApiInterruptCallbacks",
+        "totalMs": 149.1,
+        "count": 2,
+        "maxMs": 148.3,
+        "avgMs": 74.53
+      },
+      {
+        "key": "Paint",
+        "totalMs": 108.4,
+        "count": 4592,
+        "maxMs": 0.3,
+        "avgMs": 0.02
+      }
+    ],
+    "topByUrl": [
+      {
+        "key": "http://localhost:5173/node_modules/.vite/deps/chunk-KDCVS43I.js",
+        "totalMs": 175.7,
+        "count": 250,
+        "maxMs": 148.4,
+        "avgMs": 0.7
+      },
+      {
+        "key": "http://localhost:5173/src/app/components/landing/LandingPageHeader.tsx",
+        "totalMs": 2.2,
+        "count": 7,
+        "maxMs": 0.4,
+        "avgMs": 0.32
+      },
+      {
+        "key": "(blob)",
+        "totalMs": 1,
+        "count": 2,
+        "maxMs": 1,
+        "avgMs": 0.49
+      },
+      {
+        "key": "http://localhost:5173/src/app/hooks/useParallaxOffset.ts",
+        "totalMs": 0.3,
+        "count": 28,
+        "maxMs": 0,
+        "avgMs": 0.01
+      },
+      {
+        "key": "http://localhost:5173/src/app/features/notifications/useNotificationEvents.ts",
+        "totalMs": 0.2,
+        "count": 1,
+        "maxMs": 0.2,
+        "avgMs": 0.2
+      },
+      {
+        "key": "http://localhost:5173/src/app/hooks/useNavigationGpsTracking.ts",
+        "totalMs": 0.2,
+        "count": 2,
+        "maxMs": 0.2,
+        "avgMs": 0.09
+      },
+      {
+        "key": "https://joint-oarfish-23.clerk.accounts.dev/npm/@clerk/clerk-js@5/dist/clerk.browser.js",
+        "totalMs": 0.1,
+        "count": 2,
+        "maxMs": 0.1,
+        "avgMs": 0.07
+      },
+      {
+        "key": "http://localhost:5173/src/app/components/landing/HeroSection.tsx",
+        "totalMs": 0.1,
+        "count": 1,
+        "maxMs": 0.1,
+        "avgMs": 0.09
+      }
+    ],
+    "topByFunction": [
+      {
+        "key": "dispatchContinuousEvent",
+        "totalMs": 150.5,
+        "count": 106,
+        "maxMs": 148.4,
+        "avgMs": 1.42
+      },
+      {
+        "key": "performWorkUntilDeadline",
+        "totalMs": 23.1,
+        "count": 10,
+        "maxMs": 5.1,
+        "avgMs": 2.31
+      },
+      {
+        "key": "handleScroll",
+        "totalMs": 2.3,
+        "count": 21,
+        "maxMs": 0.4,
+        "avgMs": 0.11
+      },
+      {
+        "key": "dispatchEvent",
+        "totalMs": 2,
+        "count": 134,
+        "maxMs": 0.2,
+        "avgMs": 0.02
+      },
+      {
+        "key": "o",
+        "totalMs": 0.1,
+        "count": 1,
+        "maxMs": 0.1,
+        "avgMs": 0.13
+      }
+    ],
+    "longestTasks": [
+      {
+        "name": "RunTask",
+        "ms": 150.3,
+        "url": "(no-url)"
+      },
+      {
+        "name": "EventDispatch",
+        "ms": 148.6,
+        "url": "(no-url)"
+      },
+      {
+        "name": "FunctionCall",
+        "ms": 148.4,
+        "url": "http://localhost:5173/node_modules/.vite/deps/chunk-KDCVS43I.js",
+        "fn": "dispatchContinuousEvent"
+      },
+      {
+        "name": "V8.StackGuard",
+        "ms": 148.3,
+        "url": "(no-url)"
+      },
+      {
+        "name": "V8.HandleInterrupts",
+        "ms": 148.3,
+        "url": "(no-url)"
+      },
+      {
+        "name": "V8.InvokeApiInterruptCallbacks",
+        "ms": 148.3,
+        "url": "(no-url)"
+      }
+    ]
+  },
+  "trace-landing-1280-after-scrolled.json": {
+    "eventCount": 211739,
+    "completeEventCount": 78206,
+    "longTaskMs": 670,
+    "totalMs": 6516,
+    "topByName": [
+      {
+        "key": "RunTask",
+        "totalMs": 4083.3,
+        "count": 29644,
+        "maxMs": 168.8,
+        "avgMs": 0.14
+      },
+      {
+        "key": "GPUTask",
+        "totalMs": 325.8,
+        "count": 1566,
+        "maxMs": 0.9,
+        "avgMs": 0.21
+      },
+      {
+        "key": "UpdateLayoutTree",
+        "totalMs": 309.8,
+        "count": 661,
+        "maxMs": 0.9,
+        "avgMs": 0.47
+      },
+      {
+        "key": "FunctionCall",
+        "totalMs": 237,
+        "count": 826,
+        "maxMs": 21.2,
+        "avgMs": 0.29
+      },
+      {
+        "key": "V8.StackGuard",
+        "totalMs": 198.9,
+        "count": 232,
+        "maxMs": 167.1,
+        "avgMs": 0.86
+      },
+      {
+        "key": "V8.HandleInterrupts",
+        "totalMs": 198.7,
+        "count": 227,
+        "maxMs": 167.1,
+        "avgMs": 0.88
+      },
+      {
+        "key": "FireAnimationFrame",
+        "totalMs": 191.8,
+        "count": 256,
+        "maxMs": 2.6,
+        "avgMs": 0.75
+      },
+      {
+        "key": "V8.InvokeApiInterruptCallbacks",
+        "totalMs": 189.7,
+        "count": 4,
+        "maxMs": 167.1,
+        "avgMs": 47.42
+      },
+      {
+        "key": "Layerize",
+        "totalMs": 130.6,
+        "count": 651,
+        "maxMs": 0.5,
+        "avgMs": 0.2
+      },
+      {
+        "key": "Paint",
+        "totalMs": 126.4,
+        "count": 5962,
+        "maxMs": 0.4,
+        "avgMs": 0.02
+      }
+    ],
+    "topByUrl": [
+      {
+        "key": "http://localhost:5173/node_modules/.vite/deps/maplibre-gl.js",
+        "totalMs": 197.5,
+        "count": 411,
+        "maxMs": 2.6,
+        "avgMs": 0.48
+      },
+      {
+        "key": "(blob)",
+        "totalMs": 23.6,
+        "count": 14,
+        "maxMs": 21.2,
+        "avgMs": 1.69
+      },
+      {
+        "key": "http://localhost:5173/node_modules/.vite/deps/chunk-KDCVS43I.js",
+        "totalMs": 15.2,
+        "count": 390,
+        "maxMs": 1.7,
+        "avgMs": 0.04
+      },
+      {
+        "key": "http://localhost:5173/node_modules/.vite/deps/@supabase_supabase-js.js",
+        "totalMs": 0.2,
+        "count": 3,
+        "maxMs": 0.1,
+        "avgMs": 0.07
+      },
+      {
+        "key": "http://localhost:5173/src/app/hooks/useNavigationGpsTracking.ts",
+        "totalMs": 0.2,
+        "count": 3,
+        "maxMs": 0.1,
+        "avgMs": 0.06
+      },
+      {
+        "key": "http://localhost:5173/src/app/components/landing/HeroSection.tsx",
+        "totalMs": 0.1,
+        "count": 2,
+        "maxMs": 0.1,
+        "avgMs": 0.06
+      },
+      {
+        "key": "https://joint-oarfish-23.clerk.accounts.dev/npm/@clerk/clerk-js@5/dist/clerk.browser.js",
+        "totalMs": 0.1,
+        "count": 2,
+        "maxMs": 0.1,
+        "avgMs": 0.06
+      },
+      {
+        "key": "http://localhost:5173/",
+        "totalMs": 0.1,
+        "count": 1,
+        "maxMs": 0.1,
+        "avgMs": 0.07
+      },
+      {
+        "key": "(inline data:)",
+        "totalMs": 0,
+        "count": 1,
+        "maxMs": 0,
+        "avgMs": 0.02
+      }
+    ],
+    "topByFunction": [
+      {
+        "key": "performWorkUntilDeadline",
+        "totalMs": 5.7,
+        "count": 5,
+        "maxMs": 1.7,
+        "avgMs": 1.15
+      },
+      {
+        "key": "dispatchContinuousEvent",
+        "totalMs": 5.6,
+        "count": 236,
+        "maxMs": 0.9,
+        "avgMs": 0.02
+      },
+      {
+        "key": "handleEvent",
+        "totalMs": 5,
+        "count": 70,
+        "maxMs": 0.5,
+        "avgMs": 0.07
+      },
+      {
+        "key": "handleWindowEvent",
+        "totalMs": 4,
+        "count": 59,
+        "maxMs": 0.2,
+        "avgMs": 0.07
+      },
+      {
+        "key": "dispatchEvent",
+        "totalMs": 1.6,
+        "count": 112,
+        "maxMs": 0.3,
+        "avgMs": 0.01
+      },
+      {
+        "key": "dispatchDiscreteEvent",
+        "totalMs": 0.9,
+        "count": 34,
+        "maxMs": 0.2,
+        "avgMs": 0.03
+      },
+      {
+        "key": "Tp._channel.port2.onmessage",
+        "totalMs": 0.2,
+        "count": 6,
+        "maxMs": 0.1,
+        "avgMs": 0.03
+      },
+      {
+        "key": "navigator.geolocation.watchPosition.enableHighAccuracy",
+        "totalMs": 0.1,
+        "count": 1,
+        "maxMs": 0.1,
+        "avgMs": 0.1
+      },
+      {
+        "key": "o",
+        "totalMs": 0.1,
+        "count": 1,
+        "maxMs": 0.1,
+        "avgMs": 0.1
+      },
+      {
+        "key": "suppressClickInternal",
+        "totalMs": 0,
+        "count": 4,
+        "maxMs": 0,
+        "avgMs": 0.01
+      }
+    ],
+    "longestTasks": [
+      {
+        "name": "RunTask",
+        "ms": 168.8,
+        "url": "(no-url)"
+      },
+      {
+        "name": "V8.StackGuard",
+        "ms": 167.1,
+        "url": "(no-url)"
+      },
+      {
+        "name": "V8.HandleInterrupts",
+        "ms": 167.1,
+        "url": "(no-url)"
+      },
+      {
+        "name": "V8.InvokeApiInterruptCallbacks",
+        "ms": 167.1,
+        "url": "(no-url)"
+      }
+    ]
+  },
+  "trace-landing-375-after-noscroll.json": {
+    "eventCount": 73803,
+    "completeEventCount": 28226,
+    "longTaskMs": 1269,
+    "totalMs": 8104,
+    "topByName": [
+      {
+        "key": "RunTask",
+        "totalMs": 5766.5,
+        "count": 15754,
+        "maxMs": 151.5,
+        "avgMs": 0.37
+      },
+      {
+        "key": "GPUTask",
+        "totalMs": 1274.8,
+        "count": 795,
+        "maxMs": 151.5,
+        "avgMs": 1.6
+      },
+      {
+        "key": "FunctionCall",
+        "totalMs": 177.2,
+        "count": 220,
+        "maxMs": 149.3,
+        "avgMs": 0.81
+      },
+      {
+        "key": "EventDispatch",
+        "totalMs": 155.1,
+        "count": 96,
+        "maxMs": 149.5,
+        "avgMs": 1.62
+      },
+      {
+        "key": "V8.HandleInterrupts",
+        "totalMs": 151.9,
+        "count": 67,
+        "maxMs": 149.2,
+        "avgMs": 2.27
+      },
+      {
+        "key": "V8.StackGuard",
+        "totalMs": 151.9,
+        "count": 66,
+        "maxMs": 149.2,
+        "avgMs": 2.3
+      },
+      {
+        "key": "V8.InvokeApiInterruptCallbacks",
+        "totalMs": 149.9,
+        "count": 3,
+        "maxMs": 149.2,
+        "avgMs": 49.97
+      },
+      {
+        "key": "UpdateLayoutTree",
+        "totalMs": 67.2,
+        "count": 340,
+        "maxMs": 0.6,
+        "avgMs": 0.2
+      },
+      {
+        "key": "Layerize",
+        "totalMs": 60.8,
+        "count": 328,
+        "maxMs": 0.3,
+        "avgMs": 0.19
+      },
+      {
+        "key": "Paint",
+        "totalMs": 37.4,
+        "count": 731,
+        "maxMs": 0.3,
+        "avgMs": 0.05
+      }
+    ],
+    "topByUrl": [
+      {
+        "key": "http://localhost:5173/node_modules/.vite/deps/chunk-KDCVS43I.js",
+        "totalMs": 173.7,
+        "count": 176,
+        "maxMs": 149.3,
+        "avgMs": 0.99
+      },
+      {
+        "key": "http://localhost:5173/src/app/components/landing/LandingPageHeader.tsx",
+        "totalMs": 1.4,
+        "count": 7,
+        "maxMs": 0.3,
+        "avgMs": 0.2
+      },
+      {
+        "key": "(blob)",
+        "totalMs": 0.9,
+        "count": 2,
+        "maxMs": 0.8,
+        "avgMs": 0.43
+      },
+      {
+        "key": "http://localhost:5173/src/app/hooks/useNavigationGpsTracking.ts",
+        "totalMs": 0.5,
+        "count": 2,
+        "maxMs": 0.5,
+        "avgMs": 0.25
+      },
+      {
+        "key": "http://localhost:5173/src/app/hooks/useParallaxOffset.ts",
+        "totalMs": 0.3,
+        "count": 28,
+        "maxMs": 0,
+        "avgMs": 0.01
+      },
+      {
+        "key": "https://joint-oarfish-23.clerk.accounts.dev/npm/@clerk/clerk-js@5/dist/clerk.browser.js",
+        "totalMs": 0.2,
+        "count": 2,
+        "maxMs": 0.1,
+        "avgMs": 0.08
+      },
+      {
+        "key": "http://localhost:5173/src/app/components/landing/HeroSection.tsx",
+        "totalMs": 0.1,
+        "count": 1,
+        "maxMs": 0.1,
+        "avgMs": 0.09
+      },
+      {
+        "key": "http://localhost:5173/src/app/features/notifications/useNotificationEvents.ts",
+        "totalMs": 0,
+        "count": 1,
+        "maxMs": 0,
+        "avgMs": 0.03
+      },
+      {
+        "key": "http://localhost:5173/src/app/hooks/useScrollAnimation.ts",
+        "totalMs": 0,
+        "count": 1,
+        "maxMs": 0,
+        "avgMs": 0.03
+      }
+    ],
+    "topByFunction": [
+      {
+        "key": "dispatchContinuousEvent",
+        "totalMs": 151.4,
+        "count": 82,
+        "maxMs": 149.3,
+        "avgMs": 1.85
+      },
+      {
+        "key": "performWorkUntilDeadline",
+        "totalMs": 21.3,
+        "count": 10,
+        "maxMs": 4.8,
+        "avgMs": 2.13
+      },
+      {
+        "key": "handleScroll",
+        "totalMs": 1.5,
+        "count": 21,
+        "maxMs": 0.3,
+        "avgMs": 0.07
+      },
+      {
+        "key": "dispatchEvent",
+        "totalMs": 1.1,
+        "count": 84,
+        "maxMs": 0.1,
+        "avgMs": 0.01
+      },
+      {
+        "key": "o",
+        "totalMs": 0.1,
+        "count": 1,
+        "maxMs": 0.1,
+        "avgMs": 0.15
+      },
+      {
+        "key": "IntersectionObserver.threshold.threshold",
+        "totalMs": 0,
+        "count": 1,
+        "maxMs": 0,
+        "avgMs": 0.03
+      }
+    ],
+    "longestTasks": [
+      {
+        "name": "RunTask",
+        "ms": 151.5,
+        "url": "(no-url)"
+      },
+      {
+        "name": "GPUTask",
+        "ms": 151.5,
+        "url": "(no-url)"
+      },
+      {
+        "name": "RunTask",
+        "ms": 151,
+        "url": "(no-url)"
+      },
+      {
+        "name": "EventDispatch",
+        "ms": 149.5,
+        "url": "(no-url)"
+      },
+      {
+        "name": "FunctionCall",
+        "ms": 149.3,
+        "url": "http://localhost:5173/node_modules/.vite/deps/chunk-KDCVS43I.js",
+        "fn": "dispatchContinuousEvent"
+      },
+      {
+        "name": "V8.StackGuard",
+        "ms": 149.2,
+        "url": "(no-url)"
+      },
+      {
+        "name": "V8.HandleInterrupts",
+        "ms": 149.2,
+        "url": "(no-url)"
+      },
+      {
+        "name": "V8.InvokeApiInterruptCallbacks",
+        "ms": 149.2,
+        "url": "(no-url)"
+      },
+      {
+        "name": "RunTask",
+        "ms": 68.4,
+        "url": "(no-url)"
+      }
+    ]
+  },
+  "trace-landing-375-after-scrolled.json": {
+    "eventCount": 142171,
+    "completeEventCount": 42138,
+    "longTaskMs": 597,
+    "totalMs": 2956,
+    "topByName": [
+      {
+        "key": "RunTask",
+        "totalMs": 1933.2,
+        "count": 16231,
+        "maxMs": 149.4,
+        "avgMs": 0.12
+      },
+      {
+        "key": "V8.HandleInterrupts",
+        "totalMs": 150.1,
+        "count": 10,
+        "maxMs": 149.1,
+        "avgMs": 15.01
+      },
+      {
+        "key": "V8.StackGuard",
+        "totalMs": 150,
+        "count": 9,
+        "maxMs": 149.1,
+        "avgMs": 16.67
+      },
+      {
+        "key": "V8.InvokeApiInterruptCallbacks",
+        "totalMs": 149.8,
+        "count": 2,
+        "maxMs": 149.1,
+        "avgMs": 74.92
+      },
+      {
+        "key": "Layerize",
+        "totalMs": 148.1,
+        "count": 602,
+        "maxMs": 0.5,
+        "avgMs": 0.25
+      },
+      {
+        "key": "UpdateLayoutTree",
+        "totalMs": 95.4,
+        "count": 602,
+        "maxMs": 0.6,
+        "avgMs": 0.16
+      },
+      {
+        "key": "V8.GC_MC_BACKGROUND_MARKING",
+        "totalMs": 68.8,
+        "count": 49,
+        "maxMs": 2.8,
+        "avgMs": 1.4
+      },
+      {
+        "key": "Paint",
+        "totalMs": 59.5,
+        "count": 1850,
+        "maxMs": 0.2,
+        "avgMs": 0.03
+      },
+      {
+        "key": "Commit",
+        "totalMs": 57.8,
+        "count": 603,
+        "maxMs": 0.2,
+        "avgMs": 0.1
+      },
+      {
+        "key": "PrePaint",
+        "totalMs": 47.3,
+        "count": 602,
+        "maxMs": 0.2,
+        "avgMs": 0.08
+      }
+    ],
+    "topByUrl": [
+      {
+        "key": "http://localhost:5173/node_modules/.vite/deps/chunk-KDCVS43I.js",
+        "totalMs": 4.2,
+        "count": 67,
+        "maxMs": 1.5,
+        "avgMs": 0.06
+      },
+      {
+        "key": "(blob)",
+        "totalMs": 0.8,
+        "count": 2,
+        "maxMs": 0.8,
+        "avgMs": 0.39
+      },
+      {
+        "key": "http://localhost:5173/node_modules/.vite/deps/@supabase_supabase-js.js",
+        "totalMs": 0.2,
+        "count": 3,
+        "maxMs": 0.1,
+        "avgMs": 0.07
+      },
+      {
+        "key": "http://localhost:5173/src/app/hooks/useNavigationGpsTracking.ts",
+        "totalMs": 0.2,
+        "count": 3,
+        "maxMs": 0.1,
+        "avgMs": 0.05
+      },
+      {
+        "key": "https://joint-oarfish-23.clerk.accounts.dev/npm/@clerk/clerk-js@5/dist/clerk.browser.js",
+        "totalMs": 0.1,
+        "count": 2,
+        "maxMs": 0.1,
+        "avgMs": 0.06
+      },
+      {
+        "key": "http://localhost:5173/src/app/components/landing/HeroSection.tsx",
+        "totalMs": 0.1,
+        "count": 1,
+        "maxMs": 0.1,
+        "avgMs": 0.07
+      },
+      {
+        "key": "http://localhost:5173/",
+        "totalMs": 0.1,
+        "count": 1,
+        "maxMs": 0.1,
+        "avgMs": 0.06
+      }
+    ],
+    "topByFunction": [
+      {
+        "key": "performWorkUntilDeadline",
+        "totalMs": 3.5,
+        "count": 3,
+        "maxMs": 1.5,
+        "avgMs": 1.16
+      },
+      {
+        "key": "dispatchEvent",
+        "totalMs": 0.7,
+        "count": 64,
+        "maxMs": 0.1,
+        "avgMs": 0.01
+      },
+      {
+        "key": "o",
+        "totalMs": 0.1,
+        "count": 1,
+        "maxMs": 0.1,
+        "avgMs": 0.1
+      },
+      {
+        "key": "navigator.geolocation.watchPosition.enableHighAccuracy",
+        "totalMs": 0.1,
+        "count": 1,
+        "maxMs": 0.1,
+        "avgMs": 0.07
+      }
+    ],
+    "longestTasks": [
+      {
+        "name": "RunTask",
+        "ms": 149.4,
+        "url": "(no-url)"
+      },
+      {
+        "name": "V8.StackGuard",
+        "ms": 149.1,
+        "url": "(no-url)"
+      },
+      {
+        "name": "V8.HandleInterrupts",
+        "ms": 149.1,
+        "url": "(no-url)"
+      },
+      {
+        "name": "V8.InvokeApiInterruptCallbacks",
+        "ms": 149.1,
+        "url": "(no-url)"
+      }
+    ]
+  }
+}

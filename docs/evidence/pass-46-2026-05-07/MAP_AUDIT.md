@@ -167,6 +167,10 @@ These are the deferred KI-075 items. The owner-stated 4 unlock triggers are NOT 
 - **Re-profile not run this pass** (requires interactive Chrome DevTools session against the live dev server — appropriate for a dedicated perf pass with profiler trace artifact).
 - Recommendation (deferred): a dedicated perf pass that captures a Chrome DevTools trace under pan/zoom load on `MapLibreServiceCoverageMap` + `CoverageMapDialog`, identifies the dominating frame-time contributor (suspect order: marker-render path → route geometry source → un-throttled effects in map controllers), and lands the cheapest win.
 
+> **Update — Pass 48 (2026-05-07, commit `7fb190a2`):** Profiled. Marker-render and route-geometry suspects **retired**. The actual hot surface is the **landing inline coverage map** (687 ms @ 1280, 897 ms @ 375 long-task burden); `CoverageMapDialog` showed **0 ms** under identical load. Top contributors are V8 / MapLibre internals (provider-side hard stops). Cheap-win sequence F.1-F.5 documented in [`docs/evidence/pass-48-2026-05-07/PERF_ANALYSIS.md`](../pass-48-2026-05-07/PERF_ANALYSIS.md).
+>
+> **Update — Pass 49 (2026-05-07):** F.1 lazy-mount shipped. Inline `<ServiceCoverageMap>` in `OperatingRegionsSection.tsx` is gated behind an `IntersectionObserver` (`rootMargin: "200px"`); post-trace assertion confirms `mapMounted: false` when the user doesn't scroll, and `maplibre-gl.js` is absent from the noscroll trace's top-10 URLs (vs 197.5 ms attributed in scrolled). When the user never reaches the map, MapLibre never executes. Full analysis: [`docs/evidence/pass-49-2026-05-07/PERF_ANALYSIS_AFTER.md`](../pass-49-2026-05-07/PERF_ANALYSIS_AFTER.md). KI-053 marked PARTIAL RESOLUTION; F.2-F.5 still open.
+
 ---
 
 ## E. Known-Issues Parity (Map-Related)
