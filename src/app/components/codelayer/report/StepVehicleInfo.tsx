@@ -191,7 +191,7 @@ export default function StepVehicleInfo({
                   className={`bd-report-input w-full rounded-2xl px-4 py-3 outline-none ${
                     isLightAppearance ? "text-slate-800" : "text-slate-100"
                   }`}
-                  placeholder="Toyota"
+                  placeholder="e.g. Toyota"
                 />
               </div>
 
@@ -213,7 +213,7 @@ export default function StepVehicleInfo({
                   className={`bd-report-input w-full rounded-2xl px-4 py-3 outline-none ${
                     isLightAppearance ? "text-slate-800" : "text-slate-100"
                   }`}
-                  placeholder="Camry"
+                  placeholder="e.g. Camry"
                 />
               </div>
 
@@ -235,7 +235,7 @@ export default function StepVehicleInfo({
                   className={`bd-report-input w-full rounded-2xl px-4 py-3 outline-none ${
                     isLightAppearance ? "text-slate-800" : "text-slate-100"
                   }`}
-                  placeholder="2021"
+                  placeholder="e.g. 2021"
                   inputMode="numeric"
                   maxLength={4}
                 />

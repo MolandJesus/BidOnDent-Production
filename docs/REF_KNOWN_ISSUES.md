@@ -476,7 +476,7 @@
 - **Location:** Report flow Step 1 vehicle entry component(s). Pre-existing report entry path. Audit AI's exact words: "fields show `value: ""` but placeholders match user's saved vehicle. So the visual is misleading — Toyota/Camry/2021 LOOK filled but aren't."
 - **Fix direction:** Verify the "Use" CTA on saved-vehicle cards: does it actually copy the saved vehicle data into the controlled inputs? If not, fix the click handler to call `setValue` for make/model/year. Alternative: use distinct placeholder text ("e.g. Toyota") rather than echoing the saved vehicle, so users don't read placeholder as filled.
 - **Severity:** **P1-DATA/UX.** Real user-facing risk of submitting empty form. Test coverage gap — Pass 61 should include a regression test for "saved-vehicle Use button populates form values."
-- **Status:** **OPEN — P1-DATA/UX.**
+- **Status:** **RESOLVED 2026-05-07 — Pass 65.** Source-walk confirmed the "Use" button on saved-vehicle cards is correctly wired: `onClick → onVehicleChange({ make, model, year: String(savedVehicle.year), vin })` flows through `ReportScreen` → `form.setVehicle` → useState update → controlled inputs re-render with new values. The audit AI's "value: """ observation was a coincidence — the hardcoded placeholders ("Toyota", "Camry", "2021") happened to match their saved vehicle. To prevent future confusion, placeholders are now prefixed with "e.g. " ("e.g. Toyota", "e.g. Camry", "e.g. 2021"), making it visually unambiguous that the field is empty until the user picks a saved vehicle or types.
 
 ### KI-126: Report flow wizard — empty-state layout overflow on ALL form steps before inputs are populated (P1-LAYOUT, RE-SCOPED)
 
