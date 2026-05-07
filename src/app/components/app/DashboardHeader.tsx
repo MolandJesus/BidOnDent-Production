@@ -383,9 +383,11 @@ export default function DashboardHeader({
               aria-label={
                 showNotifications
                   ? "Close notifications"
-                  : unreadCount > 0
-                    ? `Open notifications, ${unreadCount} unread`
-                    : "Open notifications"
+                  : unreadCount > 9
+                    ? "Open notifications, more than 9 unread"
+                    : unreadCount > 0
+                      ? `Open notifications, ${unreadCount} unread`
+                      : "Open notifications"
               }
               aria-controls="dashboard-notification-center"
               aria-expanded={showNotifications}

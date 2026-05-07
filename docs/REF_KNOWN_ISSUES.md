@@ -446,7 +446,7 @@
 - **Impact:** Sighted + screen reader users hear different counts. Lower priority than KI-116 / KI-117 which are inflating the count in the first place.
 - **Fix direction:** Either cap the ARIA count to match visual ("more than 8 unread") or remove the visual cap. Match visual + ARIA semantics.
 - **Severity:** **P3-A11Y.** Cosmetic-tier accessibility issue.
-- **Status:** **OPEN — P3-A11Y.**
+- **Status:** **RESOLVED — Pass 80 (2026-05-07).** [`DashboardHeader.tsx`](../src/app/components/app/DashboardHeader.tsx) bell `aria-label` now matches the visual cap: when `unreadCount > 9`, screen readers hear "Open notifications, more than 9 unread" (mirrors the visual "9+"); otherwise the exact count is announced. Sighted + screen reader users hear the same semantic. The other notification badge surfaces ([`dashboard/DashboardHeader.tsx`](../src/app/components/dashboard/DashboardHeader.tsx) red dot + [`ProfileDropdown.tsx`](../src/app/components/dashboard/ProfileDropdown.tsx) inline pill) render the raw count without a visual cap, so they already match — no change needed.
 
 ### KI-124: Polish bundle from external audit (P2-COPY + P3-VISUAL)
 
