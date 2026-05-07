@@ -78,9 +78,9 @@ export default function ShopRatingModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 animate-in fade-in duration-200 motion-reduce:animate-none">
       <div
-        className={`bd-glass-floating rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto${isLight ? " bd-light-surface" : ""}`}
+        className={`bd-glass-floating rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto animate-in zoom-in-95 slide-in-from-bottom-2 duration-300 motion-reduce:animate-none${isLight ? " bd-light-surface" : ""}`}
       >
         <div
           className={`sticky top-0 backdrop-blur-sm border-b p-4 flex justify-between items-center ${
