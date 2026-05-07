@@ -192,7 +192,7 @@ export function GeoErrorToast({
 }) {
   if (!geoError) return null;
   return (
-    <div className="pointer-events-none absolute right-3 top-14 z-[550] sm:top-16">
+    <div className="pointer-events-none absolute right-3 top-14 z-[550] sm:top-16 animate-in fade-in slide-in-from-top-2 duration-300 motion-reduce:animate-none">
       <div
         className={`pointer-events-auto rounded-xl border px-3 py-2 shadow-lg backdrop-blur-2xl ${
           isDark
