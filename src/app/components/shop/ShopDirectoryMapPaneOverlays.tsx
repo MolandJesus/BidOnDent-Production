@@ -323,7 +323,7 @@ export function MapPaneSearchPills({
   if (onSearchInArea && hasPanned && !searchWithinViewport) {
     return (
       <div
-        className={`pointer-events-none absolute inset-x-0 z-[600] flex justify-center ${
+        className={`pointer-events-none absolute inset-x-0 z-[600] flex justify-center animate-in fade-in slide-in-from-top-2 duration-300 motion-reduce:animate-none ${
           isCompactDensity ? "top-2" : "top-3"
         }`}
       >
@@ -350,7 +350,7 @@ export function MapPaneSearchPills({
   if (onClearAreaSearch && searchWithinViewport) {
     return (
       <div
-        className={`pointer-events-none absolute inset-x-0 z-[600] flex justify-center ${
+        className={`pointer-events-none absolute inset-x-0 z-[600] flex justify-center animate-in fade-in slide-in-from-top-2 duration-300 motion-reduce:animate-none ${
           isCompactDensity ? "top-2" : "top-3"
         }`}
       >
