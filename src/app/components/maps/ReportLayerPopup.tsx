@@ -32,7 +32,7 @@ export default function ReportLayerPopup({
       anchor="bottom"
       offset={16}
     >
-      <div className="min-w-[160px] space-y-1 p-1">
+      <div className="min-w-[160px] space-y-1 p-1 animate-in fade-in zoom-in-95 duration-200 motion-reduce:animate-none">
         <div
           className="text-[10px] font-semibold uppercase tracking-wider"
           style={{ color: isDark ? "rgba(253, 220, 160, 0.92)" : "rgba(110, 70, 18, 1)" }}
