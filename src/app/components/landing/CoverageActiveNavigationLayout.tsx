@@ -173,7 +173,7 @@ export default function CoverageActiveNavigationLayout({
       <div className="relative">
         {/* Transition overlay — brief "entering navigation" feedback */}
         {navigationTransition ? (
-          <div className="pointer-events-none absolute inset-0 z-[580] flex items-center justify-center rounded-[2rem]">
+          <div className="pointer-events-none absolute inset-0 z-[580] flex items-center justify-center rounded-[2rem] animate-in fade-in duration-200 motion-reduce:animate-none">
             <div className="animate-pulse rounded-full border border-white/20 bg-slate-950/60 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-2xl">
               Starting navigation...
             </div>
@@ -182,7 +182,7 @@ export default function CoverageActiveNavigationLayout({
 
         {/* Arrival overlay — celebrates reaching the destination */}
         {arrivalTransition ? (
-          <div className="pointer-events-none absolute inset-0 z-[580] flex flex-col items-center justify-center gap-3 rounded-[2rem]">
+          <div className="pointer-events-none absolute inset-0 z-[580] flex flex-col items-center justify-center gap-3 rounded-[2rem] animate-in fade-in zoom-in-95 duration-300 motion-reduce:animate-none">
             <div
               className={cn(
                 "rounded-[1.35rem] border px-6 py-4 text-center backdrop-blur-3xl",
