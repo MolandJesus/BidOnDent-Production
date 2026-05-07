@@ -74,7 +74,7 @@ export default function ShopDirectoryMapInfoPanel({
   if (!shop) {
     return (
       <aside
-        className={`pointer-events-auto absolute left-3 top-[8.5rem] z-[525] hidden w-[300px] rounded-2xl border shadow-2xl sm:block ${panelBg}`}
+        className={`pointer-events-auto absolute left-3 top-[8.5rem] z-[525] hidden w-[300px] rounded-2xl border shadow-2xl sm:block animate-in fade-in slide-in-from-left-3 duration-300 motion-reduce:animate-none ${panelBg}`}
         role="complementary"
         aria-label="Shop info panel"
       >
@@ -135,7 +135,7 @@ export default function ShopDirectoryMapInfoPanel({
   if (minimized) {
     return (
       <aside
-        className={`pointer-events-auto absolute left-3 top-[8.5rem] z-[525] hidden sm:block`}
+        className={`pointer-events-auto absolute left-3 top-[8.5rem] z-[525] hidden sm:block animate-in fade-in zoom-in-95 duration-200 motion-reduce:animate-none`}
         role="complementary"
         aria-label="Selected shop info (minimized)"
       >
