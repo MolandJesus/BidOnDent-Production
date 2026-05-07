@@ -612,7 +612,7 @@
   - Keep Delete Account in a separate "Danger Zone" section deeper in Settings, with explicit confirmation (type your email, then click).
   - Visual: Delete Account always uses destructive-tone (red trim), Sign Out uses neutral-tone.
 - **Severity:** **P2-UX.** Standard SaaS Account-page pattern violation.
-- **Status:** **OPEN — P2-UX.**
+- **Status:** **RESOLVED 2026-05-07 — Pass 70.** [`AccountMenu.tsx`](../src/app/components/codelayer/account/AccountMenu.tsx) now splits the two actions across distinct sections: "Session" (Sign Out only) and "Danger Zone" (Delete Account only). Danger Zone is visually separated by `mt-4 border border-rose-500/30`, eyebrow uses `text-rose-400`, and the right-side label reads "Irreversible". Delete Account still routes through [`DeleteAccountModal`](../src/app/components/codelayer/account/DeleteAccountModal.tsx) for the confirmation step. Sidebar one-click Sign Out (the deeper redesign) deferred — current split removes the mis-tap risk without re-architecting the Account screen.
 
 ### KI-138: Notification preferences endpoint returns 500 + UI stuck on infinite loading — `notification_preferences` table missing in production (P1-RUNTIME)
 

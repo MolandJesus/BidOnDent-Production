@@ -187,6 +187,9 @@ export default function AccountMenu({
     });
   }
 
+  // Pass 70 (2026-05-07) — KI-137: separate Sign Out (everyday) from
+  // Delete Account (destructive). Adjacency was a real mis-tap risk —
+  // they now live in their own visually distinct sections.
   const sessionRows: MenuRow[] = [
     {
       label: "Sign Out",
@@ -195,6 +198,9 @@ export default function AccountMenu({
       tone: "deep",
       onClick: onLogout,
     },
+  ];
+
+  const dangerRows: MenuRow[] = [
     {
       label: "Delete Account",
       description: "Permanently remove profile access and stored account data.",
@@ -288,10 +294,22 @@ export default function AccountMenu({
         <div className="bd-dashboard-note rounded-2xl p-3">
           <div className="mb-2 flex items-center justify-between px-1">
             <p className="bd-section-eyebrow">Session</p>
-            <span className={`text-xs ${subduedLabelTone}`}>Sensitive actions</span>
+            <span className={`text-xs ${subduedLabelTone}`}>End this session</span>
           </div>
           <div className="space-y-2">
             {sessionRows.map((row) => (
+              <div key={row.label}>{renderRow(row)}</div>
+            ))}
+          </div>
+        </div>
+
+        <div className="bd-dashboard-note rounded-2xl p-3 mt-4 border border-rose-500/30">
+          <div className="mb-2 flex items-center justify-between px-1">
+            <p className="bd-section-eyebrow text-rose-400">Danger Zone</p>
+            <span className="text-xs text-rose-400/70">Irreversible</span>
+          </div>
+          <div className="space-y-2">
+            {dangerRows.map((row) => (
               <div key={row.label}>{renderRow(row)}</div>
             ))}
           </div>
