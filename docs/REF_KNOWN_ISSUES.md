@@ -871,3 +871,25 @@
 
 - **Caveat:** absence of evidence ≠ evidence of absence. The 100-event window covers ~3 seconds; the leak window is 90+ days. Owner runs Studio Logs Explorer with a 90-day filter for full-window proof.
 - **Status update only — KI-152 itself stays OPEN** as P0-SECURITY pending owner key rotation. Visible-window audit clean is a small comfort; rotation is still mandatory.
+
+### KI-154: Google OAuth `disallowed_useragent` blocks "Sign in with Google" in VS Code's Simple Browser (P3-DEV-EXPERIENCE — MITIGATED 2026-05-07)
+
+> **Added 2026-05-07 — Pass 170 mitigation.** Google's "Use secure browsers" policy rejects OAuth requests from embedded browsers / WebViews / Electron-based shells. VS Code's Simple Browser (vscode-browser) qualifies as embedded. The "Sign in with Google" button inside the Clerk-hosted modal redirects to `accounts.google.com/signin/oauth/...` which detects the embedded UA and returns:
+>
+>     Error 403: disallowed_useragent
+>     "Clerk's request does not comply with Google's policies"
+>
+> This is **NOT a BidOnDent code bug**. Same policy applies to every OAuth client. Real Chrome / Firefox / Safari work normally — owner confirmed external Chrome works ("Chrome audit AI works").
+
+- **Impact (dev-only):** Developers iterating in VS Code's Simple Browser can't test Google sign-in flows without context-switching to a separate Chrome window.
+- **Mitigation (Pass 170):** Dev-mode banner detects embedded browser via UA pattern matching (`Electron/`, `wv)`, `VSCode`, `Code/`, `Simple Browser`) and surfaces two workarounds:
+  1. Open `localhost:5173` in a real Chrome window (full OAuth works).
+  2. Append `?demo=customer` or `?demo=shop` to bypass Clerk entirely (synthesized data; pre-existing dev-mode in `App.tsx:464-468`).
+  Banner is dismissable + persisted via `localStorage.bidondent.dev.embedded-browser-banner.dismissed`.
+- **Files (Pass 170):**
+  - New: `src/app/utils/embeddedBrowserCheck.ts` — UA detection + describe helper
+  - New: `src/app/components/dev/EmbeddedBrowserBanner.tsx` — top-of-viewport banner, gated on `import.meta.env.DEV` + `isEmbeddedBrowser()`
+  - Modified: `src/app/App.tsx` — banner wired inside ClerkProvider
+- **Production cost:** ZERO. Vite tree-shakes the entire banner component when `import.meta.env.DEV` is `false`. No bundle weight, no runtime check, no UA sniffing in prod.
+- **Severity:** **P3-DEV-EXPERIENCE — MITIGATED.** Code-side cannot fully resolve Google's policy; banner is the right human-facing fix. Move to RESOLVED archive on next docs hygiene pass.
+- **Status:** **MITIGATED 2026-05-07** — banner shipped Pass 170. Full OAuth still requires real Chrome.

@@ -57,6 +57,7 @@ import ShopOnboarding from "./components/shop/ShopOnboarding";
 import InsurerOnboarding from "./components/insurer/InsurerOnboarding";
 import DevDemoCustomerApp from "./components/dev/DevDemoCustomerApp";
 import DevDemoShopApp from "./components/dev/DevDemoShopApp";
+import EmbeddedBrowserBanner from "./components/dev/EmbeddedBrowserBanner";
 import { readDevDemoMode } from "./utils/devDemoMode";
 
 // Standalone pages (lazy-loaded — only fetched when hash route is visited)
@@ -478,6 +479,12 @@ export default function App() {
       appearance={clerkAppearance}
       afterSignOutUrl="/"
     >
+      {/* Pass 170 (2026-05-07) — Google OAuth disallowed_useragent
+          mitigation. Renders dev-only banner if the app is loaded inside
+          VS Code Simple Browser / Electron / Android WebView, telling
+          the developer to open localhost in real Chrome OR use
+          ?demo=customer to bypass Clerk auth. Production short-circuits. */}
+      <EmbeddedBrowserBanner />
       <AppWithToast />
     </ClerkProvider>
   );
