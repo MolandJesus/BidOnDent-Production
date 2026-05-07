@@ -138,6 +138,11 @@ export function useShopDirectoryNavigation({
     voicePersona: guidanceSettings.voicePersona,
     voiceVolumePreset: guidanceSettings.voiceVolumePreset,
     selectedRouteIndex,
+    // Pass 57 (2026-05-07): the reroute lifecycle owns the OSRM refetch when
+    // it is `pending` (request in flight) or `cooldown` (just landed). Silent
+    // off-route auto-refetch must stand down to avoid double-firing.
+    suppressOffRouteRefetch:
+      reroute.state.status === "pending" || reroute.state.status === "cooldown",
   });
 
   useNavigationVoiceAlerts(

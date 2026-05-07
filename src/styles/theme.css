@@ -1013,8 +1013,8 @@ body {
    Use on marketing/landing cards where visible presence matters more than dashboard calm.
    Dark variant lives below in the dark-mode override block. */
 .bd-glass-card--landing {
-  /* Pass C-fix (KI-082, 2026-05-04 owner feedback "new boarder design isnt
-     smoth gradient at all"): the prior pass stacked two 1px rings (bronze
+  /* Pass C-fix (KI-082, 2026-05-04 owner feedback "new boarder design isn't
+     smooth gradient at all"): the prior pass stacked two 1px rings (bronze
      0.18 + cool 0.22) on top of a 1px bronze rim, producing a stamped
      2-3px hard edge. Fix replaces hard rings with feathered diffuse
      halos so trim reads as premium light, not paint:
@@ -2913,6 +2913,12 @@ body {
    Shared premium glass treatment for the rest of the dashboard.
    ============================================================ */
 
+/* NOSONAR css:S4666 — intentional second `:root` block. The first `:root`
+   (line ~895) defines the BD glass utility tokens; this second block
+   defines dashboard-surface tokens. Cascade order is structural: dashboard
+   tokens land after glass tokens so a later override is possible. Merging
+   would force one giant `:root` and break the topical separation that the
+   rest of the codebase navigates by. */
 :root {
   /* D4 (final v2): NAVY dashboard surfaces in dark with GOLD trim + lamp glow.
      Backgrounds stay deep navy (the user-approved dark blue base); amber is
@@ -2927,7 +2933,7 @@ body {
      Pass 7 (KI-081): ceiling-lamp alpha 0.14 -> 0.18 + ellipse height 30% ->
      34% so the lit-from-above presence is unmistakable on dark dashboard. */
   /* Pass F (KI-085, owner feedback "still look like light is stamped on...
-     instead of haing prmium gold lighting coming from behihind"): body
+     instead of having premium gold lighting coming from behind"): body
      opacity dropped 0.92/0.88 -> 0.78/0.72 so the DashboardAtmosphere
      page-level gold lamps (D6/D7/D8/D9/D10) show THROUGH the translucent
      glass body. Combined with existing backdrop-filter blur(20px), this
@@ -3041,6 +3047,12 @@ body {
   --bd-dashboard-ghost-text: rgba(252, 240, 208, 0.88);
 }
 
+/* NOSONAR css:S4666 — intentional second `[data-appearance-mode="light"]`
+   block. The first block (line ~2160) defines page-level glass surface
+   tokens for light mode; this second block defines dashboard-specific
+   light-mode tokens scoped to the dashboard surface system. Cascade order
+   is structural and must stay after the dashboard `:root` block above so
+   light overrides can land last. Merging would break topical separation. */
 [data-appearance-mode="light"] {
   /* LAW (do not break): light-mode surfaces are warm ivory/champagne with
      visible bronze trim, riding on a cool blue-gray canvas. Variation, not
@@ -4323,7 +4335,7 @@ body {
    so they read as lit-from-page-atmosphere, not edge-trimmed. Owner
    verbatim 2026-05-04: "for future landing page design updates,
    sections still need work as well as more gold areas and lighting
-   prmium." This is the structural primitive (Item 1 of Codex's prompt
+   premium." This is the structural primitive (Item 1 of Codex's prompt
    bundle); items 2-5 (eyebrow chip glow, CTA pill glow, list
    checkmarks, divider tint) deferred until owner verifies this primitive
    reads correctly. Section-LEVEL canon — extends the directional triad
