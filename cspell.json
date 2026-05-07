@@ -421,6 +421,7 @@
     "miscalibrated",
     "remediations",
     "initplan",
-    "pkey"
+    "pkey",
+    "functiondef"
   ]
 }
