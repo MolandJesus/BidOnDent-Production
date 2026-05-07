@@ -297,7 +297,15 @@ export default function MapLibreServiceCoverageMap({
           onZoom={handleZoom}
         >
           <AttributionControl position="bottom-right" compact />
-          <NavigationControl position="bottom-right" showCompass={false} />
+          {/* Pass 172 (2026-05-07) — Phase 7 map-program-feel #7: compass +
+              click-to-reset-north in fullscreen / immersive surfaces only.
+              Inline previews on landing + dashboard keep clean chrome
+              (showCompass false) so the embedded card stays minimal; the
+              full-screen experience gets the premium map-program affordance
+              users expect when actually navigating. The map has bearing
+              tracking via MapLibreFollowLocationController so the compass
+              actually reflects heading. */}
+          <NavigationControl position="bottom-right" showCompass={immersiveFullscreen} />
 
           <MapLibreViewportController center={center} zoom={zoom} revision={revision} />
           <MapLibreFollowLocationController
