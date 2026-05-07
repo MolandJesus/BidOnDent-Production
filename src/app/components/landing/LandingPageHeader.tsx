@@ -40,7 +40,11 @@ export default function LandingPageHeader({
       setIsScrolled(window.scrollY > 50);
     };
 
-    window.addEventListener("scroll", handleScroll);
+    // Pass 86 (2026-05-07) — KI-053 F.3 passive-listeners audit. The header
+    // scroll listener never calls `preventDefault`, so marking it passive
+    // lets the browser scroll without waiting for this handler — reduces
+    // main-thread contention with MapLibre on the landing surface.
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
