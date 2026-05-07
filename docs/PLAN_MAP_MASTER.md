@@ -1,12 +1,14 @@
 # BidOnDent Map Master Plan
 
-> ### ⚡ HARDENING PHASE NOTICE (2026-04-14)
+> ### ⚡ HARDENING PHASE NOTICE (2026-04-14, AMENDED 2026-05-07)
 >
 > This document remains the **strategic vision** for the map program. It is **not** current execution law.
 >
 > During the Soft Launch Hardening phase, the binding execution doc is [`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md). **Feature-level map work is paused** — no new map features, no aspirational atmosphere work, no provider migrations. The strategic vision in this doc stays intact for post-launch reactivation; it just does not drive the day-to-day queue while hardening is active.
 >
 > Exception: any map change that is required to close a Launch Scope Guardrail or support a Hardening Plan phase item is allowed under the Hardening Plan's scope, not this doc's.
+>
+> **2026-05-07 amendment — KI-075 unlocked:** Owner asserted all four KI-075 trigger conditions on 2026-05-07 via planner-AI authority chain. Functional buildout scope (turn-by-turn engine, voice TTS, deviation detection, saved-places persistence, real-time marker availability, per-role layer rules) is now ACTIVE and may proceed under the containment-over-expansion rule (one functional item per pass plus hardening-safe polish). See [`REF_KNOWN_ISSUES.md` KI-075](REF_KNOWN_ISSUES.md#ki-075-future-navigation-engine--map-functional-buildout-active--unlocked-2026-05-07) for trigger assertions and per-pass scope ceiling. Provider stack stays locked (MapLibre + OSRM + Nominatim-via-edge + Overpass).
 
 **Last updated:** April 17, 2026 (Hardening phase active — strategic vision retained, submitted address search commit hardening documented)
 **Status:** Strategic vision (paused during hardening)
