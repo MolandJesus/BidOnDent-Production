@@ -893,3 +893,58 @@
 - **Production cost:** ZERO. Vite tree-shakes the entire banner component when `import.meta.env.DEV` is `false`. No bundle weight, no runtime check, no UA sniffing in prod.
 - **Severity:** **P3-DEV-EXPERIENCE — MITIGATED.** Code-side cannot fully resolve Google's policy; banner is the right human-facing fix. Move to RESOLVED archive on next docs hygiene pass.
 - **Status:** **MITIGATED 2026-05-07** — banner shipped Pass 170. Full OAuth still requires real Chrome.
+
+### KI-155: Nav sidebar overlaps wizard headings at 1280-1422 desktop widths (P1-LAYOUT)
+
+> **Added 2026-05-07 — external audit AI Pass 9 §1.1 Report flow walkthrough.** Confirmed via `elementFromPoint(245, 200)` returning a NAV BUTTON (`.group w-full flex items-center gap-3 px-3.5 py-2.5`) instead of the wizard's H2 heading. The wizard's `bd-report-section` left edge sits at x=245 while the persistent left nav sidebar's right edge sits at x=275. **30px overlap — first 8 characters of every wizard heading are hidden behind the nav buttons.**
+>
+> Examples observed at ~1422px viewport:
+> - Step 4 heading "Add damage photos" rendered as "ge photos" (first 8 chars behind nav).
+> - Step 3 helper text and Step 2 heading similarly clipped.
+> - Step 1 NOT affected — saved-vehicle picker has different positioning that lands clear of the sidebar.
+
+- **Impact:** Significant content invisibility at common laptop widths (1280-1422px viewport, common for 13" MacBooks). Users see truncated headings on Steps 2, 3, 4, 5 and may misread the wizard.
+- **Location:** Wizard panel (`bd-report-section`) margin / max-width vs persistent left nav sidebar. Likely a missing `lg:ml-N` or a `max-w-` ceiling that doesn't account for the sidebar's width. Builder verifies via DevTools.
+- **Fix direction:** Two paths:
+  1. **Push wizard right** — add `md:ml-{sidebar-width}` to the wizard's outer container OR ensure the parent flex container reserves the sidebar's width.
+  2. **Shrink wizard panel** — apply `max-w-{N}` so the wizard fits within the available content area outside the sidebar.
+  Path 1 is preferred (preserves wizard width). Single-file fix expected.
+- **Severity:** **P1-LAYOUT.** Real user-facing content invisibility on common viewports.
+- **Status:** **OPEN — P1-LAYOUT.** Targeted Pass 171 (this turn).
+
+### KI-156: Report flow Step 4 inconsistent photo labeling — Photo 1 no caption / Photo 2 "Cloud photo" (P3-FUNCTIONAL)
+
+> **Added 2026-05-07 — external audit AI Pass 9 §1.1.** Both uploaded photos rendered, but only Photo 2 had a caption ("Cloud photo"); Photo 1 had no caption. Inconsistent treatment.
+
+- **Impact:** Mild polish gap. Either both photos should show caption affordance or neither. Users may not understand the labeling.
+- **Fix direction:** Audit the photo-rendering component; pick one model (always show caption affordance OR never). Surgical 1-file fix.
+- **Severity:** **P3-FUNCTIONAL.** Polish.
+- **Status:** **OPEN — P3-FUNCTIONAL.**
+
+### KI-157: Wizard step transitions take 3-5 seconds for opacity fade — perceived sluggishness (P3-UX)
+
+> **Added 2026-05-07 — external audit AI Pass 9 §1.1 capture artifact analysis.** Audit AI initially mistook step transitions for "ghosted UI" because the opacity fade-in is so slow (~3-5s) that intermediate captures show partially-visible content. Real users would perceive the wizard as sluggish.
+
+- **Impact:** Each forward navigation through the wizard feels slow. Compounds with KI-128 photo-required gating (no Skip) — users feel stuck.
+- **Fix direction:** Locate the transition CSS or framer-motion easing. Reduce duration from 3-5s to 200-400ms (matches the entrance-animation loop pattern Pass 151-169 uses: `duration-200`). Verify reduce-motion contract still holds.
+- **Severity:** **P3-UX.** Polish; user-perception bug.
+- **Status:** **OPEN — P3-UX.**
+
+### KI-126: REFINED 2026-05-07 — likely already-resolved
+
+> **Status update 2026-05-07 — Pass 9 §1.1 verification.** External audit AI confirmed Step 1 desktop two-column-grid renders cleanly at 1280, 1422, 1725 px viewport widths. The empty-state overflow originally reported was **the same screenshot-capture artifact** that briefly showed wizard heading "clipping" — when audit AI walked through with proper waits, all wizard step layouts render correctly at those widths.
+>
+> KI-126 may already be RESOLVED by the 142 unpushed commits + Phase 2 work that landed earlier in this autopilot chain (Pass 63 onwards). Verification commit reference unknown — flagged for next docs hygiene pass to confirm + archive.
+>
+> The "first 8 chars hidden" issue from this turn IS NOT KI-126 (empty-state overflow) — that was KI-155 (nav-sidebar overlap), a distinct layout bug. KI-126 stays OPEN until a code-side commit reference can be cited that explicitly closes it; if none, demote to MITIGATED-VERIFIED-CLEAN-IN-AUDIT.
+
+### KI-101: Audit Pass 9 §1.1 confirms FULL propagation end-to-end (status update — RESOLUTION reaffirmed)
+
+> **Status update 2026-05-07 — Pass 9 §1.1 full walkthrough.** Audit AI walked Customer Report flow Step 1 → Step 5 (final). KI-101 propagation verified at:
+>
+> 1. Dashboard "Repair Activity" list — shows "2021 Toyota Camry" ✓
+> 2. Step 1 saved-vehicle picker — both pills show "2021 Toyota Camry" + "2014 Mazda Mazda6" ✓
+> 3. Step 1 "Use" button — populates `make=Toyota`, `model=Camry`, `year=2021` (no "Toyoto" leak) ✓
+> 4. Wizard structure REVEALED: there is NO Step 5 Review surface. Steps are: 1 Vehicle / 2 Damage zone / 3 Location / 4 Photos / 5 Description + Submit. No separate "confirm all inputs" page. Vehicle data goes Step 1 → DB on Submit. **No additional client-side render path needs the fix to extend.**
+>
+> **The load-bearing question that gated planner-AI's master plan across 8 audit passes is RESOLVED: KI-101 database fix is fully sufficient. No Step 5 client-render fix needed.** Master builder plan can dispatch Phase 2 + Phase 5 with full confidence in this KI's RESOLVED stamp. Move to RESOLVED archive on next docs hygiene pass.
