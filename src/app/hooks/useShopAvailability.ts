@@ -49,9 +49,7 @@ export type UseShopAvailabilityViewerArgs = {
   enabled?: boolean;
 };
 
-export type UseShopAvailabilityArgs =
-  | UseShopAvailabilityOwnerArgs
-  | UseShopAvailabilityViewerArgs;
+export type UseShopAvailabilityArgs = UseShopAvailabilityOwnerArgs | UseShopAvailabilityViewerArgs;
 
 export type UseShopAvailabilityOwnerReturn = {
   mode: "owner";
@@ -72,9 +70,7 @@ export type UseShopAvailabilityReturn =
 
 const EMPTY_STATES: Map<string, ShopAvailabilityState> = new Map();
 
-export function useShopAvailability(
-  args: UseShopAvailabilityArgs
-): UseShopAvailabilityReturn {
+export function useShopAvailability(args: UseShopAvailabilityArgs): UseShopAvailabilityReturn {
   // ── owner branch ────────────────────────────────────────────────────────
   const ownerShopId = args.mode === "owner" ? args.shopId : undefined;
   const [ownerState, setOwnerState] = useState<ShopAvailabilityState | null>(null);

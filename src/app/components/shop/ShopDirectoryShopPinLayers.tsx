@@ -181,8 +181,8 @@ export default function ShopDirectoryShopPinLayers({
       clusterRadius={50}
     >
       {/* ── Cluster circle
-        * NOTE: `circle-opacity` is intentionally absent — Pass 97 manages it
-        * imperatively for the drop-in fade animation. */}
+       * NOTE: `circle-opacity` is intentionally absent — Pass 97 manages it
+       * imperatively for the drop-in fade animation. */}
       <Layer
         id={SHOP_CLUSTER_LAYER}
         type="circle"

@@ -304,8 +304,8 @@ export default function MapLibreReportLayer({
         clusterRadius={45}
       >
         {/* ── Cluster circles
-          * NOTE: `circle-opacity` intentionally absent — Pass 99 manages it
-          * imperatively for the drop-in fade animation. */}
+         * NOTE: `circle-opacity` intentionally absent — Pass 99 manages it
+         * imperatively for the drop-in fade animation. */}
         <Layer
           id={CLUSTER_LAYER_ID}
           type="circle"
