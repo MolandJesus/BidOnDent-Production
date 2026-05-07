@@ -518,4 +518,36 @@
     opacity: 1 !important;
     transform: none !important;
   }
+
+  /* Pass 93: tile-mode cross-fade overlay — disable in reduce-motion */
+  .bd-tile-fade {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+}
+
+/* ==========================================================================
+ * Pass 93 (2026-05-07) — Tile-mode cross-fade overlay
+ * --------------------------------------------------------------------------
+ * Brief tinted overlay flashes when MapLibre tile style swaps (night ↔
+ * satellite ↔ roadmap), masking the otherwise instant style swap so the
+ * transition reads as a smooth dissolve. Total duration ~600ms (250ms
+ * fade-in, 350ms fade-out). One-shot via React key remount.
+ * Reduce-motion override above sets opacity:0 / animation:none.
+ * ========================================================================== */
+@keyframes bdTileFade {
+  0% {
+    opacity: 0;
+  }
+  35% {
+    opacity: 0.85;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.bd-tile-fade {
+  opacity: 0;
+  animation: bdTileFade 600ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }

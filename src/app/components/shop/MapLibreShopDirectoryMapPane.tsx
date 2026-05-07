@@ -5,7 +5,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 
 import { Map, GeolocateControl, NavigationControl, ScaleControl } from "react-map-gl/maplibre";
 import { Source, Layer } from "react-map-gl/maplibre";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Expand } from "lucide-react";
 import { usePublicServiceAreas } from "../../hooks/usePublicServiceAreas";
 import { circleToPolygon } from "../../utils/geoCircle";
@@ -174,6 +174,33 @@ export default function MapLibreShopDirectoryMapPane({
     overlayDensity,
   });
 
+  /* ── Pass 93: Tile-mode cross-fade (owner real-map directive) ──────
+   * Switching night ↔ satellite ↔ roadmap previously swapped the MapLibre
+   * style instantly — visually jarring. We now flash a brief tinted overlay
+   * over the canvas (250ms fade-in, 350ms fade-out) so the swap reads as a
+   * smooth dissolve rather than a hard cut. The overlay's tint matches the
+   * destination tileMode so the eye lands gently on the new palette.
+   * Reduce-motion users skip the overlay entirely. */
+  const [tileFadeKey, setTileFadeKey] = useState(0);
+  const prevTileModeRef = useRef(tileMode);
+  useEffect(() => {
+    if (prevTileModeRef.current === tileMode) return;
+    prevTileModeRef.current = tileMode;
+    const reduceMotion =
+      typeof window !== "undefined" &&
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) return;
+    setTileFadeKey((k) => k + 1);
+  }, [tileMode]);
+
+  const tileFadeTint =
+    tileMode === "night"
+      ? "rgba(10, 26, 56, 0.65)"
+      : tileMode === "satellite"
+        ? "rgba(12, 20, 32, 0.55)"
+        : "rgba(232, 238, 248, 0.55)";
+
   /* ── Service area circles ─────────────────────────────────────── */
   const { areas: publicServiceAreas } = usePublicServiceAreas();
   const serviceAreaGeoJson = useMemo(
@@ -205,6 +232,15 @@ export default function MapLibreShopDirectoryMapPane({
       }
     >
       <MapPaneAtmosphereOverlays isNight={isNight} isSatellite={isSatellite} />
+      {/* Pass 93: tile-mode cross-fade overlay (key forces remount per swap) */}
+      {tileFadeKey > 0 && (
+        <div
+          key={tileFadeKey}
+          aria-hidden="true"
+          className="bd-tile-fade pointer-events-none absolute inset-0 z-[210]"
+          style={{ backgroundColor: tileFadeTint }}
+        />
+      )}
       {/* ── Header badges ── */}
       {!suppressHeader && (
         <MapPaneHeaderBadges
