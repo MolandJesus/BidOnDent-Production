@@ -93,6 +93,82 @@ export default function ShopDirectoryShopPinLayers({
     };
   }, [map, hasSelectedShop]);
 
+  /* ── Pass 97: Shop pin set drop-in fade (owner real-map directive)
+   *
+   * When a new set of shops first appears (or the visible set changes
+   * meaningfully — e.g. user pans, "search this area" runs, role switch),
+   * the pins previously snapped in at full opacity. Real-map apps fade
+   * markers in. We animate SHOP_LAYER + SHOP_CLUSTER_LAYER circle-opacity
+   * from 0 → final over 500ms ease-out cubic, keyed to the shop count
+   * signature so the fade only re-fires when the set actually changes.
+   *
+   * `circle-opacity` is intentionally absent from each layer's declarative
+   * paint so react-map-gl does not overwrite the imperative value.
+   * Reduce-motion users get the final opacity instantly.
+   */
+  const shopSetSignature = useMemo(() => {
+    const count = shopsGeoJson.features.length;
+    if (count === 0) return "empty";
+    // Cheap signature: count + first/last shop ids (covers add/remove/replace)
+    const first = shopsGeoJson.features[0]?.properties?.id ?? "?";
+    const last = shopsGeoJson.features[count - 1]?.properties?.id ?? "?";
+    return `${count}|${first}|${last}`;
+  }, [shopsGeoJson]);
+  const dropInRafRef = useRef<number | null>(null);
+  useEffect(() => {
+    if (!map || shopSetSignature === "empty") return;
+    const m = map.getMap?.() ?? map;
+    if (!m || typeof m.setPaintProperty !== "function") return;
+
+    const reduceMotion =
+      typeof window !== "undefined" &&
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const SHOP_FINAL = 0.92;
+    const CLUSTER_FINAL = 0.88;
+    const setOps = (shopOp: number, clusterOp: number) => {
+      try {
+        if (m.getLayer && m.getLayer(SHOP_LAYER)) {
+          m.setPaintProperty(SHOP_LAYER, "circle-opacity", shopOp);
+        }
+        if (m.getLayer && m.getLayer(SHOP_CLUSTER_LAYER)) {
+          m.setPaintProperty(SHOP_CLUSTER_LAYER, "circle-opacity", clusterOp);
+        }
+      } catch {
+        // Layers not yet added — harmless, next signature change will retry
+      }
+    };
+
+    if (reduceMotion) {
+      setOps(SHOP_FINAL, CLUSTER_FINAL);
+      return;
+    }
+
+    const start = performance.now();
+    const duration = 500;
+    setOps(0, 0);
+    const tick = (now: number) => {
+      const p = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - p, 3); // ease-out cubic
+      setOps(SHOP_FINAL * eased, CLUSTER_FINAL * eased);
+      if (p < 1) {
+        dropInRafRef.current = requestAnimationFrame(tick);
+      } else {
+        dropInRafRef.current = null;
+      }
+    };
+    dropInRafRef.current = requestAnimationFrame(tick);
+
+    return () => {
+      if (dropInRafRef.current !== null) {
+        cancelAnimationFrame(dropInRafRef.current);
+        dropInRafRef.current = null;
+      }
+      setOps(SHOP_FINAL, CLUSTER_FINAL);
+    };
+  }, [map, shopSetSignature]);
+
   if (shopsGeoJson.features.length === 0) return null;
 
   return (
@@ -104,7 +180,9 @@ export default function ShopDirectoryShopPinLayers({
       clusterMaxZoom={14}
       clusterRadius={50}
     >
-      {/* ── Cluster circle ── */}
+      {/* ── Cluster circle
+        * NOTE: `circle-opacity` is intentionally absent — Pass 97 manages it
+        * imperatively for the drop-in fade animation. */}
       <Layer
         id={SHOP_CLUSTER_LAYER}
         type="circle"
@@ -121,7 +199,6 @@ export default function ShopDirectoryShopPinLayers({
               isDark ? "#8b5cf6" : "#7c3aed",
             ],
             "circle-radius": ["step", ["get", "point_count"], 18, 10, 24, 25, 30],
-            "circle-opacity": 0.88,
             "circle-stroke-width": 3,
             "circle-stroke-color": isDark ? "#1e3a5f" : "#dbeafe",
           } as Record<string, unknown>
@@ -186,7 +263,8 @@ export default function ShopDirectoryShopPinLayers({
               "#0f172a",
               "#38bdf8",
             ],
-            "circle-opacity": 0.92,
+            // NOTE: `circle-opacity` intentionally absent — Pass 97 manages it
+            // imperatively for the drop-in fade animation.
             "circle-stroke-width": ["case", ["==", ["get", "isSelected"], 1], 4, 2],
             "circle-stroke-color": ["case", ["==", ["get", "isSelected"], 1], "#dbeafe", "#eff6ff"],
           } as Record<string, unknown>
