@@ -211,7 +211,7 @@ export default function MapLibreServiceCoverageMap({
       ) : null}
 
       {showSurfaceChrome ? (
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-[500] flex flex-wrap items-start justify-between gap-1.5 p-2 sm:gap-2 sm:p-3">
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-[500] flex flex-wrap items-start justify-between gap-1.5 p-2 sm:gap-2 sm:p-3 animate-in fade-in slide-in-from-top-2 duration-400 motion-reduce:animate-none">
           <MapSurfaceHeaderBadges
             tone={tone}
             activeFocusLabel={activeFocusLabel}
