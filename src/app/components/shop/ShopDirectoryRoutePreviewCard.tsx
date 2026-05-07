@@ -111,7 +111,7 @@ export default function ShopDirectoryRoutePreviewCard({
 
   return (
     <div
-      className={`pointer-events-auto absolute left-2.5 z-[510] max-w-[calc(100vw-1.25rem)] sm:left-3 ${
+      className={`pointer-events-auto absolute left-2.5 z-[510] max-w-[calc(100vw-1.25rem)] sm:left-3 animate-in fade-in slide-in-from-bottom-3 duration-300 motion-reduce:animate-none ${
         isCompactDensity ? "w-[13.5rem] sm:w-[14.25rem]" : "w-[16rem] sm:w-[17rem]"
       }`}
       style={{
