@@ -204,13 +204,20 @@ export default function MapLibreShopDirectoryViewportManager({
       return;
 
     const doFly = () => {
+      // Pass 98 (2026-05-07) — owner real-map directive: selected-shop fly
+      // was a flat 450ms snap that often left the pin under-zoomed and
+      // off-rhythm with the rest of the map. Match the Pass 89 camera
+      // language (curve 1.4 family, ~850ms) and guarantee a closer focal
+      // zoom (14) so the breathing pulse from Pass 91 is clearly visible.
+      // No `essential: true` → OS reduce-motion still honored (LAW §3).
       map.flyTo({
         center: [
           selectedShop.mapResult.coordinates.longitude,
           selectedShop.mapResult.coordinates.latitude,
         ],
-        zoom: Math.max(map.getZoom(), 12),
-        duration: 450,
+        zoom: Math.max(map.getZoom(), 14),
+        duration: 850,
+        curve: 1.3,
       });
     };
 
