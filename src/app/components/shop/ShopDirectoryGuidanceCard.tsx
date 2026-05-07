@@ -86,7 +86,7 @@ export default function ShopDirectoryGuidanceCard({
 
   return (
     <div
-      className={`pointer-events-auto absolute left-3 z-[510] max-w-[calc(100vw-1.5rem)] sm:left-4 ${
+      className={`pointer-events-auto absolute left-3 z-[510] max-w-[calc(100vw-1.5rem)] sm:left-4 animate-in fade-in slide-in-from-left-3 duration-400 motion-reduce:animate-none ${
         isCompactDensity ? "w-[16rem] sm:w-[17rem]" : "w-[18rem] sm:w-[19rem]"
       }`}
       style={{ bottom: "max(3.5rem, calc(env(safe-area-inset-bottom, 0px) + 2.4rem))" }}
