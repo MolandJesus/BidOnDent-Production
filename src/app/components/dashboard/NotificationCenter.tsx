@@ -238,7 +238,7 @@ export default function NotificationCenter({
                       <p className="mt-1 text-[11px] leading-none text-slate-400">
                         {notificationSyncActive ? (
                           <span className="inline-flex items-center gap-1">
-                            <Radio className="h-2.5 w-2.5 animate-pulse text-blue-400" />
+                            <Radio className="h-2.5 w-2.5 animate-pulse motion-reduce:animate-none text-blue-400" />
                             Live
                           </span>
                         ) : (

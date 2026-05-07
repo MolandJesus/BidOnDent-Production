@@ -182,7 +182,9 @@ export default function ShopDirectoryOriginSearch({
             onClick={onUseMyLocation}
             type="button"
           >
-            <Navigation2 className={`h-3 w-3 ${isLocating ? "animate-pulse" : ""}`} />
+            <Navigation2
+              className={`h-3 w-3 ${isLocating ? "animate-pulse motion-reduce:animate-none" : ""}`}
+            />
             {isLocating ? "Locating..." : locationError ? "Ask Again" : "My Location"}
           </button>
         )}
