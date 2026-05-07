@@ -309,7 +309,7 @@ export default function ReportScreen({
           </div>
 
           {form.showSaveIndicator && (
-            <div className="mt-3 flex justify-center md:mt-4">
+            <div className="mt-3 flex justify-center md:mt-4 animate-in fade-in slide-in-from-bottom-1 duration-200 motion-reduce:animate-none">
               <ReportAutoSaveIndicator />
             </div>
           )}
