@@ -398,13 +398,21 @@
 - **Prerequisite for downstream passes:** Pass 61 (test coverage) cannot proceed until this is fixed — tests would otherwise encode the buggy mount scope as expected behavior. Pass 63 (KI-053 perf descriptor memoization) is wasted work while the tile storm is driven by cross-US fitBounds, not descriptor instability.
 - **Status:** **OPEN — P0-RUNTIME.** Targeted for Pass 61 (rescoped from test coverage to root-cause fix).
 
-### KI-117: Stale `bidondent_nav_active_session_*` keys persist across reload in `planning` state (P1-RUNTIME)
+### KI-117: Stale `bidondent_nav_session_*` keys persist across reload AND across sign-out (P1-RUNTIME, expanded)
 
-> **Added 2026-05-07 — external audit AI deep audit.** Audit AI captured an active nav session from a prior browsing context still resident in `localStorage` after a fresh page load. Session state: `status: "planning"`, `activatedAt: null`, destination set, no recent user action. Persisting planning sessions across reloads contributes to the KI-116 phantom-engine cluster.
+> **Added 2026-05-07 — external audit AI deep audit. Expanded 2026-05-07 — sign-out walkthrough revealed the bug is broader than reload-only.** Original observation: nav session from a prior browsing context still resident in `localStorage` after a fresh page load. Session state: `status: "planning"`, `activatedAt: null`, destination set, no recent user action.
+>
+> **Sign-out walkthrough expansion:** **3 stale planning sessions persist after Sign Out + reload.** Sign-out clears Clerk auth (cookies dropped 7 → 4, Clerk session cleared) but leaves all `bidondent_nav_session_user_*` entries untouched in localStorage. A different user signing into the same browser inherits the prior user's planning state. Companion privacy concern KI-133 (`bidondent_user:<email>` key name embedding).
 
-- **Impact:** Even with KI-116's mount-scope fix in place, a stale session in `localStorage` looks legitimate to any code path that checks for "is a session in progress?" Stale planning sessions have no expiry, no clear semantic for "was the user actively planning when they closed the tab, or was this a 4-day-old draft?" The deviation engine's symptoms are loudest, but anything that reads session state may produce stale UI.
-- **Fix direction (audit AI's R2):** On dashboard mount, clear `bidondent_nav_active_session_*` keys when `status === "planning"` AND (`activatedAt === null` OR `updatedAt` older than X minutes). Or: switch planning sessions to `sessionStorage` so they evaporate when the tab closes.
-- **Severity:** **P1-RUNTIME.** Independent of KI-116 — fix one and the other still affects edge cases. Both ship together for full effect.
+- **Impact (now broader):** Even with KI-116's mount-scope fix in place, stale sessions in localStorage:
+  1. Persist across reload (original) — phantom 737mi banner driver.
+  2. Persist across **sign-out + reload** (new) — next user inherits prior user's planning state.
+  3. Cross-account leak on shared devices: real privacy implication.
+- **Fix direction (expanded):**
+  1. On **dashboard mount**: clear `bidondent_nav_session_*` keys when `status === "planning"` AND (`activatedAt === null` OR `updatedAt` older than X minutes).
+  2. On **sign-out flow**: explicitly delete every `bidondent_nav_session_*`, `bidondent_user:*`, `coverageCurrentLocation`, and any other user-scoped key before redirecting to landing.
+  3. Consider switching planning sessions to `sessionStorage` so they evaporate when the tab closes.
+- **Severity:** **P1-RUNTIME (expanded).** Now covers reload persistence AND sign-out cleanup gap. Single companion fix to KI-116, same pass.
 - **Status:** **OPEN — P1-RUNTIME.** Companion fix to KI-116; same pass.
 
 ### KI-118: ESC key does not close map UI panels (Voice Controls, Navigation Settings) (P2-A11Y)
@@ -466,16 +474,14 @@
 - **Severity:** **P1-DATA/UX.** Real user-facing risk of submitting empty form. Test coverage gap — Pass 61 should include a regression test for "saved-vehicle Use button populates form values."
 - **Status:** **OPEN — P1-DATA/UX.**
 
-### KI-126: Report flow Steps 2 + 3 — heading text clipped at left edge (P2-LAYOUT)
+### KI-126: Report flow Step 3 (Location) — empty-state-only heading + label clipping at left edge (P2-LAYOUT)
 
-> **Added 2026-05-07 — external audit AI Report flow walkthrough.** Two consecutive Report flow steps render their primary heading with leading characters cut off:
-> - Step 2: "Where's the damage?" → renders "ere's the damage?"
-> - Step 3: "Where shops should see this report" → renders "re shops should see this report"
+> **Added 2026-05-07 — external audit AI Report flow walkthrough. Refined 2026-05-07 — empty-state-specific.** Initial observation flagged Steps 2 + 3 both. Continued audit confirmed: **Step 2 lays out cleanly**, **Step 3 ONLY clips in empty state** (before user enters ZIP). Once ZIP is filled, the Step 3 layout reflows into a proper two-column grid with no clipping. This is a width/positioning rule that fires when the form has no value — likely a `transform: translateX(...)` or absolute-position rule that depends on a populated state.
 
-- **Impact:** Headings are the user's primary anchor in a multi-step form. Clipped headings make the step appear half-rendered or broken. Trust hit. May be a CSS overflow / negative margin / `clip-path` regression on a wrapper. May be a recent layout change; visual regression test would have caught.
-- **Location:** Report flow Steps 2 + 3 (likely shared layout shell — same root cause for both). Possible suspects: container `overflow: hidden` clipping a heading with negative margin; CSS Grid template column starting before viewport; `text-indent` / `padding-inline-start` typo. Builder verifies via DevTools Elements panel + computed styles.
-- **Fix direction:** Open Step 2 in DevTools, inspect the clipped heading element, identify the clipping ancestor, fix the CSS. Likely 1-line fix (e.g., remove `overflow: hidden` from the wrong wrapper or fix a negative margin). Same root cause should fix Step 3.
-- **Severity:** **P2-LAYOUT.** User-visible polish bug, not blocking but reads as broken. Low-effort fix.
+- **Impact:** Step 3 first-paint shows heading "re shops should see this report" with "Whe" clipped, plus several labels clipped identically (`tails`, `rst.`, `ss (optional)`, `lyn, NY`, `act location is only shared`, `add location later`). Right-side map preview card renders fine. Reads as half-broken on first arrival. Once user types in the ZIP field the layout corrects.
+- **Location:** Report flow Step 3 location form's left card. Specific to the empty/initial render state. Step 2 ("Where's the damage?") is now confirmed clean — earlier observation was likely a re-render artifact during audit AI's interaction.
+- **Fix direction:** Identify the empty-state CSS rule on the form card. Likely a `min-content` width interacting with negative left positioning, or a transform/translateX rule that targets the empty form. DevTools: inspect the form card with empty inputs vs filled inputs; diff the computed styles. Single-rule fix expected.
+- **Severity:** **P2-LAYOUT.** First-paint trust hit on Step 3 specifically. Low-effort fix.
 - **Status:** **OPEN — P2-LAYOUT.**
 
 ### KI-127: "Off route" toast overlaps user avatar in dashboard header (P2-LAYOUT)
@@ -491,3 +497,63 @@
 - **Location:** Toast z-index / position styles + header layout. Visible at the viewport audit AI was at (likely 1280×900 desktop after previous resize attempts).
 - **Severity:** **P2-LAYOUT.** Will likely become moot when KI-116 ships; track as a follow-up validation after that fix lands.
 - **Status:** **OPEN — P2-LAYOUT (depends on KI-116).**
+
+### KI-128: Report flow Step 3 → Step 4 — "Skip for now" returns to Step 3 instead of advancing (P1-UX)
+
+> **Added 2026-05-07 — external audit AI Report flow walkthrough.** Clicking Continue on Step 3 (Location) opens a "Photo Tips" onboarding modal. The modal has two CTAs: "Got it — start taking photos" and "Skip for now". **Got it correctly advances to Step 4. Skip for now CLOSES the modal but leaves the user on Step 3.** Clicking Continue then re-opens the same modal. The flow is effectively stuck unless the user clicks Got it.
+
+- **Impact:** Users who tap Skip for now expecting to bypass the tips screen instead end up in a modal-loop that reads as broken. Real risk of users abandoning the report mid-flow. Audit AI's exact words: "the dismiss behavior is weird: 'Skip for now' closes the modal but leaves you on Step 3, not Step 4. Continue then re-opens the modal."
+- **Location:** The Photo Tips modal component + its Skip handler. Likely the Skip handler only calls `onClose()` without also advancing the wizard step. Got it handler likely calls `onClose()` + `goToNextStep()`.
+- **Fix direction:** Skip for now should call BOTH `onClose()` AND `goToNextStep()` so the user lands on Step 4 with photos empty. Got it should also advance to Step 4 (with photo picker open by default). Two-line fix. Test the back button from Step 4 — should return to Step 3, not the modal.
+- **Severity:** **P1-UX.** Real flow blocker for users who tap Skip. Affects the core conversion funnel (report submission).
+- **Status:** **OPEN — P1-UX.**
+
+### KI-129: Report flow Step 1 — required-field visual asterisks but `required: false` on HTML inputs (P2-DATA/A11Y)
+
+> **Added 2026-05-07 — external audit AI Report flow walkthrough.** Make / Model / Year fields render with red asterisk in the label visual styling, but the underlying HTML inputs have `required: false`. The form does not block submit on empty fields.
+
+- **Impact:** Visual asterisks signal required-ness to users; HTML attribute determines actual validation. The two disagree. A user could complete Step 1 with empty Make/Model/Year and submit (assuming KI-125's "Use" button issue is also bypassed). Browser-native form validation cannot fire because the inputs aren't marked required. Compounds with KI-125 (placeholder/value mismatch) — both contribute to "Step 1 looks complete, but isn't."
+- **Location:** Report flow Step 1 vehicle form. Likely a CSS class adds the visual asterisk indicator without a corresponding `required` attribute on the input.
+- **Fix direction:** Pick one truth. Either: (a) add `required` to the HTML inputs (browser-native validation kicks in), or (b) remove the visual asterisks if the form is genuinely optional. Recommend (a) — Make/Model/Year are conceptually required for any report. Verify the validation message styling matches the bd-design system, not browser defaults.
+- **Severity:** **P2-DATA/A11Y.** Real validation gap. Screen readers may also announce inconsistent semantics.
+- **Status:** **OPEN — P2-DATA/A11Y.**
+
+### KI-130: No service worker registered — app has no offline support (P3-INFRA)
+
+> **Added 2026-05-07 — external audit AI offline check.** `navigator.serviceWorker.controller === null`. The app has no SW registration, no Cache Storage entries.
+
+- **Impact:** When network drops mid-session (e.g., user driving toward a shop, signal degrades), the app shows broken-loading state instead of a designed offline screen or cached app shell. For a navigation-adjacent product, offline tile cache + cached app shell would be a real differentiator.
+- **Location:** No SW file in build output. PWA manifest may also be missing — verify in DevTools Application panel.
+- **Fix direction:** Long-term: Workbox-generated SW with network-first caching for app shell, stale-while-revalidate for Carto tiles, network-only for API. Short-term: even a minimal "you're offline" route would beat the current broken state. Consider Vite PWA plugin for the scaffolding.
+- **Severity:** **P3-INFRA.** Not launch-blocking on desktop. Would be moderate priority for a mobile PWA push.
+- **Status:** **OPEN — P3-INFRA. Defer to post-launch.**
+
+### KI-131: Landing headline carousel auto-rotates without prefers-reduced-motion pause or manual control (P2-A11Y)
+
+> **Added 2026-05-07 — external audit AI landing audit.** The hero headline carousel auto-rotates through 3 taglines every few seconds. There is no manual pause control, no manual skip, and no prefers-reduced-motion gate.
+
+- **Impact:** Vestibular-sensitive users get continuous motion in the hero. Users mid-read get the tagline yanked from under them. Direct WCAG 2.2.2 Pause, Stop, Hide concern.
+- **Location:** Landing hero headline carousel component.
+- **Fix direction:** (a) Pause auto-rotation when `prefers-reduced-motion: reduce`. (b) Add a small pause/play affordance (a button next to the dot indicators). (c) Pause on hover/focus. Common library patterns from Embla/Swiper handle (a) + (c) natively.
+- **Severity:** **P2-A11Y.** WCAG 2.2.2 violation. Polished landing pages in 2026 universally handle this; BidOnDent is currently not.
+- **Status:** **OPEN — P2-A11Y.**
+
+### KI-132: SPA history grows unboundedly — `history.length` reached 21 in one audit session (P3-ROUTING)
+
+> **Added 2026-05-07 — external audit AI navigation audit.** Each tab change inside the SPA pushes a new `history` entry. After a normal audit session on one tab, `historyLength` grew to 21. Browser back from `Dashboard → Find Shops → Bids` does not predictably return to the home dashboard.
+
+- **Impact:** Browser back behavior is unpredictable for users navigating with the back button. Compounds with KI-011 (state-driven routing prevents URL sharing/bookmarking) — that KI is already P2 in the active list. KI-132 is the practical user-facing symptom of KI-011.
+- **Location:** `useNavigation.ts` — calls `history.pushState` for tab changes inside the SPA. Each push is a new history entry, but they share URL `/`. Browser back unwinds them but the user's mental model expects "back = previous page", not "back = previous tab".
+- **Fix direction:** Tied to KI-011 fix — migrate to React Router or TanStack Router so URL becomes source of truth for tab state. Until then: avoid `history.pushState` for tab-internal navigation; use `replaceState` so back button maps to "exit the app", not "previous tab".
+- **Severity:** **P3-ROUTING.** Tied to KI-011's broader fix. Not isolated.
+- **Status:** **OPEN — P3-ROUTING. Companion to KI-011.**
+
+### KI-133: localStorage key embeds user email in key name — `bidondent_user:<email>` (P3-PRIVACY)
+
+> **Added 2026-05-07 — external audit AI sign-out walkthrough.** Audit AI ran `Object.keys(localStorage)` and observed a key shaped like `bidondent_user:molalign5@gmail.com`. The user's email address is embedded in the key NAME, not just the value. Persists after sign-out (KI-117 territory).
+
+- **Impact:** Anyone with browser debugger access (devtools, shared computer, malicious extension) can scan key names without parsing values and learn the prior user's email. Privacy hardening concern. Lower priority than KI-117's stale-session leak but same general class of post-sign-out residue.
+- **Location:** Whatever code writes `bidondent_user:<id>` keys. Likely in the auth/session bridge.
+- **Fix direction:** Use a fixed key name (`bidondent_user`) and store the user identifier in the value (JSON). OR: scope to `sessionStorage` so the key dies when the tab closes. OR: hash/UUID the user ID in the key name.
+- **Severity:** **P3-PRIVACY.** Low-blast-radius privacy concern. Lower than KI-117 cleanup but companion fix.
+- **Status:** **OPEN — P3-PRIVACY.**
