@@ -506,7 +506,7 @@ export default function ReportDetailScreen({
       {/* Photo Lightbox */}
       {selectedPhoto && (
         <div
-          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-2 sm:p-4 overflow-hidden"
+          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-2 sm:p-4 overflow-hidden animate-in fade-in zoom-in-95 duration-200 motion-reduce:animate-none"
           onClick={() => setSelectedPhoto(null)}
         >
           <button
