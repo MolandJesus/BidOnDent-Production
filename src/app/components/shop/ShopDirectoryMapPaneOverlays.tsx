@@ -31,7 +31,7 @@ export function MapPaneHeaderBadges({
 
   return (
     <div
-      className={`pointer-events-none absolute inset-x-0 top-0 z-[500] ${t.topGradient} px-2 py-1.5 @xl:px-2.5 @xl:py-2 @3xl:px-4 @3xl:py-3`}
+      className={`pointer-events-none absolute inset-x-0 top-0 z-[500] ${t.topGradient} px-2 py-1.5 @xl:px-2.5 @xl:py-2 @3xl:px-4 @3xl:py-3 animate-in fade-in slide-in-from-top-2 duration-400 motion-reduce:animate-none`}
     >
       <div className="flex flex-wrap items-start justify-between gap-1.5">
         <div className={`rounded-lg border px-2 py-1.5 ${t.badgeCard}`}>
