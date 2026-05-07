@@ -31,8 +31,8 @@ export default function MapSurfaceControls({
   // + bronze ring + cool-shadow + bronze atmospheric halo.
   const capsuleRailClassName =
     tone === "light"
-      ? "pointer-events-auto inline-flex flex-wrap items-center justify-end gap-1.5 rounded-full bg-[rgba(252,238,204,0.62)] backdrop-blur-md ring-1 ring-[rgba(140,82,22,0.28)] shadow-[0_8px_24px_rgba(15,30,60,0.16),0_0_30px_rgba(196,130,45,0.10)] px-1.5 py-1.5 sm:gap-2"
-      : "pointer-events-auto inline-flex flex-wrap items-center justify-end gap-1.5 rounded-full bg-[rgba(10,22,45,0.72)] backdrop-blur-md ring-1 ring-[rgba(96,165,250,0.20)] shadow-[0_8px_24px_rgba(2,6,23,0.40),0_0_30px_rgba(196,130,45,0.12)] px-1.5 py-1.5 sm:gap-2";
+      ? "pointer-events-auto inline-flex flex-wrap items-center justify-end gap-1.5 rounded-full bg-[rgba(252,238,204,0.62)] backdrop-blur-md ring-1 ring-[rgba(140,82,22,0.28)] shadow-[0_8px_24px_rgba(15,30,60,0.16),0_0_30px_rgba(196,130,45,0.10)] px-1.5 py-1.5 sm:gap-2 animate-in fade-in slide-in-from-top-2 duration-400 motion-reduce:animate-none"
+      : "pointer-events-auto inline-flex flex-wrap items-center justify-end gap-1.5 rounded-full bg-[rgba(10,22,45,0.72)] backdrop-blur-md ring-1 ring-[rgba(96,165,250,0.20)] shadow-[0_8px_24px_rgba(2,6,23,0.40),0_0_30px_rgba(196,130,45,0.12)] px-1.5 py-1.5 sm:gap-2 animate-in fade-in slide-in-from-top-2 duration-400 motion-reduce:animate-none";
 
   return (
     <div className={capsuleRailClassName}>
