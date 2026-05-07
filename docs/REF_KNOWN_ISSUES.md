@@ -854,3 +854,20 @@
 > Re-ran security advisors: 13 lints → 9 lints. The 4 `function_search_path_mutable` WARNs are now cleared.
 >
 > Remaining 9 advisors all need owner intent (RLS policy decisions, mass `auth.uid()` rewrap, unused-index intent).
+
+### KI-138 backend CLOSED — `notification_preferences` table created (PARTIAL RESOLUTION 2026-05-07, edge deploy still pending)
+
+> **Status update 2026-05-07 — external audit AI pass 8 applied + planner-AI verified.** Backend gap of KI-138 is now closed. UI-side full resolution still requires KI-146 (deploy server edge function v51).
+
+- **What audit AI applied via Supabase MCP `apply_migration`:** Created `public.notification_preferences` with the 16-column schema captured byte-for-byte from `FALLBACK_PREFERENCES` const at `supabase/functions/server/handlers/notification_preferences.ts` (commit `0df5d4c`). Plus `created_at` + `updated_at timestamptz DEFAULT now()`. RLS modeled exactly on `website_preferences` pattern: `ENABLE ROW LEVEL SECURITY` + single policy `FOR ALL USING (false) WITH CHECK (false)` (server-mediated only — service role bypasses, no client-direct access). Trigger `set_updated_at BEFORE UPDATE EXECUTE FUNCTION handle_updated_at()`. Two essential indexes (PK on `id` + UNIQUE on `clerk_user_id`).
+- **Planner verified independently 2026-05-07** via `information_schema` query: table exists ✓, 18 columns ✓, 1 RLS policy ✓, 2 indexes ✓, RLS enabled ✓.
+- **Watch-out for future migrations** (audit AI pass 8 §C): the migration's `CREATE TRIGGER ... EXECUTE FUNCTION public.handle_updated_at()` syntax wiped the function's `SET search_path = public` lock (KI-144 regression). Audit AI re-applied. Planner verified the lock had regressed AGAIN on second observation; planner re-applied. **Master plan must include rule:** any migration touching `handle_updated_at` / `update_updated_at_column` ends with all four `ALTER FUNCTION ... SET search_path = public` statements as belt-and-suspenders.
+- **Remaining work:** Owner runs `supabase functions deploy server --project-ref wmdcnjgtsppftrofaqqa` (per KI-146). Once v51 lands, the handler reads from the new table, persists real preferences, no fallback path needed. Appearance Settings → Notifications UX fully unblocked.
+- **Status:** **PARTIAL RESOLUTION 2026-05-07 — backend CLOSED, edge deploy pending.** KI-138 stays OPEN until KI-146 deploys.
+
+### KI-152 service-role log audit — 100-event window CLEAN (P0-SECURITY rotation still required)
+
+> **Status update 2026-05-07 — external audit AI pass 8 service-role log audit.** 100 most-recent api log events sampled. Every event has user-agent `Deno/2.1.4 (variant; SupabaseEdgeRuntime/1.74.0)` — legitimate Supabase Edge Runtime traffic. Status codes: all 200. No external IPs, no DROP/TRUNCATE/UPDATE-WHERE-1=1 patterns, no high-frequency bursts, no mass-SELECT. Traffic distribution matches expected per-user scoping (`clerk_user_id=eq.user_<id>` filters).
+
+- **Caveat:** absence of evidence ≠ evidence of absence. The 100-event window covers ~3 seconds; the leak window is 90+ days. Owner runs Studio Logs Explorer with a 90-day filter for full-window proof.
+- **Status update only — KI-152 itself stays OPEN** as P0-SECURITY pending owner key rotation. Visible-window audit clean is a small comfort; rotation is still mandatory.
