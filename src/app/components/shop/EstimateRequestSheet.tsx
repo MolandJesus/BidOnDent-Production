@@ -42,7 +42,7 @@ export default function EstimateRequestSheet({
     <div className="fixed inset-0 z-[60] flex items-end justify-center">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200 motion-reduce:animate-none"
         onClick={onClose}
         role="presentation"
       />
@@ -50,7 +50,7 @@ export default function EstimateRequestSheet({
       {/* Sheet */}
       <div
         className={cn(
-          "relative z-10 w-full max-w-lg rounded-t-2xl p-6 pb-[max(2rem,env(safe-area-inset-bottom))]",
+          "relative z-10 w-full max-w-lg rounded-t-2xl p-6 pb-[max(2rem,env(safe-area-inset-bottom))] animate-in slide-in-from-bottom-4 duration-300 motion-reduce:animate-none",
           isDark
             ? "bg-[linear-gradient(180deg,rgba(15,23,42,0.92),rgba(8,16,33,0.94))] border-t border-[rgba(96,165,250,0.20)] shadow-[inset_0_1px_0_rgba(196,144,65,0.22),inset_0_-1px_0_rgba(140,82,22,0.20),0_0_0_1px_rgba(96,165,250,0.16),0_-22px_56px_rgba(2,6,23,0.46),0_0_56px_rgba(196,130,45,0.14)]"
             : "bg-[linear-gradient(180deg,rgba(247,232,194,0.94),rgba(232,238,248,0.90))] border-t border-[rgba(140,82,22,0.30)] shadow-[inset_0_1px_0_rgba(252,240,208,0.85),0_-18px_46px_rgba(15,23,42,0.14),0_0_0_1px_rgba(140,82,22,0.18)]"
