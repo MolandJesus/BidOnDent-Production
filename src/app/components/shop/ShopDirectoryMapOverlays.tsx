@@ -182,7 +182,7 @@ export default function ShopDirectoryMapOverlays({
 
           {intelligenceExpanded && (
             <div
-              className={`mt-2 rounded-2xl border shadow-xl ${
+              className={`mt-2 rounded-2xl border shadow-xl animate-in fade-in slide-in-from-top-1 duration-200 motion-reduce:animate-none ${
                 isCompactDensity ? "p-2.5" : "p-3"
               } ${glassPanel}`}
             >
