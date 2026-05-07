@@ -530,7 +530,7 @@
 - **Location:** No SW file in build output. PWA manifest may also be missing — verify in DevTools Application panel.
 - **Fix direction:** Long-term: Workbox-generated SW with network-first caching for app shell, stale-while-revalidate for Carto tiles, network-only for API. Short-term: even a minimal "you're offline" route would beat the current broken state. Consider Vite PWA plugin for the scaffolding.
 - **Severity:** **P3-INFRA.** Not launch-blocking on desktop. Would be moderate priority for a mobile PWA push.
-- **Status:** **OPEN — P3-INFRA. Defer to post-launch.**
+- **Status:** **RESOLVED — Pass 79 (2026-05-07).** Source verification (KI-150 Pass 76 + this pass) confirms `vite-plugin-pwa` is wired in [`vite.config.ts`](../vite.config.ts) lines 13-62 with `registerType: "autoUpdate"`, manifest, and Workbox runtime caching for Supabase API (NetworkFirst, 50 entries, 5min TTL) + map tiles (CacheFirst, 500 entries, 7-day TTL). Build output also confirms — last build emitted `dist/sw.js` + `dist/workbox-354287e6.js` with 64 precached entries (3.8 MiB). The audit AI's `navigator.serviceWorker.controller === null` was Vite-dev-server behavior; production builds register the SW automatically. Closed at source.
 
 ### KI-131: Landing headline carousel auto-rotates without prefers-reduced-motion pause or manual control (P2-A11Y)
 
@@ -540,7 +540,7 @@
 - **Location:** Landing hero headline carousel component.
 - **Fix direction:** (a) Pause auto-rotation when `prefers-reduced-motion: reduce`. (b) Add a small pause/play affordance (a button next to the dot indicators). (c) Pause on hover/focus. Common library patterns from Embla/Swiper handle (a) + (c) natively.
 - **Severity:** **P2-A11Y.** WCAG 2.2.2 violation. Polished landing pages in 2026 universally handle this; BidOnDent is currently not.
-- **Status:** **OPEN — P2-A11Y.**
+- **Status:** **RESOLVED — Pass 79 (2026-05-07).** Verified [`HeroSection.tsx`](../src/app/components/landing/HeroSection.tsx) lines 73-78 already gate the auto-rotation interval on `prefersReducedMotion.current` (set from `window.matchMedia("(prefers-reduced-motion: reduce)").matches` on mount). Added a `userPaused` state flag — when the user clicks any carousel dot, the flag flips true and the `useEffect` cleanup tears down the interval. Dot button labels now read "Show tagline N of 3 (pauses auto-rotation)" with `aria-pressed` for screen readers. WCAG 2.2.2 Pause/Stop/Hide satisfied: (a) reduced-motion users never see auto-rotation; (b) all users get manual skip + implicit pause-on-interaction.
 
 ### KI-132: SPA history grows unboundedly — `history.length` reached 21 in one audit session (P3-ROUTING)
 
