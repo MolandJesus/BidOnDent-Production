@@ -800,3 +800,45 @@
   - Secret scanning hit (false positive most likely)
 - **Fix direction:** Owner reviews via `gh pr` or GitHub UI. Each alert has its own remediation per type.
 - **Status:** **OPEN — P3-INVESTIGATE.** Owner-action.
+
+### KI-152: 🚨 Supabase Service Role JWT publicly leaked in repo since 2026-02-10 (P0-SECURITY)
+
+> **Added 2026-05-07 — external audit AI pass 7 GitHub Security tab investigation.** GitHub Secret Scanning has flagged a Supabase Service Key in the public repo at `.env:4` since 2026-02-10 (~3 months exposure). Service Role JWTs bypass Row-Level Security entirely; whoever holds the key has full read/write to every table regardless of RLS.
+
+- **Impact (worst-case assumption):** Anyone who indexed the public repo since 2026-02-10 (search engines, automated scrapers, bad actors) may hold the leaked key. RLS protections are moot for service-role calls — every table is fully readable AND writable by the holder. PII (clerk_user_id, profile data, vehicles, damage reports, bids) all accessible.
+- **REQUIRED OWNER ACTIONS (in this exact order, today):**
+  1. **ROTATE the Service Role Key NOW.** Supabase Dashboard → Project `wmdcnjgtsppftrofaqqa` → Settings → API → "Service Role Key" → Regenerate. Old key is revoked at the moment you click Regenerate. **Anything currently using the old key will break** — CI/CD, Vercel env vars, GitHub Actions secrets, local `.env.local`, and any deployment configs all need the new key before they can call Supabase again.
+  2. **Audit Supabase logs for the past 90 days** for `service_role` API calls from unfamiliar IPs/origins. Run via Supabase MCP `get_logs(service: "api")` filtered to `role=service_role` if possible, OR via Studio → Logs Explorer.
+  3. **Update all consumers** of the old key: every `.env*` file on dev machines, Vercel project env vars, GitHub Actions repository secrets, any cron job, any worker, any Studio integration, edge function secrets (`supabase secrets set`), etc.
+  4. **Verify `.env` is gitignored** going forward. The leak proves the file was committed at some point.
+  5. **Optional: rewrite git history** to scrub the old key from public repo. GitHub's official guidance: "rotation is sufficient — rewriting public history is high-risk and key value is already compromised regardless." Skip unless owner wants belt-and-suspenders.
+- **Severity:** **P0-SECURITY.** Highest priority of any owner-action across the entire audit chain. Gates every other shipping decision until rotation completes.
+- **Status:** **OPEN — P0-SECURITY.** Owner-action only. Builder cannot help; audit-AI cannot help (rotation is dashboard-only).
+
+### KI-153: GitHub Actions ci.yml missing `permissions:` block — CodeQL Medium alert (P2-INFRA)
+
+> **Added 2026-05-07 — external audit AI pass 7 GitHub Security tab investigation.** GitHub CodeQL flagged `.github/workflows/ci.yml:15` for "Workflow does not contain permissions" (Medium severity). Default `GITHUB_TOKEN` has read+write to everything, expanding blast radius if a third-party action is compromised.
+
+- **Impact:** Standard supply-chain hardening. Real, low-effort.
+- **Fix direction:** Add a top-level `permissions:` block to ci.yml. Minimum viable:
+  ```yaml
+  permissions:
+    contents: read
+    pull-requests: read
+  ```
+  Then add specific elevations only on jobs that need them (e.g. `permissions: { contents: write }` on a release job). ~5 LOC.
+- **Severity:** **P2-INFRA.** Joins Phase 3 polish bundle.
+- **Status:** **OPEN — P2-INFRA.** Audit-AI can ship this via signed-in GitHub UI per owner's pass-7 authority grant.
+
+### KI-144 sub-items partially RESOLVED (search_path lock applied — 4 of 14 sub-items)
+
+> **Update 2026-05-07 — external audit AI pass 7 safe-fix.** Verified 4 functions only reference built-in PostgreSQL primitives (NOW, current_setting, nullif) via `pg_get_functiondef(p.oid)` query. Safe to lock. Applied via Supabase MCP:
+> ```sql
+> ALTER FUNCTION public.handle_updated_at() SET search_path = public;
+> ALTER FUNCTION public.update_updated_at_column() SET search_path = public;
+> ALTER FUNCTION public.requesting_clerk_user_id() SET search_path = public;
+> ALTER FUNCTION public.safe_auth_uid() SET search_path = public;
+> ```
+> Re-ran security advisors: 13 lints → 9 lints. The 4 `function_search_path_mutable` WARNs are now cleared.
+>
+> Remaining 9 advisors all need owner intent (RLS policy decisions, mass `auth.uid()` rewrap, unused-index intent).
