@@ -60,7 +60,7 @@ export default function ImmersiveMapTopBar({
 
   return (
     <div
-      className={`pointer-events-none absolute inset-x-0 top-0 z-[550] ${topGradient} px-3 pb-8 sm:px-4`}
+      className={`pointer-events-none absolute inset-x-0 top-0 z-[550] ${topGradient} px-3 pb-8 sm:px-4 animate-in fade-in slide-in-from-top-2 duration-400 motion-reduce:animate-none`}
       style={{ paddingTop: "max(0.75rem, env(safe-area-inset-top, 0.75rem))" }}
     >
       <div className="pointer-events-auto flex items-center gap-1.5 sm:gap-2.5">
