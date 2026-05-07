@@ -369,7 +369,7 @@ export default function HeroSection({
                     : undefined,
                 }}
               >
-                <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full mr-2 animate-pulse" />
+                <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full mr-2 animate-pulse motion-reduce:animate-none" />
                 Now serving New York &middot; Free for customers
               </span>
             </div>
@@ -738,7 +738,7 @@ export default function HeroSection({
                     : "inset 0 1px 0 rgba(196, 144, 65,0.22), 0 2px 12px rgba(2,6,23,0.30)",
                 }}
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse motion-reduce:animate-none" />
                 NY Coverage
               </div>
               <div
