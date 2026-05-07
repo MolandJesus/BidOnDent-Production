@@ -3,7 +3,8 @@
  * clusters, glow rings, and labels. Extracted from ShopDirectoryMapLayers
  * to enforce file-size limits.
  */
-import { Layer, Source } from "react-map-gl/maplibre";
+import { useEffect, useMemo, useRef } from "react";
+import { Layer, Source, useMap } from "react-map-gl/maplibre";
 
 export const SHOP_LAYER = "shop-dir-circles";
 export const SHOP_CLUSTER_LAYER = "shop-dir-clusters";
@@ -29,6 +30,69 @@ export default function ShopDirectoryShopPinLayers({
   isDark,
   shopsGeoJson,
 }: ShopDirectoryShopPinLayersProps) {
+  /* ── Pass 91: Selected-shop pin breathing pulse (owner real-map directive)
+   *
+   * Apple Maps and Google Maps both pulse the active/selected pin so the
+   * eye anchors to it across map redraws. We animate the SHOP_GLOW_LAYER's
+   * `circle-opacity` on a 2-second sine-wave breath whenever a selected
+   * shop is rendered. The glow layer is already filtered to isSelected == 1,
+   * so the pulse automatically starts/stops with selection state.
+   *
+   * `circle-opacity` is intentionally absent from the declarative <Layer
+   * paint> below so react-map-gl does not overwrite the imperative value
+   * each render. Reduce-motion users get a static mid-opacity (0.24).
+   */
+  const { current: map } = useMap();
+  const hasSelectedShop = useMemo(
+    () => shopsGeoJson.features.some((f) => f.properties.isSelected === 1),
+    [shopsGeoJson]
+  );
+  const pulseRafRef = useRef<number | null>(null);
+  useEffect(() => {
+    if (!map || !hasSelectedShop) return;
+    const m = map.getMap?.() ?? map;
+    if (!m || typeof m.setPaintProperty !== "function") return;
+
+    const reduceMotion =
+      typeof window !== "undefined" &&
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const setOpacity = (v: number) => {
+      try {
+        if (m.getLayer && !m.getLayer(SHOP_GLOW_LAYER)) return;
+        m.setPaintProperty(SHOP_GLOW_LAYER, "circle-opacity", v);
+      } catch {
+        // Layer not yet added — next animation frame will retry, harmless
+      }
+    };
+
+    if (reduceMotion) {
+      setOpacity(0.24);
+      return;
+    }
+
+    const start = performance.now();
+    const period = 2000;
+    const minOp = 0.16;
+    const maxOp = 0.4;
+    const tick = (now: number) => {
+      const phase = ((now - start) % period) / period; // 0 → 1
+      const eased = 0.5 - 0.5 * Math.cos(phase * Math.PI * 2); // sine 0 → 1 → 0
+      setOpacity(minOp + (maxOp - minOp) * eased);
+      pulseRafRef.current = requestAnimationFrame(tick);
+    };
+    pulseRafRef.current = requestAnimationFrame(tick);
+
+    return () => {
+      if (pulseRafRef.current !== null) {
+        cancelAnimationFrame(pulseRafRef.current);
+        pulseRafRef.current = null;
+      }
+      setOpacity(0.2);
+    };
+  }, [map, hasSelectedShop]);
+
   if (shopsGeoJson.features.length === 0) return null;
 
   return (
@@ -82,7 +146,9 @@ export default function ShopDirectoryShopPinLayers({
           } as Record<string, unknown>
         }
       />
-      {/* ── Individual shop glow (unclustered only) ── */}
+      {/* ── Individual shop glow (unclustered only)
+       * NOTE: `circle-opacity` is intentionally absent — Pass 91 manages it
+       * imperatively via setPaintProperty for the breathing-pulse animation. */}
       <Layer
         id={SHOP_GLOW_LAYER}
         type="circle"
@@ -91,7 +157,6 @@ export default function ShopDirectoryShopPinLayers({
           {
             "circle-radius": ["interpolate", ["linear"], ["zoom"], 8, 20, 12, 28, 15, 36],
             "circle-color": "#2563eb",
-            "circle-opacity": 0.2,
             "circle-blur": 1,
           } as Record<string, unknown>
         }
