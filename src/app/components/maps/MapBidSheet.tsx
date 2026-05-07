@@ -80,7 +80,7 @@ export default function MapBidSheet({
     <div className="fixed inset-0 z-[60] flex items-end justify-center">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200 motion-reduce:animate-none"
         onClick={onClose}
         role="presentation"
       />
@@ -88,7 +88,7 @@ export default function MapBidSheet({
       {/* Sheet */}
       <div
         className={cn(
-          "relative z-10 w-full max-w-lg rounded-t-2xl p-6 pb-[max(2rem,env(safe-area-inset-bottom))]",
+          "relative z-10 w-full max-w-lg rounded-t-2xl p-6 pb-[max(2rem,env(safe-area-inset-bottom))] animate-in slide-in-from-bottom-4 duration-300 motion-reduce:animate-none",
           isDark
             ? "bg-gradient-to-b from-slate-900/82 to-blue-950/78 border-t border-blue-400/22 backdrop-blur-xl backdrop-saturate-150 shadow-[0_-32px_90px_-16px_rgba(2,6,23,0.55),0_0_80px_rgba(196,130,45,0.22),0_0_60px_rgba(59,130,246,0.12),inset_0_1px_0_rgba(196,144,65,0.36),inset_0_-1px_0_rgba(140,82,22,0.32),inset_0_-2px_0_rgba(252,240,208,0.06)]"
             : "bg-gradient-to-b from-sky-50/84 via-blue-50/80 to-slate-50/76 border-t border-[rgba(140,82,22,0.32)] backdrop-blur-xl backdrop-saturate-150 shadow-[0_-28px_80px_-16px_rgba(196,144,65,0.18),0_0_32px_rgba(196,130,45,0.10),0_0_60px_rgba(196,130,45,0.06),inset_0_1px_0_rgba(252,240,208,0.92)]"
