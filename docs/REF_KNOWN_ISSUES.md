@@ -2,7 +2,7 @@
 
 **Authority level:** REFERENCE — describes current known gaps, bugs, and structural issues.
 
-**Last updated:** 2026-05-07 (Pass 55 — docs hygiene sweep. 70 RESOLVED/WONTFIX entries archived to [`archive/RESOLVED_KIS_2026-05-07.md`](archive/RESOLVED_KIS_2026-05-07.md). REF_KNOWN_ISSUES.md now active-only (25 entries). Pass 53 added KI-075 description correction; Pass 54 fixed reroute confirm-timing bug.)
+**Last updated:** 2026-05-07 (External audit AI deep audit — 6 new KIs added: KI-116 nav-engine-on-passive-surfaces P0 umbrella, KI-117 stale planning session, KI-118 ESC keyboard handling, KI-122 fullscreen tile-mode "Light" broken, KI-123 notification badge desync, KI-124 polish bundle. KI-101 confirmed RESOLVED. Numbering jump 118 → 122 to avoid collision with archived KIs 119/120/121 in `archive/RESOLVED_KIS_2026-05-07.md`. **Pass 55** earlier today archived 70 RESOLVED/WONTFIX entries; **Pass 53** added KI-075 description correction; **Pass 54** fixed reroute confirm-timing bug.)
 
 **Update rules:**
 
@@ -210,13 +210,13 @@
 - **Skill:** `bd-design-identity` (semantic exception class).
 - **Audit context:** 2026-05-05 fresh-eyes scan also confirmed: ZERO off-canon goldenrod values in landing/shop/dashboard component paint (only HowItWorksSection.tsx:88 has them inside a doc-comment about prior Pass I swap, not actual paint). ZERO fire-and-forget signOut/Promise patterns post-KI-097. ZERO storage hydration gaps — `vehicles.image_url`, `profiles.profile_image_url`, `damage_reports.photo_urls` all properly hydrate via `hydrateSignedStorageUrl(s)` in their respective handlers.
 
-### KI-101: F-01 — "Toyoto" misspelled vehicle make persisted in DB (P6-SPELL — owner action)
+### KI-101: F-01 — "Toyoto" misspelled vehicle make persisted in DB (RESOLVED 2026-05-07)
 
-- **Impact:** Audit AI F-01 (P6-SPELL): the 2021 Toyota Camry vehicle record was saved with the make field as "Toyoto" (misspelled). Propagates to every display of this vehicle/report — dashboard "Your Reports" h3 (`2021 Toyoto Camry`), Account tab Vehicles list, Report creation flow Step 1 vehicle selector, Make field pre-fill. Visible typo on production-facing content. Make input placeholder correctly shows "Toyota" — so the field hint is correct but there's no enforcement.
-- **Location:** `vehicles` table row for the affected user. Code-side: vehicle entry form has placeholder hint but no validation/autocorrect.
-- **Fix direction:** **Owner action:** UPDATE the `vehicles` table row to correct "Toyoto" → "Toyota" via Supabase Dashboard SQL Editor (single UPDATE statement). **Code improvement (deferred, optional):** add make validation/autocorrection against a canonical makes list in the vehicle entry form. Non-trivial — would touch the report wizard's vehicle step + account vehicle entry — not appropriate for autopilot ship without explicit go-ahead. Bigger value would be a future `vehicles` migration adding a CHECK constraint or normalized-makes lookup table.
-- **Status:** **OPEN** — owner DB action pending. Code improvement deferred.
-- **Skill:** None — pure data hygiene + future schema decision.
+- **Impact:** Audit AI F-01 (P6-SPELL): the 2021 Toyota Camry vehicle record was saved with the make field as "Toyoto" (misspelled). Propagated to every display of this vehicle/report — dashboard "Your Reports" h3, Account tab Vehicles list, Report creation flow Step 1 vehicle selector, Make field pre-fill. Make input placeholder correctly showed "Toyota" — field hint correct but no enforcement.
+- **Resolution (2026-05-07):** External audit AI confirmed via dashboard inspection: "Toyota Camry" displays with correct spelling on the dashboard "Recent Reports" list. Owner corrected the underlying `vehicles` row OR the record was replaced. Code improvement (canonical-makes validation) remains deferred.
+- **Location:** `vehicles` table — confirmed clean as of 2026-05-07.
+- **Status:** **RESOLVED 2026-05-07** — verified via external audit. Move to archive on next docs hygiene pass.
+- **Skill:** None — pure data hygiene confirmed.
 
 ### KI-102: F-03 — Cat photo as damage report thumbnail (P2-DATA — owner action)
 
@@ -376,3 +376,79 @@
 - **Removal trigger:** Owner applies migration + verifies edge response no longer carries `fallback:true` + a smoke realtime subscription (Studio → Database → Replication → supabase_realtime publication → confirm shop_profiles listed). Move to RESOLVED archive when confirmed.
 - **Pass 62 dependency:** Marker UI integration (color-coded availability dots, dashboard toggle) requires this migration to be applied first. Pass 62 should not ship UI consuming the realtime data while KI-115 is OPEN.
 - **Status:** **OPEN — P5-DOC.** Awaiting owner apply.
+
+### KI-116: Navigation engine mounts on passive surfaces — umbrella P0 cluster (P0-RUNTIME)
+
+> **Added 2026-05-07 — external audit AI deep audit.** Single root cause produces six distinct user-visible symptoms. Audit AI captured the smoking gun via `localStorage` inspection: `coverageCurrentLocation` GPS reading was `(33.95, -84.09)` (Suwanee, GA) while an active nav session in localStorage had destination `(40.93, -73.90)` (Yonkers, NY). Haversine = 743 mi, matches the on-screen "737.2 mi off route" banner. **The session was in `status: "planning"` with `activatedAt: null`** — the deviation engine should not have been evaluating at all.
+
+- **Impact (six symptoms, one cause):**
+  1. "You're off route — 737.2 mi from the planned route" banner persists at idle on dashboard inline coverage map AND in fullscreen map.
+  2. Auto-reroute "Finding a new route…" toast fires from passive (non-navigation) surfaces.
+  3. "Stopped detected" toast fires from passive surfaces.
+  4. Notification counter increments without user action (audit AI observed 3 → 9+ → 17 → 23 → 9+ from idle clicking).
+  5. `useNavigationGpsTracking.ts:197` emits "Speed limit lookup failed" errors continuously while user is on the dashboard (Overpass calls firing for the user's idle GPS location).
+  6. Carto basemap 503 storm: ~50 % of tile requests fail; tile coords span Yonkers → Rockies → Pacific Northwest because the dashboard inline map's `fitBounds` envelopes ALL demo shops cross-country. Tile prefetch follows the cross-US bbox.
+- **Location:** [`src/app/hooks/useNavigationGpsTracking.ts`](../src/app/hooks/useNavigationGpsTracking.ts) is consumed from [`src/app/hooks/useShopDirectoryNavigation.ts:78`](../src/app/hooks/useShopDirectoryNavigation.ts#L78) and [`src/app/hooks/useCoverageNavigationExperience.ts:113`](../src/app/hooks/useCoverageNavigationExperience.ts#L113). Both reachable from the dashboard inline coverage panel via Pass 49's lazy-mount path. The `detectDeviation` math at [`src/app/features/navigation/detectDeviation.ts:145-167`](../src/app/features/navigation/detectDeviation.ts#L145) is correct — `OFF_ROUTE_THRESHOLD_MILES = 0.3` triggers when distance > 0.3 mi, which 743 mi satisfies. Bug is mount scope, not algorithm.
+- **Fix direction (audit AI's R1 — single highest-leverage fix):** Gate the deviation engine on `session.status === 'active'` AND on a navigation surface (NOT dashboard / NOT bids / NOT inline coverage). One change collapses all six symptoms.
+  - Confirm `useNavigationGpsTracking` is only mounted on actual nav screens (Smart Shop Map active flow, fullscreen turn-by-turn).
+  - For dashboard inline coverage panel: verify it does NOT mount the GPS tracking + deviation pipeline. If it currently does, gate with a `mode: "passive" | "navigation"` prop or similar.
+  - For `useNavigationIntelligence.evaluate(snapshot)`: short-circuit when `session.status !== "active"`.
+- **Severity:** **P0-RUNTIME.** Ships catastrophic first-impression user experience: phantom warnings, runaway notifications, persistent error toasts. Not shippable in current state.
+- **Prerequisite for downstream passes:** Pass 61 (test coverage) cannot proceed until this is fixed — tests would otherwise encode the buggy mount scope as expected behavior. Pass 63 (KI-053 perf descriptor memoization) is wasted work while the tile storm is driven by cross-US fitBounds, not descriptor instability.
+- **Status:** **OPEN — P0-RUNTIME.** Targeted for Pass 61 (rescoped from test coverage to root-cause fix).
+
+### KI-117: Stale `bidondent_nav_active_session_*` keys persist across reload in `planning` state (P1-RUNTIME)
+
+> **Added 2026-05-07 — external audit AI deep audit.** Audit AI captured an active nav session from a prior browsing context still resident in `localStorage` after a fresh page load. Session state: `status: "planning"`, `activatedAt: null`, destination set, no recent user action. Persisting planning sessions across reloads contributes to the KI-116 phantom-engine cluster.
+
+- **Impact:** Even with KI-116's mount-scope fix in place, a stale session in `localStorage` looks legitimate to any code path that checks for "is a session in progress?" Stale planning sessions have no expiry, no clear semantic for "was the user actively planning when they closed the tab, or was this a 4-day-old draft?" The deviation engine's symptoms are loudest, but anything that reads session state may produce stale UI.
+- **Fix direction (audit AI's R2):** On dashboard mount, clear `bidondent_nav_active_session_*` keys when `status === "planning"` AND (`activatedAt === null` OR `updatedAt` older than X minutes). Or: switch planning sessions to `sessionStorage` so they evaporate when the tab closes.
+- **Severity:** **P1-RUNTIME.** Independent of KI-116 — fix one and the other still affects edge cases. Both ship together for full effect.
+- **Status:** **OPEN — P1-RUNTIME.** Companion fix to KI-116; same pass.
+
+### KI-118: ESC key does not close map UI panels (Voice Controls, Navigation Settings) (P2-A11Y)
+
+> **Added 2026-05-07 — external audit AI deep audit.** Audit AI clicked into Voice Controls panel, then pressed ESC — panel persisted. Same on Navigation Settings panel.
+
+- **Impact:** Standard escape-closes-modal pattern broken. Keyboard-only users cannot dismiss these panels without clicking the X. Screen reader users may also be stuck. Direct WCAG 2.1 §2.1.2 (keyboard trap) concern.
+- **Location:** [`src/app/components/maps/navigation/NavigationVoiceControlsSheet.tsx`](../src/app/components/maps/navigation/NavigationVoiceControlsSheet.tsx) (no `onKeyDown` / `useEffect` listener for `Escape`). Same pattern likely in [`src/app/components/maps/navigation/NavigationSettingsSheet.tsx`](../src/app/components/maps/navigation/NavigationSettingsSheet.tsx).
+- **Fix direction:** Add `useEffect` listener for `keydown` → `event.key === "Escape"` → call `onClose()`. Standard React pattern, ~10 LOC per file. Should also focus-trap within the panel while open (focus does not currently move into panel).
+- **Severity:** **P2-A11Y.** Real keyboard accessibility blocker. Small, mechanical fix.
+- **Status:** **OPEN — P2-A11Y.**
+
+### KI-122: Fullscreen map in-canvas "Light" tile mode renders pure white empty canvas (P2-VISUAL)
+
+> **Added 2026-05-07 — external audit AI deep audit.** Numbering jump 118 → 122 to avoid collision with archived KI-119 / KI-120 / KI-121 (in `archive/RESOLVED_KIS_2026-05-07.md`). The fullscreen map has an in-canvas tile-mode toggle distinct from the app-level theme toggle. The toggle cycles Night → Satellite → Light. The Light position fails to load any tile source.
+
+- **Impact:** User toggles to Light tile mode in fullscreen → map becomes a blank white canvas with no basemap, no markers, no route. Recovery is to cycle toggle again or reload. Light-mode preference reads as "broken light rendering" to any user who toggles in this order.
+- **Location:** Fullscreen map's tile-mode segmented control — likely a CARTO Positron tile-source URL not registered or a misconfigured style. NOT the app-level light theme (which works correctly per audit AI: "Light mode is excellent on dashboard").
+- **Fix direction:** Ensure the "Light" mode binds to a working CARTO Positron style (or equivalent free tile source). Verify CSP allowlist permits `cartocdn.com/light_all/`.
+- **Severity:** **P2-VISUAL.** Limited blast radius (only fires when user toggles a non-default control), but the blank-white state is alarming.
+- **Status:** **OPEN — P2-VISUAL.**
+
+### KI-123: Notification badge cap visual ("8+", "9+") desyncs from ARIA raw count (P3-A11Y)
+
+> **Added 2026-05-07 — external audit AI deep audit.** Notification bell visually shows capped values like "8+" / "9+" but `aria-label` exposes raw counts ("17 unread", "23 unread"). Screen reader announces a different number than the visual badge.
+
+- **Impact:** Sighted + screen reader users hear different counts. Lower priority than KI-116 / KI-117 which are inflating the count in the first place.
+- **Fix direction:** Either cap the ARIA count to match visual ("more than 8 unread") or remove the visual cap. Match visual + ARIA semantics.
+- **Severity:** **P3-A11Y.** Cosmetic-tier accessibility issue.
+- **Status:** **OPEN — P3-A11Y.**
+
+### KI-124: Polish bundle from external audit (P2-COPY + P3-VISUAL)
+
+> **Added 2026-05-07 — external audit AI deep audit.** Bundled to keep the KI list manageable; each item is small (<10 LOC) and independent.
+
+- **Sub-items:**
+  1. **"1 offers" pluralization** — Bid Comparison header should read "1 offer" when count is 1. P2-COPY.
+  2. **"2014 Mazda Mazda6"** — vehicle string concatenates make + model where model already contains the make. Likely `${make} ${model}` rendering when `model = "Mazda6"`. Detect + dedup. P2-COPY/DATA.
+  3. **"Smoke Test Checklist" visible to end users on Account tab** — should be dev-only. Gate behind `import.meta.env.DEV`. P2-UX.
+  4. **"Save immediately" copy contradicts "Save Appearance" button** in Appearance Settings modal — pick one model. If saves are immediate, drop the button (or rename "Done"). P2-COPY.
+  5. **Voice persona stored value `british-smooth` displays as "Google UK English Female"** — mapping inconsistency between persona key and display label. Display label should derive from persona key consistently across surfaces. P3-DATA.
+  6. **"Browse all shops & AI matching" gradient bleeds past container's rounded corner** — single CSS `overflow: hidden` or `clip-path` fix on the wrapper. P3-VISUAL.
+  7. **Right action bar in fullscreen map: 4 unlabeled icon buttons** — adds first-time-user discoverability gap. ARIA labels exist but no visible text. Add subtle text labels under each icon (e.g., "Turns" / "Voice" / "Settings" / "Center"). P3-UX.
+  8. **Tile-mode toggle has no visible mode label** — only the icon swaps. Add a small text label ("Night" / "Satellite" / "Light"). P3-UX.
+  9. **Off-route status pill (top-right) AND centered banner show simultaneously** — pick one location. Recommend the corner pill; the centered banner covers the road network the user is trying to read. P3-UX.
+  10. **Missing "Cancel navigation" / "End session" affordance in fullscreen UI** — no way to clear planning state from the fullscreen UI. Add a clear-route control. P2-UX.
+- **Severity:** Mix of P2-COPY / P2-UX / P3. None are launch-blocking.
+- **Status:** **OPEN — bundled.**

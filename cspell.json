@@ -410,6 +410,7 @@
     "desyncs",
     "topbar",
     "NOSONAR",
-    "Qube"
+    "Qube",
+    "rescoped"
   ]
 }
