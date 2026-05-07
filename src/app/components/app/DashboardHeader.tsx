@@ -225,6 +225,16 @@ export default function DashboardHeader({
           />
         </button>
 
+        {/* Pass 75 (2026-05-07) — KI-141: surface the active tab label on mobile so
+            users keep their orientation between Dashboard / Bids / Account / etc.
+            (desktop already shows it via the <h2> below; this is the mobile twin). */}
+        <span
+          className={`md:hidden truncate text-sm font-semibold leading-tight ${isLightAppearance ? "text-slate-700" : "text-slate-100"}`}
+          aria-hidden="true"
+        >
+          {activeTabLabel}
+        </span>
+
         <div className="hidden md:block">
           <h2
             className={`text-xl font-semibold leading-tight ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}

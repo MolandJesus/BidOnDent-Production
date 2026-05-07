@@ -665,7 +665,7 @@
   - Static label tied to active tab.
   - Breadcrumb pattern for nested views (e.g., Dashboard › Bids).
 - **Severity:** **P3-UX.** Lower priority than KI-140 but a real polish gap.
-- **Status:** **OPEN — P3-UX.**
+- **Status:** **RESOLVED — Pass 75 (2026-05-07).** Mobile header now shows the active tab label as a small `font-semibold` span between the logo button and the right-side actions (logo · "Bids" · bell · avatar). Desktop continues to render the larger `<h2>` per [`DashboardHeader.tsx`](../src/app/components/app/DashboardHeader.tsx); the new mobile span is the `md:hidden` twin and stays `truncate` so it never wraps the header.
 
 ### KI-142: Mobile Quick Actions row becomes 2-up grid — 3 of 4 actions require scroll to discover (P3-UX)
 
