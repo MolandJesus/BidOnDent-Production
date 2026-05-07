@@ -581,13 +581,14 @@
 
 - **Impact:** WCAG 2.4.1 Bypass Blocks — users need a way to skip repeated content. Currently they don't. Compounds with KI-118 (ESC handlers missing) — the keyboard accessibility story has gaps.
 - **Location:** App shell layout — likely `src/app/App.tsx` or the dashboard layout root. The skip-link should be the first focusable element on the page, visually hidden until focused.
-- **Fix direction:** Add `<a href="#main-content" class="bd-skip-link">Skip to main content</a>` as the first child of `<body>` (or app root). CSS: hidden via `clip: rect(0 0 0 0)` until `:focus`, then renders as a top-left pinned glass pill matching the bd-* identity. Add `id="main-content"` to the appropriate landmark (likely `<main>`).
+- **Fix direction:** Add `<a href="#main-content" class="bd-skip-link">Skip to main content</a>` as the first child of `<body>` (or app root). CSS: hidden via `clip: rect(0 0 0 0)` until `:focus`, then renders as a top-left pinned glass pill matching the bd-\* identity. Add `id="main-content"` to the appropriate landmark (likely `<main>`).
 - **Severity:** **P2-A11Y.** WCAG 2.4.1 violation. Low-effort fix, ~20 LOC + matching style.
 - **Status:** **OPEN — P2-A11Y.**
 
 ### KI-136: Search input + BidOnDent logo button below 44pt touch-target threshold (P2-UX)
 
 > **Added 2026-05-07 — external audit AI touch-target audit.** Audit AI measured every tabbable element on Dashboard. Two elements fall below the WCAG 2.5.5 / Apple HIG 44×44 minimum:
+>
 > - Search reports input: 260×34 (height short by 10pt)
 > - BidOnDent logo button: 148×40 (height short by 4pt)
 >
@@ -626,7 +627,8 @@
   1. **Owner-action: write + apply notification_preferences migration.** Schema needs at minimum: `clerk_user_id text PRIMARY KEY`, plus boolean preference fields matching the UI (`email_enabled`, `email_bid_updates`, `email_report_updates`, `email_nearby_reports`, `email_estimate_updates`, `sms_enabled`), `created_at timestamptz DEFAULT now()`, `updated_at timestamptz DEFAULT now()`. Plus RLS policies matching `website_preferences` patterns. Apply via Supabase Studio per `feedback_supabase_cli_pg17`.
   2. **Code-side: fix client error-handling.** Wrap the load handler in try/catch. On failure, render checkboxes with default-on values + small banner "Couldn't load preferences. Using defaults — try again?" + Retry button. Defensive UX even if backend works correctly.
 - **Severity:** **P1-RUNTIME.** User-blocking on the Notification Preferences UX. Real backend gap + real client gap.
-- **Status:** **OPEN — P1-RUNTIME.** Builder-AI fix on client side; owner-action on schema apply.
+- **Backend status (2026-05-07 pass 8):** **SCHEMA RESOLVED.** Audit AI applied `apply_migration` via Supabase MCP creating `public.notification_preferences` byte-for-byte from `FALLBACK_PREFERENCES` const (18 cols: `id` text PK with `gen_random_uuid()::text` default, `clerk_user_id` text NOT NULL UNIQUE, 14 boolean preference columns matching the UI, `created_at`/`updated_at` timestamptz). RLS pattern modeled identically on `website_preferences` (`USING(false) WITH CHECK(false)` — server-mediated, edge function service-role bypass only). `set_updated_at` BEFORE UPDATE trigger using `public.handle_updated_at()`. Verification via `information_schema`: table ✓, 18 cols ✓, 2 indexes (PK + UNIQUE auto-index) ✓, RLS enabled ✓, 1 policy ✓, 1 trigger ✓. Initial redundant explicit index on `clerk_user_id` dropped post-create to prevent KI-145-style duplication.
+- **Status:** **OPEN — P1-OPS.** Backend gap CLOSED. Remaining work: (1) owner deploys edge function v51 per KI-146 (one CLI command — handler at HEAD already has graceful-fallback logic and will now find the table and persist real preferences); (2) builder-AI ships defensive client error-handling per Phase 2 of `PLAN_BUILDER_MASTER_2026-05-07.md`.
 
 ### KI-139: prefers-reduced-motion CSS coverage gap — 40 keyframes vs 23 reduce-motion guards (P2-A11Y)
 
@@ -638,7 +640,7 @@
   2. Greps `@media (prefers-reduced-motion: reduce)` blocks and the `animation-name` / `animation-duration: 0s` overrides within them.
   3. For each keyframe, verifies a guard exists.
   4. Mismatches → CI failure.
-  Add to lint workflow.
+     Add to lint workflow.
 - **Severity:** **P2-A11Y.** Verifies LAW §3 contract holds against drift.
 - **Status:** **OPEN — P2-A11Y.** Small builder pass before Phase 6 design polish lands.
 
@@ -833,12 +835,14 @@
 ### KI-144 sub-items partially RESOLVED (search_path lock applied — 4 of 14 sub-items)
 
 > **Update 2026-05-07 — external audit AI pass 7 safe-fix.** Verified 4 functions only reference built-in PostgreSQL primitives (NOW, current_setting, nullif) via `pg_get_functiondef(p.oid)` query. Safe to lock. Applied via Supabase MCP:
+>
 > ```sql
 > ALTER FUNCTION public.handle_updated_at() SET search_path = public;
 > ALTER FUNCTION public.update_updated_at_column() SET search_path = public;
 > ALTER FUNCTION public.requesting_clerk_user_id() SET search_path = public;
 > ALTER FUNCTION public.safe_auth_uid() SET search_path = public;
 > ```
+>
 > Re-ran security advisors: 13 lints → 9 lints. The 4 `function_search_path_mutable` WARNs are now cleared.
 >
 > Remaining 9 advisors all need owner intent (RLS policy decisions, mass `auth.uid()` rewrap, unused-index intent).
