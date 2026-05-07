@@ -66,7 +66,7 @@ export default function InsurerNewClaimForm({
 
           {selectedShop && (
             <div
-              className={`mb-4 p-4 border rounded-lg ${
+              className={`mb-4 p-4 border rounded-lg animate-in fade-in slide-in-from-top-2 duration-300 motion-reduce:animate-none ${
                 isLight
                   ? "bg-green-50/60 border-green-200/50"
                   : "bg-green-400/10 border-green-400/20"
