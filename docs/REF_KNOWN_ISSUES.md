@@ -464,7 +464,7 @@
   9. **Off-route status pill (top-right) AND centered banner show simultaneously** — pick one location. Recommend the corner pill; the centered banner covers the road network the user is trying to read. P3-UX.
   10. **Missing "Cancel navigation" / "End session" affordance in fullscreen UI** — no way to clear planning state from the fullscreen UI. Add a clear-route control. P2-UX.
 - **Severity:** Mix of P2-COPY / P2-UX / P3. None are launch-blocking.
-- **Status:** **OPEN — bundled.**
+- **Status:** **PARTIAL — Pass 64 (2026-05-07).** Items #1, #2, #3 RESOLVED. (#1) `BidsSummaryHeader` mobile + desktop now read "1 offer" when `bidCount === 1`. (#2) New shared helper [`src/app/utils/formatVehicleLabel.ts`](../src/app/utils/formatVehicleLabel.ts) suppresses duplicated leading make ("Mazda Mazda6" → "Mazda6"); applied in `ReportDetailScreen`, `ReportsListScreen`, `insurerClaimsUtils`. (#3) Smoke Test Checklist row already gated behind `import.meta.env.DEV` in `AccountMenu.tsx` — verified, no change needed. Items #4–#10 still **OPEN**.
 
 ### KI-125: Report flow Step 1 vehicle picker — placeholder text matches saved vehicle but input `value` is empty (P1-DATA/UX)
 

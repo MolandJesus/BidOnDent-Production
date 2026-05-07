@@ -9,6 +9,7 @@ import DashboardMapPreview from "../dashboard/MapLibreDashboardMapPreview";
 import type { ReportPin } from "../dashboard/MapLibreDashboardMapPreview";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 import type { DamageReport } from "../../types";
+import { formatVehicleLabel } from "../../utils/formatVehicleLabel";
 
 type ReportsListScreenProps = {
   reports: DamageReport[];
@@ -61,7 +62,11 @@ export default function ReportsListScreen({
       .map((report) => {
         const vehicleData = report?.vehicle || report?.vehicleInfo || {};
         const label =
-          [vehicleData.year, vehicleData.make, vehicleData.model].filter(Boolean).join(" ") ||
+          formatVehicleLabel({
+            year: vehicleData.year,
+            make: vehicleData.make,
+            model: vehicleData.model,
+          }) ||
           report?.damageArea ||
           "Damage report";
         const lat = report?.latitude;

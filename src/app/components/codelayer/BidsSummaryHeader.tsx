@@ -139,7 +139,7 @@ export default function BidsSummaryHeader({
                   : "border-blue-200/18 bg-white/10 text-blue-50"
               }`}
             >
-              {bidCount} offers
+              {bidCount} {bidCount === 1 ? "offer" : "offers"}
             </div>
             {liveChip && (
               <div
@@ -168,7 +168,7 @@ export default function BidsSummaryHeader({
                 : "border-blue-200/18 bg-white/10 text-blue-50"
             }`}
           >
-            {bidCount} offers
+            {bidCount} {bidCount === 1 ? "offer" : "offers"}
           </div>
           {liveChip && (
             <div

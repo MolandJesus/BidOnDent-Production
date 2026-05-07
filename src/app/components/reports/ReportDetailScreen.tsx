@@ -12,6 +12,7 @@ import type { DashboardAppearanceMode } from "../../routers/dashboard-router-typ
 import type { DamageReport } from "../../types";
 import { useNotifications } from "../../features/notifications/NotificationContext";
 import { useBidsForReport } from "../../hooks/useBidsForReport";
+import { formatVehicleLabel } from "../../utils/formatVehicleLabel";
 
 type BidsConnectionStatus = "connected" | "disconnected" | "error" | "idle";
 
@@ -132,7 +133,12 @@ export default function ReportDetailScreen({
   /** Report pin for the map */
   const reportPins = useMemo<ReportPin[]>(() => {
     if (!reportCoords) return [];
-    const label = `${vehicleInfo.year} ${vehicleInfo.make} ${vehicleInfo.model}`.trim() || "Report";
+    const label =
+      formatVehicleLabel({
+        year: vehicleInfo.year,
+        make: vehicleInfo.make,
+        model: vehicleInfo.model,
+      }) || "Report";
     return [{ id: report.id, lat: reportCoords.lat, lng: reportCoords.lng, label }];
   }, [reportCoords, report.id, vehicleInfo]);
 
@@ -176,7 +182,11 @@ export default function ReportDetailScreen({
                 Report Overview
               </p>
               <h1 className="text-lg font-bold">
-                {vehicleInfo.year} {vehicleInfo.make} {vehicleInfo.model}
+                {formatVehicleLabel({
+                  year: vehicleInfo.year,
+                  make: vehicleInfo.make,
+                  model: vehicleInfo.model,
+                })}
               </h1>
               <p className={`text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}>
                 Report #{report.id}
