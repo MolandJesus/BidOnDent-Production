@@ -40,35 +40,43 @@ export default function MapSurfaceControls({
         <button
           type="button"
           onClick={() => onTileModeChange("roadmap")}
+          aria-pressed={tileMode === "roadmap"}
+          aria-label="Map tile mode: Map"
           className={cn(
             "inline-flex h-10 items-center gap-1 rounded-full px-2.5 text-xs font-semibold transition sm:gap-2 sm:px-4 sm:text-sm",
             tileMode === "roadmap" ? theme.activeSegmentClassName : theme.inactiveSegmentClassName
           )}
         >
           <MapIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-          <span className="hidden sm:inline">Map</span>
+          {/* Pass 73 (2026-05-07) — KI-124 #8: tile-mode label is now always
+              visible (was hidden on mobile). */}
+          <span>Map</span>
         </button>
         <button
           type="button"
           onClick={() => onTileModeChange("night")}
+          aria-pressed={tileMode === "night"}
+          aria-label="Map tile mode: Night"
           className={cn(
             "inline-flex h-10 items-center gap-1 rounded-full px-2.5 text-xs font-semibold transition sm:gap-2 sm:px-4 sm:text-sm",
             tileMode === "night" ? theme.activeSegmentClassName : theme.inactiveSegmentClassName
           )}
         >
           <MoonStar className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-          <span className="hidden sm:inline">Night</span>
+          <span>Night</span>
         </button>
         <button
           type="button"
           onClick={() => onTileModeChange("satellite")}
+          aria-pressed={tileMode === "satellite"}
+          aria-label="Map tile mode: Satellite"
           className={cn(
             "inline-flex h-10 items-center gap-1 rounded-full px-2.5 text-xs font-semibold transition sm:gap-2 sm:px-4 sm:text-sm",
             tileMode === "satellite" ? theme.activeSegmentClassName : theme.inactiveSegmentClassName
           )}
         >
           <Satellite className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-          <span className="hidden sm:inline">Satellite</span>
+          <span>Satellite</span>
         </button>
       </div>
 
