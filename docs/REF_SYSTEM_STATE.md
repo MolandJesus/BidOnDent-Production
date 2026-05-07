@@ -2,7 +2,9 @@
 
 **Authority level:** REFERENCE — describes the current system as it actually works. Not a vision doc. Not a roadmap.
 
-**Last updated:** 2026-05-06 (closing-out — Pass 12-41 polish arc complete on `main` at `f46dfad8`. Pass 12 map chrome unification + Pass 13/13b/13c KI-118 mileage data integrity (anchor Dallas TX → White Plains NY + 9 NY metro cities + 3 region aliases) + Pass 13d-13h/24/27/28/33 LAW pure-white-inset slip story closed repo-wide (canonical `inset 0 1px 0 rgba(255,255,255,0.5+)` in `src/`: zero hits) + Pass 14/19 KI-012 bid realtime trust signal + Pass 15/16a/16b/17/17b living-lava atmosphere ledger locked with period-spread invariant (28+36 / 32+44 / 24+38) + Pass 18 atmosphere coherence audit + Pass 20 cspell domain-words sweep (138 added) + Pass 21/26/31/32/34 Prettier housekeeping + Pass 29 forward-looking plan doc + Pass 30/33b/41 doc co-updates + Pass 37-40 doc-hygiene cluster. Earlier this date: Phase 7.6/8 close — KI-113 RESOLVED, KI-109/110 RESOLVED, KI-108 partial closure. Pre-execution-audit pattern was 8-for-8 across Phases 4 / 6 / 6.5 / 7 / 7.5 / 8 / 8.5 / KI-113. Phase OPS audit docs archived 2026-05-06 to `docs/archive/`. Visual system pointer to `REF_VISUAL_SYSTEM.md`; gold-lamp identity + mobile map-first doctrine locked.)
+**Last updated:** 2026-05-07 (autopilot chain Pass 49–58 on `BidOnDent-Horizon-Beta`. Pass 49 navigation surface lazy-mount + Pass 50/51/52 navigation polish + Pass 53 deep navigation engine audit (KI-075 description corrected) + Pass 54 reroute confirm-timing fix (`useShopDirectoryNavigation` defers `confirmReroute()` until OSRM refresh delivers a fresh `routePreview.fetchedAt`) + Pass 55 REF_KNOWN_ISSUES.md split (1163 LOC → 341 active + 828 archived) + Pass 56 LAW §3 reduce-motion contract repaired (animations.css 24 keyframes / 27 utility classes + theme.css `.animate-slide-in-right` toast — zero guards before, full coverage now) + Pass 57 dual off-route paths consolidation (silent ~100m auto-refetch in `useNavigationRoutePreview` now stands down via `suppressOffRouteRefetch` whenever `useNavigationReroute` is `pending`/`cooldown`) + Pass 58 saved places Supabase scaffolding (write-only — KI-114 tracks unapplied migration). 15+ unpushed commits queued on Horizon-Beta; owner pushes manually. Earlier on `main` at `f46dfad8`: Pass 12-41 polish arc complete — see prior baseline below.)
+
+**Prior baseline (2026-05-06, `main` at `f46dfad8`):** Pass 12 map chrome unification + Pass 13/13b/13c KI-118 mileage data integrity + Pass 13d-13h/24/27/28/33 LAW pure-white-inset slip story closed repo-wide + Pass 14/19 KI-012 bid realtime trust signal + Pass 15-17b living-lava atmosphere ledger locked + Pass 18 atmosphere coherence audit + Pass 20 cspell domain-words sweep + Pass 21/26/31/32/34 Prettier housekeeping + Pass 29/30/33b/41 doc co-updates + Pass 37-40 doc-hygiene cluster. Phase 7.6/8 close — KI-113 RESOLVED, KI-109/110 RESOLVED, KI-108 partial closure. Pre-execution-audit pattern was 8-for-8 across Phases 4 / 6 / 6.5 / 7 / 7.5 / 8 / 8.5 / KI-113. Visual system pointer to `REF_VISUAL_SYSTEM.md`; gold-lamp identity + mobile map-first doctrine locked.
 
 **Build:** 0 TS errors, 569/569 tests passing, ~3.5s
 
@@ -225,7 +227,7 @@ Persisted media URLs in `damage_reports.photo_urls` (text[]), `*.profile_image_u
 
 ### Database
 
-**Primary tables:** profiles, vehicles, damage_reports, bids, job_assignments, shop_profiles, insurer_profiles, website_preferences, website_relationships, navigation_sessions, shop_interest_submissions, insurer_interest_submissions, platform_activity_events, notification_preferences, shop_service_areas, estimate_requests.
+**Primary tables:** profiles, vehicles, damage_reports, bids, job_assignments, shop_profiles, insurer_profiles, website_preferences, website_relationships, navigation_sessions, navigation_saved_places (Pass 58 — migration scaffolded but unapplied; see KI-114), shop_interest_submissions, insurer_interest_submissions, platform_activity_events, notification_preferences, shop_service_areas, estimate_requests.
 
 **Schema source of truth:** `supabase/migrations/20251230000001_full_schema.sql` (frozen). New changes go in new timestamped migration files.
 
@@ -266,14 +268,18 @@ Persisted media URLs in `damage_reports.photo_urls` (text[]), `*.profile_image_u
 | shop_service_areas table + CRUD                      | Shop service area polygons                                       | Active, CRUD works                                                      |
 | Tile caching (service worker, 7-day TTL)             | Performance                                                      | Active                                                                  |
 
-### Built but Frozen
+### Navigation System (Active — Pass 49+ unfreeze)
+
+> **Status correction (2026-05-07, Pass 60):** the navigation system was previously listed as "Built but Frozen" through Pass 41. Pass 49 lazy-mount + Pass 50-58 work re-activated it as a first-class product surface for the shop-directory flow. The table below tracks current status per component.
 
 | Component                                           | Purpose                       | Status                            |
 | --------------------------------------------------- | ----------------------------- | --------------------------------- |
-| OSRM routing integration                            | Turn-by-turn directions       | Built, not needed for marketplace |
-| Web Speech API voice navigation                     | British voice guidance        | Built, frozen                     |
-| navigation_sessions table + API                     | Real-time navigation tracking | Built, frozen                     |
-| useNavigationLaunch / useNavigationLifecycleEffects | Navigation state management   | Built, frozen                     |
+| OSRM routing integration                            | Turn-by-turn directions       | **Active** — wired into shop directory navigation; off-route detection consolidated via `suppressOffRouteRefetch` (Pass 57). |
+| Web Speech API voice navigation                     | British voice guidance        | **Active** — wired into navigation engine; consumed by `useNavigationVoiceAlerts` + `useNavigationRoutePreview`. |
+| navigation_sessions table + API                     | Real-time navigation tracking | **Active** — cloud-sync of in-flight nav sessions. |
+| navigation_saved_places table + API                 | Cloud-sync of pinned home/work/saved/recent places | **Pass 58 scaffolding shipped**, owner-apply pending (KI-114). Hook degrades to localStorage-only until applied. |
+| useNavigationLaunch / useNavigationLifecycleEffects | Navigation state management   | **Active** — lazy-mounted via Pass 49 architecture decision; orchestrated by `useShopDirectoryNavigation` + `useCoverageNavigationExperience`. |
+| useNavigationReroute                                | Manual reroute lifecycle (eligible → pending → cooldown) | **Active** — Pass 54 confirm-timing fix + Pass 57 silent-path suppression. |
 
 **Map tile sources:** CARTO Voyager (light), CARTO Dark All (night), Esri Satellite.
 
