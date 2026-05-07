@@ -128,7 +128,7 @@ export default function CoverageNearestShops({
       {fetchError ? (
         <div
           className={cn(
-            "mt-3 flex flex-col gap-2 rounded-[1.2rem] border px-3 py-3 sm:flex-row sm:items-center sm:justify-between",
+            "mt-3 flex flex-col gap-2 rounded-[1.2rem] border px-3 py-3 sm:flex-row sm:items-center sm:justify-between animate-in fade-in slide-in-from-top-1 duration-200 motion-reduce:animate-none",
             tone === "light"
               ? "border-rose-200 bg-rose-50 text-rose-800"
               : "border-rose-400/20 bg-rose-500/10 text-rose-100"
