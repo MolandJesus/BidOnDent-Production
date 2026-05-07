@@ -190,6 +190,12 @@ export function useReportForm({
   };
 
   const handleVehicleContinue = () => {
+    // Pass 66 (2026-05-07) — KI-129: visual asterisks marked make/model/year
+    // as required, but the wizard happily advanced with empty values. Gate
+    // the step on those three fields so the asterisks tell the truth.
+    if (!vehicle.make.trim() || !vehicle.model.trim() || !vehicle.year.trim()) {
+      return;
+    }
     if (onSaveVehicle && vehicle.make && vehicle.model && vehicle.year) {
       const isNewVehicle = !vehicles.some(
         (v) =>

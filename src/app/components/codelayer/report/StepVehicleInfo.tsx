@@ -186,6 +186,7 @@ export default function StepVehicleInfo({
                   id="make"
                   name="make"
                   type="text"
+                  required
                   value={vehicle.make}
                   onChange={(e) => onVehicleChange({ ...vehicle, make: e.target.value })}
                   className={`bd-report-input w-full rounded-2xl px-4 py-3 outline-none ${
@@ -208,6 +209,7 @@ export default function StepVehicleInfo({
                   id="model"
                   name="model"
                   type="text"
+                  required
                   value={vehicle.model}
                   onChange={(e) => onVehicleChange({ ...vehicle, model: e.target.value })}
                   className={`bd-report-input w-full rounded-2xl px-4 py-3 outline-none ${
@@ -230,6 +232,7 @@ export default function StepVehicleInfo({
                   id="year"
                   name="year"
                   type="text"
+                  required
                   value={vehicle.year}
                   onChange={(e) => onVehicleChange({ ...vehicle, year: e.target.value })}
                   className={`bd-report-input w-full rounded-2xl px-4 py-3 outline-none ${

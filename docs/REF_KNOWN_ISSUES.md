@@ -520,7 +520,7 @@
 - **Location:** Report flow Step 1 vehicle form. Likely a CSS class adds the visual asterisk indicator without a corresponding `required` attribute on the input.
 - **Fix direction:** Pick one truth. Either: (a) add `required` to the HTML inputs (browser-native validation kicks in), or (b) remove the visual asterisks if the form is genuinely optional. Recommend (a) — Make/Model/Year are conceptually required for any report. Verify the validation message styling matches the bd-design system, not browser defaults.
 - **Severity:** **P2-DATA/A11Y.** Real validation gap. Screen readers may also announce inconsistent semantics.
-- **Status:** **OPEN — P2-DATA/A11Y.**
+- **Status:** **RESOLVED 2026-05-07 — Pass 66.** Added `required` attribute to make/model/year inputs in [`StepVehicleInfo.tsx`](../src/app/components/codelayer/report/StepVehicleInfo.tsx) — closes the screen-reader semantic gap (browsers expose `required` as `aria-required="true"`). Continue button was already correctly gated via `canContinue`. Defensive guard added at the top of `handleVehicleContinue` in [`useReportForm.ts`](../src/app/components/codelayer/useReportForm.ts) so the wizard refuses to advance even if a future caller bypasses the disabled-button gate. Audit AI's "user could submit empty" claim was technically false (button was disabled), but the a11y semantics are now correct.
 
 ### KI-130: No service worker registered — app has no offline support (P3-INFRA)
 
