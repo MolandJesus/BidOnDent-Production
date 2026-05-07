@@ -45,6 +45,7 @@ import { buildDashboardRouterProps } from "./utils/buildDashboardRouterProps";
 import { completeShopOnboarding, completeInsurerOnboarding } from "./utils/onboardingHandlers";
 import { renderLandingPage } from "./utils/renderLandingPage";
 import { lazyWithRetry } from "./utils/lazyWithRetry";
+import { clearStalePlanningNavSessions } from "./utils/clearStaleNavSessions";
 import type { ViewMode, DamageReport } from "./types";
 
 // Import components
@@ -95,6 +96,16 @@ function AppContent() {
   const { signOut, openSignUp, openUserProfile } = useClerk();
   const { getToken, isLoaded: isClerkAuthLoaded } = useClerkAuth();
   const userProfile = user ? extractUserProfile(user) : null;
+
+  // Pass 61 (2026-05-07) — KI-117: sweep stale `bidondent_nav_session_*` keys
+  // on app mount. Any session still in `status: "planning"` with no
+  // `activatedAt` (or untouched >30 min) is the stale carrier behind the
+  // phantom "737mi off route" banner described in KI-116. Even after the
+  // KI-116 engine gate ships, these stale keys are a privacy + state-leak
+  // surface across reload + sign-out boundaries. Pure side-effect, runs once.
+  useEffect(() => {
+    clearStalePlanningNavSessions();
+  }, []);
 
   // Safety timeout: if Clerk hasn't loaded within 12s (network issues, wrong key,
   // misconfigured domain), force past the loading gate so the landing page renders

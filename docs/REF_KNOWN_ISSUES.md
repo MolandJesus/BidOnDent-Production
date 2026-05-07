@@ -400,7 +400,7 @@
   - For `useNavigationIntelligence.evaluate(snapshot)`: short-circuit when `session.status !== "active"`.
 - **Severity:** **P0-RUNTIME.** Ships catastrophic first-impression user experience: phantom warnings, runaway notifications, persistent error toasts. Not shippable in current state.
 - **Prerequisite for downstream passes:** Pass 61 (test coverage) cannot proceed until this is fixed — tests would otherwise encode the buggy mount scope as expected behavior. Pass 63 (KI-053 perf descriptor memoization) is wasted work while the tile storm is driven by cross-US fitBounds, not descriptor instability.
-- **Status:** **OPEN — P0-RUNTIME.** Targeted for Pass 61 (rescoped from test coverage to root-cause fix).
+- **Status:** **RESOLVED 2026-05-07 — Pass 61.** Gated `intelligence.evaluate(snapshot)` on `navSession.session.status === "active"` at the single call site in [`src/app/hooks/useNavigationLifecycleEffects.ts`](../src/app/hooks/useNavigationLifecycleEffects.ts). The deviation engine now no-ops on every passive surface (dashboard inline coverage, shop directory browse, etc.) regardless of mount scope. Symptoms 1–4 (737mi banner, "Finding new route" toast, "Stopped detected" toast, notification counter inflation) collapse with this single change because they are all downstream of the eval call. **Symptoms 5–6 (speed-limit Overpass spam + Carto 503 storm) remain OPEN — tracked as follow-up Pass.** Speed-limit lookups originate from `useNavigationGpsTracking` consumed by `useCoverageNavigationExperience` on the dashboard inline panel; gating that requires a `passive` arg on the hook + caller wiring (DashboardCoveragePanel) and earned its own pass. Carto 503 storm is driven by dashboard inline `fitBounds` envelope across cross-US demo shops — separate concern (KI-053 family). Build clean 3.29s.
 
 ### KI-117: Stale `bidondent_nav_session_*` keys persist across reload AND across sign-out (P1-RUNTIME, expanded)
 
@@ -417,7 +417,7 @@
   2. On **sign-out flow**: explicitly delete every `bidondent_nav_session_*`, `bidondent_user:*`, `coverageCurrentLocation`, and any other user-scoped key before redirecting to landing.
   3. Consider switching planning sessions to `sessionStorage` so they evaporate when the tab closes.
 - **Severity:** **P1-RUNTIME (expanded).** Now covers reload persistence AND sign-out cleanup gap. Single companion fix to KI-116, same pass.
-- **Status:** **OPEN — P1-RUNTIME.** Companion fix to KI-116; same pass.
+- **Status:** **RESOLVED 2026-05-07 — Pass 61.** New util [`src/app/utils/clearStaleNavSessions.ts`](../src/app/utils/clearStaleNavSessions.ts) exports `clearStalePlanningNavSessions()` (sweeps `bidondent_nav_session_*` keys with `status: "planning"` AND no `activatedAt` OR `updatedAt` >30min old) and `clearAllUserScopedSessionKeys()` (nukes `bidondent_nav_session_*`, `bidondent_nav_active_session_*`, `bidondent_user:*`, `coverageCurrentLocation`, pending-write queue, cloud-unavailable marker). Stale sweep wired on App mount in [`src/app/App.tsx`](../src/app/App.tsx). Full purge wired on sign-out in [`src/app/hooks/useAppHandlers.ts`](../src/app/hooks/useAppHandlers.ts) `handleLogout` (both success + error paths so cleanup runs even when Clerk sign-out throws). Cross-account leak on shared devices (privacy concern) is closed.
 
 ### KI-118: ESC key does not close map UI panels (Voice Controls, Navigation Settings) (P2-A11Y)
 
@@ -500,7 +500,7 @@
   - Is dismissable (unlike the current persistent banner)
 - **Location:** Toast z-index / position styles + header layout. Visible at the viewport audit AI was at (likely 1280×900 desktop after previous resize attempts).
 - **Severity:** **P2-LAYOUT.** Will likely become moot when KI-116 ships; track as a follow-up validation after that fix lands.
-- **Status:** **OPEN — P2-LAYOUT (depends on KI-116).**
+- **Status:** **RESOLVED-DEPENDENT 2026-05-07 — Pass 61.** With KI-116 RESOLVED, the off-route toast no longer fires on the dashboard at all (eval is gated on active nav session, which never exists on the dashboard surface). The header overlap symptom cannot reproduce. If a future regression re-introduces toasts in the header region, re-open with explicit z-index/anchor work — the underlying chrome layout itself was not touched in this pass.**
 
 ### KI-128: Report flow Step 3 → Step 4 — "Skip for now" returns to Step 3 instead of advancing (P1-UX)
 

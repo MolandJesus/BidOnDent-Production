@@ -3,6 +3,7 @@ import type { useUserData } from "./useUserData";
 import { saveDamageReport } from "../services/supabaseService";
 import { submitBid as submitBidToSupabase } from "../services/supabase/bids";
 import { buildSupabaseReportPayload } from "./userDataUtils";
+import { clearAllUserScopedSessionKeys } from "../utils/clearStaleNavSessions";
 import type { DamageReport } from "../types";
 
 type NavigationState = ReturnType<typeof useNavigation>;
@@ -43,6 +44,12 @@ export function useAppHandlers({
       userData.setBids([]);
       userData.setActivities([]);
 
+      // Pass 61 (2026-05-07) — KI-117: nuke every user-scoped local key so the
+      // next signed-in user on this browser does not inherit prior nav sessions,
+      // cached profile data (KI-133 surface), or last-known GPS location. Pairs
+      // with KI-134 (Clerk session destroy) for honest sign-out.
+      clearAllUserScopedSessionKeys();
+
       navigation.setShowLandingPage(true);
       navigation.setShowProfileDropdown(false);
 
@@ -53,6 +60,8 @@ export function useAppHandlers({
       userData.clearSession();
       userData.setBids([]);
       userData.setActivities([]);
+      // Cleanup must still run on the error path to avoid leaving residue.
+      clearAllUserScopedSessionKeys();
       navigation.setShowLandingPage(true);
       navigation.setShowProfileDropdown(false);
     }
