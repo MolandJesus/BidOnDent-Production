@@ -1,4 +1,4 @@
-# Pass 53→58 Autopilot Chain Tracker
+# Pass 53→60 Autopilot Chain Tracker
 
 **Authorized by planner-AI dispatch + owner standing directive 2026-05-07.**
 
@@ -10,6 +10,9 @@
 | 56   | Animation 29-keyframe LAW audit + 2 CSS-only reduce-guard fixes (F5) | **DONE** | (this commit) | Audit doc at docs/evidence/pass-56-2026-05-07/ANIMATION_KEYFRAME_AUDIT.md. Gap-1: animations.css had ZERO reduce-guards on 24 keyframes / 27 utility classes since inception — added single @media block neutralizing all `.animate-*` + `.scroll-animate*`. Gap-2: theme.css `.animate-slide-in-right` toast missing reduce-guard — added. Gaps 3+4 (LAW doc inventory drift) deferred to planner per hard-stop. Build 3835.84 KiB clean. |
 | 57   | Dual off-route paths consolidation (F3)                   | **DONE**                | (this commit) | Added optional `suppressOffRouteRefetch` arg to useNavigationRoutePreview. useShopDirectoryNavigation passes `true` whenever reroute.state.status is `pending` or `cooldown`. Silent ~100m off-route auto-refetch now stands down while the manual reroute lifecycle owns the OSRM call. Eliminates duplicate OSRM fires for the same deviation. 2 files, ~25 LOC. Build clean. useCoverageNavigationExperience left untouched (arg defaults to false → prior behavior preserved). |
 | 58   | Docs hygiene sweep                                        | **MERGED INTO PASS 55** | (see above)   | Advanced earlier in chain because §F gaps hit hard-stops.                                                                                                                             |
+| 58b  | Saved places Supabase scaffolding — write-only (F2)       | **DONE (write-only)**   | (this commit) | New migration `supabase/migrations/20260507000001_create_navigation_saved_places.sql` (NOT applied — owner applies via Studio per repo memory `supabase-cli-pg17-notes.md`). New edge handler `supabase/functions/server/handlers/navigation_saved_places.ts` (KI-095 graceful-degradation: returns `fallback:true` on 42P01/42501/0LP01). 3 routes registered in `index.ts`. New runtime route entry. New client service `src/app/services/supabase/navigationSavedPlaces.ts` (60s circuit breaker mirroring notificationPreferences pattern). `useSavedNavigationLocations` now hydrates-on-mount + fire-and-forget upsert/delete on every mutation; localStorage stays authoritative cache. 6 files, ~330 LOC. Build clean. After owner applies migration: cross-device sync of pinned home/work/saved + recents activates automatically. |
+| 59   | Realtime shop availability scaffolding (F4)               | Pending                 | —             | WRITE-ONLY. KI-056 realtime auth pattern. 5-file ceiling.                                                                                                                              |
+| 60   | REF_SYSTEM_STATE.md co-update for Passes 49-59            | Pending                 | —             | 1-2 files.                                                                                                                                                                            |
 
 **Hard-stop list (abort autopilot if any triggered):**
 

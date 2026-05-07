@@ -23,6 +23,11 @@ import {
   saveNavigationSession,
 } from './handlers/navigation.ts'
 import {
+  deleteNavigationSavedPlace,
+  getNavigationSavedPlaces,
+  upsertNavigationSavedPlace,
+} from './handlers/navigation_saved_places.ts'
+import {
   saveVehicle,
   getVehicles,
   deleteVehicleByPost,
@@ -165,6 +170,19 @@ Deno.serve(async (req) => {
 
     if (path === '/navigation-session' && req.method === 'DELETE') {
       return await deleteNavigationSession(req, supabase, respond)
+    }
+
+    if (path === '/navigation-saved-places' && req.method === 'GET') {
+      return await getNavigationSavedPlaces(req, supabase, respond)
+    }
+
+    if (path === '/navigation-saved-places' && req.method === 'PUT') {
+      return await upsertNavigationSavedPlace(req, supabase, respond)
+    }
+
+    if (path.startsWith('/navigation-saved-places/') && req.method === 'DELETE') {
+      const clientId = decodeURIComponent(path.slice('/navigation-saved-places/'.length))
+      return await deleteNavigationSavedPlace(req, supabase, respond, clientId)
     }
 
     if (path === '/admin/setup-admin' && req.method === 'POST') {

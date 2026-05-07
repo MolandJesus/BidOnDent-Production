@@ -338,3 +338,21 @@
 - **Next review:** Post-launch retrospective OR Phase 8.5 kickoff.
 - **Why parked here, not in OPS audit only:** The OPS pre-execution audit is a point-in-time snapshot; the KI ledger is the durable home for parked aesthetic gaps. Future agents reading `REF_KNOWN_ISSUES.md` will surface these candidates without re-reading audit docs. Phase 6.5 close commit cross-refs the original scope; Phase 7.5 close commit cross-refs the extended scope (F2 + F3).
 - **Status:** **OPEN — P7-TECHDEBT.** Phase 6.5 closed via Path B (deferred-aesthetic note, original scope). Phase 7.5 closed via Path Y (docs-only, F2 + F3 scope extension — dashboard surfaces). Phase 7.6 / KI-113 close (2026-05-05, commits `b1fea150` → `bb20f554`) cleared the reduced-motion contract gating — any future sub-fix activation on motion/react surfaces now mechanically inherits root `<MotionConfig reducedMotion="user">` (`src/main.tsx`) + per-file `useReducedMotion()` pattern (45 files); CSS keyframe activations (original landing gold-lamp + F4 / F5 / F6) must still author their own `@media (prefers-reduced-motion: reduce)` block per [`LAW_ANIMATION_AND_ATMOSPHERE.md`](LAW_ANIMATION_AND_ATMOSPHERE.md) §3. Phase 8.5 closed via Path Y (docs-only, F4 + F5 + F6 scope extension — map ambient surfaces: route preview draw-on, pin pulse on canvas, liquid sheen extension to map frames; Phase 8.5 audit F3 camera idle drift maps to existing KI-112 F2 — no duplicate). Sub-fixes (original landing scope + F2 / F3 / F4 / F5 / F6) remain owner-taste-deferred to post-launch aesthetic pass. This KI is the parked record for the full atmosphere/idle/enter-motion gap family across landing + dashboard + map.
+
+### KI-114: navigation_saved_places migration scaffolded but not applied (P5-DOC, owner action)
+
+> **Added 2026-05-07 — Pass 58 close.** Pass 58 shipped scaffolding for cloud-synced navigation saved places (home/work/saved/recent) without applying the migration, because the local Supabase CLI db push is broken under PG17 (see repo memory `supabase-cli-pg17-notes.md`). Owner applies via Supabase Studio.
+
+- **Impact:** Until owner applies `supabase/migrations/20260507000001_create_navigation_saved_places.sql` against prod, every GET to `/navigation-saved-places` returns `42P01 undefined_table` → handler degrades to `{ places: [], fallback: true }` (HTTP 200), client circuit-breaker (60s backoff) kicks in, and `useSavedNavigationLocations` runs on its localStorage mirror only. Cross-device sync of pinned places does not activate. No user-visible breakage; same behavior as pre-Pass-58.
+- **Severity:** P5-DOC / owner-action. Not blocking. Not a code defect. Self-healing once migration applied + edge function restarted.
+- **Location:**
+  - Migration: [`supabase/migrations/20260507000001_create_navigation_saved_places.sql`](../supabase/migrations/20260507000001_create_navigation_saved_places.sql)
+  - Handler: [`supabase/functions/server/handlers/navigation_saved_places.ts`](../supabase/functions/server/handlers/navigation_saved_places.ts)
+  - Client service: [`src/app/services/supabase/navigationSavedPlaces.ts`](../src/app/services/supabase/navigationSavedPlaces.ts)
+  - Hook: [`src/app/hooks/useSavedNavigationLocations.ts`](../src/app/hooks/useSavedNavigationLocations.ts)
+- **Apply steps:**
+  1. Open Supabase Studio → SQL editor → paste migration body → run.
+  2. Restart `server` edge function (Studio → Edge Functions → server → Restart, or redeploy).
+  3. Verify with: `curl -H "Authorization: Bearer <clerk_jwt>" https://<project>.supabase.co/functions/v1/server/navigation-saved-places` → expect `{"places":[],"success":true}`.
+- **Removal trigger:** Owner applies migration + verifies edge response no longer carries `fallback:true`. Move to RESOLVED archive when confirmed.
+- **Status:** **OPEN — P5-DOC.** Awaiting owner apply.
