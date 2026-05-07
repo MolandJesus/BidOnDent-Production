@@ -42,14 +42,14 @@ If Clerk rejects the cookies (UA / fingerprint mismatch — planner estimated ~5
 
 ## Files in this pass
 
-| File | Purpose | Committed? |
-|---|---|---|
-| `phase-44-mobile-capture.mjs` | Capture script | Yes |
-| `mobile-auth-cookies.example.json` | Placeholder shape | Yes |
-| `mobile-auth-cookies.json` | Real cookies (owner-only) | **No — gitignored** |
-| `capture-log.json` | Run log from this attempt | Yes |
-| `_unauth_landing_artifacts/*.png` | 20 misleading captures, quarantined | Yes (for transparency) |
-| `SUMMARY.md` | This file | Yes |
+| File                               | Purpose                             | Committed?             |
+| ---------------------------------- | ----------------------------------- | ---------------------- |
+| `phase-44-mobile-capture.mjs`      | Capture script                      | Yes                    |
+| `mobile-auth-cookies.example.json` | Placeholder shape                   | Yes                    |
+| `mobile-auth-cookies.json`         | Real cookies (owner-only)           | **No — gitignored**    |
+| `capture-log.json`                 | Run log from this attempt           | Yes                    |
+| `_unauth_landing_artifacts/*.png`  | 20 misleading captures, quarantined | Yes (for transparency) |
+| `SUMMARY.md`                       | This file                           | Yes                    |
 
 ## Validation
 
@@ -67,6 +67,6 @@ If Clerk rejects the cookies (UA / fingerprint mismatch — planner estimated ~5
 The autopilot-compatible next pass is one of:
 
 - **Pass 45** — Owner exports cookies → re-run script → if successful, capture authed mobile evidence and triage what we find. (Owner-input dependent.)
-- **Pass 45-alt** — Pick the next P-priority finding from Phase A SUMMARY that is *not* mobile-authed-evidence-blocked. Candidates: KI-053 deeper trace under controlled load, dashboard P3 polish items (planner explicitly approved low-risk additive work).
+- **Pass 45-alt** — Pick the next P-priority finding from Phase A SUMMARY that is _not_ mobile-authed-evidence-blocked. Candidates: KI-053 deeper trace under controlled load, dashboard P3 polish items (planner explicitly approved low-risk additive work).
 
 Per planner standby verdict, neither is urgent. Soft Launch Hardening Phase 0 is fundamentally complete. The map-first directive deserves attention before more chrome polish.
