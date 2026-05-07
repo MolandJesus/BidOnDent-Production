@@ -71,6 +71,11 @@ export default function DashboardCoveragePanel({
     selectedShop,
     fallbackOriginTarget: null,
     voiceGuidanceEnabled,
+    // Pass 61b (2026-05-07) — KI-116 symptoms 5/6: dashboard inline coverage
+    // panel is a browse/preview surface, not active turn-by-turn. Suppress
+    // continuous speed-limit Overpass lookups that were firing at idle and
+    // producing persistent "Speed limit lookup failed" console errors.
+    isActiveNavigation: false,
   });
   const nearbyShops = useMemo<CoverageNearbyShop[]>(() => {
     if (!navigation.activeOriginTarget) {

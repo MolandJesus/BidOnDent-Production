@@ -39,6 +39,21 @@ type UseCoverageNavigationExperienceArgs = {
   fallbackOriginTarget: CoverageSearchTarget | null;
   originPriority?: "gps-first" | "fallback-first";
   voiceGuidanceEnabled?: boolean;
+  /**
+   * Pass 61b (2026-05-07) — KI-116 symptoms 5/6 fix.
+   *
+   * When `false` (passive surface like the dashboard inline coverage panel),
+   * speed-limit Overpass lookups are suppressed regardless of the user's
+   * stored `speedLimitMonitorEnabled` preference. GPS tracking itself stays
+   * available for distance-to-shop / origin computation, but the continuous
+   * speed-limit fetch loop (which produced the persistent
+   * "Speed limit lookup failed" console errors at idle) only runs on real
+   * navigation surfaces (fullscreen turn-by-turn, active route guidance).
+   *
+   * Defaults to `true` for backwards compatibility — existing turn-by-turn
+   * surfaces continue to behave as before.
+   */
+  isActiveNavigation?: boolean;
 };
 
 export type CoverageNavigationExperience = {
@@ -92,6 +107,7 @@ export function useCoverageNavigationExperience({
   fallbackOriginTarget,
   originPriority = "gps-first",
   voiceGuidanceEnabled = false,
+  isActiveNavigation = true,
 }: UseCoverageNavigationExperienceArgs): CoverageNavigationExperience {
   const [settings, setSettings] = useState<NavigationGuidanceSettings>(() =>
     loadNavigationGuidanceSettings()
@@ -112,7 +128,10 @@ export function useCoverageNavigationExperience({
     speedLimitStatus,
   } = useNavigationGpsTracking({
     gpsTrackingEnabled: settings.gpsTrackingEnabled,
-    speedLimitMonitorEnabled: settings.speedLimitMonitorEnabled,
+    // Pass 61b (KI-116 symptoms 5/6): on passive surfaces (dashboard inline
+    // coverage panel) the continuous speed-limit Overpass loop must stand
+    // down. Speed limit is only meaningful during active turn-by-turn.
+    speedLimitMonitorEnabled: isActiveNavigation && settings.speedLimitMonitorEnabled,
   });
   const [preferredVoiceLabel, setPreferredVoiceLabel] = useState<string | null>(() =>
     getPreferredVoiceLabel(loadNavigationGuidanceSettings().voicePersona)

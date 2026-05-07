@@ -77,7 +77,12 @@ export function useShopDirectoryNavigation({
 
   const shopNavigationGps = useNavigationGpsTracking({
     gpsTrackingEnabled: guidanceSettings.gpsTrackingEnabled,
-    speedLimitMonitorEnabled: guidanceSettings.speedLimitMonitorEnabled,
+    // Pass 61b (2026-05-07) — KI-116 symptoms 5/6: speed-limit Overpass
+    // lookups must only fire when there is a truly active navigation
+    // session. Otherwise they spam the network from passive shop-browse
+    // surfaces using the user's idle GPS coordinate.
+    speedLimitMonitorEnabled:
+      guidanceSettings.speedLimitMonitorEnabled && navSession.session.status === "active",
   });
 
   const guidanceSelectedDestination = useMemo(
