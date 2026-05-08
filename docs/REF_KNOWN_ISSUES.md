@@ -1009,3 +1009,99 @@
 ### KI-152 status correction 2026-05-07 — 100-event audit window too narrow
 
 > **Update 2026-05-07 — audit AI Pass 9 §2 correction.** Pass 8 service-role log audit (100 events) covered ~30-90 seconds depending on traffic. Too narrow to claim "clean for visible window." Recommend pg_audit setup or wider Studio Logs Explorer sweep (90-day filter) before downgrading severity. Service Role Key rotation owner-action remains the load-bearing remediation regardless of audit findings.
+
+### KI-161: Active navigation — duplicate maneuver instruction across NEXT MANEUVER banner + Live Navigation panel (P1-CONTENT)
+
+> **Added 2026-05-08 — audit AI Pass 9 §3 map-program audit.** During turn-by-turn navigation, the next-maneuver instruction renders simultaneously in two places: the top-center `NavigationActiveManeuverCard` ("NEXT MANEUVER" banner, max-width 640px) and the bottom-right `MapNavigationHud` ("Live Navigation" panel). Both display the same instruction word-for-word with the same "Next maneuver" eyebrow label. Apple Maps and Google Maps each show maneuver text in exactly one place during nav.
+
+- **Sources:** [`src/app/components/maps/navigation/NavigationActiveManeuverCard.tsx:84-93`](../src/app/components/maps/navigation/NavigationActiveManeuverCard.tsx#L84-L93) (top banner) + [`src/app/components/maps/MapNavigationHud.tsx:112-119`](../src/app/components/maps/MapNavigationHud.tsx#L112-L119) (bottom panel).
+- **Fix direction:** drop the `nextInstruction` block from `MapNavigationHud` (keep the speed/voice-mode chrome there) and let `NavigationActiveManeuverCard` own maneuver text exclusively. Banner is more glanceable for driving; panel can degrade to speed/voice-only.
+- **Severity:** **P1-CONTENT.**
+- **Status:** **OPEN — queued for next surgical pass.**
+
+### KI-162: Active navigation — `liveRemainingEtaLabel` rendered "Nm" instead of "N min" (P1-CONTENT — RESOLVED 2026-05-08)
+
+> **Added 2026-05-08 — audit AI Pass 9 §3.** Bottom-left navigation panel rendered ETA as `<p>3288m</p>` — DOM-confirmed. The `m` suffix on a time quantity reads as meters, not minutes, especially next to a Distance card. Bug was two-fold:
+> 1. [`src/app/hooks/shopDirectoryNavigationDerived.ts:173`](../src/app/hooks/shopDirectoryNavigationDerived.ts#L173) — built label as `${Math.round(remainingDurationSeconds / 60)}m`. Math correct (seconds → minutes), suffix wrong.
+> 2. [`src/app/components/shop/ShopDirectoryGuidanceCard.tsx:291`](../src/app/components/shop/ShopDirectoryGuidanceCard.tsx#L291) — fallback used `${selectedRoute.estimatedDurationMinutes}m`.
+
+- **Fix shipped Pass 175:** swap `m` → ` min` in both source locations + update [`shopDirectoryNavigationDerived.test.ts:180`](../src/app/hooks/shopDirectoryNavigationDerived.test.ts#L180) fixture from `"15m"` → `"15 min"`. Typecheck clean, vitest 14/14 passing.
+- **Note:** the `3288` value itself (54.8 hours of driving) is implausible for a typical route and points to a separate `remainingDurationSeconds` source-data issue. Captured under **KI-169** (route units mix / 853.4-mi-21-hr route lacks sanity check).
+- **Severity:** **P1-CONTENT.**
+- **Status:** **RESOLVED 2026-05-08 (Pass 175). Companion data-sanity work tracked under KI-169.**
+
+### KI-163: Active navigation — control sprawl across 5 corners of viewport (P2-DESIGN)
+
+> **Added 2026-05-08 — audit AI Pass 9 §3.** Map controls fan out across 5 visual clusters in nav mode: top-left back button, top-right shop list + map-view pill, **right-edge vertical toolbar** at x:1576 (TURNS / VOICE / SETTINGS / CENTER stacked), bottom-left navigation panel, bottom-right zoom + compass. Apple Maps consolidates to 2-3 corners. The right-edge vertical toolbar is the unconventional outlier — those four functions traditionally live as a row inside the navigation panel header or behind a single overflow menu.
+
+- **Fix direction:** collapse the right-edge `NavigationActionRail` into the bottom-left navigation panel header (icon row), leaving only back button (top-left), top-right pills, and bottom-right zoom/compass.
+- **Severity:** **P2-DESIGN.**
+- **Status:** **OPEN.**
+
+### KI-164: Smart Shop Map fullscreen — ROUTE box overlaps bottom legend strip by 129px (P1-LAYOUT)
+
+> **Added 2026-05-08 — audit AI Pass 9 §3.** Bottom-left ROUTE box at y:655–865 (z:510). Bottom legend strip at y:736–921 (z:500) spans full width 1658px. They overlap from y:736 to y:865 — 129 vertical px of stacked content. Z-index keeps ROUTE on top, but they occupy the same screen region instead of partitioning it.
+
+- **Fix direction:** either compress legend to single 44px-tall row pinned to absolute bottom, or move ROUTE box up to start at y:430 directly under selected-shop card.
+- **Severity:** **P1-LAYOUT.**
+- **Status:** **OPEN.**
+
+### KI-165: Smart Shop Map fullscreen — phantom second top-bar pill ("Finding the best shops…") leaks past load (P2-LAYOUT)
+
+> **Added 2026-05-08 — audit AI Pass 9 §3.** Loading-state pill at x:324, y:112 (~50px below the actual top-bar) creates a perceived second top-bar row. Persists even after shops have loaded — loading-state leak. Should either auto-dismiss after first fetch resolves, or render inline within search bar as a status badge.
+
+- **Severity:** **P2-LAYOUT.**
+- **Status:** **OPEN.**
+
+### KI-166: Smart Shop Map fullscreen — bottom legend strip eats 185px (20%) of viewport (P2-LAYOUT)
+
+> **Added 2026-05-08 — audit AI Pass 9 §3.** Dual legend (semantic Origin/Selected/Top pick/Reports/Saved/Routes + status ALL/PENDING/APPROVED/IN-REPAIR/RESOLVED/DONE) rendered as twin pill groups, consuming y:736 → y:921 = 185px = 20% of 921px viewport. Apple/Google Maps don't expose a permanent legend — pin shape + color is self-evident.
+
+- **Fix direction:** merge into single collapsible legend (default-collapsed, count + "▼ legend" toggle), or demote to hover-tooltip on pin glyphs.
+- **Severity:** **P2-LAYOUT.**
+- **Status:** **OPEN.**
+
+### KI-167: Smart Shop Discovery card — "My Location" preset chip duplicated in row (P2-CONTENT)
+
+> **Added 2026-05-08 — audit AI Pass 9 §3.** Location-preset chip row renders as `[△ My Location] [Yonkers] [White Plains] [New Rochelle] [Spring Valley] [My Location]`. "My Location" appears twice — once at far left with active-state triangle prefix, once at far right without. Likely the active chip is being re-appended to the rendered list. Single-array dedupe fix.
+
+- **Severity:** **P2-CONTENT.**
+- **Status:** **OPEN.**
+
+### KI-168: Smart Shop Map fullscreen entry — three layered transition states visible during load (P2-LOADING)
+
+> **Added 2026-05-08 — audit AI Pass 9 §3.** When entering fullscreen, transition shows: live shop card top-left + "Loading map…" spinner pill dead-center + faded ROUTE box + faded legend bar at ~15% opacity. Three layered states for ~2 seconds. Either bottom panels should not render until map hydrated, or spinner should be the only visible chrome during load.
+
+- **Severity:** **P2-LOADING.**
+- **Status:** **OPEN.**
+
+### KI-169: Dashboard mini-map ROUTE box — alternative cards mix meters + miles + implausible 21-hour route value (P2-CONTENT)
+
+> **Added 2026-05-08 — audit AI Pass 9 §3.** Route alternative cards show `1005m / 853.4 mi` and `1009m / 872.0 mi` — top number meters, bottom miles, in same card. The 1005m vs 1009m alternatives are 4m apart but 853.4 vs 872.0 mi are 18.6 mi apart. Compounded by 853.4mi / 1264min route (>21 hours of driving) with no sanity check. Likely the top should be a route-type label (Fastest / Shortest) not a duplicate distance.
+
+- **Severity:** **P2-CONTENT (data-sanity).**
+- **Status:** **OPEN.** Companion to KI-162's `3288` implausible-value note.
+
+### KI-170: Landing Coverage Dialog vs Dashboard Smart Shop Map fullscreen — 100% divergent design language (P1-PARITY)
+
+> **Added 2026-05-08 — audit AI Pass 9 §3.** Both surfaces share the MapLibre engine but otherwise share zero visual identity: different mounts (modal vs full-page), different top chrome (close-X vs Back/Search/Search-this-area/15/Split/Map-toggle), different left panels (COVERAGE COMMAND CENTER tabs vs selected-shop+ROUTE), different right toolbars (4 unlabeled icons vs 4 labeled in nav), different legend density (none vs dual), different search affordances (single ZIP vs ZIP+chips+SmartMatch), different tile toggles (none vs Map/Night/Satellite), different routing surfaces (none vs full route box). Same product, two unrelated UIs.
+
+- **Fix direction:** new `<MapProgramShell>` abstraction with composable slots — top-bar + map area + bottom-right utilities always present; left/right panels + status pill + legend mounted by host context. Four hosts: `<DashboardSmartShopMap>`, `<LandingCoverageDialog>`, `<NavigationActiveMode>`, `<DashboardMiniMap>`. Tracked separately under **`docs/PLAN_MAP_UNIFICATION_2026-05-08.md`** (to be authored).
+- **Severity:** **P1-PARITY.**
+- **Status:** **OPEN — multi-pass refactor.**
+
+### KI-171: Landing page — three different "map" presentations stacked vertically on one scroll (P2-CONSISTENCY)
+
+> **Added 2026-05-08 — audit AI Pass 9 §3.** Public landing page contains three distinct map representations: (1) Hero stylized SVG illustration with floating "Sample quote" + "Estimated ETA" chips and "DOUBLE-TAP FOR FULL MAP" affordance; (2) Inline Coverage MapLibre with minimal chrome (just zoom + small badge); (3) Coverage Command Center dialog with rich left panel (Search/Explore/Saved/Shops tabs + persona switcher). Combined with dashboard mini-map + Smart Shop Map fullscreen on signed-in side = 5+ distinct map UIs. Three visual languages on a single scroll on the landing page alone.
+
+- **Fix direction:** subsumed by **KI-170 unification plan**.
+- **Severity:** **P2-CONSISTENCY.**
+- **Status:** **OPEN — paired with KI-170.**
+
+### KI-172: Landing Coverage Dialog — map shows 6 rated shop pins but Shops tab says "0 partner shops" (P1-DATA)
+
+> **Added 2026-05-08 — audit AI Pass 9 §3.** Coverage Dialog renders 6 shop pins with rating labels (4.6, 4.7, 4.8, 4.9). The "🛍 Shops" tab shows "Service area is expanding — No partner shops within 20 miles yet." Explore tab shows "0 shops / 15 places". Map ↔ list contradiction. Dashboard fullscreen at least carries a banner ("Showing example shop locations. Verified partner shops will appear once your account is connected."); landing version omits that disclaimer.
+
+- **Fix direction:** (a) port the disclaimer banner to Coverage Dialog; (b) hide example/preview pins on landing when no real partners in radius; or (c) include preview pins in count with "(preview)" annotation.
+- **Severity:** **P1-DATA.**
+- **Status:** **OPEN.**

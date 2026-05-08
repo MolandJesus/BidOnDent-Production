@@ -288,7 +288,7 @@ export default function ShopDirectoryGuidanceCard({
               <p
                 className={`mt-1 text-sm font-semibold ${isDark ? "text-white" : "text-slate-800"}`}
               >
-                {remainingEtaLabel || etaLabel || `${selectedRoute.estimatedDurationMinutes}m`}
+                {remainingEtaLabel || etaLabel || `${selectedRoute.estimatedDurationMinutes} min`}
               </p>
             </div>
             <div className={`rounded-xl border px-2 py-2 text-center ${glassChip}`}>
