@@ -322,7 +322,7 @@ export default function CoverageActiveNavigationLayout({
           postedSpeedLimitConfidence={navigation.speedLimitSnapshot?.confidence ?? null}
           speedLimitMatchDistanceMeters={navigation.speedLimitSnapshot?.matchDistanceMeters ?? null}
           nearestRoadName={navigation.speedLimitSnapshot?.roadName ?? null}
-          nextInstruction={navigation.nextStep?.instruction ?? null}
+          nextInstruction={null}
           voiceMode={navigation.settings.voiceMode}
           onTileModeChange={onTileModeChange}
           onCenterActive={onCenterActive}

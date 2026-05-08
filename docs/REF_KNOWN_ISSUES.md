@@ -1010,14 +1010,14 @@
 
 > **Update 2026-05-07 — audit AI Pass 9 §2 correction.** Pass 8 service-role log audit (100 events) covered ~30-90 seconds depending on traffic. Too narrow to claim "clean for visible window." Recommend pg_audit setup or wider Studio Logs Explorer sweep (90-day filter) before downgrading severity. Service Role Key rotation owner-action remains the load-bearing remediation regardless of audit findings.
 
-### KI-161: Active navigation — duplicate maneuver instruction across NEXT MANEUVER banner + Live Navigation panel (P1-CONTENT)
+### KI-161: Active navigation — duplicate maneuver instruction across NEXT MANEUVER banner + Live Navigation panel (P1-CONTENT — RESOLVED 2026-05-08)
 
 > **Added 2026-05-08 — audit AI Pass 9 §3 map-program audit.** During turn-by-turn navigation, the next-maneuver instruction renders simultaneously in two places: the top-center `NavigationActiveManeuverCard` ("NEXT MANEUVER" banner, max-width 640px) and the bottom-right `MapNavigationHud` ("Live Navigation" panel). Both display the same instruction word-for-word with the same "Next maneuver" eyebrow label. Apple Maps and Google Maps each show maneuver text in exactly one place during nav.
 
 - **Sources:** [`src/app/components/maps/navigation/NavigationActiveManeuverCard.tsx:84-93`](../src/app/components/maps/navigation/NavigationActiveManeuverCard.tsx#L84-L93) (top banner) + [`src/app/components/maps/MapNavigationHud.tsx:112-119`](../src/app/components/maps/MapNavigationHud.tsx#L112-L119) (bottom panel).
-- **Fix direction:** drop the `nextInstruction` block from `MapNavigationHud` (keep the speed/voice-mode chrome there) and let `NavigationActiveManeuverCard` own maneuver text exclusively. Banner is more glanceable for driving; panel can degrade to speed/voice-only.
+- **Fix shipped Pass 176:** `CoverageActiveNavigationLayout.tsx:325` now passes `nextInstruction={null}` to `MapLibreServiceCoverageMap`. `MapNavigationHud`'s maneuver block at L112-119 is gated on `nextInstruction ?` (falsy when null), so the bottom-right panel no longer renders the duplicate text on this surface. `NavigationActiveManeuverCard` is the single source of truth for maneuver text in active nav. Other surfaces that mount `MapNavigationHud` without `NavigationActiveManeuverCard` (`CoverageBrowseExperience`, `OperatingRegionsSection` — preview/browse modes) keep the HUD's maneuver block intact via their existing pass-through. Typecheck clean.
 - **Severity:** **P1-CONTENT.**
-- **Status:** **OPEN — queued for next surgical pass.**
+- **Status:** **RESOLVED 2026-05-08 (Pass 176).**
 
 ### KI-162: Active navigation — `liveRemainingEtaLabel` rendered "Nm" instead of "N min" (P1-CONTENT — RESOLVED 2026-05-08)
 
