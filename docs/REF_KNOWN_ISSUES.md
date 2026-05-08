@@ -1061,12 +1061,14 @@
 - **Severity:** **P2-LAYOUT.**
 - **Status:** **OPEN.**
 
-### KI-167: Smart Shop Discovery card — "My Location" preset chip duplicated in row (P2-CONTENT)
+### KI-167: Smart Shop Discovery card — "My Location" preset chip duplicated in row (P2-CONTENT — RESOLVED 2026-05-08)
 
 > **Added 2026-05-08 — audit AI Pass 9 §3.** Location-preset chip row renders as `[△ My Location] [Yonkers] [White Plains] [New Rochelle] [Spring Valley] [My Location]`. "My Location" appears twice — once at far left with active-state triangle prefix, once at far right without. Likely the active chip is being re-appended to the rendered list. Single-array dedupe fix.
 
+- **Root cause:** [`ShopDirectoryOriginSearch.tsx:50-58`](../src/app/components/shop/ShopDirectoryOriginSearch.tsx#L50-L58) appended `selectedOrigin` as a trailing chip when it wasn't already in the first-4 `quickSuggestedOrigins` slice. The user-geolocation place (placeId `"user-geolocation"`) is never in that static list — but it's already represented by the dedicated "My Location" button rendered immediately to the left. So selecting My Location triggered a duplicate.
+- **Fix shipped Pass 177:** added `selectedIsUserGeolocation` guard to the trailing-append branch. The dedicated button now exclusively represents the user-geolocation state; non-geolocation custom origins still get the trailing chip preserved.
 - **Severity:** **P2-CONTENT.**
-- **Status:** **OPEN.**
+- **Status:** **RESOLVED 2026-05-08 (Pass 177).**
 
 ### KI-168: Smart Shop Map fullscreen entry — three layered transition states visible during load (P2-LOADING)
 

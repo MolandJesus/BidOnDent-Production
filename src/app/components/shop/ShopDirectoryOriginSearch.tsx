@@ -52,8 +52,11 @@ export default function ShopDirectoryOriginSearch({
   const selectedAlreadyVisible = quickSuggestedOrigins.some(
     (origin) => (origin.placeId || origin.name) === selectedOriginKey
   );
+  // KI-167: the user-geolocation origin is already shown via the dedicated
+  // "My Location" button above this row, so don't append it again as a chip.
+  const selectedIsUserGeolocation = selectedOrigin?.placeId === "user-geolocation";
   const visibleSuggestedOrigins =
-    selectedOrigin && !selectedAlreadyVisible
+    selectedOrigin && !selectedAlreadyVisible && !selectedIsUserGeolocation
       ? [...quickSuggestedOrigins, selectedOrigin]
       : quickSuggestedOrigins;
 
