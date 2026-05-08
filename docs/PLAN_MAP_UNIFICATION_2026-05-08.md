@@ -358,4 +358,65 @@ that loses one of these is a regression and reverts.
 
 ---
 
+## §7. Master-builder review (Pass 180, 2026-05-08)
+
+**Reviewer:** Master Builder AI (Opus 4.7).
+**Verdict:** **APPROVED with three notes.** Step A authorized for the next builder pass.
+
+### 7.1 LAW alignment check
+
+Verified against [`LAW_LAYERED_ARCHITECTURE.md`](LAW_LAYERED_ARCHITECTURE.md) §"The Four Layers" + §"Folder-to-Layer Mapping":
+
+- `src/app/components/maps/shell/MapProgramTopBar.tsx` (Step A) — **L2** (composed UI in `components/maps/`). Compliant.
+- `src/app/components/maps/shell/MapProgramUtilityCluster.tsx` (Step B) — **L2**. Compliant.
+- `<MapProgramShell>` host wrapper — **L2**. Compliant.
+- `<MapEngineCanvas>` (Step C.1 extraction) — LAW labels MapLibre adapter as L4 conceptually. Since the canvas must render JSX it can't literally be L4 (services don't render). **Architectural note:** place the extraction at `src/app/components/maps/engine/MapEngineCanvas.tsx` — the `engine/` sub-folder makes the L4-in-spirit boundary explicit and lets reviewers immediately see "this is the headless adapter, not chrome." Don't park it in `services/` since it's component code.
+
+No forbidden cross-layer flows are introduced by the proposed splits. Each new file composes downward (L2 → L3 hooks → L4 services); none reach across.
+
+### 7.2 File-size budget check
+
+LAW L2 limits: soft 400, hard 600. Two files in the migration path are at risk:
+
+- `OperatingRegionsSection.tsx` — currently 599 lines (already grandfathered per LAW §"Grandfathered file inventory"). Step E **must not push it over 600.** If the host migration adds more than 1 line net, split a child component out instead.
+- `CoverageBrowseExperience.tsx` — currently 490 lines (post-Pass-10). Headroom = 110 lines. Step D's slot relocations should be net-neutral or net-negative since the `statusPill` slot replaces an inline overlay; verify before commit.
+
+New files (`MapProgramTopBar`, `MapProgramUtilityCluster`, `MapProgramShell`, `MapEngineCanvas`) start fresh against the soft 400 budget. None should exceed 400 at first ship — split into helpers earlier if approaching.
+
+### 7.3 Open-questions resolutions
+
+1. **Step C ordering — dashboard-fullscreen first.** **APPROVED.** Richest tested surface, deepest test coverage on `MapLibreServiceCoverageMap`, lowest unknown risk. Landing-dialog second (Step D) is correct.
+2. **`ImmersiveMapViewport` convergence — defer to F.1 spike.** **APPROVED.** If F.1 finds the directory needs a route-option layer the coverage engine doesn't ship, the right move is to **promote route-option rendering to the shared `<MapEngineCanvas>`** rather than fork the engine — that keeps the engine single-source. Document the decision in F.1's commit message either way.
+3. **Legend default — option (a) collapsed-with-toggle.** **APPROVED.** BidOnDent's status semantics (PENDING / APPROVED / IN-REPAIR / RESOLVED / DONE) carry meaning that a hover-tooltip can't surface for keyboard users or first-time visitors. Apple/Google Maps don't have status legends because their pin types don't carry workflow state — different problem space. Toggle defaults to **collapsed**; expanded state persists in `localStorage` per-user.
+4. **Persona switcher on landing — HOLD for owner.** **CONFIRMED.** Cross-checks against LAW_PROJECT_RULES § Public Scope: exposing an authenticated-feature affordance to public users could leak product-shape information we haven't decided to publish. Defer until owner explicitly opts in.
+
+### 7.4 Anti-regression list — additions
+
+Plan §6's 12-item list is comprehensive. **Adding two items** for Step-A-specific risk:
+
+13. **Pass 175 — `liveRemainingEtaLabel` "N min" suffix** ([`shopDirectoryNavigationDerived.ts:173`](../src/app/hooks/shopDirectoryNavigationDerived.ts#L173)). The shell migration must not regress to the old `"Nm"` suffix. Verify any ETA rendering that lifts from host into shell preserves the corrected formatter.
+14. **Pass 176 — single-source maneuver text** ([`CoverageActiveNavigationLayout.tsx:325`](../src/app/components/landing/CoverageActiveNavigationLayout.tsx#L325) `nextInstruction={null}`). When `<MapNavigationHud>` lifts to shell `rightPanel` (feature-transfer matrix #11), the shell must continue to gate the maneuver block on prop falsity so the duplicate doesn't return.
+
+### 7.5 Step A authorization
+
+**Authorized for next builder pass.** Scope:
+
+- New file: `src/app/components/maps/shell/MapProgramTopBar.tsx` (~150-250 lines target).
+- Lift the union of: logo / back / search input / search-this-area / tile-mode toggle / split-view / map-toggle.
+- Replace top-bar fragments in `CoverageBrowseExperience`, dashboard Smart Shop Map host (still to be pinpointed — KI-164 investigation), and `ImmersiveMapTopBar` consumers with the lifted component.
+- Pure presentational lift — no behavior change, no new callbacks. Same handlers in, same handlers out.
+- Verify: typecheck clean, vitest unaffected, smoke-test in dev for visual parity at 1440×900 + 390×844 viewports.
+
+Do **not** start Step B in the same pass. Containment-over-expansion: one extraction concern per pass.
+
+### 7.6 Items NOT authorized in this pass
+
+- Step C through Step G — gated on Step A landing first.
+- KI-166 legend default-collapsed structural change — gated on Step C.2 (legend slot relocation).
+- KI-164 ROUTE box repositioning — gated on Step C.2.
+- `<MapEngineCanvas>` extraction — gated on Step C.1.
+- Persona switcher promotion to landing — owner-gated indefinitely.
+
+---
+
 **End of plan.**
