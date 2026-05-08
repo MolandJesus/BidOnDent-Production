@@ -1077,12 +1077,19 @@
 - **Severity:** **P2-LOADING.**
 - **Status:** **OPEN.**
 
-### KI-169: Dashboard mini-map ROUTE box — alternative cards mix meters + miles + implausible 21-hour route value (P2-CONTENT)
+### KI-169: Dashboard mini-map ROUTE box — alternative cards mix meters + miles + implausible 21-hour route value (P2-CONTENT — FIRST HALF SHIPPED 2026-05-08)
 
 > **Added 2026-05-08 — audit AI Pass 9 §3.** Route alternative cards show `1005m / 853.4 mi` and `1009m / 872.0 mi` — top number meters, bottom miles, in same card. The 1005m vs 1009m alternatives are 4m apart but 853.4 vs 872.0 mi are 18.6 mi apart. Compounded by 853.4mi / 1264min route (>21 hours of driving) with no sanity check. Likely the top should be a route-type label (Fastest / Shortest) not a duplicate distance.
 
+- **First half shipped Pass 179 (route-engine sanity flag):**
+  - Added `flagImplausibleRoute()` helper in [`shopMapRouting.ts`](../src/app/services/intelligence/shopMapRouting.ts) that flags routes failing any of three plausibility bands: distance > 100mi, duration > 240min, or implied speed outside [10, 80] mph (the speed band catches divide-by-tiny-distance corruption).
+  - `buildShopRouteOptions` now annotates every generated `RouteOption` with optional `isImplausible: boolean` and `implausibleReasons: string[]` fields (non-breaking — current consumers ignore them).
+  - Dev-only `console.warn` fires when a route is flagged, carrying diagnostic context (shop name + origin/destination coordinates) so upstream coordinate corruption can be traced. Most likely cause is origin defaulting to `(0,0)` or a stale stub since the audit captured 853.4 mi for a NY-area request.
+  - Test coverage: 8 new `flagImplausibleRoute` cases including the audit's exact 853.4mi / 1264min reproduction. Vitest 16/16. Typecheck clean.
+- **Second half pending — display bug:** the `1005m / 853.4 mi` mixed-units card layout is a separate UI-side issue. The top-line `1005m`/`1009m` is likely meant to be a route-type label (Fastest / Balanced / Local roads) not a duplicate distance. Need to identify the component that renders the route alternatives card and adjust either the data binding or the formatter. Authorized for next surgical pass.
+- **Upstream coordinate fix — pending:** with the dev-warn now in place, the next 853-mi route trigger in development will pinpoint which coordinate is corrupt. Hold for owner reproduction or an audit AI DevTools session.
 - **Severity:** **P2-CONTENT (data-sanity).**
-- **Status:** **OPEN.** Companion to KI-162's `3288` implausible-value note.
+- **Status:** **PARTIAL — sanity flag SHIPPED 2026-05-08 (Pass 179); display bug + upstream coordinate fix OPEN.**
 
 ### KI-170: Landing Coverage Dialog vs Dashboard Smart Shop Map fullscreen — 100% divergent design language (P1-PARITY)
 

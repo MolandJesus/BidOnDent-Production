@@ -138,6 +138,16 @@ export interface RouteOption {
   accentColor: string;
   polyline: Coordinates[];
   instructions: RouteInstruction[];
+  /**
+   * Pass 179 (2026-05-08) KI-169 — true when haversine distance or duration
+   * exceeds plausibility bands for a local body-shop use case (the audit AI
+   * Pass 9 §3 saw 853.4 mi / 1264 min for a NY-area request, indicating
+   * upstream coordinate corruption). Consumers can opt-in to render "—" or
+   * hide implausible alternates instead of showing absurd values.
+   */
+  isImplausible?: boolean;
+  /** Diagnostic reasons populated alongside isImplausible. */
+  implausibleReasons?: string[];
 }
 
 // ============================================================================
