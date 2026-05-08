@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { AlertTriangle } from "lucide-react";
 import { useNavigationDiscoveryPlaces } from "../../hooks/useNavigationDiscoveryPlaces";
 import { useSavedNavigationLocations } from "../../hooks/useSavedNavigationLocations";
 import {
@@ -380,6 +381,32 @@ export default function CoverageBrowseExperience({
             handleSelectDiscoveryPlace(place);
           }}
         />
+
+        {/*
+          Pass 10 (audit AI), KI-172 — disclaimer banner ported verbatim from
+          ShopDirectoryHybridStage / ShopDirectoryScreen so the landing Coverage
+          Dialog stops contradicting itself (rated pins on map vs "0 partner
+          shops" in the Shops tab). Banner only renders on demo-fallback data.
+          Positioned as a top-center overlay so it's visible whether the user
+          is looking at the map or the sidebar list. z-[600] sits below the
+          desktop sidebar (z-[610]) and well above the map chrome.
+          Uses the canonical bd-notice--warn utility per LAW_PROJECT_RULES
+          § Light-Mode Surface Rule (no flat-white, no yellow-amber).
+        */}
+        {usingDemoFallback ? (
+          <div
+            className="pointer-events-none absolute inset-x-4 top-4 z-[600] flex justify-center animate-in fade-in slide-in-from-top-2 duration-300 motion-reduce:animate-none"
+            role="status"
+          >
+            <div className="bd-notice--warn pointer-events-auto flex max-w-2xl items-center gap-2 rounded-lg border px-3 py-2 text-xs">
+              <AlertTriangle className="h-3.5 w-3.5 flex-shrink-0" />
+              <span>
+                Showing example shop locations. Verified partner shops will appear once your
+                account is connected.
+              </span>
+            </div>
+          </div>
+        ) : null}
 
         {isDesktop ? (
           <div className="pointer-events-none absolute inset-y-4 left-3 z-[610] hidden w-[372px] lg:block xl:left-5 xl:w-[392px] 2xl:left-6 2xl:w-[408px]">

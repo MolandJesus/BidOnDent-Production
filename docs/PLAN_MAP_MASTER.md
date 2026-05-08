@@ -72,6 +72,7 @@ This plan should be read alongside:
 - `docs/PLAN_PRODUCT_BRAIN.md` — STUB (2026-05-04). Original archived at `docs/archive/PLAN_PRODUCT_BRAIN_archived_2026-05-04.md`. Canonical homes for new work: `LAW_PROJECT_RULES.md` (product architecture, role model), `MOLANDJESUS_DESIGN_DECISIONS.md` (design system direction — apex, locked).
 - `docs/archive/BIDONDENT_MAP_TRACKER_2026-03-21_archived_2026-05-02.md` — granular delivery history and active risks
 - `docs/PHASE_2_PLATFORM_RECOMMENDATION_2026-03-20.md` — architecture truth table and module plan
+- [`docs/PLAN_MAP_UNIFICATION_2026-05-08.md`](PLAN_MAP_UNIFICATION_2026-05-08.md) — **NEW (2026-05-08, audit AI Pass 10).** `<MapProgramShell>` slot-contract proposal that retires KI-170 / KI-171 / KI-172 by unifying the 5 divergent map surfaces. 9-pass migration roadmap; gated on master-builder review against `LAW_LAYERED_ARCHITECTURE.md`.
 
 Any map decision should cross-check all four docs to avoid contradictions.
 

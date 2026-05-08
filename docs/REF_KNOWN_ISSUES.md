@@ -1044,14 +1044,14 @@
 
 - **Fix direction:** either compress legend to single 44px-tall row pinned to absolute bottom, or move ROUTE box up to start at y:430 directly under selected-shop card.
 - **Severity:** **P1-LAYOUT.**
-- **Status:** **OPEN.**
+- **Status:** **HOLD — INVESTIGATED 2026-05-08 (audit AI Pass 10).** Master builder's Pass 10 §3.2 authorized direct fix only if reachable in 1–2 file CSS change. Investigation found the legend + ROUTE box are NOT in `MapSurfaceStatusBar.tsx` (which is a single-row info strip, not a dual semantic + status legend) — they live in the dashboard Smart Shop Map host that wraps `MapLibreServiceCoverageMap`, but the host file was not pinpointed within the Pass 10 budget. The structural fix lives in **Step C.2** of [`PLAN_MAP_UNIFICATION_2026-05-08.md`](PLAN_MAP_UNIFICATION_2026-05-08.md) — once `<MapProgramShell>` owns slot positioning, the legend relocates to `legend` slot and the ROUTE box to `leftPanel`, and the overlap stops being possible. Reopen as P1-LAYOUT-FIXED in the pass that closes Step C.2.
 
 ### KI-165: Smart Shop Map fullscreen — phantom second top-bar pill ("Finding the best shops…") leaks past load (P2-LAYOUT)
 
 > **Added 2026-05-08 — audit AI Pass 9 §3.** Loading-state pill at x:324, y:112 (~50px below the actual top-bar) creates a perceived second top-bar row. Persists even after shops have loaded — loading-state leak. Should either auto-dismiss after first fetch resolves, or render inline within search bar as a status badge.
 
 - **Severity:** **P2-LAYOUT.**
-- **Status:** **OPEN.**
+- **Status:** **HOLD — INVESTIGATED 2026-05-08 (audit AI Pass 10).** Source string traced to [`shopMapExperienceHelpers.ts:224`](../src/app/services/intelligence/shopMapExperienceHelpers.ts#L224) — the fallback persona experience returned when no role-specific match is found. The title flows through `buildShopMapExperience` → `shopMapExperience.ts` exports → consumed by `ShopDirectoryHybridStage` / `ImmersiveMapResultsDrawer` / `LikedShopCard` / `GuidanceArrivalSection` / `ShopDirectoryMapInfoPanel` / `ShopDirectoryScreen`. The actual rendering site for the **pill variant** (vs. the card variant) was not isolated within the Pass 10 budget — without that, the proposed 1-line `isLoading && shops.length === 0` gate cannot be applied to the right component. Master builder's Pass 10 §3.2 directive was "ship if 1-line gate, document and hand back if structural" — choosing the latter. Next pass: trace pill render site via DevTools or Playwright, then apply the gate. Likely culprit is `ImmersiveMapTopBar` based on file naming, but unverified.
 
 ### KI-166: Smart Shop Map fullscreen — bottom legend strip eats 185px (20%) of viewport (P2-LAYOUT)
 
@@ -1088,9 +1088,9 @@
 
 > **Added 2026-05-08 — audit AI Pass 9 §3.** Both surfaces share the MapLibre engine but otherwise share zero visual identity: different mounts (modal vs full-page), different top chrome (close-X vs Back/Search/Search-this-area/15/Split/Map-toggle), different left panels (COVERAGE COMMAND CENTER tabs vs selected-shop+ROUTE), different right toolbars (4 unlabeled icons vs 4 labeled in nav), different legend density (none vs dual), different search affordances (single ZIP vs ZIP+chips+SmartMatch), different tile toggles (none vs Map/Night/Satellite), different routing surfaces (none vs full route box). Same product, two unrelated UIs.
 
-- **Fix direction:** new `<MapProgramShell>` abstraction with composable slots — top-bar + map area + bottom-right utilities always present; left/right panels + status pill + legend mounted by host context. Four hosts: `<DashboardSmartShopMap>`, `<LandingCoverageDialog>`, `<NavigationActiveMode>`, `<DashboardMiniMap>`. Tracked separately under **`docs/PLAN_MAP_UNIFICATION_2026-05-08.md`** (to be authored).
+- **Fix direction:** new `<MapProgramShell>` abstraction with composable slots — top-bar + map area + bottom-right utilities always present; left/right panels + status pill + legend mounted by host context. Four hosts: `<DashboardSmartShopMap>`, `<LandingCoverageDialog>`, `<NavigationActiveMode>`, `<DashboardMiniMap>`. Tracked separately under [`PLAN_MAP_UNIFICATION_2026-05-08.md`](PLAN_MAP_UNIFICATION_2026-05-08.md) — **AUTHORED 2026-05-08 (audit AI Pass 10).** 9-pass migration roadmap from extracted top-bar (Step A) through dashboard-fullscreen (Step C) → landing-dialog (Step D) → operating-regions / mini (Step E) → shop-directory-immersive (Step F). Gated on master-builder review against `LAW_LAYERED_ARCHITECTURE.md`.
 - **Severity:** **P1-PARITY.**
-- **Status:** **OPEN — multi-pass refactor.**
+- **Status:** **OPEN — multi-pass refactor (plan doc shipped 2026-05-08; implementation gated on master-builder review).**
 
 ### KI-171: Landing page — three different "map" presentations stacked vertically on one scroll (P2-CONSISTENCY)
 
@@ -1100,10 +1100,12 @@
 - **Severity:** **P2-CONSISTENCY.**
 - **Status:** **OPEN — paired with KI-170.**
 
-### KI-172: Landing Coverage Dialog — map shows 6 rated shop pins but Shops tab says "0 partner shops" (P1-DATA)
+### KI-172: Landing Coverage Dialog — map shows 6 rated shop pins but Shops tab says "0 partner shops" (P1-DATA — RESOLVED 2026-05-08)
 
 > **Added 2026-05-08 — audit AI Pass 9 §3.** Coverage Dialog renders 6 shop pins with rating labels (4.6, 4.7, 4.8, 4.9). The "🛍 Shops" tab shows "Service area is expanding — No partner shops within 20 miles yet." Explore tab shows "0 shops / 15 places". Map ↔ list contradiction. Dashboard fullscreen at least carries a banner ("Showing example shop locations. Verified partner shops will appear once your account is connected."); landing version omits that disclaimer.
 
-- **Fix direction:** (a) port the disclaimer banner to Coverage Dialog; (b) hide example/preview pins on landing when no real partners in radius; or (c) include preview pins in count with "(preview)" annotation.
+- **Root cause:** the `usingDemoFallback` prop was already plumbed through `CoverageBrowseExperience` → `CoverageBrowseSidebarContent` (used to drive sidebar copy), but no banner consumer existed in the dialog body. Banner rendering only existed on the dashboard side at [`ShopDirectoryHybridStage.tsx:124-132`](../src/app/components/shop/ShopDirectoryHybridStage.tsx#L124-L132) and [`ShopDirectoryScreen.tsx:327-336`](../src/app/components/shop/ShopDirectoryScreen.tsx#L327-L336). Map ↔ list contradiction was preserved because demo data continued to populate map pins while the sidebar count read live data.
+- **Fix shipped Pass 10 (audit AI):** added a top-center overlay banner inside [`CoverageBrowseExperience.tsx`](../src/app/components/landing/CoverageBrowseExperience.tsx) (single-file, 27-line additive change) using the canonical `bd-notice--warn` utility, `AlertTriangle` icon, and `motion-reduce:animate-none` guard. Banner is `usingDemoFallback`-gated; positioned at `inset-x-4 top-4 z-[600]` (below desktop sidebar at z-[610], above map chrome). Verbatim copy match with the dashboard source. Typecheck passes clean. Will relocate to `<MapProgramShell>` `statusPill` slot during Step D of [`PLAN_MAP_UNIFICATION_2026-05-08.md`](PLAN_MAP_UNIFICATION_2026-05-08.md) without visual change.
+- **Fix direction (alternates not pursued):** (b) hide example/preview pins on landing when no real partners in radius — would require coverage-data refactor and risks empty map for new users; (c) include preview pins in count with "(preview)" annotation — would require sidebar-content rewrite and double-translates the same trust signal already captured by the banner.
 - **Severity:** **P1-DATA.**
-- **Status:** **OPEN.**
+- **Status:** **RESOLVED 2026-05-08 (audit AI Pass 10).**
