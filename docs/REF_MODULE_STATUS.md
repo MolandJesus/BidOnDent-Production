@@ -1,3 +1,18 @@
+---
+status: CANONICAL
+authority: REFERENCE
+scope: module-status
+canonical_source_of_truth: REF_MODULE_STATUS.md
+supersedes: []
+superseded_by: null
+safe_for_autopilot: true
+requires_owner_approval: false
+last_topology_audit: 2026-05-09
+runtime_impact_if_misunderstood: low
+ai_summary: Per-module completion matrix tracking which features are shipped/wired/mock/deferred.
+last_updated: 2026-05-09
+---
+
 # BidOnDent Module Completion Matrix
 
 **Created:** 2026-04-15 (Phase 5.3)

@@ -1,3 +1,18 @@
+---
+status: CANONICAL
+authority: REFERENCE
+scope: code-organization
+canonical_source_of_truth: REF_CODE_ORGANIZATION.md
+supersedes: []
+superseded_by: null
+safe_for_autopilot: true
+requires_owner_approval: false
+last_topology_audit: 2026-05-09
+runtime_impact_if_misunderstood: medium
+ai_summary: Current repo structure, weak seams, extraction boundaries; governs hardening-scope refactors.
+last_updated: 2026-05-09
+---
+
 ## Map/Design Governance Direction (2026-03-22)
 
 The future BidOnDent map/platform/design vision is now governed by:

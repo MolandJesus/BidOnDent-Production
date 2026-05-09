@@ -1,3 +1,22 @@
+---
+status: CANONICAL
+authority: REFERENCE
+scope: visual-system
+canonical_source_of_truth: REF_VISUAL_SYSTEM.md
+supersedes:
+  - PLAN_LANDING_REDESIGN.md
+  - PLAN_LANDING_LIQUID_MAP_INTELLIGENCE.md
+  - PLAN_LANDING_BUTTON_SYSTEM_ADOPTION.md
+  - PLAN_LANDING_DARK_MODE_PARITY.md
+superseded_by: null
+safe_for_autopilot: true
+requires_owner_approval: false
+last_topology_audit: 2026-05-09
+runtime_impact_if_misunderstood: medium
+ai_summary: Component-level visual implementation snapshot; defers all canon questions to MOLANDJESUS_DESIGN_DECISIONS.
+last_updated: 2026-05-09
+---
+
 # BidOnDent — Visual System (REFERENCE)
 
 **Authority level:** REFERENCE — single source of truth for the current visual system.

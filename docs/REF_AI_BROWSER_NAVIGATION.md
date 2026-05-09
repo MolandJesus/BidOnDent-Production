@@ -1,3 +1,18 @@
+---
+status: CANONICAL
+authority: REFERENCE
+scope: ai-browser-navigation
+canonical_source_of_truth: REF_AI_BROWSER_NAVIGATION.md
+supersedes: []
+superseded_by: null
+safe_for_autopilot: true
+requires_owner_approval: false
+last_topology_audit: 2026-05-09
+runtime_impact_if_misunderstood: low
+ai_summary: Required navigation protocol for Playwright-style automation; logo-first landing return rule.
+last_updated: 2026-05-09
+---
+
 # REF_AI_BROWSER_NAVIGATION
 
 **Last updated:** 2026-05-03
