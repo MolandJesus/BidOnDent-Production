@@ -1229,4 +1229,9 @@
 - **Why P3 not P1:** this is theoretical instrumentation — no field reproduction yet on the navigation engine path. The Pass 179 / 184 work was reactive to the audit AI's captured 853mi case, but that case was on the dashboard mini-map (`RouteOption` stub data), not the navigation engine. Until a Sentry log or audit reproduces an implausible navigation-engine route, this is preventive instrumentation.
 - **Evidence cross-link:** [KI-169 third-half consumer-surface footnote](#ki-169-dashboard-mini-map-route-box--alternative-cards-mix-meters--miles--implausible-21-hour-route-value-p2-content--resolved-2026-05-09).
 - **Severity:** **P3-TECH-DEBT.**
-- **Status:** **OPEN — preventive, not blocking.** Defer until a navigation-engine implausibility is observed in Sentry or during browser audit.
+- **Status:** **RESOLVED 2026-05-09 — Pass 203.** Mirror of Pass 179/184 shipped against the navigation engine path:
+  - [`flagImplausibleNavigationRoute()`](../src/app/services/navigation/routeEngine.ts) helper added with the same plausibility bands (>100mi, >240min, implied speed outside [10, 80] mph).
+  - [`NavigationRoutePreview`](../src/app/types/navigation.ts) extended with optional `isImplausible` + `implausibleReasons` fields (non-breaking — absence means "not flagged").
+  - [`toRoutePreview()`](../src/app/services/navigation/routeEngine.ts) annotates every OSRM route with the flag at the engine boundary; dev-only `console.warn` carries diagnostic context for upstream tracing.
+  - [`PlannerRoutePreview.tsx`](../src/app/components/maps/command-center/PlannerRoutePreview.tsx) chip row consumes the flag with the same amber-ring + `TriangleAlert` pattern as Pass 184. Chips are NOT hidden; the user can still pick a different alternative manually if all options are flagged.
+  - 8 new vitest cases including the audit's exact 853.4mi / 1264min reproduction. Suite 597/597 PASS.

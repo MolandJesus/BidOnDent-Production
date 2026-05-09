@@ -7,6 +7,7 @@ vi.mock("./providerHealth", () => ({
 }));
 
 import { fetchNavigationRouteOptions, fetchNavigationRoutePreview } from "./routeEngine";
+import { flagImplausibleNavigationRoute } from "./routeEngine";
 import {
   searchNavigationAddresses,
   addressResultToSearchTarget,
@@ -341,5 +342,61 @@ describe("addressSearch", () => {
 
     const results = await suggestNavigationAddresses("network fail " + Math.random());
     expect(results).toEqual([]);
+  });
+});
+
+describe("flagImplausibleNavigationRoute (KI-179 — Pass 203)", () => {
+  it("passes a typical local route through clean", () => {
+    const result = flagImplausibleNavigationRoute({ distanceMiles: 5, durationMinutes: 10 });
+    expect(result.isImplausible).toBe(false);
+    expect(result.reasons).toEqual([]);
+  });
+
+  it("catches the audit AI's 853mi / 1264min reproduction case", () => {
+    const result = flagImplausibleNavigationRoute({
+      distanceMiles: 853.4,
+      durationMinutes: 1264,
+    });
+    expect(result.isImplausible).toBe(true);
+    expect(result.reasons.length).toBeGreaterThanOrEqual(2);
+    expect(result.reasons.some((r) => r.includes("100mi"))).toBe(true);
+    expect(result.reasons.some((r) => r.includes("240min"))).toBe(true);
+  });
+
+  it("flags a >100mi route even if duration is plausible", () => {
+    const result = flagImplausibleNavigationRoute({ distanceMiles: 150, durationMinutes: 120 });
+    expect(result.isImplausible).toBe(true);
+    expect(result.reasons.some((r) => r.includes("100mi"))).toBe(true);
+  });
+
+  it("flags >240min even if distance is plausible", () => {
+    const result = flagImplausibleNavigationRoute({ distanceMiles: 80, durationMinutes: 252 });
+    expect(result.isImplausible).toBe(true);
+    expect(result.reasons.some((r) => r.includes("240min"))).toBe(true);
+  });
+
+  it("flags implied speed below 10mph (gridlock or stationary GPS)", () => {
+    const result = flagImplausibleNavigationRoute({ distanceMiles: 5, durationMinutes: 60 });
+    expect(result.isImplausible).toBe(true);
+    expect(result.reasons.some((r) => r.includes("speed"))).toBe(true);
+  });
+
+  it("flags implied speed above 80mph (engine-fed wrong duration)", () => {
+    const result = flagImplausibleNavigationRoute({ distanceMiles: 50, durationMinutes: 30 });
+    expect(result.isImplausible).toBe(true);
+    expect(result.reasons.some((r) => r.includes("speed"))).toBe(true);
+  });
+
+  it("does not divide-by-zero on tiny distances", () => {
+    const result = flagImplausibleNavigationRoute({
+      distanceMiles: 0.05,
+      durationMinutes: 5,
+    });
+    expect(result.reasons.some((r) => r.includes("speed"))).toBe(false);
+  });
+
+  it("returns plausible for highway-speed long-but-in-band routes", () => {
+    const result = flagImplausibleNavigationRoute({ distanceMiles: 60, durationMinutes: 60 });
+    expect(result.isImplausible).toBe(false);
   });
 });

@@ -54,6 +54,17 @@ export type NavigationRoutePreview = {
   geometry: NavigationCoordinate[];
   steps: NavigationRouteStep[];
   fetchedAt: string;
+  /**
+   * Pass 203 (2026-05-09) KI-179 — true when the navigation engine returned
+   * a route whose distance/duration/implied-speed falls outside plausibility
+   * bands for a local body-shop trip (>100mi, >240min, or implied speed
+   * outside [10, 80] mph). Mirrors the `RouteOption.isImplausible` flag
+   * shipped Pass 179 for the dashboard mini-map data path. Optional —
+   * absence means "not flagged" rather than "passed inspection."
+   */
+  isImplausible?: boolean;
+  /** Diagnostic reasons populated alongside isImplausible. */
+  implausibleReasons?: string[];
 };
 
 export type NavigationRouteOptions = {
