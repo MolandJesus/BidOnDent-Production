@@ -374,3 +374,238 @@ describe("Engine 3 — Pass 237 § dynamic auto-fit recomputation (KI-181 extens
     expect(la.latitude).not.toBeCloseTo(ny.latitude as number, 1);
   });
 });
+
+// ---------------------------------------------------------------
+// §6. Pass 241 (Phase 3A sub-pass A) — explicit `autoFit`
+// authority surface. Locks all four behavior branches enumerated
+// in `docs/REF_ENGINE_3_CAMERA_AUTHORITY_2026-05-09.md` §6.2.
+//
+// Sub-pass A discipline: behavior IDENTICAL when the prop is at
+// its default. The new prop is purely an explicitization of the
+// existing implicit authority, not a behavior change.
+//
+//   default (autoFit undefined)            → identical to "always"
+//   autoFit="always"                       → fittedView wins (today)
+//   autoFit="never"                        → caller wins (NEW opt-out)
+//   autoFit="when-no-caller-bounds"
+//     + callerBoundsExplicit=false (default) → fittedView wins
+//     + callerBoundsExplicit=true            → caller wins
+//
+// "Preview owns no camera" remains intact: this surface selects
+// between caller props and the existing pure-derivation fittedView
+// memo. No imperative camera APIs introduced (the §1 source-level
+// guards above continue to enforce that).
+// ---------------------------------------------------------------
+
+describe("Engine 3 — Pass 241 § explicit autoFit authority (KI-181 migration sub-pass A)", () => {
+  const NY_A = makeShop("nyA", 40.7, -74.0);
+  const NY_B = makeShop("nyB", 40.8, -73.9);
+  const NY_MID_LAT = (40.7 + 40.8) / 2;
+  const NY_MID_LNG = (-74.0 + -73.9) / 2;
+
+  // NOTE: every render in this section passes `reportPins={[]}`
+  // explicitly. The component's default param `reportPins = []`
+  // creates a fresh array ref each call, which (combined with the
+  // useMemo/useEffect chain inside the renderer) can compound under
+  // some test harness conditions. Mirrors the Pass 237 dynamic-fit
+  // test pattern.
+
+  it("default (autoFit undefined) matches the pre-Pass-241 implicit-fit behavior exactly", () => {
+    // Compatibility lock: omitting the prop must produce the same
+    // resolved viewport as autoFit="always" — i.e. fittedView wins
+    // over caller center when ≥2 shops exist. Any regression here
+    // would silently change the behavior of every Phase 1 surface.
+    render(
+      <MapLibreDashboardMapPreview
+        shops={[NY_A, NY_B]}
+        reportPins={[]}
+        center={CALLER_CENTER}
+        zoom={CALLER_ZOOM}
+        isLight
+      />
+    );
+    const props = lastMapPropsOrThrow();
+    expect(props.latitude).toBeCloseTo(NY_MID_LAT, 5);
+    expect(props.longitude).toBeCloseTo(NY_MID_LNG, 5);
+    // Cross-check: the resolved viewport is NOT the caller center.
+    expect(props.latitude).not.toBeCloseTo(CALLER_CENTER[0], 1);
+  });
+
+  it('autoFit="always" + 2 shops → fittedView wins (re-pinned under explicit prop)', () => {
+    render(
+      <MapLibreDashboardMapPreview
+        shops={[NY_A, NY_B]}
+        reportPins={[]}
+        center={CALLER_CENTER}
+        zoom={CALLER_ZOOM}
+        isLight
+        autoFit="always"
+      />
+    );
+    const props = lastMapPropsOrThrow();
+    expect(props.latitude).toBeCloseTo(NY_MID_LAT, 5);
+    expect(props.longitude).toBeCloseTo(NY_MID_LNG, 5);
+  });
+
+  it('autoFit="never" + 2 shops → caller wins (auto-fit opt-out)', () => {
+    render(
+      <MapLibreDashboardMapPreview
+        shops={[NY_A, NY_B]}
+        reportPins={[]}
+        center={CALLER_CENTER}
+        zoom={CALLER_ZOOM}
+        isLight
+        autoFit="never"
+      />
+    );
+    const props = lastMapPropsOrThrow();
+    expect(props.latitude).toBeCloseTo(CALLER_CENTER[0], 5);
+    expect(props.longitude).toBeCloseTo(CALLER_CENTER[1], 5);
+    expect(props.zoom).toBe(CALLER_ZOOM);
+  });
+
+  it('autoFit="never" + 0 shops → caller wins (consistent with "always" no-fit branch)', () => {
+    // With < 2 fit-points there is no fittedView to override, so
+    // both autoFit modes resolve to caller props. This locks the
+    // semantic that "never" is the strict superset of the no-fit
+    // branch (caller-always-wins), not a new shape.
+    render(
+      <MapLibreDashboardMapPreview
+        shops={[]}
+        reportPins={[]}
+        center={CALLER_CENTER}
+        zoom={CALLER_ZOOM}
+        isLight
+        autoFit="never"
+      />
+    );
+    const props = lastMapPropsOrThrow();
+    expect(props.latitude).toBeCloseTo(CALLER_CENTER[0], 5);
+    expect(props.longitude).toBeCloseTo(CALLER_CENTER[1], 5);
+    expect(props.zoom).toBe(CALLER_ZOOM);
+  });
+
+  it('autoFit="when-no-caller-bounds" + callerBoundsExplicit=false (default) → fittedView wins', () => {
+    // This branch documents the "deferred" half of the doctrinal
+    // target default. Until call sites are audited (sub-pass B) and
+    // declare `callerBoundsExplicit`, the renderer must continue to
+    // fit so the existing surfaces remain visually unchanged.
+    render(
+      <MapLibreDashboardMapPreview
+        shops={[NY_A, NY_B]}
+        reportPins={[]}
+        center={CALLER_CENTER}
+        zoom={CALLER_ZOOM}
+        isLight
+        autoFit="when-no-caller-bounds"
+      />
+    );
+    const props = lastMapPropsOrThrow();
+    expect(props.latitude).toBeCloseTo(NY_MID_LAT, 5);
+    expect(props.longitude).toBeCloseTo(NY_MID_LNG, 5);
+  });
+
+  it('autoFit="when-no-caller-bounds" + callerBoundsExplicit=true → caller wins', () => {
+    // The "intentional bounds" branch: caller asserts that
+    // `center`/`zoom` are deliberate framing, and the renderer
+    // suppresses the fittedView override. This is what sub-pass B
+    // call-site audit will opt into for surfaces like
+    // `ReportDetailScreen` (single-report tight-zoom focus).
+    render(
+      <MapLibreDashboardMapPreview
+        shops={[NY_A, NY_B]}
+        reportPins={[]}
+        center={CALLER_CENTER}
+        zoom={CALLER_ZOOM}
+        isLight
+        autoFit="when-no-caller-bounds"
+        callerBoundsExplicit
+      />
+    );
+    const props = lastMapPropsOrThrow();
+    expect(props.latitude).toBeCloseTo(CALLER_CENTER[0], 5);
+    expect(props.longitude).toBeCloseTo(CALLER_CENTER[1], 5);
+    expect(props.zoom).toBe(CALLER_ZOOM);
+  });
+
+  it('callerBoundsExplicit is ignored under autoFit="always" (no hidden cross-mode coupling)', () => {
+    // Discipline lock: the companion prop must be inert outside
+    // its declared mode. Setting it under "always" must NOT
+    // suppress the fit — that would be hidden cross-mode coupling.
+    render(
+      <MapLibreDashboardMapPreview
+        shops={[NY_A, NY_B]}
+        reportPins={[]}
+        center={CALLER_CENTER}
+        zoom={CALLER_ZOOM}
+        isLight
+        autoFit="always"
+        callerBoundsExplicit
+      />
+    );
+    const props = lastMapPropsOrThrow();
+    expect(props.latitude).toBeCloseTo(NY_MID_LAT, 5);
+    expect(props.longitude).toBeCloseTo(NY_MID_LNG, 5);
+  });
+
+  it('callerBoundsExplicit is ignored under autoFit="never" (no hidden cross-mode coupling)', () => {
+    // Symmetric inertness check for the opposite mode.
+    render(
+      <MapLibreDashboardMapPreview
+        shops={[NY_A, NY_B]}
+        reportPins={[]}
+        center={CALLER_CENTER}
+        zoom={CALLER_ZOOM}
+        isLight
+        autoFit="never"
+        callerBoundsExplicit
+      />
+    );
+    const props = lastMapPropsOrThrow();
+    expect(props.latitude).toBeCloseTo(CALLER_CENTER[0], 5);
+    expect(props.longitude).toBeCloseTo(CALLER_CENTER[1], 5);
+  });
+
+  it('dynamic auto-fit recomputation still fires under autoFit="always" (Pass 237 invariant preserved)', () => {
+    // Cross-pass invariant: the Pass 237 dynamic-fit guarantee
+    // must still hold under the explicit prop. Re-pinning here
+    // ensures sub-pass A did not silently disable recomputation.
+    const { rerender } = render(
+      <MapLibreDashboardMapPreview
+        shops={[NY_A, NY_B]}
+        reportPins={[]}
+        center={CALLER_CENTER}
+        zoom={CALLER_ZOOM}
+        isLight
+        autoFit="always"
+      />
+    );
+    expect(lastMapPropsOrThrow().latitude).toBeCloseTo(NY_MID_LAT, 5);
+
+    const LA_A = makeShop("laA", 34.05, -118.25);
+    const LA_B = makeShop("laB", 34.15, -118.35);
+    rerender(
+      <MapLibreDashboardMapPreview
+        shops={[LA_A, LA_B]}
+        reportPins={[]}
+        center={CALLER_CENTER}
+        zoom={CALLER_ZOOM}
+        isLight
+        autoFit="always"
+      />
+    );
+    const after = lastMapPropsOrThrow();
+    expect(after.latitude).toBeCloseTo((34.05 + 34.15) / 2, 5);
+    expect(after.longitude).toBeCloseTo((-118.25 + -118.35) / 2, 5);
+  });
+
+  it("autoFit prop appears in source as a typed surface (no dynamic shape)", () => {
+    // Source-level lock: the prop must be present as a literal
+    // `autoFit` token in the renderer. Guards against accidental
+    // removal by future refactors and against dynamic-string
+    // workarounds that would re-hide the authority.
+    expect(ENGINE3_SOURCE).toMatch(/\bautoFit\b/);
+    expect(ENGINE3_SOURCE).toMatch(/\bcallerBoundsExplicit\b/);
+    expect(ENGINE3_SOURCE).toMatch(/AutoFitMode/);
+  });
+});
