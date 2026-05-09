@@ -7,11 +7,11 @@
 ## Active session
 
 **Active branch:** BidOnDent-Horizon-Beta
-**Active AI:** (none — Tier B Surface Confidence Expansion lane standdown after Pass 254)
+**Active AI:** (none — Coverage Map Confidence Expansion lane standdown after Pass 257)
 **Active layer:** (none)
 **Locked files:** (none)
 **Session start:** 2026-05-08 (cowork-A — Pass 26 owner-authorized continuation under "go full auto" directive; doc-only edits, no source files)
-**Last commit:** Pass 254 — Tier B preview lifecycle confidence suite (mount/unmount churn, repeated rerender stability, prop churn, dynamic shops list grow/shrink, empty-state round-trip). Tier B Surface Confidence Expansion lane delivered Passes 252/253/254: async-warning characterization (+4 tests + trigger-chain doc-in-test), global vitest mock for supabase client (suite-wide stderr cleanliness, +0 tests +0 stderr), Tier B preview lifecycle suite (+6 tests). Suite: 911/911 across 89 files, ZERO stderr errors. autoFit/callerBoundsExplicit/sub-pass C/ShopMapWidget UNTOUCHED. services/supabase/client.ts production module UNCHANGED. No runtime semantic changes. Lane reaches authorized stop.
+**Last commit:** Pass 257 — Tier B confidence consolidation doc (`docs/REF_TIER_B_CONFIDENCE_MATRIX_2026-05-09.md`). Coverage Map Confidence Expansion lane delivered Passes 255/256/257: coverage map lifecycle confidence suite (+11 tests, jsdom storage shim), reduced-motion preference-flip continuity characterization (+5 tests), and the consolidated Tier B confidence matrix doc (forward constraints for the upcoming PMS lane + owner performance directive baked in). Suite: 927/927 across 91 files, ZERO stderr errors. autoFit/callerBoundsExplicit/sub-pass C/ShopMapWidget UNTOUCHED. services/supabase/client.ts production module UNCHANGED. No runtime semantic changes. Lane reaches authorized stop.
 
 ## Cooperative-edit lesson logged (2026-05-08 race outcome)
 
