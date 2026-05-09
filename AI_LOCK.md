@@ -7,11 +7,11 @@
 ## Active session
 
 **Active branch:** BidOnDent-Horizon-Beta
-**Active AI:** (none — KI-196 lane standdown after Pass 251)
-**Active layer:** (none)
-**Locked files:** (none)
+**Active AI:** Main Builder AI (Tier B Surface Confidence Expansion lane — owner-authorized 2026-05-09; Passes 252/253/254 = async-warning characterization → conditional test-env hardening → Tier B lifecycle confidence suite. NOT a reopening of KI-196 or Phase 3B. NO viewport/camera/autoFit/callerBoundsExplicit/convergence/orchestration changes. NO ShopMapWidget. Runtime edits only if strictly behavior-preserving + tied to test determinism. STOP and characterize on any semantic defect surfaced.)
+**Active layer:** L3 (test-env + characterization tests) + minimal L1/L2/L3 source IF strictly defensive + behavior-preserving + test-determinism-tied
+**Locked files:** src/test-setup/** (planned, Pass 253 if authorized), src/app/**tests**/asyncWarningCharacterization.test.ts (planned, Pass 252), vitest.config.\* (planned, Pass 253 if authorized)
 **Session start:** 2026-05-08 (cowork-A — Pass 26 owner-authorized continuation under "go full auto" directive; doc-only edits, no source files)
-**Last commit:** Pass 251 — KI-196 EMPTY_* singleton hardening (4 sites, 2 files). KI-196 lane delivered Passes 249/250/251: default-param hazard inventory (11 hits), SAFE-TO-HARDEN matrix (4 GO / 4 DEFER / 1 NO), behavior-preserving hardening with companion identity + semantic-equivalence tests (+8). Suite: 901/901 across 87 files. autoFit / callerBoundsExplicit / sub-pass C surfaces UNTOUCHED. ShopMapWidget UNTOUCHED (owner-dirty). DEFER hits (3, 4, 5, 9) and NO hit (8) NOT executed — re-authorization required for any 'widget-cohort hardening' lane.
+**Last commit:\*\* Pass 251 — KI-196 EMPTY\_\* singleton hardening (4 sites, 2 files). KI-196 lane delivered Passes 249/250/251: default-param hazard inventory (11 hits), SAFE-TO-HARDEN matrix (4 GO / 4 DEFER / 1 NO), behavior-preserving hardening with companion identity + semantic-equivalence tests (+8). Suite: 901/901 across 87 files. autoFit / callerBoundsExplicit / sub-pass C surfaces UNTOUCHED. ShopMapWidget UNTOUCHED (owner-dirty). DEFER hits (3, 4, 5, 9) and NO hit (8) NOT executed — re-authorization required for any 'widget-cohort hardening' lane.
 
 ## Cooperative-edit lesson logged (2026-05-08 race outcome)
 
