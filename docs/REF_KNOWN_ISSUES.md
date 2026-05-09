@@ -890,7 +890,7 @@
 - **Mitigation (Pass 170):** Dev-mode banner detects embedded browser via UA pattern matching (`Electron/`, `wv)`, `VSCode`, `Code/`, `Simple Browser`) and surfaces two workarounds:
   1. Open `localhost:5173` in a real Chrome window (full OAuth works).
   2. Append `?demo=customer` or `?demo=shop` to bypass Clerk entirely (synthesized data; pre-existing dev-mode in `App.tsx:464-468`).
-  Banner is dismissable + persisted via `localStorage.bidondent.dev.embedded-browser-banner.dismissed`.
+     Banner is dismissable + persisted via `localStorage.bidondent.dev.embedded-browser-banner.dismissed`.
 - **Files (Pass 170):**
   - New: `src/app/utils/embeddedBrowserCheck.ts` — UA detection + describe helper
   - New: `src/app/components/dev/EmbeddedBrowserBanner.tsx` — top-of-viewport banner, gated on `import.meta.env.DEV` + `isEmbeddedBrowser()`
@@ -904,6 +904,7 @@
 > **Added 2026-05-07 — external audit AI Pass 9 §1.1 Report flow walkthrough.** Confirmed via `elementFromPoint(245, 200)` returning a NAV BUTTON (`.group w-full flex items-center gap-3 px-3.5 py-2.5`) instead of the wizard's H2 heading. The wizard's `bd-report-section` left edge sits at x=245 while the persistent left nav sidebar's right edge sits at x=275. **30px overlap — first 8 characters of every wizard heading are hidden behind the nav buttons.**
 >
 > Examples observed at ~1422px viewport:
+>
 > - Step 4 heading "Add damage photos" rendered as "ge photos" (first 8 chars behind nav).
 > - Step 3 helper text and Step 2 heading similarly clipped.
 > - Step 1 NOT affected — saved-vehicle picker has different positioning that lands clear of the sidebar.
@@ -913,7 +914,7 @@
 - **Fix direction:** Two paths:
   1. **Push wizard right** — add `md:ml-{sidebar-width}` to the wizard's outer container OR ensure the parent flex container reserves the sidebar's width.
   2. **Shrink wizard panel** — apply `max-w-{N}` so the wizard fits within the available content area outside the sidebar.
-  Path 1 is preferred (preserves wizard width). Single-file fix expected.
+     Path 1 is preferred (preserves wizard width). Single-file fix expected.
 - **Severity:** **P1-LAYOUT.** Real user-facing content invisibility on common viewports.
 - **Status:** **OPEN — P1-LAYOUT.** Targeted Pass 171 (this turn).
 
@@ -1027,6 +1028,7 @@
 ### KI-162: Active navigation — `liveRemainingEtaLabel` rendered "Nm" instead of "N min" (P1-CONTENT — RESOLVED 2026-05-08)
 
 > **Added 2026-05-08 — audit AI Pass 9 §3.** Bottom-left navigation panel rendered ETA as `<p>3288m</p>` — DOM-confirmed. The `m` suffix on a time quantity reads as meters, not minutes, especially next to a Distance card. Bug was two-fold:
+>
 > 1. [`src/app/hooks/shopDirectoryNavigationDerived.ts:173`](../src/app/hooks/shopDirectoryNavigationDerived.ts#L173) — built label as `${Math.round(remainingDurationSeconds / 60)}m`. Math correct (seconds → minutes), suffix wrong.
 > 2. [`src/app/components/shop/ShopDirectoryGuidanceCard.tsx:291`](../src/app/components/shop/ShopDirectoryGuidanceCard.tsx#L291) — fallback used `${selectedRoute.estimatedDurationMinutes}m`.
 

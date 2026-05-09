@@ -1,6 +1,6 @@
 # BidOnDent Docs Operating Index
 
-**Last updated:** 2026-05-06 (closing-out doc-archive sweep — 11 Phase-completed OPS / KI-113 / map-diagnose / superseded-audit docs archived with 2026-05-06 date suffix; bare-filename refs repointed to archive paths across active docs in same pass per LAW co-update rule. Pass 12-41 polish arc complete on `main`: Pass 12 map chrome unification + Pass 13/13b/13c KI-118 mileage data integrity + Pass 13d-13h/24/27/28/33 LAW pure-white-inset slip story closed repo-wide + Pass 14/19 KI-012 bid realtime trust signal + Pass 15/16a/16b/17/17b living-lava atmosphere ledger + Pass 18 atmosphere coherence audit + Pass 20 cspell sweep + Pass 21/26/31/32/34 Prettier/format housekeeping + Pass 29 forward-looking plan doc + Pass 30/33b/41 doc co-updates + Pass 37-40 doc-hygiene cluster. Branch + main fully synced to `f46dfad8`.)
+**Last updated:** 2026-05-09 (Pass 195 doc consolidation sweep — 3 docs archived: `OPS_MOBILE_AUDIT_2026-05-04.md` (Status: COMPLETE since 2026-05-04), `map_coherence_audit_sonnet_2026-05-06.md` and `visual_audit_sonnet_2026-05-06.md` (read-only audits whose findings became KIs + the Pass 192/194 inventories). Cross-refs repointed in same pass per LAW co-update rule. Map unification track at sub-pass 2 contract-locked (Pass 193); KI-168 sub-pass 1 shipped (Pass 194). Branch 170 ahead of origin/BidOnDent-Horizon-Beta.)
 **Status:** Active documentation operating index
 **Current phase:** Soft Launch Hardening (edge functions v50, `verify_jwt: false`, storage pointer pattern). KI-002 RESEND_API_KEY deploy is the only remaining code-side P0 launch blocker.
 **Current handoff:** see git log + [`PLAN_POST_PASS_28_2026-05-06.md`](PLAN_POST_PASS_28_2026-05-06.md) § 6 (4 owner-decision forks remaining; § 6 fork #1 closed by Pass 33 cream-migration unlock) + active relay prompt context (per relay discipline: do NOT create new session-report docs — the git log + commit messages are the durable record)
@@ -103,7 +103,7 @@ These are the primary governing documents. Always start here.
 
 - **[`OPS_DEVELOPER_SETUP.md`](OPS_DEVELOPER_SETUP.md)** — local setup, first run, Google OAuth provider configuration. Supersedes `GETTING_STARTED.md` + `GOOGLE_OAUTH_SETUP.md` (both archived 2026-05-04 under `docs/archive/`).
 - **[`archive/OPS_PHASE_6_SMOKE_TEST_archived_2026-05-05.md`](archive/OPS_PHASE_6_SMOKE_TEST_archived_2026-05-05.md)** — three-environment smoke test (Local Docker / Hosted Staging / Production). Pre-Phase-6 prep template; Phase 6 closed via Path A (different scope from the 6.1+6.3 staging+prod runs this template was built for); never fully executed. **ARCHIVED 2026-05-05.** Available for re-activation if a future staging+prod smoke pass is wanted.
-- **[`OPS_MOBILE_AUDIT_2026-05-04.md`](OPS_MOBILE_AUDIT_2026-05-04.md)** — Phase 4 mobile audit findings (5 clusters audited, 2 fixes shipped: NotificationCenter close button + ShopDirectoryHero chip). 0 LAW promotions warranted. Status: COMPLETE.
+- **[`archive/OPS_MOBILE_AUDIT_2026-05-04_archived_2026-05-09.md`](archive/OPS_MOBILE_AUDIT_2026-05-04_archived_2026-05-09.md)** — Phase 4 mobile audit findings (5 clusters audited, 2 fixes shipped: NotificationCenter close button + ShopDirectoryHero chip). 0 LAW promotions warranted. Status: COMPLETE. **ARCHIVED 2026-05-09 (Pass 195 doc consolidation sweep)** — all findings shipped, no further action.
 - **[`OPS_DEPENDABOT_TRIAGE_2026-05-04.md`](OPS_DEPENDABOT_TRIAGE_2026-05-04.md)** — Phase 3.6 dependabot triage snapshot. 3 vulnerabilities classified + patched (Clerk 5.61.5→5.61.6 high, postcss 8.5.6→8.5.14 moderate via override). `npm audit` final: 0 vulnerabilities.
 - **[`archive/OPS_MAP_ARCHITECTURE_DIAGNOSE_2026-05-04_archived_2026-05-06.md`](archive/OPS_MAP_ARCHITECTURE_DIAGNOSE_2026-05-04_archived_2026-05-06.md)** — Phase 5 read-only architectural audit of the map system. 4 findings (2 P3 grandfathered, 1 P5, 1 P6). 0 P0/P1/P2. Map system shippable as-is. Phase 8 = cleanup, not rescue.
 
@@ -128,6 +128,12 @@ Project-specific patterns that future projects can reuse live under `~/.claude/s
 ### Archive
 
 Everything under [`docs/archive/`](archive/) is historical reference, retained for traceability. Not active operating surface.
+
+Most recent archive moves (2026-05-09 — Pass 195 doc consolidation sweep):
+
+- `OPS_MOBILE_AUDIT_2026-05-04.md` → `archive/OPS_MOBILE_AUDIT_2026-05-04_archived_2026-05-09.md` — Phase 4 audit STATUS: COMPLETE since 2026-05-04, all findings shipped, kept in root for ~5 days for visibility. No further action.
+- `map_coherence_audit_sonnet_2026-05-06.md` → `archive/map_coherence_audit_sonnet_2026-05-06_archived_2026-05-09.md` — read-only audit feeding subsequent passes; findings became KI-170 / KI-171 / KI-172, then `PLAN_MAP_UNIFICATION_2026-05-08.md`.
+- `visual_audit_sonnet_2026-05-06.md` → `archive/visual_audit_sonnet_2026-05-06_archived_2026-05-09.md` — read-only audit feeding subsequent passes; findings landed across the KI ledger (KI-163, KI-168, etc.) and the Pass 192 / 194 inventories + remediation.
 
 Most recent archive moves (2026-05-04):
 

@@ -26,7 +26,7 @@ Every new doc generated in Phase 4–8.5 must follow these rules:
 | **PLAN** | `PLAN_` | Future direction. Not current truth                                                   | Triggers required before action                       |
 | **OPS**  | `OPS_`  | Procedures, runbooks, audit logs, phase execution logs                                | Reference-only; describes what was done               |
 
-Date-suffixed audit/log docs use the format `OPS_<TOPIC>_YYYY-MM-DD.md` (e.g. `OPS_MOBILE_AUDIT_2026-05-04.md`).
+Date-suffixed audit/log docs use the format `OPS_<TOPIC>_YYYY-MM-DD.md` (e.g. the now-archived `OPS_MOBILE_AUDIT_2026-05-04.md`, currently at `docs/archive/OPS_MOBILE_AUDIT_2026-05-04_archived_2026-05-09.md`).
 
 ---
 

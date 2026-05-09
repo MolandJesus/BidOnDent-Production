@@ -16,7 +16,7 @@
 - [`docs/REF_KNOWN_ISSUES.md`](REF_KNOWN_ISSUES.md) — KI-001 … KI-120 (current truth)
 - [`docs/REF_VISUAL_SYSTEM.md`](REF_VISUAL_SYSTEM.md) — period-spread rule, atmosphere ledger
 - [`docs/LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md) — Light-Mode Surface Rule, Premium Gold Palette
-- [`docs/map_coherence_audit_sonnet_2026-05-06.md`](map_coherence_audit_sonnet_2026-05-06.md) — map chrome unification audit
+- [`docs/archive/map_coherence_audit_sonnet_2026-05-06_archived_2026-05-09.md`](archive/map_coherence_audit_sonnet_2026-05-06_archived_2026-05-09.md) — map chrome unification audit (archived 2026-05-09)
 - [`docs/audit-assets/visual-2026-05-06/`](audit-assets/visual-2026-05-06/) — atmosphere coherence audit (Pass 18)
 - [`docs/PLAN_POST_LAUNCH_ROADMAP.md`](PLAN_POST_LAUNCH_ROADMAP.md) — what is explicitly deferred to after launch
 
@@ -28,7 +28,7 @@ Two AI sessions, 28 disciplined passes, all on `main`. Grouped by domain.
 
 ### 1.1 Map coherence unification (Pass 12, batches A/B/C)
 
-Map chrome unified at the `bd-glass-card--map` utility layer. Four surface migrations + "Start Navigation" label sweep + dashboard tile-mode parity. Outcome: every active map surface inherits the same cool-blue cream-gold liquid glass family. Cross-ref: [`docs/map_coherence_audit_sonnet_2026-05-06.md`](map_coherence_audit_sonnet_2026-05-06.md).
+Map chrome unified at the `bd-glass-card--map` utility layer. Four surface migrations + "Start Navigation" label sweep + dashboard tile-mode parity. Outcome: every active map surface inherits the same cool-blue cream-gold liquid glass family. Cross-ref: [`docs/archive/map_coherence_audit_sonnet_2026-05-06_archived_2026-05-09.md`](archive/map_coherence_audit_sonnet_2026-05-06_archived_2026-05-09.md) (archived Pass 195 doc consolidation sweep — findings landed as KI-170 / KI-171 / KI-172 in REF_KNOWN_ISSUES.md, then PLAN_MAP_UNIFICATION_2026-05-08.md).
 
 ### 1.2 KI-118 mileage data integrity (Pass 13 / 13b / 13c)
 
