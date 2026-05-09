@@ -24,6 +24,13 @@ function validatePhotoFile(file: File): void {
 /**
  * Compress image before converting to base64
  * Reduces localStorage usage
+ *
+ * Retained intentionally — has 6 live consumers across the wizard / report
+ * upload paths (Pass 25 dead-code prune verified via grep-by-name; sibling
+ * exports `getStorageUsage` / `formatBytes` / `validatePhotoFile` /
+ * `convertFileToBase64` were removed in that pass after confirming zero
+ * consumers). Do not include in a future janitor sweep without a fresh
+ * `grep -rn "compressImage" src/ --include="*.ts*"` to re-verify.
  */
 export const compressImage = async (
   file: File,

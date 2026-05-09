@@ -202,15 +202,21 @@ export type MapProgramShellProps =
 > Each step ships independently and the program continues to work. No step
 > requires a coordinated multi-file rewrite.
 
-### Step A — Extract shared top-bar (1 pass) — **PARTIAL SHIP 2026-05-08 (Pass 23 cowork-A)**
+### Step A — Extract shared top-bar (1 pass) — **SCOPED COMPLETE 2026-05-09 (Pass 181 / cowork Pass 23 fold-in)**
 
-- ✅ New file shipped: `src/app/components/maps/shell/MapProgramTopBar.tsx` (canonical L2 shell home).
-- ✅ `ImmersiveMapTopBar.tsx` refactored to thin re-export shim — Engine B (shop-directory-immersive) consumers continue working unchanged.
-- ⚠ **Engine A consumer migration deferred.** `CoverageBrowseExperience` uses `MapSurfaceControls` (inline-embedded UX shape), not the immersive-fullscreen UX shape the shipped `MapProgramTopBar` was lifted from. The two surfaces serve different host needs and lifting them under one component would require either a shape-union prop API or an internal variant switch — both of which exceed the "pure presentational lift, same handlers in, same handlers out" scope master-builder authorized in §7.5.
-- ⚠ **Dashboard Smart Shop Map host** — KI-164 investigation never pinpointed the host, so the third migration target stayed unresolved. Step A ship covers Engine B only.
+> **Important scope clarification (Pass 187, 2026-05-09):** "Step A" in this plan
+> means **Engine B top-bar canonicalization only** — i.e. lifting
+> `ImmersiveMapTopBar` to `src/app/components/maps/shell/MapProgramTopBar.tsx`.
+> It does **not** mean shell unification proper. Shell unification (multi-host,
+> slot-based) starts at Step C.1 (`<MapEngineCanvas>` extraction). Future
+> agents reading "Step A ✅" should not assume the full shell is in place.
+
+- ✅ New file shipped: `src/app/components/maps/shell/MapProgramTopBar.tsx` (canonical L2 shell home, 199 lines).
+- ✅ `ImmersiveMapTopBar.tsx` refactored to thin re-export shim — Engine B (shop-directory-immersive) consumers continue working unchanged via a 27-line type-preserving re-export.
+- ✅ Master-builder Pass 181 commit: `d3a5ad7c` (after host-side build verification: typecheck PASS, vitest 577/577, npm run build clean 3861 KiB precache).
+- ✅ Master-builder gate #6 resolved (Pass 183, option a): Engine A (`CoverageBrowseExperience` via `MapSurfaceControls` — inline-embedded UX shape) and Engine B (immersive-fullscreen via the new `MapProgramTopBar`) are kept as **two co-existing top-bar components**. Engine convergence proceeds at Step C.1, where the `<MapEngineCanvas>` extraction makes a single shell wrapper sound.
+- ⚠ **Dashboard Smart Shop Map host** — KI-164 investigation never pinpointed the host, but Step A's resolved scope (Engine B only) means the dashboard fullscreen migration is part of Step C, not Step A.
 - Evidence: `docs/evidence/pass-11-2026-05-08/PASS_23_STEP_A_SHIP.md` (cowork-A) + `STEP_B_SCOPE_CLARIFICATION.md` (audit AI parallel convergence on the same UX-divergence finding).
-- Typecheck: PASS exit 0 across the cluster.
-- Follow-on (gated on master-builder review): decide whether (a) Engine A stays on `MapSurfaceControls` indefinitely (two co-existing top-bar components, one per UX shape), or (b) `MapProgramTopBar` grows a `variant` prop to absorb the inline-embedded shape too.
 
 ### Step B — Extract shared bottom-right utility cluster (1 pass) — **NOT FEASIBLE AS SCOPED (Pass 24 cowork-A)**
 
