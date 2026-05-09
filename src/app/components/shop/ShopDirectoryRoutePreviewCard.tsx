@@ -162,30 +162,46 @@ export default function ShopDirectoryRoutePreviewCard({
         <div className={`mt-2 flex ${isCompactDensity ? "gap-1" : "gap-1.5"}`}>
           {routeOptions.map((route) => {
             const isActive = route.id === selectedRoute.id;
+            // Pass 184 (KI-169 third half) — Pass 179's flagImplausibleRoute
+            // annotates each RouteOption with isImplausible + reasons but no
+            // UI consumed it. Surface the flag on the chip with a warn icon
+            // and an aria-label carrying the reasons, so users see an
+            // amber-bordered chip when the route engine produced a
+            // sanity-failed alternative (e.g. the audit's 853mi NY-area
+            // request). We don't HIDE the chip — preserves data visibility
+            // and lets the user pick a different alternative manually if
+            // the flagged one is the only option.
+            const isImplausible = route.isImplausible === true;
             return (
               <button
                 key={route.id}
-                className={`flex flex-1 flex-col items-center justify-center rounded-lg text-center transition-colors ${
+                className={`relative flex flex-1 flex-col items-center justify-center rounded-lg text-center transition-colors ${
                   isCompactDensity
                     ? "min-h-[26px] px-1 py-1 text-[9px]"
                     : "min-h-[32px] px-1.5 py-1 text-[10px] sm:min-h-[34px] sm:text-[11px]"
-                } ${isActive ? activeRoute : inactiveRoute}`}
+                } ${isActive ? activeRoute : inactiveRoute} ${
+                  isImplausible
+                    ? isDark
+                      ? "ring-1 ring-amber-400/40"
+                      : "ring-1 ring-amber-300"
+                    : ""
+                }`}
                 onClick={() => onSelectRoute(route.id)}
                 type="button"
+                aria-label={
+                  isImplausible
+                    ? `${route.estimatedDurationMinutes} min, ${route.totalDistanceLabel}. Verify route — ${(route.implausibleReasons ?? []).join("; ")}`
+                    : undefined
+                }
               >
-                {/*
-                  Pass 13 (audit AI) — KI-162-reopen / KI-169 second-half closure.
-                  Pass 175 added "N min" suffix at shopDirectoryNavigationDerived.ts:173
-                  and ShopDirectoryGuidanceCard.tsx:291 but missed this third render
-                  site (co-worker AI Pass 11 T-C surfaced the partial application).
-                  Without the space + " min" suffix, the duration value rendered as
-                  "{N}m" — a duration formatted as if it were distance — while the
-                  sibling `route.totalDistanceLabel` below renders miles. Two
-                  siblings, two unit semantics, top one mislabeled. This is the
-                  upstream display-side cause of KI-169's "1005m / 853.4 mi" mixed
-                  units bug; the route-engine sanity-clamp shipped in Pass 179
-                  closed the data-side half.
-                */}
+                {isImplausible ? (
+                  <TriangleAlert
+                    className={`absolute right-0.5 top-0.5 h-2.5 w-2.5 ${
+                      isDark ? "text-amber-300" : "text-amber-500"
+                    }`}
+                    aria-hidden="true"
+                  />
+                ) : null}
                 <span className="block font-semibold">
                   {route.estimatedDurationMinutes} min
                 </span>
