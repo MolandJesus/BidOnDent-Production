@@ -181,8 +181,8 @@ tracking) but at different abstraction levels.
   Defer until `<MapProgramShell>` lands and immersive migrates onto it
   (PLAN_MAP_UNIFICATION final-phase target).
 
-**Convergence delta vs PLAN_MAP_UNIFICATION:** PLAN_MAP_UNIFICATION focuses on
-the _renderer_ layer (shell + slots). It does not explicitly call out
+**Convergence delta vs PLAN_MAP_UNIFICATION:** PLAN*MAP_UNIFICATION focuses on
+the \_renderer* layer (shell + slots). It does not explicitly call out
 orchestration-hook duplication. Recommend PLAN_MAP_UNIFICATION add a §11
 "Orchestration convergence" section, OR keep the orchestration question
 scoped here under `DEFERRED` until renderer convergence completes.
@@ -221,6 +221,18 @@ architecture for §1 and §2 convergence work.
 ---
 
 ## §4. Client-Side State Authority Matrix
+
+> **PROMOTED (Pass 221, 2026-05-09).** The full inventory of `localStorage` /
+> `sessionStorage` keys is now canonically maintained in
+> [`REF_SYSTEM_STATE.md` § 5.5 Client-Side State Authority Matrix](REF_SYSTEM_STATE.md#55-client-side-state-authority-matrix).
+> That section is the single source of truth and the place to add new keys
+> (per LAW Pass 215 co-update rule).
+>
+> The original §4 audit content (tables 4.1–4.4) is preserved below in
+> historical form for the audit trail of this 2026-05-09 topology pass; do
+> not edit it. Edits go to REF_SYSTEM_STATE § 5.5.
+
+### §4 (HISTORICAL — original Pass 213 audit content)
 
 Inventory of `localStorage` / `sessionStorage` keys observed in the repo. All
 keys are **single-tenant per-key** with no central authority registry. The
@@ -282,10 +294,8 @@ review on the next sign-out hygiene pass.
   beyond what React Query / hook state holds. **No convergence work needed
   on the Supabase side.**
 
-**Status of §4 as a whole:** `DEFERRED`, `SAFE-AUTOPILOT` for documentation
-extension (this matrix can become a persistent REF section under
-`REF_SYSTEM_STATE.md` or its own doc on owner authorization), `OWNER-GATED`
-for cleanup-policy unification.
+**Status of §4 as a whole:** PROMOTED to REF_SYSTEM_STATE § 5.5 in Pass 221.
+Future edits go there; this section is frozen as audit-trail history.
 
 ---
 

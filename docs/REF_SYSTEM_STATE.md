@@ -278,6 +278,80 @@ Persisted media URLs in `damage_reports.photo_urls` (text[]), `*.profile_image_u
 
 ---
 
+## 5.5 Client-Side State Authority Matrix
+
+Canonical inventory of `localStorage` / `sessionStorage` keys. Promoted into
+REF_SYSTEM_STATE during Pass 221 from
+[`REF_CONVERGENCE_TOPOLOGY_2026-05-09.md`](REF_CONVERGENCE_TOPOLOGY_2026-05-09.md)
+§4 because client-side persistence is durable system truth, not a one-time
+audit artifact. The original topology doc retains a pointer back to this
+section.
+
+All keys are **single-tenant per-key** with no central registry. Adding a new
+key requires reading every existing service file to confirm no prefix
+collision. The `bidondent_nav_*` cluster has dedicated cleanup tooling
+([`clearStaleNavSessions`](../src/app/utils/clearStaleNavSessions.ts), Pass
+212 test-locked); other clusters do not.
+
+### 5.5.1 Navigation cluster
+
+| Key                                         | Owner                                                                                                         | Scope    | Cleanup                                                           |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------- |
+| `bidondent_navigation_state`                | [`useNavigation.ts`](../src/app/hooks/useNavigation.ts) line 5                                                | global   | `clearAllUserScopedSessionKeys` does **not** touch this — REVIEW. |
+| `bidondent_navigation_session`              | [`services/navigation/navigationSession.ts`](../src/app/services/navigation/navigationSession.ts) line 4      | global   | not in `clearStaleNavSessions` sweep                              |
+| `bidondent_navigation_preferences`          | [`navigationPreferences.ts`](../src/app/services/navigation/navigationPreferences.ts) line 4                  | global   | retained across logout                                            |
+| `bidondent_navigation_discovery_role`       | [`discoveryPreferences.ts`](../src/app/services/navigation/discoveryPreferences.ts) line 4                    | global   | retained                                                          |
+| `bidondent_navigation_parked_car`           | [`parkedCarLocation.ts`](../src/app/services/navigation/parkedCarLocation.ts) line 4                          | global   | retained                                                          |
+| `bidondent_navigation_saved_locations`      | [`savedLocations.ts`](../src/app/services/navigation/savedLocations.ts) line 8                                | global   | retained                                                          |
+| `bidondent_nav_session_*` (per-user)        | [`navigationSessionCloudService.ts`](../src/app/services/navigation/navigationSessionCloudService.ts) line 8  | per-user | `clearStalePlanningNavSessions` (Pass 61 / KI-117)                |
+| `bidondent_nav_active_session_*` (per-user) | [`navigationSessionCloudService.ts`](../src/app/services/navigation/navigationSessionCloudService.ts) line 9  | per-user | `clearAllUserScopedSessionKeys`                                   |
+| `bidondent_nav_pending_writes`              | [`navigationSessionCloudService.ts`](../src/app/services/navigation/navigationSessionCloudService.ts) line 11 | global   | `clearAllUserScopedSessionKeys`                                   |
+| `bidondent_nav_cloud_unavailable`           | [`navigationSessionCloudService.ts`](../src/app/services/navigation/navigationSessionCloudService.ts) line 12 | global   | `clearAllUserScopedSessionKeys`                                   |
+
+### 5.5.2 Identity / website cluster
+
+| Key                                   | Owner                                                                       | Scope    | Cleanup            |
+| ------------------------------------- | --------------------------------------------------------------------------- | -------- | ------------------ |
+| `bidondent_website_session:<userKey>` | [`websiteIdentity.ts`](../src/app/services/auth/websiteIdentity.ts) line 55 | per-user | replace on sign-in |
+| `bidondent_website_memory:<userKey>`  | [`websiteIdentity.ts`](../src/app/services/auth/websiteIdentity.ts) line 56 | per-user | replace on sign-in |
+| `bidondent_user_last_active`          | [`constants/index.ts`](../src/app/constants/index.ts) line 61               | global   | not swept          |
+
+### 5.5.3 Coverage / map cluster
+
+| Key                        | Owner                                                                                | Scope  | Cleanup   |
+| -------------------------- | ------------------------------------------------------------------------------------ | ------ | --------- |
+| `bidondent_coverage_state` | [`landing/coverageState.ts`](../src/app/components/landing/coverageState.ts) line 12 | global | not swept |
+
+### 5.5.4 Authority observations
+
+- **No central registry.** Each module owns its prefix in isolation.
+- **Cleanup discipline is uneven.** The `bidondent_nav_*` cluster has a
+  test-locked sweep function. The website cluster overwrites in-place. The
+  remaining global keys (`navigation_state`, `coverage_state`,
+  `user_last_active`, all `navigation_*` preferences) persist across sign-out
+  with no documented retention policy.
+- **Prefix collision risk:** `bidondent_navigation_state` (UI viewMode/tab
+  state, owned by `hooks/useNavigation.ts`) and `bidondent_navigation_session`
+  (in-progress nav session, owned by `services/navigation/navigationSession.ts`)
+  share a confusingly similar prefix but have different lifetimes and owners.
+  Neither is touched by `clearAllUserScopedSessionKeys` on sign-out. **Status:**
+  DEFERRED — not a known active bug; flagged for the next sign-out hygiene
+  pass.
+- **Supabase boundary is clean.** Per
+  [`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md) load-bearing facts #2 and #4,
+  there is no observable client-side persistence of Supabase data beyond what
+  React Query / hook state holds. **No convergence work needed on the
+  Supabase side.**
+
+When adding a new persisted key:
+
+1. Add the row to the appropriate sub-cluster table above in the same pass.
+2. State the cleanup policy explicitly (sweep function name, or "retained").
+3. If it's user-scoped, prefer the `bidondent_nav_*` per-user pattern with
+   `clearStaleNavSessions` integration over inventing a new cluster.
+
+---
+
 ## 6. Map Stack
 
 ### Active and Foundational
