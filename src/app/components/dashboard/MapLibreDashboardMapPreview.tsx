@@ -8,6 +8,7 @@ import { mapLibreStyles } from "../maps/mapLibreStyles";
 import type { CoveragePartnerShop } from "../maps/serviceCoverageMapTypes";
 import type { MapLayerMouseEvent, ViewState } from "react-map-gl/maplibre";
 import { circleToPolygon } from "../../utils/geoCircle";
+import { markEngineMount, markEngineDispose } from "../../utils/perfMarks";
 
 export type ReportPin = { id: string; lat: number; lng: number; label: string };
 export type ServiceAreaCircle = { lat: number; lng: number; radiusMiles: number };
@@ -118,6 +119,12 @@ export default function MapLibreDashboardMapPreview({
 }: MapLibreDashboardMapPreviewProps) {
   const mapId = useId();
   const mapStyle = isLight ? mapLibreStyles.roadmap : mapLibreStyles.night;
+
+  useEffect(() => {
+    const engineId = `e3:${mapId}`;
+    markEngineMount(engineId);
+    return () => markEngineDispose(engineId);
+  }, [mapId]);
 
   /* ── Auto-fit: compute center+zoom from all pins when 2+ exist ── */
   const allPoints = useMemo(() => {

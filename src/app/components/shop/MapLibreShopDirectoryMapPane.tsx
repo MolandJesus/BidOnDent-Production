@@ -32,6 +32,7 @@ import {
 import { useMapPaneState } from "./useMapPaneState";
 import MapPaneAtmosphereOverlays from "./MapPaneAtmosphereOverlays";
 import MapPaneInfoPopups from "./MapPaneInfoPopups";
+import { markEngineMount, markEngineDispose } from "../../utils/perfMarks";
 
 import type { ShopDirectoryMapPaneProps } from "./shopDirectoryMapPaneTypes";
 
@@ -91,6 +92,11 @@ export default function MapLibreShopDirectoryMapPane({
   onTileModeChange,
   overlayDensity = "default",
 }: ShopDirectoryMapPaneProps) {
+  useEffect(() => {
+    markEngineMount("e2:shop-directory");
+    return () => markEngineDispose("e2:shop-directory");
+  }, []);
+
   const {
     containerRef,
     containerReady,

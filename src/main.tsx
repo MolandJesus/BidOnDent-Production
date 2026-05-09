@@ -1,3 +1,10 @@
+// Phase 0 (Pass 262) — dev/test-only PMS instrumentation. These imports
+// must run BEFORE any React render or canvas creation so the GL-context
+// and engine-count hooks observe every subsequent mount. Production
+// builds tree-shake the bodies (import.meta.env.DEV / MODE guards inside).
+import "./app/utils/devGlContextCounter.ts";
+import "./app/utils/devMapInstanceCounter.ts";
+
 import { Component, type ErrorInfo, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import { MotionConfig } from "motion/react";

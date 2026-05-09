@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { markRouteEnter, markRouteLeave } from "../../utils/perfMarks";
 
 // ============================================================================
 // AUTH CONFIG FALLBACK — shown when Clerk or Supabase env vars are missing
@@ -74,6 +75,17 @@ function parseHashPage(hash: string): HashPage | null {
 
 export function useHashPage() {
   const [page, setPage] = useState<HashPage | null>(() => parseHashPage(window.location.hash));
+  const previousPageRef = useRef<HashPage | null>(page);
+
+  useEffect(() => {
+    const previous = previousPageRef.current;
+    if (previous !== page) {
+      if (previous !== null) markRouteLeave(`hashPage:${previous}`);
+      if (page !== null) markRouteEnter(`hashPage:${page}`);
+      else markRouteEnter("hashPage:landing");
+      previousPageRef.current = page;
+    }
+  }, [page]);
 
   useEffect(() => {
     const onHashChange = () => setPage(parseHashPage(window.location.hash));

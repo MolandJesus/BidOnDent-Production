@@ -28,12 +28,14 @@
 // Must run before any Map instantiation — patches resize crash
 import "../../../utils/maplibreResizePatch";
 
+import { useEffect } from "react";
 import Map, { AttributionControl, NavigationControl } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
 import type { StyleSpecification } from "maplibre-gl";
 import type { GeoJSON } from "geojson";
 
 import { cn } from "../../ui/utils";
+import { markEngineMount, markEngineDispose } from "../../../utils/perfMarks";
 import {
   MapLibreViewportController,
   MapLibreFollowLocationController,
@@ -148,6 +150,11 @@ export default function MapEngineCanvas({
   searchTargetPointGeoJSON,
   radiusLabelGeoJSON,
 }: MapEngineCanvasProps) {
+  useEffect(() => {
+    markEngineMount("e1:coverage");
+    return () => markEngineDispose("e1:coverage");
+  }, []);
+
   return (
     <div
       className={cn(
