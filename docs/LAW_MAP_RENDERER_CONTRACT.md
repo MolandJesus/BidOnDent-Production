@@ -1,5 +1,5 @@
 ---
-status: DRAFT
+status: CANONICAL
 authority: LAW
 scope: map-renderer-contract
 canonical_source_of_truth: LAW_MAP_RENDERER_CONTRACT.md
@@ -9,15 +9,18 @@ safe_for_autopilot: false
 requires_owner_approval: true
 last_topology_audit: 2026-05-09
 runtime_impact_if_misunderstood: critical
-ai_summary: LAW-tier draft contract for the canonical map runtime — camera authority, lifecycle obligations, tier classification, and required convergence-pass discipline.
+ai_summary: LAW-tier canonical contract for the map runtime — camera authority, lifecycle obligations, tier classification, and required convergence-pass discipline. Ratified 2026-05-09 (post-Pass 230, owner gate).
 last_updated: 2026-05-09
 ---
 
-# LAW — Map Renderer Contract (DRAFT)
+# LAW — Map Renderer Contract
 
-> Block C / Pass 226 deliverable. **DRAFT — not yet enforced.** This
-> document becomes binding only when the owner ratifies it (status:
-> CANONICAL) at or after Pass 230. Until ratification it documents the
+> Block C / Pass 226 deliverable. **RATIFIED 2026-05-09** by owner
+> after Pass 230 closeout. Status: CANONICAL. Binding on all map
+> runtime work. Open questions in §7 remain unresolved governance
+> questions (deferred to Block D), NOT implementation directives.
+> Until §7 questions are resolved, convergence passes must not force
+> answers. Documents the
 > intended contract for the runtime convergence work that follows.
 >
 > Authority tier: **LAW**. Once ratified, conflicts with REF or PLAN

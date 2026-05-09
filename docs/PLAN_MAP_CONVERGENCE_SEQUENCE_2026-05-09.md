@@ -1,5 +1,5 @@
 ---
-status: PROPOSED
+status: ACTIVE
 authority: PLAN
 scope: map-runtime-convergence-sequencing
 canonical_source_of_truth: PLAN_MAP_CONVERGENCE_SEQUENCE_2026-05-09.md
@@ -9,13 +9,19 @@ safe_for_autopilot: false
 requires_owner_approval: true
 last_topology_audit: 2026-05-09
 runtime_impact_if_misunderstood: high
-ai_summary: Per-surface tier classification + ordered runtime convergence sequence with phase gates and required test coverage per step.
+ai_summary: Per-surface tier classification + ordered runtime convergence sequence with phase gates and required test coverage per step. Authorized 2026-05-09 (post-Pass 230, owner gate). Phase 3 branch decision still deferred to Block D.
 last_updated: 2026-05-09
 ---
 
-# PLAN — Map Runtime Convergence Sequence (PROPOSED)
+# PLAN — Map Runtime Convergence Sequence
 
-> Block C / Pass 227 deliverable. **PROPOSED — not yet authorized.**
+> Block C / Pass 227 deliverable. **AUTHORIZED 2026-05-09** by owner
+> after Pass 230. Status: ACTIVE. Sequence, phasing, risk ordering,
+> and test gating approved. Per-pass owner authorization still required
+> before each individual convergence pass executes. Block D must complete
+> before Phase 1 begins.
+>
+> Original gating language:
 > No runtime changes execute until owner ratifies LAW_MAP_RENDERER_CONTRACT
 > at/after Pass 230 AND explicitly authorizes Pass N+1 (first runtime
 > convergence pass).
