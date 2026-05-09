@@ -24,6 +24,7 @@ Builder reads these in order before starting:
 8. **`docs/REF_SYSTEM_STATE.md`** — current architecture truth.
 
 External audit AI's design specs (referenced inline below):
+
 - **Map-program-feel 25-item spec** (audit pass 2): marker variants, clustering, search-as-you-type, smooth flyTo, compass, 3D buildings, tilt/rotate, route alternatives, traffic-tier line color, lane guidance, speed badge, voice ducking, persona consistency, cue distance config, no-active-route empty state, map loading skeleton, tile failure recovery, pin click smooth pan, marker pulse animation, custom map style, branded place labels, branded route line, map-first layout for Smart Shop Map.
 - **Non-map design spec** (audit pass 3): 30+ specific suggestions across landing (10), dashboard (8), account (7), bids (5), report flow (7).
 
@@ -51,6 +52,7 @@ These hold across every pass in this plan:
 ## Pass-level standard structure
 
 Every pass must produce:
+
 - **Single commit** with a descriptive message
 - **Validation evidence** in the commit message: build time, precache size, typecheck status, smoke test
 - **KI co-update** when a KI is touched (status note, fix-direction update, RESOLVED stamp where appropriate)
@@ -60,6 +62,7 @@ Every pass must produce:
 ## Hard-stop list (apply across all passes)
 
 Builder pauses and pings owner+planner immediately on any of:
+
 - Build break / typecheck break
 - Test break that requires more than mechanical snapshot update
 - Schema migration apply attempt
@@ -87,6 +90,7 @@ These ship before any test scaffolding. Tests written on top of buggy behavior l
 **Scope:** Single highest-leverage fix. Six P0 symptoms collapse into one fix.
 
 **Files (target 4-5):**
+
 - `src/app/hooks/useNavigationGpsTracking.ts` — gate the GPS tracking effect on `session.status === 'active'`. If status !== active, do NOT subscribe to geolocation.
 - `src/app/features/navigation/useNavigationIntelligence.ts` — short-circuit `evaluate(snapshot)` when session is not active.
 - `src/app/hooks/useShopDirectoryNavigation.ts` AND/OR `src/app/hooks/useCoverageNavigationExperience.ts` — pass session-status gate prop to GPS tracking + intelligence hooks.
@@ -94,17 +98,20 @@ These ship before any test scaffolding. Tests written on top of buggy behavior l
 - Sign-out handler (likely in `useAppHandlers.ts` or `App.tsx`) — explicitly delete every `bidondent_nav_session_*`, `bidondent_user:*`, `coverageCurrentLocation`, and any other user-scoped key before redirecting to landing.
 
 **Validation:**
+
 - Smoke test: load dashboard from cold cache. Verify NO 737mi banner, NO "Finding a new route" toast, NO "Stopped detected" toast, NO speed-limit error spam in console.
 - Notification counter stays stable (does not climb on idle).
 - Carto basemap 503 storm collapses (since cross-US fitBounds was driven by demo shop geometry triggering the engine — verify in Network panel).
 - Sign out, sign back in. Verify no stale planning sessions in localStorage post-flow.
 
 **KI co-updates:**
+
 - KI-116 → RESOLVED 2026-05-NN with this commit hash.
 - KI-117 → RESOLVED 2026-05-NN with this commit hash.
 - KI-127 (toast/avatar overlap) → mark RESOLVED-DEPENDENT on KI-116 (or surface remaining if toast still renders somewhere it shouldn't).
 
 **Hard stops:**
+
 - If `useNavigationGpsTracking` is consumed by surfaces other than dashboard/inline-coverage that legitimately need it — verify those still work post-gate.
 - If session-status gate causes regressions on the actual nav surfaces, investigate and refine the gate before shipping.
 
@@ -115,23 +122,28 @@ These ship before any test scaffolding. Tests written on top of buggy behavior l
 **Owner decision required first:** Pause and ask owner — full destroy OR rename to "Switch Accounts"?
 
 If full destroy:
+
 - Sign out handler calls `clerk.signOut({ redirectUrl: '/' })` with explicit `{ session: true }` flag.
 - Explicit cookie clear: delete `__clerk_db_jwt` and `__client_uat` from `document.cookie`.
 - Verify post-sign-out reload does NOT auto-restore session.
 
 If rename:
+
 - "Sign Out" → "Switch Accounts" in UI copy.
 - Add "Forget this device" link below "Switch Accounts" that does the full destroy.
 
 **Files (target 2-3):**
+
 - Sign-out handler
 - UI copy (Account tab + sidebar pill)
 
 **Validation:**
+
 - Reload after sign out. Login link should require credentials, not auto-restore.
 - KI-117's stale localStorage cleanup (Pass 61) plus KI-134's cookie cleanup together = honest sign-out.
 
 **KI co-update:**
+
 - KI-134 → RESOLVED with commit hash.
 
 ---
@@ -143,15 +155,18 @@ If rename:
 **Scope:** Single CSS rule fix. Affects every wizard step's empty form panel (Steps 3 + 4 confirmed; Step 5 likely).
 
 **Approach:**
+
 - Open Report flow Step 3 with empty form in dev. Use DevTools Elements → walk up the tree from the clipped heading to find the clipping ancestor.
 - Capture computed transform/positioning. Diff against filled-state.
 - Fix the rule.
 
 **Files (target 1-2):**
+
 - The CSS module/file containing the wizard form-card rule.
 - Possibly the wizard layout component if the rule is component-scoped.
 
 **Validation:**
+
 - Step 3 (empty) renders correctly.
 - Step 3 (filled) renders correctly (no regression).
 - Step 4 (empty) renders correctly.
@@ -164,17 +179,21 @@ If rename:
 **Scope:** Two related Step 1 form bugs.
 
 **KI-125 fix:**
+
 - "Use" button on saved-vehicle pill must populate the controlled inputs via `setMake`/`setModel`/`setYear`.
 - Verify post-click that `value` attribute reflects saved data.
 
 **KI-129 fix:**
+
 - Add `required` HTML attribute to Make/Model/Year inputs.
 - Verify visual asterisks now match HTML semantics.
 
 **Files (target 1-2):**
+
 - Report Step 1 vehicle entry component.
 
 **Validation:**
+
 - Click "Use" on saved vehicle → inputs populate.
 - Submit empty Step 1 → browser-native validation fires.
 - Pass 75 test scaffolding will include regression test "saved-vehicle Use button populates form values."
@@ -188,6 +207,7 @@ If rename:
 **Files (target 1):** `src/app/components/reports/PhotoTipsModal.tsx` (or equivalent).
 
 **Validation:**
+
 - Click "Skip for now" on Photo Tips modal → advance to Step 4 with photos empty.
 - Click "Got it" on Photo Tips modal → also advance to Step 4 (existing behavior preserved).
 - Back button from Step 4 → returns to Step 3, not the modal.
@@ -197,6 +217,7 @@ If rename:
 ### Pass 66 — Owner-action surface (KI-101 + KI-102 + KI-002 + KI-114 + KI-115)
 
 **Not a code pass.** Builder produces a single doc handoff at `docs/OWNER_ACTION_HANDOFF_2026-05-NN.md` with:
+
 - KI-101: SQL UPDATE statement for the `vehicles` row.
 - KI-102: SQL UPDATE statement to clear/replace the cat photo (or owner replaces via Storage UI).
 - KI-002: `supabase secrets set RESEND_API_KEY=...` + `supabase functions deploy server` step-by-step.
@@ -455,6 +476,7 @@ These are P2 architectural items that need extended owner approval:
 ## Cross-cutting validation gates
 
 Every 5 passes builder runs:
+
 1. Full `npm run build && npm run preview` smoke test.
 2. Lighthouse Mobile + Desktop on Dashboard + Smart Shop Map.
 3. Cold-load console capture (no Clerk-telemetry, no extension noise) — should be clean.
@@ -467,19 +489,20 @@ If any gate fails, builder pauses and pings.
 
 These never enter builder's autopilot scope — they're gated on owner action:
 
-| KI | Owner action | Steps |
-|---|---|---|
-| KI-002 | Deploy `RESEND_API_KEY` | `supabase secrets set` + `supabase functions deploy server` |
-| KI-101 | Update `vehicles` row | `UPDATE vehicles SET make='Toyota' WHERE make='Toyoto';` via Studio |
-| KI-102 | Replace cat photo | Storage UI (or `damage_reports` row update) |
-| KI-103 | Decide on `bidondent@gmail.com` footer email | Replace with `support@bidondent.com` (requires domain email registration) OR keep as decision |
-| KI-114 | Apply Pass 58 migration | Studio paste from `supabase/migrations/20260507000001_*.sql` |
-| KI-115 | Apply Pass 59 migration + verify realtime publication | Studio paste from `supabase/migrations/20260507000002_*.sql` |
-| KI-134 | Decide: full destroy vs "Switch Accounts" rename | Owner picks; builder ships either way |
+| KI     | Owner action                                          | Steps                                                                                         |
+| ------ | ----------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| KI-002 | Deploy `RESEND_API_KEY`                               | `supabase secrets set` + `supabase functions deploy server`                                   |
+| KI-101 | Update `vehicles` row                                 | `UPDATE vehicles SET make='Toyota' WHERE make='Toyoto';` via Studio                           |
+| KI-102 | Replace cat photo                                     | Storage UI (or `damage_reports` row update)                                                   |
+| KI-103 | Decide on `bidondent@gmail.com` footer email          | Replace with `support@bidondent.com` (requires domain email registration) OR keep as decision |
+| KI-114 | Apply Pass 58 migration                               | Studio paste from `supabase/migrations/20260507000001_*.sql`                                  |
+| KI-115 | Apply Pass 59 migration + verify realtime publication | Studio paste from `supabase/migrations/20260507000002_*.sql`                                  |
+| KI-134 | Decide: full destroy vs "Switch Accounts" rename      | Owner picks; builder ships either way                                                         |
 
 ## Deliverables when builder reaches end of Phase 8
 
 At Pass 107 close, builder produces:
+
 1. Final tracker with all 47+ passes shipped
 2. Updated `REF_KNOWN_ISSUES.md` with all RESOLVED stamps
 3. Updated `REF_SYSTEM_STATE.md` with new architecture

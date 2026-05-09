@@ -7,11 +7,7 @@
  */
 import { describe, expect, it } from "vitest";
 
-import type {
-  DeviationEvent,
-  DeviationSeverity,
-  OffRouteEvent,
-} from "./deviationTypes";
+import type { DeviationEvent, DeviationSeverity, OffRouteEvent } from "./deviationTypes";
 import type { RerouteState, RerouteStatus } from "./rerouteTypes";
 import { REROUTE_COOLDOWN_MS } from "./rerouteTypes";
 import { shouldTriggerReroute } from "./shouldTriggerReroute";
@@ -29,10 +25,7 @@ function makeOffRoute(severity: DeviationSeverity = "high"): OffRouteEvent {
   };
 }
 
-function makeState(
-  status: RerouteStatus,
-  lastCompletedAt: string | null = null
-): RerouteState {
+function makeState(status: RerouteStatus, lastCompletedAt: string | null = null): RerouteState {
   return {
     status,
     activeRequest: null,
@@ -66,11 +59,7 @@ describe("shouldTriggerReroute — guard rails", () => {
   });
 
   it("rejects when severity is below threshold (low)", () => {
-    const decision = shouldTriggerReroute(
-      makeOffRoute("low"),
-      makeState("idle"),
-      NOW_MS
-    );
+    const decision = shouldTriggerReroute(makeOffRoute("low"), makeState("idle"), NOW_MS);
     expect(decision.eligible).toBe(false);
     expect(decision.reason).toMatch(/below reroute threshold/i);
   });
@@ -81,29 +70,17 @@ describe("shouldTriggerReroute — guard rails", () => {
 // ---------------------------------------------------------------------------
 describe("shouldTriggerReroute — severity acceptance", () => {
   it("accepts medium severity off_route from idle", () => {
-    const decision = shouldTriggerReroute(
-      makeOffRoute("medium"),
-      makeState("idle"),
-      NOW_MS
-    );
+    const decision = shouldTriggerReroute(makeOffRoute("medium"), makeState("idle"), NOW_MS);
     expect(decision.eligible).toBe(true);
   });
 
   it("accepts high severity off_route from idle", () => {
-    const decision = shouldTriggerReroute(
-      makeOffRoute("high"),
-      makeState("idle"),
-      NOW_MS
-    );
+    const decision = shouldTriggerReroute(makeOffRoute("high"), makeState("idle"), NOW_MS);
     expect(decision.eligible).toBe(true);
   });
 
   it("accepts off_route from eligible status (idle pre-trigger lifecycle)", () => {
-    const decision = shouldTriggerReroute(
-      makeOffRoute("high"),
-      makeState("eligible"),
-      NOW_MS
-    );
+    const decision = shouldTriggerReroute(makeOffRoute("high"), makeState("eligible"), NOW_MS);
     expect(decision.eligible).toBe(true);
   });
 });
@@ -113,21 +90,13 @@ describe("shouldTriggerReroute — severity acceptance", () => {
 // ---------------------------------------------------------------------------
 describe("shouldTriggerReroute — lifecycle gates", () => {
   it("rejects when status is pending (already running)", () => {
-    const decision = shouldTriggerReroute(
-      makeOffRoute("high"),
-      makeState("pending"),
-      NOW_MS
-    );
+    const decision = shouldTriggerReroute(makeOffRoute("high"), makeState("pending"), NOW_MS);
     expect(decision.eligible).toBe(false);
     expect(decision.reason).toMatch(/already pending/i);
   });
 
   it("rejects when status is completed (just finished)", () => {
-    const decision = shouldTriggerReroute(
-      makeOffRoute("high"),
-      makeState("completed"),
-      NOW_MS
-    );
+    const decision = shouldTriggerReroute(makeOffRoute("high"), makeState("completed"), NOW_MS);
     expect(decision.eligible).toBe(false);
     expect(decision.reason).toMatch(/just completed/i);
   });

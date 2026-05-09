@@ -32,11 +32,7 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-function Harness({
-  output,
-}: {
-  output: (out: ReturnType<typeof useNavigation>) => void;
-}) {
+function Harness({ output }: { output: (out: ReturnType<typeof useNavigation>) => void }) {
   const nav = useNavigation();
   output(nav);
   return null;

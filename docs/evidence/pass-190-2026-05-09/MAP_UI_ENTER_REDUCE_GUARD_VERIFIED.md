@@ -8,6 +8,7 @@
 ## Question raised in Pass 190 §6
 
 > "`NavigationActionRail` uses `map-ui-enter` for entrance animation but does **not** add the `motion-reduce:animate-none` paired class. Per `LAW_ANIMATION_AND_ATMOSPHERE.md` every entrance animation requires the reduced-motion guard. This is either:
+>
 > - (a) `map-ui-enter` already bakes the reduce-guard into its keyframe definition (CSS-first lock), making the explicit class redundant — verify by reading the keyframe definition in `src/styles/`; or
 > - (b) a missed reduce-guard that should be added in a small follow-up sweep."
 
