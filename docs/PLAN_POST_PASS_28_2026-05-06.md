@@ -3,7 +3,7 @@
 **Authority:** PLAN — future direction. Not current truth (REF wins; LAW wins over REF).
 **Owner:** Mola
 **Authors:** Claude Opus 4.7 (1M context), via builder relay
-**Status:** Draft awaiting owner gate decisions
+**Status:** DEFERRED — draft awaiting owner gate decisions
 **Last updated:** 2026-05-06
 
 > **Why this doc exists.** Two AI sessions have independently converged on "scope exhausted under current authorization" after the polish/cleanup arc of Passes 12–28. This document captures what was hardened, classifies every remaining open item by which gate it sits behind, and proposes a critical path to soft launch. It is the single decision document for the next round of owner unlocks.

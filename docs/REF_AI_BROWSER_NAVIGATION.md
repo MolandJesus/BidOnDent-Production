@@ -1,7 +1,7 @@
 # REF_AI_BROWSER_NAVIGATION
 
 **Last updated:** 2026-05-03
-**Status:** Active reference
+**Status:** ACTIVE — reference
 **Scope:** Browser automation behavior for Playwright-like tools in BidOnDent
 
 ---

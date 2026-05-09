@@ -4,7 +4,7 @@
 
 **Created:** 2026-04-14  
 **Promoted to LAW tier:** 2026-04-16  
-**Status:** IN PROGRESS  
+**Status:** ACTIVE — in progress
 **Purpose:** Single source of truth for the "harden and activate the marketplace loop" phase leading to soft launch. Captures every locked decision, rationale, and open question so the main AI on auto-pilot can execute without guesswork.
 
 **Companion docs:** See `LAW_PROJECT_RULES.md` for permanent behavioral rules. See `REF_KNOWN_ISSUES.md` for the full known-issues inventory. See `REF_SYSTEM_STATE.md` for current architecture truth.

@@ -2,7 +2,7 @@
 
 **Authority level:** PLAN — future direction, not current truth. Do not implement without owner-fired trigger condition (see §3).
 **Created:** 2026-05-04
-**Status:** PRE-EXECUTION — captured per owner directive 2026-05-04 ("plan on making chat system with apple imessage in ios 26 design language with our skin/theme to it in future planning after this many run").
+**Status:** DEFERRED — pre-execution; captured per owner directive 2026-05-04 ("plan on making chat system with apple imessage in ios 26 design language with our skin/theme to it in future planning after this many run").
 **Companion docs:** [`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md) (no-new-features-during-hardening rule), [`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md) (Launch Scope Guardrails), [`REF_VISUAL_SYSTEM.md`](REF_VISUAL_SYSTEM.md) § Premium Glass Body Opacity + Directional Backlight Canon, [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md), [`PLAN_POST_LAUNCH_ROADMAP.md`](PLAN_POST_LAUNCH_ROADMAP.md), [`bd-design-identity`](~/.claude/skills/bd-design-identity/SKILL.md) skill, [`supabase-clerk-edge-function`](~/.claude/skills/supabase-clerk-edge-function/SKILL.md) skill, [`supabase-storage-signed-urls`](~/.claude/skills/supabase-storage-signed-urls/SKILL.md) skill.
 
 ---

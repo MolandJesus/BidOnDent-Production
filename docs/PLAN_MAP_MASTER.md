@@ -11,7 +11,7 @@
 > **2026-05-07 amendment — KI-075 unlocked:** Owner asserted all four KI-075 trigger conditions on 2026-05-07 via planner-AI authority chain. Functional buildout scope (turn-by-turn engine, voice TTS, deviation detection, saved-places persistence, real-time marker availability, per-role layer rules) is now ACTIVE and may proceed under the containment-over-expansion rule (one functional item per pass plus hardening-safe polish). See [`REF_KNOWN_ISSUES.md` KI-075](REF_KNOWN_ISSUES.md#ki-075-future-navigation-engine--map-functional-buildout-active--unlocked-2026-05-07) for trigger assertions and per-pass scope ceiling. Provider stack stays locked (MapLibre + OSRM + Nominatim-via-edge + Overpass).
 
 **Last updated:** April 17, 2026 (Hardening phase active — strategic vision retained, submitted address search commit hardening documented)
-**Status:** Strategic vision (paused during hardening)
+**Status:** DEFERRED — strategic vision (paused during hardening)
 
 > Implementation notes archived to `docs/archive/MAP_MASTER_PLAN_IMPL_NOTES.md`. Per-pass delivery notes belong in the Map Tracker.
 

@@ -4,7 +4,7 @@
 
 **Last updated:** 2026-05-04
 
-**Status:** Active. Charter for the v3.3 master plan (Phases 1.5 through 8.5). Existing files are grandfathered; new files must comply.
+**Status:** ACTIVE — charter for the v3.3 master plan (Phases 1.5 through 8.5). Existing files are grandfathered; new files must comply.
 
 ---
 

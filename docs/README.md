@@ -1,7 +1,7 @@
 # BidOnDent Docs Operating Index
 
 **Last updated:** 2026-05-09 (Pass 195 doc consolidation sweep — 3 docs archived: `OPS_MOBILE_AUDIT_2026-05-04.md` (Status: COMPLETE since 2026-05-04), `map_coherence_audit_sonnet_2026-05-06.md` and `visual_audit_sonnet_2026-05-06.md` (read-only audits whose findings became KIs + the Pass 192/194 inventories). Cross-refs repointed in same pass per LAW co-update rule. Map unification track at sub-pass 2 contract-locked (Pass 193); KI-168 sub-pass 1 shipped (Pass 194). Branch 170 ahead of origin/BidOnDent-Horizon-Beta.)
-**Status:** Active documentation operating index
+**Status:** ACTIVE — documentation operating index
 **Current phase:** Soft Launch Hardening (edge functions v50, `verify_jwt: false`, storage pointer pattern). KI-002 RESEND_API_KEY deploy is the only remaining code-side P0 launch blocker.
 **Current handoff:** see git log + [`PLAN_POST_PASS_28_2026-05-06.md`](PLAN_POST_PASS_28_2026-05-06.md) § 6 (4 owner-decision forks remaining; § 6 fork #1 closed by Pass 33 cream-migration unlock) + active relay prompt context (per relay discipline: do NOT create new session-report docs — the git log + commit messages are the durable record)
 

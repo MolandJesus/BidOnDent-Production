@@ -4,7 +4,7 @@
 
 **Last updated:** 2026-05-05 (sweep verification appended; see §6).
 
-**Status:** **COMPLETE on `BidOnDent-Horizon-Beta` (working branch).** All 3 vulnerabilities resolved at the lockfile level — `npm audit` returns 0 vulnerabilities. **NOT YET MERGED TO `main`** (default branch). GitHub Dependabot alerts #18 (postcss medium), #19 (`@clerk/shared` high), #20 (`@clerk/clerk-react` high) remain OPEN on the default branch and will auto-close on the eventual Horizon-Beta → main merge. See §6 for 2026-05-05 sweep verification details.
+**Status:** HISTORICAL — **COMPLETE on `BidOnDent-Horizon-Beta` (working branch).** All 3 vulnerabilities resolved at the lockfile level — `npm audit` returns 0 vulnerabilities. **NOT YET MERGED TO `main`** (default branch). GitHub Dependabot alerts #18 (postcss medium), #19 (`@clerk/shared` high), #20 (`@clerk/clerk-react` high) remain OPEN on the default branch and will auto-close on the eventual Horizon-Beta → main merge. See §6 for 2026-05-05 sweep verification details.
 
 **Phase context:** [`PLAN_DOC_INDEX_BY_PHASE.md`](PLAN_DOC_INDEX_BY_PHASE.md) Phase 3.6 row.
 

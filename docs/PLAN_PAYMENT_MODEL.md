@@ -12,7 +12,7 @@
 > **Do not implement without a fired trigger.** Do not treat this doc as an assumed next step. The business decision below remains open — but it is not an active decision during the hardening phase.
 
 **Created:** Pass 828 (Phase 4 planning)
-**Status:** ⛔ DEFERRED — see Post-Launch Roadmap F1. Not an active decision during hardening.
+**Status:** DEFERRED — see Post-Launch Roadmap F1. Not an active decision during hardening.
 **Dependencies:** Soft launch stabilized + fired F1 trigger (real transactions + willingness-to-pay signal)
 
 ---

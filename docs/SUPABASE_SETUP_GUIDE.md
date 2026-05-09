@@ -20,7 +20,7 @@
 > Clerk Dashboard **must** have a JWT template named **`supabase`** configured and signed with the Supabase project's JWT secret (`SUPABASE_JWT_SECRET`). Without this template, all Clerk-JWT RLS policies (`requesting_clerk_user_id()`) will return `NULL` and deny every authenticated request. Runtime verification is deferred to deployment smoke test.
 
 Last updated: 2026-05-02 (prod `server` v50; storage pointer pattern + verify_jwt:false)
-Status: Active — comprehensive backend reference for current and future backend migration
+Status: CANONICAL — comprehensive backend reference for current and future backend migration
 
 BidOnDent uses **Clerk** for authentication/identity and **Supabase** for application data, file storage, and edge-function-backed API services. This document is the single source of truth for the entire backend architecture. If the project migrates to a different backend, this document defines every contract that must be replicated.
 

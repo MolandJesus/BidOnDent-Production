@@ -2,7 +2,7 @@
 
 **Authority level:** OPS — reusable operating prompt for any Builder AI (Opus, Sonnet, peer-level) entering a Visual Audit + Fix session against this codebase.
 **Last updated:** 2026-05-05 (initial persist — distilled from 2026-05-05 multi-AI session, ChatGPT structural framework + BidOnDent-specific session context)
-**Status:** ACTIVE. Use as starting prompt for any future visual-audit-mode session. Update in-place when palette canon, KI ledger snapshots, or project invariants change.
+**Status:** ACTIVE — use as starting prompt for any future visual-audit-mode session. Update in-place when palette canon, KI ledger snapshots, or project invariants change.
 **Companion docs:** [`AGENTS.md`](../AGENTS.md) (entry brief), [`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md), [`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md), [`LAW_ANIMATION_AND_ATMOSPHERE.md`](LAW_ANIMATION_AND_ATMOSPHERE.md), [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md), [`REF_KNOWN_ISSUES.md`](REF_KNOWN_ISSUES.md), [`REF_VISUAL_SYSTEM.md`](REF_VISUAL_SYSTEM.md), [`REF_AI_BROWSER_NAVIGATION.md`](REF_AI_BROWSER_NAVIGATION.md), [`REF_AI_COLLABORATION_PROTOCOL.md`](REF_AI_COLLABORATION_PROTOCOL.md), [`OPS_AI_AGENT_PROMPT_DESIGN_KERNEL.md`](OPS_AI_AGENT_PROMPT_DESIGN_KERNEL.md), [`PROMPT_SONNET_MASTER_VISUAL_AUDIT_v3-1.md`](PROMPT_SONNET_MASTER_VISUAL_AUDIT_v3-1.md) (sister: Sonnet-targeted visual sweep prompt with executor/auditor/finalizer pipeline).
 
 ---
