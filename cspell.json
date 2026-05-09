@@ -424,6 +424,8 @@
     "pkey",
     "functiondef",
     "unpushed",
+    "lessmotion",
+    "Unparseable",
     "cowork",
     "Cowork",
     "COWORK",

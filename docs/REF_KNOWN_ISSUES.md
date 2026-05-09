@@ -925,7 +925,7 @@
 - **Impact:** Mild polish gap. Either both photos should show caption affordance or neither. Users may not understand the labeling.
 - **Fix direction:** Audit the photo-rendering component; pick one model (always show caption affordance OR never). Surgical 1-file fix.
 - **Severity:** **P3-FUNCTIONAL.** Polish.
-- **Status:** **OPEN — P3-FUNCTIONAL.**
+- **Status:** **NEEDS-REPRODUCTION-IN-REAL-CHROME (downgraded 2026-05-07 — see KI-155/156/157 status-correction block below).** Source ([`StepPhotos.tsx:120-124`](../src/app/components/codelayer/report/StepPhotos.tsx#L120)) renders `{isCloud ? "Cloud photo" : "Local photo"}` for every photo via `.map()` — no code path produces an unlabeled photo. Audit AI likely missed Photo 1's "Local photo" caption visually. Awaiting real-Chrome reproduction before any code action.
 
 ### KI-157: Wizard step transitions take 3-5 seconds for opacity fade — perceived sluggishness (P3-UX)
 
@@ -934,7 +934,7 @@
 - **Impact:** Each forward navigation through the wizard feels slow. Compounds with KI-128 photo-required gating (no Skip) — users feel stuck.
 - **Fix direction:** Locate the transition CSS or framer-motion easing. Reduce duration from 3-5s to 200-400ms (matches the entrance-animation loop pattern Pass 151-169 uses: `duration-200`). Verify reduce-motion contract still holds.
 - **Severity:** **P3-UX.** Polish; user-perception bug.
-- **Status:** **OPEN — P3-UX.**
+- **Status:** **NEEDS-REPRODUCTION-IN-REAL-CHROME (downgraded 2026-05-07 — see KI-155/156/157 status-correction block below).** Source ([`ReportScreen.tsx:288-291`](../src/app/components/codelayer/ReportScreen.tsx#L288)) declares `transition={{ duration: reduceMotion ? 0 : 0.22 }}` — 220ms (not 3-5s) with proper reduce-motion gate. Matches the Pass 151-169 entrance-animation standard. "Ghosted UI" was almost certainly screenshot-tool render lag. Awaiting real-Chrome reproduction before any code action.
 
 ### KI-126: REFINED 2026-05-07 — likely already-resolved
 
