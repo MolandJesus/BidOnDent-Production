@@ -87,3 +87,12 @@ if (originalResizeInternal) {
   };
 }
 /* eslint-enable @typescript-eslint/no-explicit-any */
+
+// Pass 231j (KI-190 sentinel — governance instrumentation, not runtime
+// behavior). Sets a global marker so the test harness can verify the
+// patch was imported BEFORE any maplibre-gl module mounted. Behaviorally
+// inert: nothing in production reads this flag — only the
+// `assertResizePatchSideEffectObserved()` test helper consumes it. See
+// LAW_MAP_RENDERER_CONTRACT.md §3.1, REF_KNOWN_ISSUES.md KI-190, and
+// REF_MAP_TEST_HARNESS_STRATEGY_2026-05-09.md §3.5.
+(globalThis as Record<string, unknown>).__BIDONDENT_MAPLIBRE_RESIZE_PATCHED__ = true;
