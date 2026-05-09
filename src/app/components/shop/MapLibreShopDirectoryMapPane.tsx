@@ -466,13 +466,20 @@ export default function MapLibreShopDirectoryMapPane({
         onSwitchToListMode={onSwitchToListMode}
       />
 
-      {!isGuidanceActive && !suppressTilePicker && (
-        <MapTilePicker
-          compact={isCompactOverlay}
-          isDark={isDark}
-          tileMode={tileMode}
-          setTileMode={setTileMode}
-        />
+      {/* Pass 196 (KI-168 sub-pass 3): gate tile picker on `mapLoaded && !mapLoadFailed`
+          so it doesn't render at full opacity while the loading skeleton blurs the
+          rest of the chrome — same pattern as Pass 194 (sub-pass 1) on the bottom
+          overlay. Wrapped in `map-ui-enter` (420ms cubic-bezier; reduced-motion
+          guard at theme.css:700-707) for the soft cross-fade once tiles are ready. */}
+      {!isGuidanceActive && !suppressTilePicker && mapLoaded && !mapLoadFailed && (
+        <div className="map-ui-enter">
+          <MapTilePicker
+            compact={isCompactOverlay}
+            isDark={isDark}
+            tileMode={tileMode}
+            setTileMode={setTileMode}
+          />
+        </div>
       )}
 
       <MapEmptyState isDark={isDark} shopCount={shops.length} />
