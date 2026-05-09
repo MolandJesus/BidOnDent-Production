@@ -268,9 +268,9 @@ Owner reads the report; subsequent passes target whatever the production scores 
 
 `navigationSavedPlaces.test.ts` (13 cases) + `shopAvailability.test.ts` (13 cases). Circuit breaker + fallback + mutation coverage + realtime subscribe smoke. Vitest + vi.mock pattern with `vi.resetModules()` per test to reset module-level `cachedFailure` state. Suite 597 → 623 PASS, no regressions.
 
-### Pass 76 — Tests for engine pure functions
+### Pass 76 — Tests for engine pure functions ✅ DONE 2026-05-09 (autopilot Pass 205)
 
-`detectDeviation.test.ts` + `shouldTriggerReroute.test.ts` + route progression helpers. Pure-function tests. Add regression test for "user at origin should NOT report deviation" (KI-116 regression test).
+`detectDeviation.test.ts` (20 cases) + `shouldTriggerReroute.test.ts` (12 cases). Pure-function tests covering all four detector branches, GPS jitter guard, severity bands, and the full reroute decision matrix (null/wrong-type/severity/lifecycle/cooldown). KI-116 regression case explicitly asserts that a user sitting on the origin polyline vertex must not be reported as off_route. Suite 623 → 655 PASS.
 
 ### Pass 77 — Playwright Report flow test
 
