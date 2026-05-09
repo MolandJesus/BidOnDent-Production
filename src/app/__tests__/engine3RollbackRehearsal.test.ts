@@ -110,7 +110,7 @@ const RENDERER_SOURCE = readFileSync(RENDERER_PATH, "utf8");
 // ---------------------------------------------------------------
 
 describe("Engine 3 — Pass 247 §1 sub-pass C rollback footprint", () => {
-  it('default value is declared in the renderer signature (comment mentions allowed)', () => {
+  it("default value is declared in the renderer signature (comment mentions allowed)", () => {
     // The default lives in the destructured params:
     //   `autoFit = "always"`. The renderer's JSDoc may also
     //   mention the literal in prose explaining the default.
@@ -141,7 +141,7 @@ describe("Engine 3 — Pass 247 §1 sub-pass C rollback footprint", () => {
     expect(RENDERER_SOURCE).toMatch(unionPattern);
   });
 
-  it('callerBoundsExplicit default is in the renderer signature (comment mentions allowed)', () => {
+  it("callerBoundsExplicit default is in the renderer signature (comment mentions allowed)", () => {
     // Symmetric lock for the companion prop's default. The
     // doctrinal target is `callerBoundsExplicit = false` in the
     // signature; the renderer's JSDoc may also mention the

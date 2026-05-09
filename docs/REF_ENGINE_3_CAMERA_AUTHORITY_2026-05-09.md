@@ -499,7 +499,7 @@ target; this sweep did not lift any of them.
 
 - Did NOT flip the default. `MapLibreDashboardMapPreview` still
   ships with `autoFit = "always"` and `callerBoundsExplicit =
-  false`. Zero behavior change for any caller.
+false`. Zero behavior change for any caller.
 - Did NOT touch ShopMapWidget (owner-dirty).
 - Did NOT change viewport semantics, fit heuristics, motion
   classes, or the shell hierarchy.
@@ -507,13 +507,13 @@ target; this sweep did not lift any of them.
 
 ### What this sweep DID do
 
-| Pass | Tier | Scope | Artifact |
-| --- | --- | --- | --- |
-| 244 | Doc | Convergence-readiness matrix | `REF_ENGINE3_CONVERGENCE_READINESS_MATRIX_2026-05-09.md` (Audit AI, dd724d4b) |
-| 245 | Doc + Test | Sub-pass C migration simulation + executable simulation tests | `459ff35e` (doc) + `a04c8c69` (test, 9 tests) |
-| 246 | Doc + Test | Convergence-gate certification + reduced-motion × autoFit interaction lock | `1f2c2a79` (doc) + `9ba17574` (test, 16 tests) |
-| 247 | Test | Rollback rehearsal + invariant catch-surface stress + PONC witness | `5cd5b642` (16 tests) |
-| 248 | Doc | This closeout addendum + AI_LOCK standdown | (this commit) |
+| Pass | Tier       | Scope                                                                      | Artifact                                                                      |
+| ---- | ---------- | -------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| 244  | Doc        | Convergence-readiness matrix                                               | `REF_ENGINE3_CONVERGENCE_READINESS_MATRIX_2026-05-09.md` (Audit AI, dd724d4b) |
+| 245  | Doc + Test | Sub-pass C migration simulation + executable simulation tests              | `459ff35e` (doc) + `a04c8c69` (test, 9 tests)                                 |
+| 246  | Doc + Test | Convergence-gate certification + reduced-motion × autoFit interaction lock | `1f2c2a79` (doc) + `9ba17574` (test, 16 tests)                                |
+| 247  | Test       | Rollback rehearsal + invariant catch-surface stress + PONC witness         | `5cd5b642` (16 tests)                                                         |
+| 248  | Doc        | This closeout addendum + AI_LOCK standdown                                 | (this commit)                                                                 |
 
 **Net test additions:** +41 tests across 3 new test files. Full
 suite at end of sweep: 893/893 across 86 files.
@@ -582,4 +582,3 @@ authorized pass is owner-driven and opens Phase 3C (sub-pass C
 flip) ONLY after the four blockers above are explicitly lifted
 by the owner. Any AI continuing without that explicit lift is
 operating outside scope.
-
