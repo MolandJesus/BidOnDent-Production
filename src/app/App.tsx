@@ -58,6 +58,7 @@ import InsurerOnboarding from "./components/insurer/InsurerOnboarding";
 import DevDemoCustomerApp from "./components/dev/DevDemoCustomerApp";
 import DevDemoShopApp from "./components/dev/DevDemoShopApp";
 import EmbeddedBrowserBanner from "./components/dev/EmbeddedBrowserBanner";
+import { MapSessionProvider } from "./components/maps/MapSessionProvider";
 import { readDevDemoMode } from "./utils/devDemoMode";
 
 // Standalone pages (lazy-loaded — only fetched when hash route is visited)
@@ -485,7 +486,9 @@ export default function App() {
           the developer to open localhost in real Chrome OR use
           ?demo=customer to bypass Clerk auth. Production short-circuits. */}
       <EmbeddedBrowserBanner />
-      <AppWithToast />
+      <MapSessionProvider>
+        <AppWithToast />
+      </MapSessionProvider>
     </ClerkProvider>
   );
 }
