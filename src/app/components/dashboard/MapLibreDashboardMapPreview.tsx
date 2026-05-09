@@ -13,6 +13,30 @@ export type ReportPin = { id: string; lat: number; lng: number; label: string };
 export type ServiceAreaCircle = { lat: number; lng: number; radiusMiles: number };
 
 /**
+ * Pass 251 (KI-196 hardening) — module-scope empty-array singletons.
+ *
+ * The renderer previously used inline `[]` literals as defaults
+ * for `reportPins` and `serviceAreaCircles`. Inline defaults
+ * produce a fresh array identity on every render when a caller
+ * omits the prop, which churns downstream `useMemo` dependency
+ * comparisons and (for `reportPins`) propagates into the
+ * `useEffect` that calls `setViewState`, causing the latent
+ * render-loop hazard documented in KI-196 / KI-181 §12.3.
+ *
+ * Production callers always pass these props explicitly today
+ * (verified Pass 242 audit + Pass 250 caller-side scan), so
+ * these singletons are defensive only — zero behavior change
+ * for any existing call site, but eliminates the latent loop
+ * for any future caller that omits.
+ *
+ * Exported for test-side identity assertions.
+ */
+export const EMPTY_REPORT_PINS: ReportPin[] = Object.freeze([] as ReportPin[]) as ReportPin[];
+export const EMPTY_SERVICE_AREA_CIRCLES: ServiceAreaCircle[] = Object.freeze(
+  [] as ServiceAreaCircle[]
+) as ServiceAreaCircle[];
+
+/**
  * Pass 241 (Phase 3A sub-pass A) — explicit camera-authority surface.
  *
  * Engine 3's auto-fit (the `fittedView` memo derived from shops/pins)
@@ -81,8 +105,8 @@ type MapLibreDashboardMapPreviewProps = {
 
 export default function MapLibreDashboardMapPreview({
   shops,
-  reportPins = [],
-  serviceAreaCircles = [],
+  reportPins = EMPTY_REPORT_PINS,
+  serviceAreaCircles = EMPTY_SERVICE_AREA_CIRCLES,
   center,
   zoom,
   isLight,

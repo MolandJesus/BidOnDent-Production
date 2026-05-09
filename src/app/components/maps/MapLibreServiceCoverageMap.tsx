@@ -13,14 +13,39 @@ import { DISCOVERY_PLACES_LAYER_ID } from "./MapLibreDiscoveryPlaceLayer";
 import { getMapSurfaceTheme, resolveMapSurfaceTone } from "./mapSurfaceTheme";
 import { mapLibreStyles, mapLibreTileLabels } from "./mapLibreStyles";
 import { type MapLibreServiceCoverageMapProps } from "./mapLibreServiceCoverageMapHelpers";
+import type { CoverageCountyMarker, CoveragePartnerShop } from "./serviceCoverageMapTypes";
+
+/**
+ * Pass 251 (KI-196 hardening) — module-scope empty-array singletons.
+ *
+ * `counties` and `partnerShops` defaults previously used inline
+ * `[]` literals, which produce a fresh array identity on every
+ * render when the caller omits the prop. The downstream
+ * `useMapEngineGeoJSON` hook would re-fire its GeoJSON-building
+ * memos on identity churn even though nothing observable changed.
+ *
+ * Production callers always pass these props explicitly today
+ * (verified Pass 250 caller-side audit). These singletons are
+ * defensive only — zero behavior change for any existing call
+ * site, but eliminates the latent recomputation churn for any
+ * future caller that omits.
+ *
+ * Exported for test-side identity assertions.
+ */
+export const EMPTY_COUNTIES: CoverageCountyMarker[] = Object.freeze(
+  [] as CoverageCountyMarker[]
+) as CoverageCountyMarker[];
+export const EMPTY_PARTNER_SHOPS: CoveragePartnerShop[] = Object.freeze(
+  [] as CoveragePartnerShop[]
+) as CoveragePartnerShop[];
 
 export default function MapLibreServiceCoverageMap({
   center,
   zoom,
   revision,
   tileMode,
-  counties = [],
-  partnerShops = [],
+  counties = EMPTY_COUNTIES,
+  partnerShops = EMPTY_PARTNER_SHOPS,
   activeSearchTarget,
   radiusMeters,
   radiusMiles,
