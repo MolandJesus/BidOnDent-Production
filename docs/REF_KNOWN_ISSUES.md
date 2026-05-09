@@ -1133,8 +1133,10 @@
 
 > **Added 2026-05-08 — audit AI Pass 9 §3.** When entering fullscreen, transition shows: live shop card top-left + "Loading map…" spinner pill dead-center + faded ROUTE box + faded legend bar at ~15% opacity. Three layered states for ~2 seconds. Either bottom panels should not render until map hydrated, or spinner should be the only visible chrome during load.
 
+- **Inventoried Pass 192** ([evidence/pass-192-2026-05-09/KI_168_TRANSITION_STATES_INVENTORY.md](evidence/pass-192-2026-05-09/KI_168_TRANSITION_STATES_INVENTORY.md)): root cause is five sibling overlays in `MapLibreShopDirectoryMapPane` mounting at the same depth as `<Map>` with only `<MapLoadingSkeleton>` consuming the `mapLoaded` flag. Recommended option (a): gate the overlays on `mapLoaded` with an entrance fade.
+- **Sub-pass 1 SHIPPED Pass 194:** in [`MapLibreShopDirectoryMapPane.tsx`](../src/app/components/shop/MapLibreShopDirectoryMapPane.tsx) the `<MapPaneBottomOverlay>` mount is now gated `!suppressBottomCard && mapLoaded && !mapLoadFailed` and wrapped in `<div className="map-ui-enter">` for a 420ms cubic-bezier cross-fade once tiles are ready. The `map-ui-enter` keyframe carries the `prefers-reduced-motion: reduce` guard at [`theme.css:700-707`](../src/styles/theme.css#L700-L707) and a mobile 320ms duration override at [`theme.css:729-733`](../src/styles/theme.css#L729-L733). Closes the ROUTE-box + legend-bar half of the audit (the two bottom-anchored overlays). Top-left "shop card" is the chrome host's `MapSurfaceHeaderBadges` — separate mount point, separate sub-pass.
 - **Severity:** **P2-LOADING.**
-- **Status:** **OPEN.**
+- **Status:** **PARTIALLY RESOLVED (Pass 194 sub-pass 1 of 2-3).** Remaining: top-chrome gating (or confirmation that header badges are intentionally render-eager) + visual baseline re-capture. Hold open until owner re-tests and confirms.
 
 ### KI-169: Dashboard mini-map ROUTE box — alternative cards mix meters + miles + implausible 21-hour route value (P2-CONTENT — RESOLVED 2026-05-09)
 

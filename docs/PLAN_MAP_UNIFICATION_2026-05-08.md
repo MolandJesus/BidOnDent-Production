@@ -157,13 +157,16 @@ export type MapProgramShellBehavior = {
   onRetryPartnerShops?: () => void;
 };
 
-export type MapProgramShellProps =
-  & MapProgramShellEngineProps
-  & MapProgramShellSlots
-  & MapProgramShellBehavior
-  & {
+export type MapProgramShellProps = MapProgramShellEngineProps &
+  MapProgramShellSlots &
+  MapProgramShellBehavior & {
     /** Host identifier — drives default slot visibility + LAW palette branch. */
-    host: "dashboard-fullscreen" | "landing-dialog" | "operating-regions-inline" | "shop-directory-immersive" | "dashboard-mini";
+    host:
+      | "dashboard-fullscreen"
+      | "landing-dialog"
+      | "operating-regions-inline"
+      | "shop-directory-immersive"
+      | "dashboard-mini";
     /** Persona overlay state — promoted to shell only if all four hosts agree to it; otherwise stays host-level. */
     navigation?: CoverageNavigationExperience;
     className?: string;
@@ -186,14 +189,14 @@ export type MapProgramShellProps =
 > as a degenerate case of `landing-dialog` (same shell, no `leftPanel`,
 > no `statusPill`, no `legend`).
 
-| Slot              | `dashboard-fullscreen`                                                                                  | `landing-dialog`                                                                                                                | `shop-directory-immersive`                                                                                              | `dashboard-mini`                                                                  |
-| ----------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| `leftPanel`       | `<SmartShopMapLeftRail>` — selected-shop card, ROUTE box (post-§4 migration), persona switcher.        | `<CoverageCommandCenterSidebar>` wrapping `<CoverageBrowseSidebarContent>` (Search / Explore / Saved / Shops tabs).             | `<ImmersiveMapResultsDrawer leftMode>` — currently rendered as bottom drawer; migrates to left rail on desktop.        | none                                                                              |
-| `rightPanel`      | `<MapNavigationHud>` (live nav) or none in browse mode.                                                | `<CoverageBrowseMapOverlays>` (top instruction, ETA, start-nav).                                                                 | `<ShopDirectoryMapInfoPanel>` (selected-shop detail).                                                                   | none                                                                              |
-| `statusPill`      | demo-fallback warn banner (already shipped on dashboard, source for the KI-172 port).                   | demo-fallback warn banner (Pass 10 KI-172 port).                                                                                | none currently — directory has different demo-data semantics; revisit during §4 step 4.                                | route-summary mini-pill (the KI-169 fix surface).                                 |
-| `legend`          | dual semantic + status legend (KI-166 — collapsed-by-default after fix).                                | none.                                                                                                                            | none.                                                                                                                    | none.                                                                             |
-| `hoverInspector`  | future tooltip mode (KI-166 alternative).                                                                | future tooltip mode.                                                                                                             | none — directory uses persistent info panel instead.                                                                    | none.                                                                             |
-| `bottomSheet`     | none on desktop; mobile uses generic shell sheet.                                                       | `<MobileMapBottomSheet>` wrapping the same content as `leftPanel`.                                                              | `<ImmersiveMapResultsDrawer>` with snap behavior.                                                                       | none.                                                                             |
+| Slot             | `dashboard-fullscreen`                                                                          | `landing-dialog`                                                                                                    | `shop-directory-immersive`                                                                                      | `dashboard-mini`                                  |
+| ---------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| `leftPanel`      | `<SmartShopMapLeftRail>` — selected-shop card, ROUTE box (post-§4 migration), persona switcher. | `<CoverageCommandCenterSidebar>` wrapping `<CoverageBrowseSidebarContent>` (Search / Explore / Saved / Shops tabs). | `<ImmersiveMapResultsDrawer leftMode>` — currently rendered as bottom drawer; migrates to left rail on desktop. | none                                              |
+| `rightPanel`     | `<MapNavigationHud>` (live nav) or none in browse mode.                                         | `<CoverageBrowseMapOverlays>` (top instruction, ETA, start-nav).                                                    | `<ShopDirectoryMapInfoPanel>` (selected-shop detail).                                                           | none                                              |
+| `statusPill`     | demo-fallback warn banner (already shipped on dashboard, source for the KI-172 port).           | demo-fallback warn banner (Pass 10 KI-172 port).                                                                    | none currently — directory has different demo-data semantics; revisit during §4 step 4.                         | route-summary mini-pill (the KI-169 fix surface). |
+| `legend`         | dual semantic + status legend (KI-166 — collapsed-by-default after fix).                        | none.                                                                                                               | none.                                                                                                           | none.                                             |
+| `hoverInspector` | future tooltip mode (KI-166 alternative).                                                       | future tooltip mode.                                                                                                | none — directory uses persistent info panel instead.                                                            | none.                                             |
+| `bottomSheet`    | none on desktop; mobile uses generic shell sheet.                                               | `<MobileMapBottomSheet>` wrapping the same content as `leftPanel`.                                                  | `<ImmersiveMapResultsDrawer>` with snap behavior.                                                               | none.                                             |
 
 ---
 
@@ -223,7 +226,7 @@ export type MapProgramShellProps =
 - ⚠ **Feasibility blocker:** the bottom-right cluster on each engine is composed of MapLibre-native primitives wired differently per engine, not a custom JSX cluster:
   - **Engine A** (`CoverageBrowseExperience` via `MapSurfaceControls`): MapLibre `NavigationControl` (built-in) + Focus / Overview / Expand custom buttons inside `MapSurfaceControls`.
   - **Engine B** (`shop-directory-immersive`): MapLibre `NavigationControl` + `GeolocateControl` + `ScaleControl`, all built-in primitives, registered directly on the map instance.
-- A "presentational lift" cannot move MapLibre-native control instances — they're tied to the map lifecycle. The shared cluster would need to be either (a) a *factory* that registers the right MapLibre controls per host (orchestration concern, not L2 component), or (b) a true custom JSX cluster that *replaces* MapLibre-native controls and re-implements zoom/locate/scale (significant behavior re-write, not a lift).
+- A "presentational lift" cannot move MapLibre-native control instances — they're tied to the map lifecycle. The shared cluster would need to be either (a) a _factory_ that registers the right MapLibre controls per host (orchestration concern, not L2 component), or (b) a true custom JSX cluster that _replaces_ MapLibre-native controls and re-implements zoom/locate/scale (significant behavior re-write, not a lift).
 - Evidence: `docs/evidence/pass-11-2026-05-08/PASS_24_STEP_B_FEASIBILITY.md` (cowork-A) + `STEP_B_SCOPE_CLARIFICATION.md` (audit AI parallel convergence).
 - **Recommendation:** master-builder re-scope Step B before any pass starts. Either (a) accept "MapLibre-native controls per engine, no shared cluster", (b) re-scope as an L3 orchestration extraction (factory pattern), or (c) push it to Step C.1 `<MapEngineCanvas>` extraction where the map lifecycle is already owned.
 
@@ -295,20 +298,20 @@ export type MapProgramShellProps =
 > the slot explicitly. Source / destination indicate the dominant
 > direction during landing-dialog ↔ dashboard-fullscreen reconciliation.
 
-| #  | Feature                                              | Source surface           | Destination(s)                                      | Tier        | Notes                                                                                       |
-| -- | ---------------------------------------------------- | ------------------------ | --------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------- |
-| 1  | Tile-mode toggle (Map / Night / Satellite)           | dashboard-fullscreen     | landing-dialog, shop-directory-immersive            | shell-level | Lift in Step A.                                                                              |
-| 2  | Search-this-area button                              | dashboard-fullscreen     | landing-dialog, shop-directory-immersive            | shell-level | Behavior already factored in `searchWithinViewport` props.                                  |
-| 3  | Locate-me utility                                    | shop-directory-immersive | landing-dialog, dashboard-fullscreen                | shell-level | Lift in Step B.                                                                              |
-| 4  | Pin-pan upper-third offset (Pass 171)                | shop-directory-immersive | all                                                 | shell-level | Engine behavior — no new code, just centralized.                                            |
-| 5  | Immersive-fullscreen compass (Pass 172)              | shop-directory-immersive | dashboard-fullscreen, landing-dialog (when expanded) | shell-level | Hide on `dashboard-mini`.                                                                    |
-| 6  | Smooth flyTo on bounds-fit (Pass 166)                | dashboard-fullscreen     | all                                                 | shell-level | Already engine-level; verify preserved during Step C.1 extraction.                          |
-| 7  | Demo-fallback disclaimer banner                      | dashboard-fullscreen     | landing-dialog                                      | host-level  | **Shipped Pass 10 KI-172** as inline overlay; relocates to `statusPill` slot in Step D.      |
-| 8  | Persona switcher (driver / shop / insurer view)      | dashboard-fullscreen     | landing-dialog (Shops tab)                          | host-level  | Stays in `leftPanel` of each host — different sidebars.                                     |
-| 9  | Selected-shop detail card                            | dashboard-fullscreen     | shop-directory-immersive (already has its own)      | host-level  | Two separate panels with different data shapes — keep as host-level.                         |
-| 10 | ROUTE box                                            | dashboard-fullscreen     | landing-dialog (in active-nav mode)                 | host-level  | KI-164 layout fix lands during Step C.2 relocation, not now.                                |
-| 11 | Live navigation HUD (`MapNavigationHud`)             | dashboard-fullscreen     | landing-dialog (`CoverageActiveNavigationLayout`)   | shell-level | Already engine-adjacent — promote to shell `rightPanel` default for `presentationMode === "navigation"`. |
-| 12 | Turn list empty state (Pass 167)                     | shop-directory-immersive | dashboard-fullscreen                                | host-level  | Lives inside the navigation HUD; preserve when promoting #11.                                |
+| #   | Feature                                         | Source surface           | Destination(s)                                       | Tier        | Notes                                                                                                    |
+| --- | ----------------------------------------------- | ------------------------ | ---------------------------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------- |
+| 1   | Tile-mode toggle (Map / Night / Satellite)      | dashboard-fullscreen     | landing-dialog, shop-directory-immersive             | shell-level | Lift in Step A.                                                                                          |
+| 2   | Search-this-area button                         | dashboard-fullscreen     | landing-dialog, shop-directory-immersive             | shell-level | Behavior already factored in `searchWithinViewport` props.                                               |
+| 3   | Locate-me utility                               | shop-directory-immersive | landing-dialog, dashboard-fullscreen                 | shell-level | Lift in Step B.                                                                                          |
+| 4   | Pin-pan upper-third offset (Pass 171)           | shop-directory-immersive | all                                                  | shell-level | Engine behavior — no new code, just centralized.                                                         |
+| 5   | Immersive-fullscreen compass (Pass 172)         | shop-directory-immersive | dashboard-fullscreen, landing-dialog (when expanded) | shell-level | Hide on `dashboard-mini`.                                                                                |
+| 6   | Smooth flyTo on bounds-fit (Pass 166)           | dashboard-fullscreen     | all                                                  | shell-level | Already engine-level; verify preserved during Step C.1 extraction.                                       |
+| 7   | Demo-fallback disclaimer banner                 | dashboard-fullscreen     | landing-dialog                                       | host-level  | **Shipped Pass 10 KI-172** as inline overlay; relocates to `statusPill` slot in Step D.                  |
+| 8   | Persona switcher (driver / shop / insurer view) | dashboard-fullscreen     | landing-dialog (Shops tab)                           | host-level  | Stays in `leftPanel` of each host — different sidebars.                                                  |
+| 9   | Selected-shop detail card                       | dashboard-fullscreen     | shop-directory-immersive (already has its own)       | host-level  | Two separate panels with different data shapes — keep as host-level.                                     |
+| 10  | ROUTE box                                       | dashboard-fullscreen     | landing-dialog (in active-nav mode)                  | host-level  | KI-164 layout fix lands during Step C.2 relocation, not now.                                             |
+| 11  | Live navigation HUD (`MapNavigationHud`)        | dashboard-fullscreen     | landing-dialog (`CoverageActiveNavigationLayout`)    | shell-level | Already engine-adjacent — promote to shell `rightPanel` default for `presentationMode === "navigation"`. |
+| 12  | Turn list empty state (Pass 167)                | shop-directory-immersive | dashboard-fullscreen                                 | host-level  | Lives inside the navigation HUD; preserve when promoting #11.                                            |
 
 ---
 

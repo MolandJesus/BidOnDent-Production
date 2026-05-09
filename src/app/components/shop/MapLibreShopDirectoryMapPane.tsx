@@ -477,36 +477,43 @@ export default function MapLibreShopDirectoryMapPane({
 
       <MapEmptyState isDark={isDark} shopCount={shops.length} />
 
-      {/* ── Bottom gradient overlay: selected shop card + legend ── */}
-      {!suppressBottomCard && (
-        <MapPaneBottomOverlay
-          isDark={isDark}
-          selectedShop={selectedShop}
-          selectedRoute={selectedRoute}
-          hasArrived={hasArrived}
-          onOpenShopDirections={onOpenShopDirections}
-          onStartNavigation={onStartNavigation}
-          canStartNavigation={canUseNavigationActionForSelectedShop}
-          directionsActionLabel={selectedShopActionLabel}
-          hasLiveNavigation={selectedShopHasLiveNavigation}
-          isLoadingRoute={isLoadingRoute}
-          navigationSessionStatus={navigationSessionStatus}
-          remainingDistanceLabel={remainingDistanceLabel}
-          remainingEtaLabel={remainingEtaLabel}
-          routeError={routeError}
-          usingLiveRoutes={usingLiveRoutes}
-          compact={Boolean(children && selectedRoute)}
-          showSavedPlaces={showSavedPlaces}
-          onToggleSavedPlaces={() => setShowSavedPlaces((v) => !v)}
-          showReports={showReports}
-          onToggleReports={() => setShowReports((v) => !v)}
-          reportCount={reportCount}
-          showRoutes={showRoutes}
-          onToggleRoutes={() => setShowRoutes((v) => !v)}
-          reportStatusFilter={reportStatusFilter}
-          onReportStatusFilterChange={setReportStatusFilter}
-          density={overlayDensity}
-        />
+      {/* ── Bottom gradient overlay: selected shop card + legend ──
+          Pass 194 (KI-168 sub-pass 1): gated on `mapLoaded && !mapLoadFailed`
+          so the ROUTE box + legend don't bleed through during the pre-hydrated
+          window. Wrapped in `map-ui-enter` (420ms cubic-bezier with built-in
+          `prefers-reduced-motion: reduce` guard at theme.css:700-707) so the
+          chrome cross-fades in once tiles are ready instead of popping. */}
+      {!suppressBottomCard && mapLoaded && !mapLoadFailed && (
+        <div className="map-ui-enter">
+          <MapPaneBottomOverlay
+            isDark={isDark}
+            selectedShop={selectedShop}
+            selectedRoute={selectedRoute}
+            hasArrived={hasArrived}
+            onOpenShopDirections={onOpenShopDirections}
+            onStartNavigation={onStartNavigation}
+            canStartNavigation={canUseNavigationActionForSelectedShop}
+            directionsActionLabel={selectedShopActionLabel}
+            hasLiveNavigation={selectedShopHasLiveNavigation}
+            isLoadingRoute={isLoadingRoute}
+            navigationSessionStatus={navigationSessionStatus}
+            remainingDistanceLabel={remainingDistanceLabel}
+            remainingEtaLabel={remainingEtaLabel}
+            routeError={routeError}
+            usingLiveRoutes={usingLiveRoutes}
+            compact={Boolean(children && selectedRoute)}
+            showSavedPlaces={showSavedPlaces}
+            onToggleSavedPlaces={() => setShowSavedPlaces((v) => !v)}
+            showReports={showReports}
+            onToggleReports={() => setShowReports((v) => !v)}
+            reportCount={reportCount}
+            showRoutes={showRoutes}
+            onToggleRoutes={() => setShowRoutes((v) => !v)}
+            reportStatusFilter={reportStatusFilter}
+            onReportStatusFilterChange={setReportStatusFilter}
+            density={overlayDensity}
+          />
+        </div>
       )}
 
       {/* Search area pills — hidden during guidance */}
