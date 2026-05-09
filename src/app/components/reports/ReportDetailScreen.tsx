@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { ArrowLeft, CheckCircle2, Clock, Search, Wrench } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Clock, Maximize2, Search, Wrench } from "lucide-react";
 import ImageWithFallback from "../codelayer/ImageWithFallback";
 import ReportDetailInterestedShops from "./ReportDetailInterestedShops";
 import RepairLifecycleTimeline from "../workflow/RepairLifecycleTimeline";
@@ -331,9 +331,28 @@ export default function ReportDetailScreen({
           </div>
         </div>
 
-        {/* Report Location Map */}
+        {/*
+         * Report Location Map — Tier B preview surface (Pass 232).
+         *
+         * Convergence metadata (per Block D execution doctrine):
+         *  1. Runtime paths touched     : P3 (preview-surface exploration); escalation P4 → shop directory filtered by report area.
+         *  2. Runtime classes touched   : Preview only.
+         *  3. Tier semantics touched    : Tier B preview (panel-embedded).
+         *  4. Motion classes touched    : none (Engine 3 motion authority unchanged; KI-181 deferred to Phase 2).
+         *  5. Shell hierarchy impact    : Panel-first archetype preserved (231c §6); no hybrid.
+         *  6. Authority semantics       : unchanged — preview owns no camera, no persistence, no operational state.
+         *  7. Reduced-motion inheritance: unchanged (Engine 3 contract conformance is Phase 2 work).
+         *  8. Hidden-authority risk     : none added — onMapClick wires existing engine callback to the existing onFindShops escalation; no imperative camera, no new persistence key.
+         *  9. Continuity guarantees     : unaffected — preview remains stateless across remount/reload.
+         * 10. Rollback semantics        : revert this hunk; behavior reverts to button-only escalation.
+         */}
         {reportCoords && (
-          <div className="bd-dashboard-panel bd-dashboard-panel--accent-cyan overflow-hidden">
+          <div
+            className="bd-dashboard-panel bd-dashboard-panel--accent-cyan overflow-hidden"
+            data-runtime-class="preview"
+            data-tier-semantic="B"
+            data-expand-target="shop-directory-filtered-by-report"
+          >
             <div className="p-3 sm:p-4">
               <h2 className="font-bold text-lg mb-2">Report Location</h2>
               <p className={`text-sm mb-3 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
@@ -344,14 +363,29 @@ export default function ReportDetailScreen({
                   ` · ${shopPinsFromBids.length} shop${shopPinsFromBids.length > 1 ? "s" : ""} bidding`}
               </p>
             </div>
-            <div className="h-[180px] md:h-[200px]">
+            <div className="relative h-[180px] md:h-[200px]">
               <DashboardMapPreview
                 shops={shopPinsFromBids}
                 reportPins={reportPins}
                 center={[reportCoords.lat, reportCoords.lng]}
                 zoom={11}
                 isLight={isLight}
+                onMapClick={onFindShops}
               />
+              {onFindShops && (
+                <div
+                  className={`pointer-events-none absolute right-2 top-2 flex items-center gap-1 rounded-md px-2 py-1 text-[11px] font-semibold uppercase tracking-wide ${
+                    isLight
+                      ? "bg-white/85 text-slate-700 shadow-sm ring-1 ring-slate-200/80"
+                      : "bg-slate-900/70 text-slate-100 shadow-sm ring-1 ring-white/10"
+                  }`}
+                  aria-hidden="true"
+                  data-affordance="tap-to-expand"
+                >
+                  <Maximize2 className="h-3 w-3" />
+                  <span>Tap to expand</span>
+                </div>
+              )}
             </div>
             {onFindShops && (
               <div className="p-3 sm:p-4 pt-0">
