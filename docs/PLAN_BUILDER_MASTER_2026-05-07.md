@@ -262,11 +262,11 @@ Owner reads the report; subsequent passes target whatever the production scores 
 
 ## Phase 5 — Test Scaffolding (after fixes land)
 
-### Pass 75 — Tests for Pass 58 + 59 services
+### Pass 75 — Tests for Pass 58 + 59 services ✅ DONE 2026-05-09 (autopilot Pass 204)
 
 (Was Pass 61 in earlier chain — moved here so tests cover fixed behavior.)
 
-`navigationSavedPlaces.test.ts` + `shopAvailability.test.ts`. Circuit breaker + fallback + mutation coverage. Vitest + vi.mock pattern.
+`navigationSavedPlaces.test.ts` (13 cases) + `shopAvailability.test.ts` (13 cases). Circuit breaker + fallback + mutation coverage + realtime subscribe smoke. Vitest + vi.mock pattern with `vi.resetModules()` per test to reset module-level `cachedFailure` state. Suite 597 → 623 PASS, no regressions.
 
 ### Pass 76 — Tests for engine pure functions
 
