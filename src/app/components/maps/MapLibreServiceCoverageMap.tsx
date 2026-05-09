@@ -10,6 +10,7 @@ import MapSurfaceControls from "./MapSurfaceControls";
 import MapSurfaceHeaderBadges from "./MapSurfaceHeaderBadges";
 import MapSurfaceStatusBar from "./MapSurfaceStatusBar";
 import { useMapPerformanceTracking } from "./useMapPerformanceTracking";
+import { useMapEngineGeoJSON } from "./useMapEngineGeoJSON";
 import MapLibreCoverageMapLayers from "./MapLibreCoverageMapLayers";
 import MapLibrePartnerShopLayer, { PARTNER_SHOPS_LAYER_ID } from "./MapLibrePartnerShopLayer";
 import MapLibreReportLayer, { REPORT_MARKERS_LAYER_ID } from "./MapLibreReportLayer";
@@ -23,17 +24,7 @@ import {
   MapLibreFollowLocationController,
   MapLibreArrivalCameraEffect,
 } from "./mapLibreControllers";
-import {
-  buildRouteGeoJSON,
-  buildCountyGeoJSON,
-  buildGpsPointGeoJSON,
-  buildGpsHeadingGeoJSON,
-  buildGpsAccuracyGeoJSON,
-  buildSearchTargetRadiusGeoJSON,
-  buildSearchTargetPointGeoJSON,
-  buildRadiusLabelGeoJSON,
-  type MapLibreServiceCoverageMapProps,
-} from "./mapLibreServiceCoverageMapHelpers";
+import { type MapLibreServiceCoverageMapProps } from "./mapLibreServiceCoverageMapHelpers";
 
 export default function MapLibreServiceCoverageMap({
   center,
@@ -113,42 +104,30 @@ export default function MapLibreServiceCoverageMap({
       ? "Strategic overview"
       : null;
 
-  /* --- route GeoJSON --- */
-  const routeGeoJSON = useMemo(() => buildRouteGeoJSON(routeGeometry), [routeGeometry]);
-
-  /* --- county GeoJSON --- */
-  const countyGeoJSON = useMemo(() => buildCountyGeoJSON(counties), [counties]);
-
-  /* --- GPS GeoJSON --- */
-  const gpsPointGeoJSON = useMemo(() => buildGpsPointGeoJSON(currentPosition), [currentPosition]);
-
-  /* --- GPS heading direction cone --- */
-  const gpsHeadingGeoJSON = useMemo(
-    () => buildGpsHeadingGeoJSON(currentPosition, guidanceMode, currentHeadingDegrees),
-    [currentPosition, guidanceMode, currentHeadingDegrees]
-  );
-
-  const gpsAccuracyGeoJSON = useMemo(
-    () => buildGpsAccuracyGeoJSON(currentPosition, gpsAccuracyMeters),
-    [currentPosition, gpsAccuracyMeters]
-  );
-
-  /* --- search target GeoJSON --- */
-  const searchTargetRadiusGeoJSON = useMemo(
-    () => buildSearchTargetRadiusGeoJSON(activeSearchTarget, radiusMeters),
-    [activeSearchTarget, radiusMeters]
-  );
-
-  const searchTargetPointGeoJSON = useMemo(
-    () => buildSearchTargetPointGeoJSON(activeSearchTarget),
-    [activeSearchTarget]
-  );
-
-  /* --- radius edge label point --- */
-  const radiusLabelGeoJSON = useMemo(
-    () => buildRadiusLabelGeoJSON(activeSearchTarget, radiusMeters, radiusMiles),
-    [activeSearchTarget, radiusMeters, radiusMiles]
-  );
+  // Pass 185 — Step C.1 sub-pass 1: engine-side GeoJSON memoization
+  // moved into useMapEngineGeoJSON so the eventual <MapEngineCanvas>
+  // extraction has a clean engine-data-prep boundary. No behavior change;
+  // same builders, same memoization, same dependency arrays.
+  const {
+    routeGeoJSON,
+    countyGeoJSON,
+    gpsPointGeoJSON,
+    gpsHeadingGeoJSON,
+    gpsAccuracyGeoJSON,
+    searchTargetRadiusGeoJSON,
+    searchTargetPointGeoJSON,
+    radiusLabelGeoJSON,
+  } = useMapEngineGeoJSON({
+    routeGeometry,
+    counties,
+    currentPosition,
+    guidanceMode,
+    currentHeadingDegrees,
+    gpsAccuracyMeters,
+    activeSearchTarget,
+    radiusMeters,
+    radiusMiles,
+  });
 
   const interactiveLayerIds = useMemo(() => {
     const ids = [PARTNER_SHOPS_LAYER_ID];
