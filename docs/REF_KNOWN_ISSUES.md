@@ -1434,3 +1434,17 @@ last_updated: 2026-05-09
 - **Fix:** update §1.6 of [`PLAN_MAP_UNIFICATION_2026-05-08.md`](PLAN_MAP_UNIFICATION_2026-05-08.md) — DEFERRED while that file is owner-dirty. Will ship in a follow-up pass once the file stabilizes.
 - **Severity:** **P3-DOC-DRIFT.**
 - **Status:** OPEN.
+
+### KI-197: Engine 2 12s `mapLoadFailed` timeout fired prematurely on slower mount paths (P2-PREMATURE-FAILURE-UI — RESOLVED 2026-05-09)
+
+> **Filed 2026-05-09 — Pass 267, owner-reported.** Owner provided a screenshot showing the customer dashboard's `MapLibreShopDirectoryMapPane` rendering the "Map failed to load" overlay over a partially-loaded map (CARTO tiles visible, 15-shop cluster pin visible, popup visible). Safari had also issued a memory-pressure reload prior. Landing-page mount of the same engine worked smoothly.
+
+- The `useMapPaneState` hook ran a 12-second `setTimeout` that flipped `mapLoadFailed=true` if the maplibre `load` event hadn't fired by then. Under slower mount paths — customer dashboard via `ShopDirectoryHybridStage` mounting alongside sidebar + header + widget cohort, especially after Safari memory-pressure reload — tiles often rendered before the `load` event fired, producing the user-visible "failure overlay over working map" inconsistency.
+- The 12s ceiling was a 2026-05-08-era best-guess for slow-load fallback; it was the slow-load path, not the hard-failure path. The hard-failure path is `handleMapLoadError` (the maplibre `onError` callback). The two were conflated.
+- **Fix (Pass 267):**
+  - Bumped slow-load timeout 12s → 25s in [`useMapPaneState.ts`](../src/app/components/shop/useMapPaneState.ts) (covers the observed dashboard mount path).
+  - Added a self-heal path: `onIdle={handleMapLoad}` next to `onLoad={handleMapLoad}` on the `<Map>` component in [`MapLibreShopDirectoryMapPane.tsx`](../src/app/components/shop/MapLibreShopDirectoryMapPane.tsx). MapLibre's `idle` event fires when the style is fully loaded and the map has rendered an idle frame — even if `load` was missed/delayed for any reason, the first `idle` clears `mapLoadFailed` and sets `mapLoaded=true`. The setters are no-ops for subsequent idle fires (state already settled).
+  - Test additions in [`useMapPaneState.test.tsx`](../src/app/components/shop/useMapPaneState.test.tsx): pin the 25s ceiling, lock 12s as a regression-prevention threshold, and verify late-load self-heal clears a previously-set `mapLoadFailed`.
+- **Note:** this fix addresses the *symptom* (premature failure UI). The deeper question — "dashboard map mount is slower than landing because more components compete for browser CPU/memory at mount time" — is structural and is what the **PMS lane** addresses (eliminating per-route engine reinit reduces concurrent mount cost). PMS Phase 2+ remains gated; KI-197 fix is the safe interim.
+- **Severity:** **P2-PREMATURE-FAILURE-UI.**
+- **Status:** **RESOLVED 2026-05-09 (Pass 267).**

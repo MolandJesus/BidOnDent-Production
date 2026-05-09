@@ -143,30 +143,63 @@ describe("useMapPaneState — Pass 231h handleRetryMap (the hard-remount escape 
   });
 });
 
-describe("useMapPaneState — Pass 231h 12-second auto-failure timeout (LAW §3.3)", () => {
+describe("useMapPaneState — Pass 267 25-second auto-failure timeout (was 12s; LAW §3.3)", () => {
   beforeEach(() => {
     vi.useFakeTimers();
   });
 
-  it("flips mapLoadFailed true after 12 seconds if onLoad never fires", () => {
+  it("does NOT fire mapLoadFailed at the prior 12s threshold (Pass 267 regression lock)", () => {
+    // Before Pass 267, the timeout was 12_000 ms — too aggressive on
+    // slower mount paths (customer dashboard via ShopDirectoryHybridStage,
+    // post-Safari-memory-pressure-reload, etc.). The user-visible symptom
+    // was the "Map failed to load" overlay rendering OVER tiles + cluster
+    // pins that had successfully rendered. This test pins the 25s ceiling
+    // so a regression to 12s is caught.
+    render(<Harness config={makeConfig()} />);
+    act(() => {
+      vi.advanceTimersByTime(12_000);
+    });
+    expect(latestState!.mapLoadFailed).toBe(false);
+  });
+
+  it("flips mapLoadFailed true after 25 seconds if onLoad never fires", () => {
     render(<Harness config={makeConfig()} />);
     expect(latestState!.mapLoadFailed).toBe(false);
     act(() => {
-      vi.advanceTimersByTime(12_000);
+      vi.advanceTimersByTime(25_000);
     });
     expect(latestState!.mapLoadFailed).toBe(true);
   });
 
-  it("does NOT fire the failure if handleMapLoad runs before the 12s deadline", () => {
+  it("does NOT fire the failure if handleMapLoad runs before the 25s deadline", () => {
     render(<Harness config={makeConfig()} />);
     act(() => {
-      vi.advanceTimersByTime(8_000);
+      vi.advanceTimersByTime(20_000);
     });
     act(() => latestState!.handleMapLoad());
     act(() => {
-      vi.advanceTimersByTime(8_000); // past the 12s deadline.
+      vi.advanceTimersByTime(20_000); // past the 25s deadline.
     });
     // Still true (success); mapLoadFailed never fires.
+    expect(latestState!.mapLoaded).toBe(true);
+    expect(latestState!.mapLoadFailed).toBe(false);
+  });
+
+  it("late handleMapLoad (after timeout fires) self-heals — clears mapLoadFailed", () => {
+    // Pass 267 — additional self-heal path. If the timeout fired
+    // (mapLoadFailed=true) but the map's `idle` event eventually arrives
+    // and triggers handleMapLoad, the failure overlay must clear. This
+    // matches the production self-heal added via `onIdle={handleMapLoad}`
+    // in MapLibreShopDirectoryMapPane.
+    render(<Harness config={makeConfig()} />);
+    act(() => {
+      vi.advanceTimersByTime(25_000);
+    });
+    expect(latestState!.mapLoadFailed).toBe(true);
+    expect(latestState!.mapLoaded).toBe(false);
+
+    // Late load event (e.g. onIdle firing after slow style load) recovers.
+    act(() => latestState!.handleMapLoad());
     expect(latestState!.mapLoaded).toBe(true);
     expect(latestState!.mapLoadFailed).toBe(false);
   });

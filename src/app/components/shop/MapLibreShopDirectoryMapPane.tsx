@@ -315,6 +315,7 @@ export default function MapLibreShopDirectoryMapPane({
             onMouseMove={handleMapMouseMove}
             onMouseLeave={() => setCursor("")}
             onLoad={handleMapLoad}
+            onIdle={handleMapLoad}
             onError={handleMapLoadError}
             attributionControl={{ compact: true }}
           >
