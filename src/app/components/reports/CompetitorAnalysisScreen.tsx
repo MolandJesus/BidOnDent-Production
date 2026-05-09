@@ -301,13 +301,30 @@ export default function CompetitorAnalysisScreen({
         </div>
       </div>
 
-      {/* ── Competitor density map ── */}
+      {/*
+       * Competitor density map — Tier B preview surface (Pass 235).
+       *
+       * Convergence metadata (per Block D execution doctrine):
+       *  1. Runtime paths touched     : P3 (preview-surface exploration); P4 escalation via onOpenMap → shop directory in analysis mode (231b §5 carry-forward map).
+       *  2. Runtime classes touched   : Preview only.
+       *  3. Tier semantics touched    : Tier B preview (panel-embedded analysis surface).
+       *  4. Motion classes touched    : none. The framer-motion section entry is the existing surface motion (Class A acknowledgement, already reduceMotion-aware).
+       *  5. Shell hierarchy impact    : Panel-first archetype preserved (231c §6). Map block now satisfies 231c §4.2 tap-to-expand affordance via onMapClick={onOpenMap} when an escalation target exists.
+       *  6. Authority semantics       : unchanged. Pin tap remains an in-screen analysis state mutation (setFocusedCompetitorId), not an escalation. Engine 3 owns no camera.
+       *  7. Reduced-motion inheritance: unchanged.
+       *  8. Hidden-authority risk     : zero. onMapClick wires to the existing onOpenMap callback prop. No new persistence, no imperative camera, no operational state.
+       *  9. Continuity guarantees     : unaffected.
+       * 10. Rollback semantics        : revert this hunk; behavior reverts to anonymous panel + non-tap-to-expand map.
+       */}
       {marketListings.length > 0 && (
         <motion.section
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: reduceMotion ? 0 : 0.35, ease: "easeOut" }}
           className="bd-dashboard-panel mx-4 mt-4 overflow-hidden rounded-[28px]"
+          data-runtime-class="preview"
+          data-tier-semantic="B"
+          data-expand-target="shop-directory-analysis-mode"
         >
           <div className="flex items-center justify-between px-4 pt-3 pb-1">
             <h3
@@ -334,6 +351,7 @@ export default function CompetitorAnalysisScreen({
                   zoom={9}
                   isLight={isLight}
                   onShopClick={(shop) => setFocusedCompetitorId(shop.id ?? null)}
+                  onMapClick={onOpenMap}
                 />
               </div>
             ) : (
