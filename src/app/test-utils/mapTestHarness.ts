@@ -35,6 +35,7 @@
  * Authorized test-only source under Block D Pass 231e.
  */
 
+import { createElement } from "react";
 import type React from "react";
 
 // ---------------------------------------------------------------
@@ -72,16 +73,17 @@ type StubModuleShape = {
  *   vi.mock('react-map-gl/maplibre', () => createReactMapGlMaplibreStub());
  */
 export function createReactMapGlMaplibreStub(): StubModuleShape {
+  // Pass 231g — first real consumer of the stub uncovered that the prior
+  // raw-object literal returned by `h()` was not a valid React element under
+  // React 18, so any host that rendered `<Map>...</Map>` produced
+  // "Objects are not valid as a React child". Using `React.createElement`
+  // produces a real element while keeping the same call shape used in
+  // every named export below.
   const h = (
     type: string,
     props: Record<string, unknown>,
     children?: React.ReactNode,
-  ): React.ReactElement =>
-    ({
-      type,
-      props: { ...props, children },
-      key: null,
-    }) as unknown as React.ReactElement;
+  ): React.ReactElement => createElement(type, props, children);
   return {
     __esModule: true,
     default: ({ children, onLoad }: StubMapProps) => {
