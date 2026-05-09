@@ -35,3 +35,30 @@
 | 14 | **PASS** | None |
 
 **Evidence file complete.** ≤80 lines target met. Hand-back to audit AI for fold into next-pass dispatch.
+
+---
+
+## §6 items 1-12 quick pinpoint verification (T-C continuation, post-acceptance)
+
+Pinpoint checks of the Pass-10-authored §6 items (the 12 anti-regression rules that pre-date the master-builder Pass 180 13/14 additions). Each item below is verified by a single file:line probe, not an exhaustive sweep — broader audits deferred when noted.
+
+| # | Item | Probe | Result |
+|---|---|---|---|
+| 1 | Pass 166 smooth flyTo on bounds-fit | engine-behavior — no source comment hit on quick grep; verification deferred to dev-server timing recording before Step C.1 extraction | DEFERRED |
+| 2 | Pass 171 upper-third pin-pan offset | engine-behavior — `upperThird` / `Pass 171` comment grep returned no top-level hit; lives in `mapLibreControllers.tsx` or layer files; verification deferred | DEFERRED |
+| 3 | Pass 172 immersive-fullscreen compass | `MapLibreServiceCoverageMap.tsx:308` → `<NavigationControl position="bottom-right" showCompass={immersiveFullscreen} />` with Pass 172 comment block at L300-307 | **PASS** |
+| 4 | Pass 167 turn list empty state | no quick grep match on common phrases; lives inside `MapNavigationHud` or sibling navigation panel; verification deferred | DEFERRED |
+| 5 | `motion-reduce:animate-none` guard density | `motion-reduce` appears in 63 files under `src/app/components/`; spot-checks in `MapNavigationHud.tsx`, `MapSurfaceStatusBar.tsx`, `MapBidSheet.tsx`, `NavigationDeviationPrompt.tsx` confirm the guard is present. Density check; not exhaustive per-animation-class | **PASS-DENSITY** |
+| 6 | `bd-*` utility classes on form fields, cards, buttons, notice strips | `bd-glass-card--map` / `bd-notice--warn` / `bd-dashboard-panel*` / `bd-dashboard-section*` appear across map components; per-component count check inconclusive without component-by-component card-surface inventory; deferred to full Pass D plan-doc pre-flight | DEFERRED |
+| 7 | Light-Mode Surface Rule + premium gold palette (forbidden values) | `grep -cE "rgba\(220,\s*165,\s*90\|rgba\(254,\s*248,\s*220\|rgba\(160,\s*95,\s*25\|rgba\(220,\s*140,\s*50" src/styles/theme.css` returns **0** | **PASS** |
+| 8 | 8-criteria depth bar for dark surfaces | structural design pattern; verification requires reading MOLANDJESUS §"Dark Shell Design System" alongside theme.css depth-bar implementations; deferred to Pass D pre-flight | DEFERRED |
+| 9 | Pass 49 / KI-053 lazy-mount on `OperatingRegionsSection` | `OperatingRegionsSection.tsx:44-57` — `IntersectionObserver` + `rootMargin: "200px"` + `typeof IntersectionObserver === "undefined"` SSR guard | **PASS** |
+| 10 | Pass 884 — navigation-session cloud-drift fallback | source-grep for "navigation_sessions" / "fetchNavigationSession" in `src/app/services/navigation/`; verification deferred to full Pass D pre-flight (likely in `useNavigationSession.ts`) | DEFERRED |
+| 11 | `verify_jwt: false` pin on `[functions.server]` | `supabase/config.toml:406` → `verify_jwt = false` | **PASS** |
+| 12 | Pointer-on-write / sign-on-read for media URLs | `hydrateSignedStorageUrl` / `hydrateReport` used in 5 handlers (profiles, workflow, reports, vehicles, network_profiles) | **PASS** |
+
+**Net for §6 items 1-12:** 5 PASS pinpoints (3, 7, 9, 11, 12) + 1 PASS-density (5) + 6 DEFERRED. None FAILED on the quick checks. The 6 deferred items are not flagged as risk — they require fuller verification scope than a single grep can provide and live as scheduled work for Pass D pre-flight or as part of master builder's pre-Step-A authorization.
+
+**Companion finding (KI-118 sanity check):** `src/app/hooks/useEscapeKey.ts` exists; `NavigationVoiceControlsSheet.tsx:7` imports it; called at L48 with `(open, onClose)` signature. KI-118 RESOLVED claim (Pass 63) confirmed in source.
+
+**Pass 175 partial-application sweep (T-C extension):** repo-wide regex sweep for `${...DurationMinutes}m`, `Math.round(.../ 60)}m`, `}m</span>`, `}m</p>`, `}m</div>` returned only ONE remaining hit: `ShopDirectoryRoutePreviewCard.tsx:176`. Bug is fully contained to that single file:line. Other Pass 175 sites confirmed clean.

@@ -7,11 +7,15 @@
 ## Active session
 
 **Active branch:** none
-**Active AI:** none (cowork-A standdown — Pass 11 KI follow-up complete)
+**Active AI:** none (cowork-A standdown — Pass 27 doc-only correction complete; KI-178 RESOLVED per audit AI Pass 25 −224 LoC ship; KI-177 numbers refined to 47-of-53 dormant ~4,178 LoC; methodology lesson logged for dormant-export sweeps)
 **Active layer:** none
 **Locked files:** (none)
-**Session start:** 2026-05-08 (cowork-A — co-worker AI Pass 11 follow-up to audit AI Pass 10 dispatch)
-**Last commit:** docs(known-issues): KI-164 PINPOINTED + KI-165 REFINED-HOLD (audit AI Pass 11) — co-worker AI session
+**Session start:** 2026-05-08 (cowork-A — Pass 26 owner-authorized continuation under "go full auto" directive; doc-only edits, no source files)
+**Last commit:** (uncommitted on disk pending host-side `rm -f .git/*.lock`) — Pass 14 Step 1.6 dashboard error-UX parity (co-worker AI) + Pass 12/13/14 audit AI edits + Pass 11 evidence batch + Pass 23 Step A MapProgramTopBar canonicalization + Pass 26 doc-only enrollment
+
+## Cooperative-edit lesson logged (2026-05-08 race outcome)
+
+Pass 14 Step 1.6 was authorized concurrently by both sessions. Co-worker shipped 3-widget edits while audit AI was reading the same files; no merge conflict because edits were identical scope and pattern, but the protocol gap is real. Future passes: when starting work after a previous standdown, re-claim AI_LOCK Active AI before any source-file edit, even if the work is a continuation of an earlier-authorized track. The standdown line records "Pass X complete," not "all subsequent edits authorized." Each work batch needs its own claim/standdown cycle.
 
 ## Skills applied this session
 

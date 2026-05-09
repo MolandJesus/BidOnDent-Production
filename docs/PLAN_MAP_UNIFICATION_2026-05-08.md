@@ -202,18 +202,30 @@ export type MapProgramShellProps =
 > Each step ships independently and the program continues to work. No step
 > requires a coordinated multi-file rewrite.
 
-### Step A — Extract shared top-bar (1 pass)
+### Step A — Extract shared top-bar (1 pass) — **PARTIAL SHIP 2026-05-08 (Pass 23 cowork-A)**
 
-- New file: `src/app/components/maps/shell/MapProgramTopBar.tsx`.
-- Lift the union of: logo / back / search bar / search-this-area / tile-mode toggle / split-view / map-toggle.
-- Replace the existing top-bar fragments in `CoverageBrowseExperience`, dashboard Smart Shop Map host, and `ImmersiveMapTopBar` with the lifted component.
-- Risk surface: minimal. This is presentation-only and accepts the same callbacks the existing fragments do.
+- ✅ New file shipped: `src/app/components/maps/shell/MapProgramTopBar.tsx` (canonical L2 shell home).
+- ✅ `ImmersiveMapTopBar.tsx` refactored to thin re-export shim — Engine B (shop-directory-immersive) consumers continue working unchanged.
+- ⚠ **Engine A consumer migration deferred.** `CoverageBrowseExperience` uses `MapSurfaceControls` (inline-embedded UX shape), not the immersive-fullscreen UX shape the shipped `MapProgramTopBar` was lifted from. The two surfaces serve different host needs and lifting them under one component would require either a shape-union prop API or an internal variant switch — both of which exceed the "pure presentational lift, same handlers in, same handlers out" scope master-builder authorized in §7.5.
+- ⚠ **Dashboard Smart Shop Map host** — KI-164 investigation never pinpointed the host, so the third migration target stayed unresolved. Step A ship covers Engine B only.
+- Evidence: `docs/evidence/pass-11-2026-05-08/PASS_23_STEP_A_SHIP.md` (cowork-A) + `STEP_B_SCOPE_CLARIFICATION.md` (audit AI parallel convergence on the same UX-divergence finding).
+- Typecheck: PASS exit 0 across the cluster.
+- Follow-on (gated on master-builder review): decide whether (a) Engine A stays on `MapSurfaceControls` indefinitely (two co-existing top-bar components, one per UX shape), or (b) `MapProgramTopBar` grows a `variant` prop to absorb the inline-embedded shape too.
 
-### Step B — Extract shared bottom-right utility cluster (1 pass)
+### Step B — Extract shared bottom-right utility cluster (1 pass) — **NOT FEASIBLE AS SCOPED (Pass 24 cowork-A)**
 
-- New file: `src/app/components/maps/shell/MapProgramUtilityCluster.tsx`.
-- Lift locate-me, recenter, compass, zoom into one cluster.
-- Preserve Pass 166 smooth flyTo, Pass 171 upper-third pin-pan offset, Pass 172 immersive-fullscreen compass.
+- ⚠ **Feasibility blocker:** the bottom-right cluster on each engine is composed of MapLibre-native primitives wired differently per engine, not a custom JSX cluster:
+  - **Engine A** (`CoverageBrowseExperience` via `MapSurfaceControls`): MapLibre `NavigationControl` (built-in) + Focus / Overview / Expand custom buttons inside `MapSurfaceControls`.
+  - **Engine B** (`shop-directory-immersive`): MapLibre `NavigationControl` + `GeolocateControl` + `ScaleControl`, all built-in primitives, registered directly on the map instance.
+- A "presentational lift" cannot move MapLibre-native control instances — they're tied to the map lifecycle. The shared cluster would need to be either (a) a *factory* that registers the right MapLibre controls per host (orchestration concern, not L2 component), or (b) a true custom JSX cluster that *replaces* MapLibre-native controls and re-implements zoom/locate/scale (significant behavior re-write, not a lift).
+- Evidence: `docs/evidence/pass-11-2026-05-08/PASS_24_STEP_B_FEASIBILITY.md` (cowork-A) + `STEP_B_SCOPE_CLARIFICATION.md` (audit AI parallel convergence).
+- **Recommendation:** master-builder re-scope Step B before any pass starts. Either (a) accept "MapLibre-native controls per engine, no shared cluster", (b) re-scope as an L3 orchestration extraction (factory pattern), or (c) push it to Step C.1 `<MapEngineCanvas>` extraction where the map lifecycle is already owned.
+
+### Step B (original — superseded) — Extract shared bottom-right utility cluster (1 pass)
+
+- ~~New file: `src/app/components/maps/shell/MapProgramUtilityCluster.tsx`.~~
+- ~~Lift locate-me, recenter, compass, zoom into one cluster.~~
+- ~~Preserve Pass 166 smooth flyTo, Pass 171 upper-third pin-pan offset, Pass 172 immersive-fullscreen compass.~~
 
 ### Step C — Migrate `dashboard-fullscreen` first (2 passes)
 
@@ -397,9 +409,11 @@ Plan §6's 12-item list is comprehensive. **Adding two items** for Step-A-specif
 13. **Pass 175 — `liveRemainingEtaLabel` "N min" suffix** ([`shopDirectoryNavigationDerived.ts:173`](../src/app/hooks/shopDirectoryNavigationDerived.ts#L173)). The shell migration must not regress to the old `"Nm"` suffix. Verify any ETA rendering that lifts from host into shell preserves the corrected formatter.
 14. **Pass 176 — single-source maneuver text** ([`CoverageActiveNavigationLayout.tsx:325`](../src/app/components/landing/CoverageActiveNavigationLayout.tsx#L325) `nextInstruction={null}`). When `<MapNavigationHud>` lifts to shell `rightPanel` (feature-transfer matrix #11), the shell must continue to gate the maneuver block on prop falsity so the duplicate doesn't return.
 
-### 7.5 Step A authorization
+### 7.5 Step A authorization — **PARTIAL SHIP 2026-05-08 (Pass 23 cowork-A)**
 
-**Authorized for next builder pass.** Scope:
+**Status:** Engine B coverage shipped, Engine A coverage deferred pending master-builder re-scope.
+
+**Originally authorized scope:**
 
 - New file: `src/app/components/maps/shell/MapProgramTopBar.tsx` (~150-250 lines target).
 - Lift the union of: logo / back / search input / search-this-area / tile-mode toggle / split-view / map-toggle.
@@ -407,7 +421,24 @@ Plan §6's 12-item list is comprehensive. **Adding two items** for Step-A-specif
 - Pure presentational lift — no behavior change, no new callbacks. Same handlers in, same handlers out.
 - Verify: typecheck clean, vitest unaffected, smoke-test in dev for visual parity at 1440×900 + 390×844 viewports.
 
-Do **not** start Step B in the same pass. Containment-over-expansion: one extraction concern per pass.
+**What actually shipped (Pass 23 cowork-A):**
+
+- ✅ `src/app/components/maps/shell/MapProgramTopBar.tsx` created (canonical L2 home).
+- ✅ `ImmersiveMapTopBar.tsx` refactored to re-export shim. Engine B consumers unchanged.
+- ✅ Typecheck PASS exit 0.
+
+**What did NOT ship (deferred to master-builder review):**
+
+- ⚠ `CoverageBrowseExperience` migration — `MapSurfaceControls` UX shape is inline-embedded, not immersive-fullscreen. Lifting both under one component exceeds "pure presentational lift" scope.
+- ⚠ Dashboard Smart Shop Map host migration — host never pinpointed (KI-164 unresolved at time of Pass 23).
+
+**Pending master-builder decision (gate #6):** Engine A consumer strategy:
+
+- (a) Two co-existing top-bar components, one per UX shape (MapSurfaceControls inline + MapProgramTopBar immersive).
+- (b) MapProgramTopBar grows a `variant: "inline" | "immersive"` prop and absorbs MapSurfaceControls.
+- (c) Defer indefinitely; current 2-component split is acceptable.
+
+Do **not** start Step B in the same pass. Containment-over-expansion: one extraction concern per pass. **Pass 24 cowork-A confirmed Step B is not feasible as originally scoped — see §4 Step B above for re-scope recommendation.**
 
 ### 7.6 Items NOT authorized in this pass
 
