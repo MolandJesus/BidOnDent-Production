@@ -1,3 +1,18 @@
+---
+status: CANONICAL
+authority: REFERENCE
+scope: known-issues
+canonical_source_of_truth: REF_KNOWN_ISSUES.md
+supersedes: []
+superseded_by: null
+safe_for_autopilot: true
+requires_owner_approval: false
+last_topology_audit: 2026-05-09
+runtime_impact_if_misunderstood: medium
+ai_summary: Stable KI-### registry of bugs, gaps, structural issues with status, severity, location.
+last_updated: 2026-05-09
+---
+
 # BidOnDent — Known Issues (REFERENCE)
 
 **Authority level:** REFERENCE — describes current known gaps, bugs, and structural issues.
@@ -18,7 +33,7 @@
 
 - **What this doc controls:** the canonical inventory of known bugs, gaps, and structural issues, each with a stable `KI-###` identifier, severity, location, and current status. Use it to answer "is this already known?" before filing a duplicate, and "is this fixed yet?" before claiming a regression.
 - **When to trust it:** the "Last updated" line names the most recent pass. Status lines (`OPEN` / `RESOLVED` / `MITIGATED` / `WONTFIX` / `PARTIAL`) are point-in-time. Verify by reading the cited file before assuming current state — closed KIs sometimes regress and re-open under new IDs.
-- **What supersedes it:** [`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md) (intent), [`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md) (what may be fixed pre-launch). Within REF tier: [`REF_SYSTEM_STATE.md`](REF_SYSTEM_STATE.md) wins on system-state facts; this doc wins on bug status. The git log is the durable record of *when* a fix shipped — this doc is the index.
+- **What supersedes it:** [`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md) (intent), [`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md) (what may be fixed pre-launch). Within REF tier: [`REF_SYSTEM_STATE.md`](REF_SYSTEM_STATE.md) wins on system-state facts; this doc wins on bug status. The git log is the durable record of _when_ a fix shipped — this doc is the index.
 - **What this doc must NOT be used for:** as a backlog (use [`PLAN_POST_LAUNCH_ROADMAP.md`](PLAN_POST_LAUNCH_ROADMAP.md) for deferred work), as a feature wishlist (KIs are bugs/gaps, not desires), or as a permission to fix anything pre-launch (hardening law gates that). Adding a KI does not authorize a fix pass — it only documents the gap.
 
 ---

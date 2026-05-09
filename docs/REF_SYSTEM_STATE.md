@@ -1,3 +1,18 @@
+---
+status: CANONICAL
+authority: REFERENCE
+scope: system-state
+canonical_source_of_truth: REF_SYSTEM_STATE.md
+supersedes: []
+superseded_by: null
+safe_for_autopilot: true
+requires_owner_approval: false
+last_topology_audit: 2026-05-09
+runtime_impact_if_misunderstood: high
+ai_summary: Current architecture truth — auth, state, role reality, map stack, edge fn deploy state, storage invariants.
+last_updated: 2026-05-09
+---
+
 # BidOnDent — System State (REFERENCE)
 
 **Authority level:** REFERENCE — describes the current system as it actually works. Not a vision doc. Not a roadmap.

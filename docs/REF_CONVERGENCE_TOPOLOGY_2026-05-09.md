@@ -1,3 +1,18 @@
+---
+status: CANONICAL
+authority: REFERENCE
+scope: convergence-topology
+canonical_source_of_truth: REF_CONVERGENCE_TOPOLOGY_2026-05-09.md
+supersedes: []
+superseded_by: null
+safe_for_autopilot: true
+requires_owner_approval: false
+last_topology_audit: 2026-05-09
+runtime_impact_if_misunderstood: high
+ai_summary: Map renderer / navigation orchestration / state authority duplication inventory and convergence candidates.
+last_updated: 2026-05-09
+---
+
 # Convergence Topology — Map / Navigation / State Authority (2026-05-09)
 
 > **Tier:** REFERENCE. Current truth as of Pass 213 (2026-05-09). Evidence-backed
@@ -62,7 +77,7 @@ update this doc in the same pass per LAW co-update rule.
 
 The repo currently instantiates **three independent MapLibre engines**.
 [`PLAN_MAP_UNIFICATION_2026-05-08.md`](PLAN_MAP_UNIFICATION_2026-05-08.md) §1
-enumerates 5 *surfaces* but only one of those (`MapLibreServiceCoverageMap`)
+enumerates 5 _surfaces_ but only one of those (`MapLibreServiceCoverageMap`)
 was identified as the engine wrapper. The other two engine instantiations
 listed below are **not in PLAN_MAP_UNIFICATION's surface inventory** and are
 the highest-leverage convergence delta versus that plan.
@@ -167,7 +182,7 @@ tracking) but at different abstraction levels.
   (PLAN_MAP_UNIFICATION final-phase target).
 
 **Convergence delta vs PLAN_MAP_UNIFICATION:** PLAN_MAP_UNIFICATION focuses on
-the *renderer* layer (shell + slots). It does not explicitly call out
+the _renderer_ layer (shell + slots). It does not explicitly call out
 orchestration-hook duplication. Recommend PLAN_MAP_UNIFICATION add a §11
 "Orchestration convergence" section, OR keep the orchestration question
 scoped here under `DEFERRED` until renderer convergence completes.
@@ -215,18 +230,18 @@ keys are **single-tenant per-key** with no central authority registry. The
 
 ### 4.1 Navigation cluster
 
-| Key                                           | Owner                                                                                                                          | Scope    | Cleanup                                                           |
-| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | -------- | ----------------------------------------------------------------- |
-| `bidondent_navigation_state`                  | [`useNavigation.ts`](../src/app/hooks/useNavigation.ts) line 5                                                                 | global   | `clearAllUserScopedSessionKeys` does **not** touch this — REVIEW. |
-| `bidondent_navigation_session`                | [`services/navigation/navigationSession.ts`](../src/app/services/navigation/navigationSession.ts) line 4                       | global   | not in `clearStaleNavSessions` sweep                              |
-| `bidondent_navigation_preferences`            | [`navigationPreferences.ts`](../src/app/services/navigation/navigationPreferences.ts) line 4                                   | global   | retained across logout                                            |
-| `bidondent_navigation_discovery_role`         | [`discoveryPreferences.ts`](../src/app/services/navigation/discoveryPreferences.ts) line 4                                     | global   | retained                                                          |
-| `bidondent_navigation_parked_car`             | [`parkedCarLocation.ts`](../src/app/services/navigation/parkedCarLocation.ts) line 4                                           | global   | retained                                                          |
-| `bidondent_navigation_saved_locations`        | [`savedLocations.ts`](../src/app/services/navigation/savedLocations.ts) line 8                                                 | global   | retained                                                          |
-| `bidondent_nav_session_*` (per-user)          | [`navigationSessionCloudService.ts`](../src/app/services/navigation/navigationSessionCloudService.ts) line 8                   | per-user | `clearStalePlanningNavSessions` (Pass 61 / KI-117)                |
-| `bidondent_nav_active_session_*` (per-user)   | [`navigationSessionCloudService.ts`](../src/app/services/navigation/navigationSessionCloudService.ts) line 9                   | per-user | `clearAllUserScopedSessionKeys`                                   |
-| `bidondent_nav_pending_writes`                | [`navigationSessionCloudService.ts`](../src/app/services/navigation/navigationSessionCloudService.ts) line 11                  | global   | `clearAllUserScopedSessionKeys`                                   |
-| `bidondent_nav_cloud_unavailable`             | [`navigationSessionCloudService.ts`](../src/app/services/navigation/navigationSessionCloudService.ts) line 12                  | global   | `clearAllUserScopedSessionKeys`                                   |
+| Key                                         | Owner                                                                                                         | Scope    | Cleanup                                                           |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------- |
+| `bidondent_navigation_state`                | [`useNavigation.ts`](../src/app/hooks/useNavigation.ts) line 5                                                | global   | `clearAllUserScopedSessionKeys` does **not** touch this — REVIEW. |
+| `bidondent_navigation_session`              | [`services/navigation/navigationSession.ts`](../src/app/services/navigation/navigationSession.ts) line 4      | global   | not in `clearStaleNavSessions` sweep                              |
+| `bidondent_navigation_preferences`          | [`navigationPreferences.ts`](../src/app/services/navigation/navigationPreferences.ts) line 4                  | global   | retained across logout                                            |
+| `bidondent_navigation_discovery_role`       | [`discoveryPreferences.ts`](../src/app/services/navigation/discoveryPreferences.ts) line 4                    | global   | retained                                                          |
+| `bidondent_navigation_parked_car`           | [`parkedCarLocation.ts`](../src/app/services/navigation/parkedCarLocation.ts) line 4                          | global   | retained                                                          |
+| `bidondent_navigation_saved_locations`      | [`savedLocations.ts`](../src/app/services/navigation/savedLocations.ts) line 8                                | global   | retained                                                          |
+| `bidondent_nav_session_*` (per-user)        | [`navigationSessionCloudService.ts`](../src/app/services/navigation/navigationSessionCloudService.ts) line 8  | per-user | `clearStalePlanningNavSessions` (Pass 61 / KI-117)                |
+| `bidondent_nav_active_session_*` (per-user) | [`navigationSessionCloudService.ts`](../src/app/services/navigation/navigationSessionCloudService.ts) line 9  | per-user | `clearAllUserScopedSessionKeys`                                   |
+| `bidondent_nav_pending_writes`              | [`navigationSessionCloudService.ts`](../src/app/services/navigation/navigationSessionCloudService.ts) line 11 | global   | `clearAllUserScopedSessionKeys`                                   |
+| `bidondent_nav_cloud_unavailable`           | [`navigationSessionCloudService.ts`](../src/app/services/navigation/navigationSessionCloudService.ts) line 12 | global   | `clearAllUserScopedSessionKeys`                                   |
 
 **Finding:** `bidondent_navigation_state` (UI navigation state, e.g. current
 viewMode/tab) and `bidondent_navigation_session` (in-progress nav session)
@@ -238,17 +253,17 @@ review on the next sign-out hygiene pass.
 
 ### 4.2 Identity / website cluster
 
-| Key                                            | Owner                                                                                                          | Scope    | Cleanup                |
-| ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | -------- | ---------------------- |
-| `bidondent_website_session:<userKey>`          | [`websiteIdentity.ts`](../src/app/services/auth/websiteIdentity.ts) line 55                                    | per-user | replace on sign-in     |
-| `bidondent_website_memory:<userKey>`           | [`websiteIdentity.ts`](../src/app/services/auth/websiteIdentity.ts) line 56                                    | per-user | replace on sign-in     |
-| `bidondent_user_last_active`                   | [`constants/index.ts`](../src/app/constants/index.ts) line 61                                                  | global   | not swept              |
+| Key                                   | Owner                                                                       | Scope    | Cleanup            |
+| ------------------------------------- | --------------------------------------------------------------------------- | -------- | ------------------ |
+| `bidondent_website_session:<userKey>` | [`websiteIdentity.ts`](../src/app/services/auth/websiteIdentity.ts) line 55 | per-user | replace on sign-in |
+| `bidondent_website_memory:<userKey>`  | [`websiteIdentity.ts`](../src/app/services/auth/websiteIdentity.ts) line 56 | per-user | replace on sign-in |
+| `bidondent_user_last_active`          | [`constants/index.ts`](../src/app/constants/index.ts) line 61               | global   | not swept          |
 
 ### 4.3 Coverage / map cluster
 
-| Key                          | Owner                                                                                                | Scope  | Cleanup     |
-| ---------------------------- | ---------------------------------------------------------------------------------------------------- | ------ | ----------- |
-| `bidondent_coverage_state`   | [`landing/coverageState.ts`](../src/app/components/landing/coverageState.ts) line 12                 | global | not swept   |
+| Key                        | Owner                                                                                | Scope  | Cleanup   |
+| -------------------------- | ------------------------------------------------------------------------------------ | ------ | --------- |
+| `bidondent_coverage_state` | [`landing/coverageState.ts`](../src/app/components/landing/coverageState.ts) line 12 | global | not swept |
 
 ### 4.4 Authority observations
 
@@ -276,13 +291,13 @@ for cleanup-policy unification.
 
 ## §5. Drift Diff vs `PLAN_MAP_UNIFICATION_2026-05-08.md`
 
-| PLAN_MAP_UNIFICATION claim                                                                       | Pass 213 reality                                                                                          | Action                                                                                                                                                                       |
-| ------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 5 map surfaces                                                                                   | 5 surfaces + `MapLibreDashboardMapPreview` not in inventory                                               | **Update PLAN §1** to add 6th surface OR tag dashboard-preview as `DEFERRED` separate program. Owner decision.                                                               |
+| PLAN_MAP_UNIFICATION claim                                                                       | Pass 213 reality                                                                                                          | Action                                                                                                                                                                  |
+| ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 5 map surfaces                                                                                   | 5 surfaces + `MapLibreDashboardMapPreview` not in inventory                                                               | **Update PLAN §1** to add 6th surface OR tag dashboard-preview as `DEFERRED` separate program. Owner decision.                                                          |
 | `MapLibreServiceCoverageMap` is "the engine + base chrome wrapper" with engine extraction target | `MapEngineCanvas` extraction **already shipped** (Pass 192 contract-locked); `MapLibreServiceCoverageMap` now consumes it | **Update PLAN §1.4** to reflect post-Pass-192 state. The "architectural smell" called out in §1.4 has been partially addressed — engine extracted, chrome host pending. |
-| 9-pass migration roadmap                                                                         | Pass 192 (engine boundary) + Pass 193 (sub-pass 2 contract lock) + Pass 194 (KI-168 sub-pass 1) shipped   | **Add a "Progress" subsection** to PLAN noting which roadmap passes have shipped. README mentions this; PLAN itself does not.                                                |
-| Immersive surface "parallel viewport implementation" flagged                                     | Confirmed — `MapLibreShopDirectoryMapPane` has its own `<Map>` instantiation                              | No action; PLAN already acknowledges.                                                                                                                                        |
-| KI-170 / KI-171 / KI-172 are the retirement targets                                              | KI-172 RESOLVED Pass 10; KI-170 / KI-171 still OPEN                                                       | No action; PLAN status accurately tracked.                                                                                                                                   |
+| 9-pass migration roadmap                                                                         | Pass 192 (engine boundary) + Pass 193 (sub-pass 2 contract lock) + Pass 194 (KI-168 sub-pass 1) shipped                   | **Add a "Progress" subsection** to PLAN noting which roadmap passes have shipped. README mentions this; PLAN itself does not.                                           |
+| Immersive surface "parallel viewport implementation" flagged                                     | Confirmed — `MapLibreShopDirectoryMapPane` has its own `<Map>` instantiation                                              | No action; PLAN already acknowledges.                                                                                                                                   |
+| KI-170 / KI-171 / KI-172 are the retirement targets                                              | KI-172 RESOLVED Pass 10; KI-170 / KI-171 still OPEN                                                                       | No action; PLAN status accurately tracked.                                                                                                                              |
 
 **Recommended PLAN_MAP_UNIFICATION updates** (do NOT execute without owner
 authorization — this audit is read-only):
@@ -303,13 +318,13 @@ paths.
 
 ### 6.1 Findings
 
-| Finding                                                                         | Severity | Recommendation                                                                                                                                                                                                                                               |
-| ------------------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `PLAN_POST_PASS_28_2026-05-06.md` is a session-execution log, not a forward plan | low      | Filename suggests PLAN tier but contents are an OPS-tier execution log. Status: `DEFERRED`. Owner may rename `OPS_POST_PASS_28_2026-05-06.md` post-launch; not worth doing pre-launch.                                                                       |
-| Status-tag vocabulary is inconsistent across docs                               | medium   | Some docs use "Active" / "Draft", some use "ACTIVE" / "PRE-EXECUTION", some use no tag at all. ChatGPT's proposed vocabulary (CANONICAL/ACTIVE/SUPERSEDED/ARCHIVED/DEFERRED/HISTORICAL/OWNER-GATED/POST-LAUNCH/SAFE-AUTOPILOT/STRUCTURAL-RISK) is reasonable. |
-| Top-of-doc "AI operational onboarding" section is missing on most major docs    | medium   | This doc adopts the pattern in §0. Future passes could extend `LAW_*` and `REF_*` docs with a similar 4-bullet header (what this doc controls / when to trust it / what supersedes it / what it must NOT be used for).                                       |
-| Three engine renderers exist; no doc names them as such                         | high     | This doc closes the gap. Cross-refs from `REF_SYSTEM_STATE.md` § Map Stack and `PLAN_MAP_UNIFICATION_2026-05-08.md` §1 should point here on next touch.                                                                                                      |
-| State-authority matrix not captured anywhere centrally                          | high     | This doc closes the gap with §4. If owner wants a permanent home, extract to `REF_STATE_AUTHORITY_MATRIX.md` post-launch.                                                                                                                                    |
+| Finding                                                                          | Severity | Recommendation                                                                                                                                                                                                                                                |
+| -------------------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PLAN_POST_PASS_28_2026-05-06.md` is a session-execution log, not a forward plan | low      | Filename suggests PLAN tier but contents are an OPS-tier execution log. Status: `DEFERRED`. Owner may rename `OPS_POST_PASS_28_2026-05-06.md` post-launch; not worth doing pre-launch.                                                                        |
+| Status-tag vocabulary is inconsistent across docs                                | medium   | Some docs use "Active" / "Draft", some use "ACTIVE" / "PRE-EXECUTION", some use no tag at all. ChatGPT's proposed vocabulary (CANONICAL/ACTIVE/SUPERSEDED/ARCHIVED/DEFERRED/HISTORICAL/OWNER-GATED/POST-LAUNCH/SAFE-AUTOPILOT/STRUCTURAL-RISK) is reasonable. |
+| Top-of-doc "AI operational onboarding" section is missing on most major docs     | medium   | This doc adopts the pattern in §0. Future passes could extend `LAW_*` and `REF_*` docs with a similar 4-bullet header (what this doc controls / when to trust it / what supersedes it / what it must NOT be used for).                                        |
+| Three engine renderers exist; no doc names them as such                          | high     | This doc closes the gap. Cross-refs from `REF_SYSTEM_STATE.md` § Map Stack and `PLAN_MAP_UNIFICATION_2026-05-08.md` §1 should point here on next touch.                                                                                                       |
+| State-authority matrix not captured anywhere centrally                           | high     | This doc closes the gap with §4. If owner wants a permanent home, extract to `REF_STATE_AUTHORITY_MATRIX.md` post-launch.                                                                                                                                     |
 
 ### 6.2 Doc proliferation guardrail
 
@@ -327,16 +342,16 @@ cluster), promote §4 to `REF_STATE_AUTHORITY_MATRIX.md` then. Until then,
 
 ## §7. Convergence Candidates Summary
 
-| ID  | Concern                                          | Status                                            | Risk                | Recommended Phase  |
-| --- | ------------------------------------------------ | ------------------------------------------------- | ------------------- | ------------------ |
-| C1  | Three MapLibre engine instantiations             | `DUPLICATE`, `OWNER-GATED`                        | `STRUCTURAL-RISK`   | POST-LAUNCH        |
-| C2  | `MapLibreDashboardMapPreview` not in PLAN        | `DEFERRED`, drift artifact                        | low                 | PLAN doc update    |
-| C3  | Two navigation orchestration patterns            | `DUPLICATE`, `OWNER-GATED`                        | `STRUCTURAL-RISK`   | POST-LAUNCH        |
-| C4  | `bidondent_navigation_state` vs `_session` collision | naming-overlap, no active bug                  | low                 | DEFERRED           |
-| C5  | Cleanup-policy unevenness across storage keys    | partial coverage                                  | low                 | DEFERRED           |
-| C6  | Status-tag vocabulary not standardized           | doc inconsistency                                 | low                 | SAFE-AUTOPILOT     |
-| C7  | "AI operational onboarding" header pattern       | adopted here, not propagated                      | low                 | SAFE-AUTOPILOT     |
-| C8  | PLAN_MAP_UNIFICATION needs 4 §-level updates     | drift                                             | low                 | OWNER-GATED        |
+| ID  | Concern                                              | Status                        | Risk              | Recommended Phase |
+| --- | ---------------------------------------------------- | ----------------------------- | ----------------- | ----------------- |
+| C1  | Three MapLibre engine instantiations                 | `DUPLICATE`, `OWNER-GATED`    | `STRUCTURAL-RISK` | POST-LAUNCH       |
+| C2  | `MapLibreDashboardMapPreview` not in PLAN            | `DEFERRED`, drift artifact    | low               | PLAN doc update   |
+| C3  | Two navigation orchestration patterns                | `DUPLICATE`, `OWNER-GATED`    | `STRUCTURAL-RISK` | POST-LAUNCH       |
+| C4  | `bidondent_navigation_state` vs `_session` collision | naming-overlap, no active bug | low               | DEFERRED          |
+| C5  | Cleanup-policy unevenness across storage keys        | partial coverage              | low               | DEFERRED          |
+| C6  | Status-tag vocabulary not standardized               | doc inconsistency             | low               | SAFE-AUTOPILOT    |
+| C7  | "AI operational onboarding" header pattern           | adopted here, not propagated  | low               | SAFE-AUTOPILOT    |
+| C8  | PLAN_MAP_UNIFICATION needs 4 §-level updates         | drift                         | low               | OWNER-GATED       |
 
 **Highest-leverage post-launch pass:** C1 (engine consolidation onto
 `MapEngineCanvas`). Reduces engine count from 3 → 1, retroactively gives

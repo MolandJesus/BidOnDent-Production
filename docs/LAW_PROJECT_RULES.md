@@ -1,8 +1,23 @@
+---
+status: CANONICAL
+authority: LAW
+scope: project-rules
+canonical_source_of_truth: LAW_PROJECT_RULES.md
+supersedes: []
+superseded_by: null
+safe_for_autopilot: false
+requires_owner_approval: true
+last_topology_audit: 2026-05-09
+runtime_impact_if_misunderstood: critical
+ai_summary: Six Laws, role hierarchy, storage and auth invariants, doc metadata schema, co-update rules.
+last_updated: 2026-05-09
+---
+
 # BidOnDent — Project Rules (LAW)
 
 **Authority level:** LAW — governs all work. Cannot be violated without explicit per-session override from the project owner.
 
-**Last updated:** 2026-05-04
+**Last updated:** 2026-05-09 (Pass 215 — added 12-field Doc Metadata Header Schema; Pass 216 — applied schema to this doc)
 
 ---
 
