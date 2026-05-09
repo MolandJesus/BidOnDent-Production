@@ -252,18 +252,25 @@ export default function MapLibreShopDirectoryMapPane({
           style={{ backgroundColor: tileFadeTint }}
         />
       )}
-      {/* ── Header badges ── */}
-      {!suppressHeader && (
-        <MapPaneHeaderBadges
-          isDark={isDark}
-          userType={userType}
-          selectedOrigin={selectedOrigin}
-          shopCount={shops.length}
-        />
+      {/* ── Header badges ──
+          Pass 197 (KI-168 sub-pass 2): gated on `mapLoaded && !mapLoadFailed`
+          + wrapped in `map-ui-enter` so the top-left "live shop card" the audit
+          flagged fades in atomically with the bottom overlay (Pass 194) and
+          tile picker (Pass 196). Closes the third + final transition-state
+          overlay named in the Pass 192 inventory. */}
+      {!suppressHeader && mapLoaded && !mapLoadFailed && (
+        <div className="map-ui-enter">
+          <MapPaneHeaderBadges
+            isDark={isDark}
+            userType={userType}
+            selectedOrigin={selectedOrigin}
+            shopCount={shops.length}
+          />
+        </div>
       )}
 
-      {onExpandMap ? (
-        <div className="pointer-events-none absolute right-3 top-3 z-[520] animate-in fade-in zoom-in-95 duration-300 motion-reduce:animate-none">
+      {onExpandMap && mapLoaded && !mapLoadFailed ? (
+        <div className="pointer-events-none absolute right-3 top-3 z-[520] map-ui-enter animate-in fade-in zoom-in-95 duration-300 motion-reduce:animate-none">
           <button
             type="button"
             onClick={onExpandMap}
