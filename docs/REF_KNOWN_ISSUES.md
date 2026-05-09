@@ -557,7 +557,7 @@
 - **Location:** `useNavigation.ts` — calls `history.pushState` for tab changes inside the SPA. Each push is a new history entry, but they share URL `/`. Browser back unwinds them but the user's mental model expects "back = previous page", not "back = previous tab".
 - **Fix direction:** Tied to KI-011 fix — migrate to React Router or TanStack Router so URL becomes source of truth for tab state. Until then: avoid `history.pushState` for tab-internal navigation; use `replaceState` so back button maps to "exit the app", not "previous tab".
 - **Severity:** **P3-ROUTING.** Tied to KI-011's broader fix. Not isolated.
-- **Status:** **OPEN — P3-ROUTING. Companion to KI-011.**
+- **Status:** **MITIGATED — Pass 201 (2026-05-09).** [`useNavigation.ts:124-176`](../src/app/hooks/useNavigation.ts#L124) now distinguishes real navigation depth changes (`viewMode` or `selectedReportId` change → `pushState`) from peer-tab swaps within the same `viewMode` (`currentTab` change only → `replaceState`). `history.length` no longer grows from tab swaps, and the back button maps to "exit the app" from any dashboard tab — matching user mental model. Underlying KI-011 (URL-as-source-of-truth) still open; this is the practical-symptom mitigation, not the structural fix.
 
 ### KI-133: localStorage key embeds user email in key name — `bidondent_user:<email>` (P3-PRIVACY)
 

@@ -118,9 +118,24 @@ export function useNavigation() {
   // Track whether a state change originated from the browser popstate event
   // to avoid pushing a duplicate history entry in the effect below.
   const isRestoringFromHistory = useRef(false);
+  // Track previous nav dimensions so we can distinguish a real navigation
+  // depth change (push) from a peer-tab swap (replace) — see KI-132.
+  const prevNavRef = useRef<{
+    currentTab: string;
+    viewMode: ViewMode;
+    selectedReportId: string | null;
+  } | null>(null);
 
-  // Save navigation state to localStorage and push a browser history entry
+  // Save navigation state to localStorage and write a browser history entry
   // so the hardware/gesture back button works on mobile (Safari included).
+  //
+  // KI-132 (Pass 201, 2026-05-09): peer-tab swaps (Home → Bids → Find Shops)
+  // were pushing a new history entry per swap, so `history.length` grew
+  // unboundedly and the back button returned to the previous TAB rather
+  // than exiting the app. Real navigation depth changes (entering a report,
+  // opening the wizard, viewing a detail) still push so back exits the
+  // detail. Tab-only swaps now `replaceState` so back maps to "exit the
+  // app", matching user mental model.
   useEffect(() => {
     const navigationState = {
       currentTab,
@@ -130,14 +145,28 @@ export function useNavigation() {
 
     persistSavedState(navigationState);
 
-    // Skip pushing when this update came from popstate (we're going backward)
+    // Skip writing when this update came from popstate (we're going backward)
     if (isRestoringFromHistory.current) {
       isRestoringFromHistory.current = false;
+      prevNavRef.current = navigationState;
       return;
     }
 
-    // Push a history entry so the browser back button can return to this state
-    history.pushState({ currentTab, viewMode, selectedReportId }, "");
+    const prev = prevNavRef.current;
+    const isFirstWrite = prev === null;
+    const viewModeChanged = !isFirstWrite && prev.viewMode !== viewMode;
+    const reportIdChanged = !isFirstWrite && prev.selectedReportId !== selectedReportId;
+    // Push only on real depth changes (viewMode or selectedReportId).
+    // Peer-tab swaps within the same viewMode collapse to replaceState.
+    const shouldPush = isFirstWrite || viewModeChanged || reportIdChanged;
+
+    if (shouldPush) {
+      history.pushState(navigationState, "");
+    } else {
+      history.replaceState(navigationState, "");
+    }
+
+    prevNavRef.current = navigationState;
   }, [currentTab, viewMode, selectedReportId]);
 
   // Handle browser back/forward (popstate) — restore app state without pushing
