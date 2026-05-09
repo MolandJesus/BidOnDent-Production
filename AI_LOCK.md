@@ -6,10 +6,10 @@
 
 ## Active session
 
-**Active branch:** none
-**Active AI:** none (cowork-A standdown — Pass 27 doc-only correction complete; KI-178 RESOLVED per audit AI Pass 25 −224 LoC ship; KI-177 numbers refined to 47-of-53 dormant ~4,178 LoC; methodology lesson logged for dormant-export sweeps)
-**Active layer:** none
-**Locked files:** (none)
+**Active branch:** BidOnDent-Horizon-Beta
+**Active AI:** Main Builder AI (Phase 3B PREP — owner-authorized full autopilot relay from ChatGPT meta-arbiter; Passes 245/246/247/248 simulation + audit + rehearsal tier; NO sub-pass C default flip, NO semantic inversion, NO Engine 2 work; STOP gate at Pass 248 closeout)
+**Active layer:** L3 (test-only) + REFERENCE docs
+**Locked files:** src/app/**tests**/engine3DefaultFlipSimulation.test.tsx, src/app/**tests**/engine3ReducedMotionAutoFitInteraction.test.tsx (planned), src/app/**tests**/engine3RollbackRehearsal.test.ts (planned), docs/REF_ENGINE_3_CAMERA_AUTHORITY_2026-05-09.md (Phase 3B PREP §13 addendum only)
 **Session start:** 2026-05-08 (cowork-A — Pass 26 owner-authorized continuation under "go full auto" directive; doc-only edits, no source files)
 **Last commit:** (uncommitted on disk pending host-side `rm -f .git/*.lock`) — Pass 14 Step 1.6 dashboard error-UX parity (co-worker AI) + Pass 12/13/14 audit AI edits + Pass 11 evidence batch + Pass 23 Step A MapProgramTopBar canonicalization + Pass 26 doc-only enrollment
 
