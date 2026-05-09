@@ -7,9 +7,9 @@
 ## Active session
 
 **Active branch:** BidOnDent-Horizon-Beta
-**Active AI:** (none — Phase 3B PREP standdown 2026-05-09; sweep complete; sub-pass C remains UNAUTHORIZED)
-**Active layer:** (none)
-**Locked files:** (none)
+**Active AI:** Main Builder AI (KI-196 lane — owner-authorized full-autopilot pivot OUT of Phase 3B continuation; Passes 249/250/251 inventory + matrix + behavior-preserving hardening; NO sub-pass C work, NO autoFit/authority/viewport/camera semantic changes; STOP gate at Pass 251 closeout)
+**Active layer:** L3 (test-only) + L1/L2/L3 source IF clearly behavior-preserving (const hoists, EMPTY\_\* singletons)
+**Locked files:** docs/REF_KI196_INVENTORY_2026-05-09.md (planned, Pass 249), docs/REF_KI196_HARDENING_MATRIX_2026-05-09.md (planned, Pass 250), src/app/\*\* hardening targets identified by Pass 250 (Pass 251 only)
 **Session start:** 2026-05-08 (cowork-A — Pass 26 owner-authorized continuation under "go full auto" directive; doc-only edits, no source files)
 **Last commit:** Pass 248 — Phase 3B PREP closeout (§13 addendum to REF_ENGINE_3_CAMERA_AUTHORITY + AI_LOCK standdown). Phase 3B PREP delivered Passes 244–248: convergence-readiness matrix (Audit AI), default-flip simulation tests (+9), convergence-gate certification, reduced-motion × autoFit interaction lock (+16), rollback rehearsal + CI invariant catch-surface stress + PONC witness (+16). Suite: 893/893 across 86 files. Sub-pass C default flip NOT authorized — owner-decision gates (ShopMapWidget release, ReportDetail UX review, explicit ship directive) remain unlifted.
 
