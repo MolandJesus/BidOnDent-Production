@@ -1,3 +1,18 @@
+---
+status: ACTIVE
+authority: PLAN
+scope: map-unification
+canonical_source_of_truth: PLAN_MAP_UNIFICATION_2026-05-08.md
+supersedes: []
+superseded_by: null
+safe_for_autopilot: false
+requires_owner_approval: true
+last_topology_audit: 2026-05-09
+runtime_impact_if_misunderstood: high
+ai_summary: Multi-pass plan to converge map renderer surfaces onto MapProgramShell + MapEngineCanvas; hardening-gated.
+last_updated: 2026-05-09
+---
+
 # Map Program Unification Plan (2026-05-08)
 
 > **Tier:** PLAN. Future direction, not current truth. Multi-pass refactor under
@@ -8,11 +23,13 @@
 > **Companion docs:** [`PLAN_MAP_MASTER.md`](PLAN_MAP_MASTER.md) (strategic vision),
 > [`REF_KNOWN_ISSUES.md`](REF_KNOWN_ISSUES.md) (KI-170 / KI-171 / KI-172 — the
 > three findings this plan exists to retire), [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md)
-> (apex visual canon — locked, additive-only).
+> (apex visual canon — locked, additive-only),
+> [`REF_CONVERGENCE_TOPOLOGY_2026-05-09.md`](REF_CONVERGENCE_TOPOLOGY_2026-05-09.md)
+> (canonical inventory of duplicated engines/orchestration/state — see §10 + §11 below for drift fixes).
 
 **Author:** audit AI (Pass 10) under master-builder dispatch 2026-05-08.
-**Status:** Draft for builder review. No implementation passes start until
-the master builder signs off against LAW_LAYERED_ARCHITECTURE.
+**Status:** Draft for builder review. §1.4 + §10 + §11 reconciled 2026-05-09 (Pass 217) against REF_CONVERGENCE_TOPOLOGY findings.
+**Pass 192 update:** Step C.1 `<MapEngineCanvas>` extraction shipped — see §1.4 and §10.
 
 ---
 
@@ -65,9 +82,10 @@ directly, what it lacks (relative to the union of all five).
 
 - **File:** [`src/app/components/maps/MapLibreServiceCoverageMap.tsx`](../src/app/components/maps/MapLibreServiceCoverageMap.tsx) (368 lines).
 - **Mount:** rendered by `CoverageBrowseExperience`, `CoverageActiveNavigationLayout`, `OperatingRegionsSection` inline path, dashboard Smart Shop Map mount (the host that exposes the legend / ROUTE box from KI-164/166), and any future shells that target the same engine.
-- **Owns:** `react-map-gl/maplibre` `<Map>` instantiation, `maplibreResizePatch`, `MapLibreCoverageMapLayers`, `MapLibrePartnerShopLayer`, `MapLibreReportLayer` (gated by `showReportLayer`), `MapLibreDiscoveryPlaceLayer`, `MapNavigationHud` (gated by `showNavigationHud`), `MapSurfaceControls`, `MapSurfaceHeaderBadges`, `MapSurfaceStatusBar`, viewport controllers, follow-location controller, arrival camera effect, performance tracking.
+- **Owns:** `react-map-gl/maplibre` `<Map>` instantiation (since Pass 192 delegated to canonical [`MapEngineCanvas`](../src/app/components/maps/engine/MapEngineCanvas.tsx)), `maplibreResizePatch`, `MapLibreCoverageMapLayers`, `MapLibrePartnerShopLayer`, `MapLibreReportLayer` (gated by `showReportLayer`), `MapLibreDiscoveryPlaceLayer`, `MapNavigationHud` (gated by `showNavigationHud`), `MapSurfaceControls`, `MapSurfaceHeaderBadges`, `MapSurfaceStatusBar`, viewport controllers, follow-location controller, arrival camera effect, performance tracking.
 - **Lacks:** the dashboard-side dual legend (KI-166), Smart Shop Map "Finding the best shops…" loading pill (KI-165), ROUTE-box positioning logic (KI-164) — these live in the dashboard host and overlay the engine, **not** inside this component.
-- **Architectural smell:** this component is doing two jobs — engine wrapper + base chrome host. The unification proposes splitting these into `<MapEngineCanvas>` (pure engine) and `<MapProgramShell>` (chrome host). See §2.
+- **Pass 192 status:** `<MapEngineCanvas>` extraction **SHIPPED**. This wrapper now consumes the canonical engine via canvas slot rather than instantiating MapLibre directly. Step C.1 of §4 closed.
+- **Architectural smell (residual):** this component still hosts both base chrome + the canvas consumer in one file. Further split into `<MapProgramShell>` (chrome host) deferred to Step C.2+. See §2.
 
 ### 1.5 `ShopDirectoryImmersiveMap` — shop directory immersive surface
 
@@ -76,6 +94,22 @@ directly, what it lacks (relative to the union of all five).
 - **Owns:** `ImmersiveMapTopBar`, `ImmersiveMapResultsDrawer` (drawer-snap state), `ImmersiveMapViewport` (separate from `MapLibreServiceCoverageMap` — own viewport control), `ImmersiveOriginPicker`, `ShopDirectoryMapInfoPanel`, route options + selection state, navigation session telemetry, GPS / speed-limit / voice-mode plumbing, deviation prompt, off-route detection, follow-current-position controller.
 - **Lacks (relative to union):** integration with `MapLibreServiceCoverageMap`'s shared chrome (this is the highest-behavioral-coupling surface and migrates last).
 - **Architectural smell:** parallel viewport implementation. Migration must verify `ImmersiveMapViewport` and `MapLibreServiceCoverageMap` can converge on the same engine wrapper without losing the directory-specific behaviors (route options, drawer snap, origin picker).
+- **Engine instantiation note (added 2026-05-09 Pass 217):** this surface mounts the `<Map>` engine independently via `MapLibreShopDirectoryMapPane` — see §1.7. Considered a DUPLICATE engine instantiation per [`REF_CONVERGENCE_TOPOLOGY_2026-05-09.md`](REF_CONVERGENCE_TOPOLOGY_2026-05-09.md) §1.
+
+### 1.6 `MapLibreDashboardMapPreview` — dashboard report-card preview engine (added 2026-05-09 Pass 217)
+
+- **File:** [`src/app/components/dashboard/MapLibreDashboardMapPreview.tsx`](../src/app/components/dashboard/MapLibreDashboardMapPreview.tsx).
+- **Mount:** rendered as a small static map preview by [`ReportDetailScreen`](../src/app/components/dashboard/ReportDetailScreen.tsx), [`ReportsListScreen`](../src/app/components/dashboard/ReportsListScreen.tsx), [`InsurerMapWidget`](../src/app/components/dashboard/InsurerMapWidget.tsx), and [`CompetitorAnalysisScreen`](../src/app/components/dashboard/CompetitorAnalysisScreen.tsx).
+- **Owns:** `react-map-gl/maplibre` `<Map>` instantiation (third independent engine in the repo), basic marker rendering, no chrome.
+- **Status:** **DUPLICATE engine instantiation.** Not previously in this plan's surface inventory — surfaced by REF_CONVERGENCE_TOPOLOGY_2026-05-09.md §1 audit. Use case (small static preview) is genuinely different from the immersive surfaces above; convergence question is whether `<MapEngineCanvas>` should expose a "preview mode" or whether this stays separate as a deliberate lightweight path.
+- **Convergence verdict (deferred):** **DO NOT collapse pre-launch.** Behavior is stable, used in 4 dashboard surfaces. Post-launch decision: either fold into `<MapEngineCanvas>` with a `mode="preview"` slot, or formally classify as a sanctioned second engine for static thumbnails.
+
+### 1.7 `MapLibreShopDirectoryMapPane` — shop directory engine wrapper (added 2026-05-09 Pass 217)
+
+- **File:** [`src/app/components/shop/MapLibreShopDirectoryMapPane.tsx`](../src/app/components/shop/MapLibreShopDirectoryMapPane.tsx).
+- **Mount:** rendered through `ShopDirectoryImmersiveMap` → `ImmersiveMapViewport` → `MapLibreShopDirectoryMapPane`.
+- **Owns:** independent `react-map-gl/maplibre` `<Map>` instantiation with `GeolocateControl`, `NavigationControl`, `ScaleControl` (note: only place in the repo that uses MapLibre's built-in chrome controls).
+- **Status:** **DUPLICATE engine instantiation.** Should be folded into `<MapEngineCanvas>` as part of Step F (`shop-directory-immersive` migration). Highest behavioral coupling — migration last per existing roadmap.
 
 ---
 
@@ -478,6 +512,40 @@ Do **not** start Step B in the same pass. Containment-over-expansion: one extrac
 - KI-164 ROUTE box repositioning — gated on Step C.2.
 - `<MapEngineCanvas>` extraction — gated on Step C.1.
 - Persona switcher promotion to landing — owner-gated indefinitely.
+
+---
+
+## §10. Progress against roadmap (added 2026-05-09 Pass 217)
+
+Reconciles §4 step status against actual shipped commits. Future agents: read this section before assuming any step has not yet started.
+
+| Step | Status                       | Shipping pass(es)                                                                                                                                                                                              |
+| ---- | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A    | **SCOPED COMPLETE**          | Pass 181 / cowork Pass 23 fold-in (shared top-bar)                                                                                                                                                             |
+| B    | **NOT FEASIBLE AS SCOPED**   | Pass 24 cowork-A (bottom-right utility cluster behavior diverged — see §4 Step B replacement)                                                                                                                  |
+| C.1  | **SHIPPED Pass 192**         | `<MapEngineCanvas>` extracted as canonical pure-engine wrapper. Contract-locked. See [`MapEngineCanvas.tsx`](../src/app/components/maps/engine/MapEngineCanvas.tsx) + [`MapEngineCanvas.test.tsx`](../src/app/components/maps/engine/MapEngineCanvas.test.tsx). |
+| C.2  | **NOT YET STARTED**          | Legend / ROUTE-box slot relocation — still gated on master-builder authorization                                                                                                                               |
+| D    | **NOT YET STARTED**          | `landing-dialog` migration                                                                                                                                                                                     |
+| E    | **NOT YET STARTED**          | `operating-regions-inline` + `dashboard-mini` migration                                                                                                                                                        |
+| F    | **NOT YET STARTED**          | `shop-directory-immersive` migration (highest coupling — last)                                                                                                                                                 |
+| G    | **NOT YET STARTED**          | Retire ad-hoc shells                                                                                                                                                                                           |
+
+**Engine instantiation count (post-Pass-192):** 3 independent MapLibre engines remain.
+1. `MapEngineCanvas` (CANONICAL, contract-locked Pass 192).
+2. `MapLibreDashboardMapPreview` (DUPLICATE, see §1.6 — deferred convergence decision).
+3. `MapLibreShopDirectoryMapPane` (DUPLICATE, see §1.7 — folds into Canvas at Step F).
+
+Full duplication audit lives in [`REF_CONVERGENCE_TOPOLOGY_2026-05-09.md`](REF_CONVERGENCE_TOPOLOGY_2026-05-09.md) §1.
+
+---
+
+## §11. Orchestration convergence (added 2026-05-09 Pass 217)
+
+This plan focuses on the **renderer** layer (shell + slots). It does not directly govern navigation orchestration hooks. The companion concern — two parallel orchestration patterns (`useCoverageNavigationExperience` composite vs `useShopDirectoryNavigation` direct assembly) — is documented in [`REF_CONVERGENCE_TOPOLOGY_2026-05-09.md`](REF_CONVERGENCE_TOPOLOGY_2026-05-09.md) §2 and remains the canonical owner of that question.
+
+**Decision:** orchestration convergence is **DEFERRED** until renderer convergence (Steps C–G above) completes. Reason: collapsing orchestration before renderer collapse risks coupling the two refactors into a single high-risk change.
+
+**Cross-reference:** when REF_CONVERGENCE_TOPOLOGY §2 is updated with new orchestration findings, that doc remains the source of truth. This section exists only to make the boundary explicit so future agents do not duplicate orchestration work into this plan.
 
 ---
 
