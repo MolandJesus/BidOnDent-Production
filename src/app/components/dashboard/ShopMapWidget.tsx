@@ -117,7 +117,27 @@ export default function ShopMapWidget({
     "Live repair activity";
 
   return (
-    <section className="bd-dashboard-panel bd-dashboard-panel--accent-blue overflow-hidden">
+    /*
+     * ShopMapWidget — Tier B preview surface (Pass 234).
+     *
+     * Convergence metadata (per Block D execution doctrine):
+     *  1. Runtime paths touched     : P3 (preview-surface exploration); P4 escalation already wired via onViewShops → operational shop directory.
+     *  2. Runtime classes touched   : Preview only.
+     *  3. Tier semantics touched    : Tier B preview (panel-embedded). Surface now self-declares data-runtime-class + data-tier-semantic + data-expand-target (shop-directory).
+     *  4. Motion classes touched    : none.
+     *  5. Shell hierarchy impact    : Panel-first archetype preserved (231c §6). Map block has visible "View Map" CTA + onMapClick=onViewShops on the engine, satisfying 231c §4.2.
+     *  6. Authority semantics       : unchanged.
+     *  7. Reduced-motion inheritance: unchanged.
+     *  8. Hidden-authority risk     : zero.
+     *  9. Continuity guarantees     : unaffected.
+     * 10. Rollback semantics        : revert this hunk; behavior reverts to anonymous section.
+     */
+    <section
+      className="bd-dashboard-panel bd-dashboard-panel--accent-blue overflow-hidden"
+      data-runtime-class="preview"
+      data-tier-semantic="B"
+      data-expand-target="shop-directory"
+    >
       {/* Embedded mini-map — Bucket 1.3 (KI-074 partial): inner-glass bezel
           ring eliminates the flat seam between panel chrome and map canvas. */}
       <div className="relative h-[180px] md:h-[200px] rounded-xl ring-1 ring-[rgba(96,165,250,0.16)] ring-inset overflow-hidden">

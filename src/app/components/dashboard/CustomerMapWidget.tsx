@@ -119,7 +119,27 @@ export default function CustomerMapWidget({
   ];
 
   return (
-    <section className="overflow-hidden rounded-2xl ring-1 ring-[rgba(96,165,250,0.18)] ring-inset">
+    /*
+     * CustomerMapWidget — Tier C dashboard tile / Tier B preview hybrid (Pass 234).
+     *
+     * Convergence metadata (per Block D execution doctrine):
+     *  1. Runtime paths touched     : P3 (preview-surface exploration); P4 escalation already wired via onViewShops.
+     *  2. Runtime classes touched   : Preview only.
+     *  3. Tier semantics touched    : Tier B preview (the embedded mini-map block); the surrounding capability teasers panel is Tier C dashboard chrome (not a map). Per 231c §6 the surface is panel-first; the map block is fully tappable + has visible "Tap to explore full map experience" affordance + Open Smart Map CTA.
+     *  4. Motion classes touched    : none. group-hover opacity transition preserved.
+     *  5. Shell hierarchy impact    : Panel-first archetype preserved (231c §6); no hybrid introduced. The role="button" wrapper around the map canvas is the existing tap-to-expand affordance, satisfying 231c §4.2.
+     *  6. Authority semantics       : unchanged. Engine 3 owns no camera; preview is stateless.
+     *  7. Reduced-motion inheritance: unchanged. Engine 3 contract conformance is Phase 2 work.
+     *  8. Hidden-authority risk     : zero. No new callbacks, no new persistence, no imperative camera.
+     *  9. Continuity guarantees     : unaffected.
+     * 10. Rollback semantics        : revert this hunk; behavior reverts to anonymous section.
+     */
+    <section
+      className="overflow-hidden rounded-2xl ring-1 ring-[rgba(96,165,250,0.18)] ring-inset"
+      data-runtime-class="preview"
+      data-tier-semantic="B"
+      data-expand-target="coverage-map"
+    >
       {/* Embedded mini-map with click-through overlay */}
       <div
         className="bd-dashboard-panel bd-dashboard-panel--deep group relative h-[200px] cursor-pointer overflow-hidden rounded-2xl md:h-[220px]"
