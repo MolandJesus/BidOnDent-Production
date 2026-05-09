@@ -419,16 +419,16 @@ explicit owner-dirty allowlist entry (re-audit required when
 released). The invariant immediately surfaced 8 missed sites,
 which Pass 243 explicitized in the same sweep.
 
-| #   | Call site (Pass 243 sweep)         | File:line                                                          | Sub-pass B value                                  | Notes                                       |
-| --- | ---------------------------------- | ------------------------------------------------------------------ | ------------------------------------------------- | ------------------------------------------- |
-| 7   | Shop active-jobs map               | `src/app/components/shop/ShopActiveJobsScreen.tsx:349`             | `"always"`                                        | Multi-job overview                          |
-| 8   | Insurer partner-shops map          | `src/app/components/insurer/InsurerPartnerShopsScreen.tsx:359`     | `"always"`                                        | Partner-distribution                        |
-| 9   | Insurer claims map                 | `src/app/components/insurer/InsurerClaimsScreen.tsx:295`           | `"always"`                                        | Claims-distribution                         |
-| 10  | Shop requests map                  | `src/app/components/shop/ShopRequestsScreen.tsx:298`               | `"always"`                                        | Requests-distribution                       |
-| 11  | Liked shops map                    | `src/app/components/shop/LikedShopsScreen.tsx:197`                 | `"always"`                                        | Saved shops                                 |
-| 12  | Bids geography map                 | `src/app/components/codelayer/BidsGeographyMap.tsx:54`             | `"always"`                                        | Bid distribution                            |
-| 13  | Accepted-bid confirmation mini-map | `src/app/components/codelayer/AcceptedBidConfirmationSheet.tsx:153`| `"always"` (no-op — single shop, fittedView null) | Declared for invariant compliance           |
-| 14  | Report-step service-location       | `src/app/components/codelayer/report/StepServiceLocation.tsx:209`  | `"always"` (no-op — single pin, fittedView null)  | Declared for invariant compliance           |
+| #   | Call site (Pass 243 sweep)         | File:line                                                           | Sub-pass B value                                  | Notes                             |
+| --- | ---------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------- | --------------------------------- |
+| 7   | Shop active-jobs map               | `src/app/components/shop/ShopActiveJobsScreen.tsx:349`              | `"always"`                                        | Multi-job overview                |
+| 8   | Insurer partner-shops map          | `src/app/components/insurer/InsurerPartnerShopsScreen.tsx:359`      | `"always"`                                        | Partner-distribution              |
+| 9   | Insurer claims map                 | `src/app/components/insurer/InsurerClaimsScreen.tsx:295`            | `"always"`                                        | Claims-distribution               |
+| 10  | Shop requests map                  | `src/app/components/shop/ShopRequestsScreen.tsx:298`                | `"always"`                                        | Requests-distribution             |
+| 11  | Liked shops map                    | `src/app/components/shop/LikedShopsScreen.tsx:197`                  | `"always"`                                        | Saved shops                       |
+| 12  | Bids geography map                 | `src/app/components/codelayer/BidsGeographyMap.tsx:54`              | `"always"`                                        | Bid distribution                  |
+| 13  | Accepted-bid confirmation mini-map | `src/app/components/codelayer/AcceptedBidConfirmationSheet.tsx:153` | `"always"` (no-op — single shop, fittedView null) | Declared for invariant compliance |
+| 14  | Report-step service-location       | `src/app/components/codelayer/report/StepServiceLocation.tsx:209`   | `"always"` (no-op — single pin, fittedView null)  | Declared for invariant compliance |
 
 Total post-sweep inventory: 14 production call sites. 13/14 declare
 `autoFit` explicitly. 1/14 (ShopMapWidget) is owner-dirty and
@@ -479,3 +479,107 @@ Flipping the default would:
 
 Sub-pass C is therefore NOT authorized under Phase 3A. Pass 243
 should document the readiness checklist and STOP.
+
+---
+
+## §13. Phase 3B PREP closeout (Passes 244–248)
+
+**Authority:** ChatGPT meta-arbiter relayed dispatch (≡ 232a/b/c)
+plus owner "go full auto" directive, scoped to Passes 244–248
+as preparation-only with hard restriction against semantic
+inversion or default-flip execution.
+
+**Outcome:** Phase 3B PREP sweep landed clean. Sub-pass C
+(default flip `"always"` → `"when-no-caller-bounds"`) remains
+**UNAUTHORIZED**. The four blockers in §12.4 are all that stand
+between the current explicitized surface and the doctrinal
+target; this sweep did not lift any of them.
+
+### What this sweep did NOT do
+
+- Did NOT flip the default. `MapLibreDashboardMapPreview` still
+  ships with `autoFit = "always"` and `callerBoundsExplicit =
+  false`. Zero behavior change for any caller.
+- Did NOT touch ShopMapWidget (owner-dirty).
+- Did NOT change viewport semantics, fit heuristics, motion
+  classes, or the shell hierarchy.
+- Did NOT introduce any imperative camera surface.
+
+### What this sweep DID do
+
+| Pass | Tier | Scope | Artifact |
+| --- | --- | --- | --- |
+| 244 | Doc | Convergence-readiness matrix | `REF_ENGINE3_CONVERGENCE_READINESS_MATRIX_2026-05-09.md` (Audit AI, dd724d4b) |
+| 245 | Doc + Test | Sub-pass C migration simulation + executable simulation tests | `459ff35e` (doc) + `a04c8c69` (test, 9 tests) |
+| 246 | Doc + Test | Convergence-gate certification + reduced-motion × autoFit interaction lock | `1f2c2a79` (doc) + `9ba17574` (test, 16 tests) |
+| 247 | Test | Rollback rehearsal + invariant catch-surface stress + PONC witness | `5cd5b642` (16 tests) |
+| 248 | Doc | This closeout addendum + AI_LOCK standdown | (this commit) |
+
+**Net test additions:** +41 tests across 3 new test files. Full
+suite at end of sweep: 893/893 across 86 files.
+
+### Convergence-readiness state at Phase 3B PREP STOP
+
+The Pass 244 readiness matrix and Pass 245/246 gate certifications
+give the cleanest current picture; this section pins the actionable
+residue:
+
+1. **Authority surface** — explicitized (Phase 3A). 13/14 accessible
+   call sites pass `autoFit` explicitly (the 14th, ShopMapWidget,
+   is owner-dirty and excluded from the CI invariant).
+2. **Default-flip rollback footprint** — proven one-token-simple
+   by Pass 247 §1. JSDoc may also reference the literal default
+   value; signature is the single source of behavior.
+3. **CI invariant catch-surface** — proven tight by Pass 247 §2.
+   Negative samples (new sites, spread-prop sites, mixed-
+   compliance files) are all caught.
+4. **PONC (preview owns no camera)** — proven still held by
+   Pass 247 §3. No `useMap`, no imperative camera APIs, no
+   `maplibre-gl` Map import in the renderer.
+5. **Reduced-motion conformance** — proven invariant across all
+   `(autoFit, callerBoundsExplicit, prefers-reduced-motion)`
+   tuples by Pass 246. Engine 3 remains trivially conformant by
+   motion-absence; the future motion-coupled fit transition
+   regression vector is now closed.
+6. **Pre/post-flip semantic equivalence** — proven by Pass 245
+   for opted-in callers across 0/1/2 shop counts. The flip
+   itself is behavior-neutral for any caller that already passes
+   `autoFit` explicitly.
+
+### What sub-pass C still requires (unchanged from §12.4)
+
+The four blockers carried in from Phase 3A remain:
+
+- ShopMapWidget release from owner-dirty status + explicit audit.
+- Owner authorization with UX screenshot review for ReportDetail
+  (the one true KI-181 hazard site).
+- Owner authorization with UX screenshot review for any other
+  call site whose UX expectation under the new default has not
+  been confirmed.
+- Explicit owner directive to ship the flip.
+
+None of these are technical work. They are owner-decision gates.
+Phase 3B PREP has done everything that can safely be done
+without opening one of those gates.
+
+### KI-181 status at end of Phase 3B PREP
+
+**PARTIAL** — unchanged. Migration is fully prepared; execution
+awaits owner gates above. Bumping to RESOLVED requires sub-pass
+C ship.
+
+### KI-196 status at end of Phase 3B PREP
+
+**PARTIAL** — unchanged. Defensive `EMPTY_PINS` constant or
+caller-convention CI invariant deferred. All Phase 3B PREP
+tests pass `reportPins={[]}` explicitly; no production caller
+triggers the latent loop.
+
+### Next-pass guidance
+
+Do NOT open Pass 249+ as a continuation of Phase 3B. The next
+authorized pass is owner-driven and opens Phase 3C (sub-pass C
+flip) ONLY after the four blockers above are explicitly lifted
+by the owner. Any AI continuing without that explicit lift is
+operating outside scope.
+

@@ -7,11 +7,11 @@
 ## Active session
 
 **Active branch:** BidOnDent-Horizon-Beta
-**Active AI:** Main Builder AI (Phase 3B PREP — owner-authorized full autopilot relay from ChatGPT meta-arbiter; Passes 245/246/247/248 simulation + audit + rehearsal tier; NO sub-pass C default flip, NO semantic inversion, NO Engine 2 work; STOP gate at Pass 248 closeout)
-**Active layer:** L3 (test-only) + REFERENCE docs
-**Locked files:** src/app/**tests**/engine3DefaultFlipSimulation.test.tsx, src/app/**tests**/engine3ReducedMotionAutoFitInteraction.test.tsx (planned), src/app/**tests**/engine3RollbackRehearsal.test.ts (planned), docs/REF_ENGINE_3_CAMERA_AUTHORITY_2026-05-09.md (Phase 3B PREP §13 addendum only)
+**Active AI:** (none — Phase 3B PREP standdown 2026-05-09; sweep complete; sub-pass C remains UNAUTHORIZED)
+**Active layer:** (none)
+**Locked files:** (none)
 **Session start:** 2026-05-08 (cowork-A — Pass 26 owner-authorized continuation under "go full auto" directive; doc-only edits, no source files)
-**Last commit:** (uncommitted on disk pending host-side `rm -f .git/*.lock`) — Pass 14 Step 1.6 dashboard error-UX parity (co-worker AI) + Pass 12/13/14 audit AI edits + Pass 11 evidence batch + Pass 23 Step A MapProgramTopBar canonicalization + Pass 26 doc-only enrollment
+**Last commit:** Pass 248 — Phase 3B PREP closeout (§13 addendum to REF_ENGINE_3_CAMERA_AUTHORITY + AI_LOCK standdown). Phase 3B PREP delivered Passes 244–248: convergence-readiness matrix (Audit AI), default-flip simulation tests (+9), convergence-gate certification, reduced-motion × autoFit interaction lock (+16), rollback rehearsal + CI invariant catch-surface stress + PONC witness (+16). Suite: 893/893 across 86 files. Sub-pass C default flip NOT authorized — owner-decision gates (ShopMapWidget release, ReportDetail UX review, explicit ship directive) remain unlifted.
 
 ## Cooperative-edit lesson logged (2026-05-08 race outcome)
 
