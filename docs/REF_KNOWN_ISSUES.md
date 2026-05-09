@@ -1280,7 +1280,7 @@ last_updated: 2026-05-09
 - No test coverage; no caller-side documentation.
 - **Fix:** addressed in [`PLAN_MAP_CONVERGENCE_SEQUENCE_2026-05-09.md`](PLAN_MAP_CONVERGENCE_SEQUENCE_2026-05-09.md) Phase 1 pass 234 (explicit `autoFit` prop with `'always' | 'when-no-caller-bounds' | 'never'` modes).
 - **Severity:** **P2-HIDDEN-AUTHORITY.**
-- **Status:** OPEN. Resolution gated on LAW ratification + Phase 1 authorization.
+- **Status:** PARTIAL — surface caller-visible at 13/14 production sites. Pass 241 (`18cc8497`) added the `autoFit` prop + `callerBoundsExplicit` companion to `MapLibreDashboardMapPreview` with `"always" | "when-no-caller-bounds" | "never"` modes; Pass 242 (`75fb243c`) explicitized 5 sites; Pass 243 swept the remaining 8 and locked the contract via the new CI invariant `engine3CallSiteAutoFitContract.test.ts`. `ShopMapWidget.tsx` (1/14) remains owner-dirty and is tracked as an explicit allowlist exclusion. Default behavior preserved at every site (sub-pass B doctrine: explicitization without semantic movement). Full RESOLUTION requires sub-pass C — promote ReportDetail to `"when-no-caller-bounds"` + `callerBoundsExplicit` (the actual hazard site) — which changes visible UX and is gated on owner authorization with screenshot review. See [`REF_ENGINE_3_CAMERA_AUTHORITY_2026-05-09.md`](REF_ENGINE_3_CAMERA_AUTHORITY_2026-05-09.md) §12.
 
 ### KI-182: "Navigation" denotes two structurally different runtimes (P1-MENTAL-MODEL)
 
@@ -1403,6 +1403,17 @@ last_updated: 2026-05-09
 - **Fix:** surface a `clearOverlaysOnMode` prop (default `true` to preserve current behavior; opt-out for callers that want sticky overlays). Out of Phase 2 scope per owner authorization.
 - **Severity:** **P3-IMPLICIT-STATE-MUTATION.**
 - **Status:** OPEN.
+
+### KI-196: Engine 3 `reportPins = []` default param creates fresh array ref each render (P3-LATENT-RERENDER-LOOP)
+
+> **Filed 2026-05-09 — Pass 241 Engine 3 sub-pass A debugging.** Surfaced when new motion tests omitted `reportPins={[]}` and the test worker hit a JS heap OOM from an infinite render loop.
+
+- `MapLibreDashboardMapPreview` declares `reportPins = []` as a default param. JavaScript evaluates default-param expressions on every call, so each render produces a NEW empty array reference when the caller omits the prop.
+- The new ref propagates through the `allPoints` useMemo (deps `[shops, reportPins]`) → `fittedView` useMemo (deps `[shops, allPoints]`) → `effectiveFittedView` useMemo (Pass 241; deps `[autoFit, callerBoundsExplicit, fittedView]`) → `useEffect` (deps `[center, zoom, effectiveFittedView]`) → `setViewState` → re-render → infinite loop.
+- **Currently masked in production** because every observed call site (verified during Pass 242 + Pass 243 audits — see [`REF_ENGINE_3_CAMERA_AUTHORITY_2026-05-09.md`](REF_ENGINE_3_CAMERA_AUTHORITY_2026-05-09.md) §12.2) passes `reportPins={[...]}` or `reportPins={[]}` explicitly. The hazard is one new omission away from a runtime crash.
+- **Fix:** hoist `[]` to a module-scope `EMPTY_PINS` constant and change the default param to `reportPins = EMPTY_PINS` (additive; behavior-preserving; closes the hazard at the source). Optional CI invariant: assert every call site passes `reportPins` explicitly.
+- **Severity:** **P3-LATENT-RERENDER-LOOP.**
+- **Status:** OPEN. Deferred from Pass 241 (out of sub-pass A scope) and Pass 243 (out of sub-pass B scope). Owner authorization required for the additive defensive fix.
 
 ### KI-193: shadcn/ui primitives lack `motion-reduce:` opt-out on Radix data-state transitions (P2-LAW-CONFORMANCE)
 

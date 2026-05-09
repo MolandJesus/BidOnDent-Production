@@ -352,6 +352,11 @@ export default function ShopActiveJobsScreen({
                     center={jobMapCenter}
                     zoom={10}
                     isLight={isLight}
+                    /* Pass 243 (KI-181 sub-pass B sweep): autoFit="always"
+                       preserves the pre-Pass-241 fit-driven default for
+                       this multi-job overview. See REF_ENGINE_3_CAMERA_
+                       AUTHORITY_2026-05-09.md §12.2. */
+                    autoFit="always"
                   />
                 </div>
                 <div className="flex flex-wrap items-center gap-2 p-3">

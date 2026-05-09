@@ -408,6 +408,34 @@ Important consequences:
   expected sub-pass B value is `"always"` per the same logic
   as the Insurer/Customer widgets.
 
+#### §12.2.1. Pass 243 sub-pass B sweep completion (8 additional sites + CI invariant)
+
+The Pass 242 manual grep returned a TRUNCATED result set. Pass 243
+introduced a CI invariant (`engine3CallSiteAutoFitContract.test.ts`)
+that walks every `.tsx` under `src/app` (excluding test files) and
+asserts every `<DashboardMapPreview>` opening tag carries an
+explicit `autoFit=` declaration. ShopMapWidget remains an
+explicit owner-dirty allowlist entry (re-audit required when
+released). The invariant immediately surfaced 8 missed sites,
+which Pass 243 explicitized in the same sweep.
+
+| #   | Call site (Pass 243 sweep)         | File:line                                                          | Sub-pass B value                                  | Notes                                       |
+| --- | ---------------------------------- | ------------------------------------------------------------------ | ------------------------------------------------- | ------------------------------------------- |
+| 7   | Shop active-jobs map               | `src/app/components/shop/ShopActiveJobsScreen.tsx:349`             | `"always"`                                        | Multi-job overview                          |
+| 8   | Insurer partner-shops map          | `src/app/components/insurer/InsurerPartnerShopsScreen.tsx:359`     | `"always"`                                        | Partner-distribution                        |
+| 9   | Insurer claims map                 | `src/app/components/insurer/InsurerClaimsScreen.tsx:295`           | `"always"`                                        | Claims-distribution                         |
+| 10  | Shop requests map                  | `src/app/components/shop/ShopRequestsScreen.tsx:298`               | `"always"`                                        | Requests-distribution                       |
+| 11  | Liked shops map                    | `src/app/components/shop/LikedShopsScreen.tsx:197`                 | `"always"`                                        | Saved shops                                 |
+| 12  | Bids geography map                 | `src/app/components/codelayer/BidsGeographyMap.tsx:54`             | `"always"`                                        | Bid distribution                            |
+| 13  | Accepted-bid confirmation mini-map | `src/app/components/codelayer/AcceptedBidConfirmationSheet.tsx:153`| `"always"` (no-op — single shop, fittedView null) | Declared for invariant compliance           |
+| 14  | Report-step service-location       | `src/app/components/codelayer/report/StepServiceLocation.tsx:209`  | `"always"` (no-op — single pin, fittedView null)  | Declared for invariant compliance           |
+
+Total post-sweep inventory: 14 production call sites. 13/14 declare
+`autoFit` explicitly. 1/14 (ShopMapWidget) is owner-dirty and
+tracked as a CI-invariant allowlist exclusion. No silent fit-driven
+behavior remains anywhere in the codebase except behind the
+explicit allowlist entry.
+
 ### §12.3. Latent hazard surfaced during Pass 241 debugging
 
 The component's default param `reportPins = []` evaluates a

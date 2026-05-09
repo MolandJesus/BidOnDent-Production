@@ -298,6 +298,10 @@ export default function InsurerClaimsScreen({
                     center={claimMapCenter}
                     zoom={10}
                     isLight={isLight}
+                    /* Pass 243 (KI-181 sub-pass B sweep): autoFit="always"
+                       preserves the pre-Pass-241 fit-driven default for
+                       this claims-overview map. */
+                    autoFit="always"
                   />
                 </div>
                 <div className="flex flex-wrap items-center gap-2 p-3">

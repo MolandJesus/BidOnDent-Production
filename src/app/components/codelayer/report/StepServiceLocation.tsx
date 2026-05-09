@@ -212,6 +212,11 @@ export default function StepServiceLocation({
                     center={mapCenter}
                     zoom={11}
                     isLight={isLightAppearance}
+                    /* Pass 243 (KI-181 sub-pass B sweep): autoFit="always"
+                       is a no-op here (single report pin → fittedView is
+                       null) but is declared explicitly for invariant
+                       compliance. */
+                    autoFit="always"
                   />
                 </div>
                 <div
