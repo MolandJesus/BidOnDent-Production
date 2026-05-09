@@ -235,6 +235,19 @@ export type MapProgramShellProps =
 
 ### Step C — Migrate `dashboard-fullscreen` first (2 passes)
 
+> **⚠ Pass 191 finding — premise unsound, re-target pending owner decision:**
+> Investigation [`docs/evidence/pass-191-2026-05-09/DASHBOARD_FULLSCREEN_HOST_INVESTIGATION.md`](evidence/pass-191-2026-05-09/DASHBOARD_FULLSCREEN_HOST_INVESTIGATION.md)
+> verified that **no dashboard-side mount of `MapLibreServiceCoverageMap` exists in
+> `src/`**. Dashboard maps are a card-shaped preview rendered by `MapLibreDashboardMapPreview`
+> (a parallel MapLibre instance). The "dashboard-fullscreen" host described in §1 / §3 / §4
+> does not currently exist as a code surface, so sub-pass 3 cannot legitimately target it
+> without first migrating `MapLibreDashboardMapPreview` onto `<MapEngineCanvas>` (a separate
+> structural pass not currently planned). The evidence doc recommends **option (a):
+> re-target sub-pass 3 to `landing-dialog`** (the `CoverageBrowseExperience` host, which
+> already mounts the engine and has the chrome §3 assigns to `landing-dialog`). This
+> would also fold the existing Step D content into Step C. **Holding for owner sign-off
+> before editing the step ordering itself.**
+
 - Lowest risk: dashboard map is the richest UI but has the most tested surface area.
 - Pass C.1: introduce `<MapProgramShell>` with `host="dashboard-fullscreen"` and feed existing `<MapLibreServiceCoverageMap>` into it via `<MapEngineCanvas>` extraction. No behavior change.
 - Pass C.2: relocate dashboard-side legend + ROUTE box into shell slots (`legend`, `leftPanel`). This is the structural fix for KI-164 and KI-166 once the shell positioning is authoritative.
@@ -245,7 +258,7 @@ export type MapProgramShellProps =
 - ✅ **Sub-pass 1 contract lock** (Pass 186, commit `3d59c5c0`): `useMapEngineGeoJSON.test.tsx` shipped — 3 tests pin the 8-key shape, the route lat/lng→lng/lat coordinate swap, and the search-target double-feature output. Vitest 580/580 passing. Any regression during sub-pass 2 will fail at the hook boundary, not look like a downstream rendering bug.
 - ✅ **Sub-pass 2 pre-flight** (Pass 188, 2026-05-09): grep verified **zero `useRef<MapRef>` / `mapRef.current` / `MapRef` consumers anywhere in `src/`** (`grep -rn "useRef<MapRef\\|MapRef\\b\\|mapRef\\.current" src/` returns nothing outside test files). The host does NOT hand a ref outward — `<MapEngineCanvas>` does **not** need `forwardRef` from day one. This avoids a churn cycle if the extraction had assumed otherwise.
 - ✅ **Sub-pass 2** (Pass 189, 2026-05-09): extracted `<MapEngineCanvas>` to `src/app/components/maps/engine/MapEngineCanvas.tsx` (238 lines, under the 300-line soft target — first file in the `engine/` sub-folder per §7.1 architectural note). Lifted: the canvas wrapper div, `<Map>` instance, `AttributionControl`, `NavigationControl`, `MapLibreViewportController`, `MapLibreFollowLocationController`, `MapLibreArrivalCameraEffect`, and `<MapLibreCoverageMapLayers>`. The two side-effect imports that gate `<Map>` initialization (`maplibreResizePatch` and `maplibre-gl/dist/maplibre-gl.css`) moved with the engine — they belong to the canvas, not the chrome host. Plain default-export function component, no `forwardRef`. Host shrunk 347 → 298 lines (-49). `useMapEngineGeoJSON` outputs feed straight in as props. Chrome (`MapSurfaceHeaderBadges`, `MapSurfaceControls`, `MapNavigationHud`, `MapSurfaceStatusBar`, ambient + gold-flow overlays) stays in the host wrapper unchanged. Verified: typecheck PASS, vitest 580/580 PASS, build clean. Pass 186 contract test (`useMapEngineGeoJSON.test.tsx`) still green — the hook boundary survived the extraction without modification.
-- ⏭ **Sub-pass 3 (next)**: introduce `<MapProgramShell host="dashboard-fullscreen">` wrapping `<MapEngineCanvas>` with chrome slots from §2. This is where the host-mounted slot pattern lands.
+- ⏸ **Sub-pass 3 (gated)**: originally planned as introducing `<MapProgramShell host="dashboard-fullscreen">` wrapping `<MapEngineCanvas>` with chrome slots from §2. **Gated by Pass 191 finding** ([evidence/pass-191-2026-05-09/DASHBOARD_FULLSCREEN_HOST_INVESTIGATION.md](evidence/pass-191-2026-05-09/DASHBOARD_FULLSCREEN_HOST_INVESTIGATION.md)) that `dashboard-fullscreen` has no real consumer. Awaiting owner re-target decision (option a — `landing-dialog` first; option b — promote `MapLibreDashboardMapPreview` to the shared engine first). Until then sub-pass 3 does **not** start.
 
 ### Step D — Migrate `landing-dialog` second (1 pass)
 
