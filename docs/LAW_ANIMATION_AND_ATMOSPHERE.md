@@ -1,3 +1,18 @@
+---
+status: CANONICAL
+authority: LAW
+scope: animation-atmosphere
+canonical_source_of_truth: LAW_ANIMATION_AND_ATMOSPHERE.md
+supersedes: []
+superseded_by: null
+safe_for_autopilot: false
+requires_owner_approval: true
+last_topology_audit: 2026-05-09
+runtime_impact_if_misunderstood: high
+ai_summary: Motion canon — trust + spatial-continuity filter, 29 keyframes, mandatory prefers-reduced-motion contract.
+last_updated: 2026-05-09
+---
+
 # BidOnDent — Animation & Atmosphere (LAW)
 
 **Authority level:** LAW — governs all motion, animation, and atmosphere work in BidOnDent. Cannot be violated without explicit per-session override from the project owner.

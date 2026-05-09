@@ -1,3 +1,18 @@
+---
+status: ACTIVE
+authority: PLAN
+scope: builder-master-dispatch-2026-05-07
+canonical_source_of_truth: PLAN_BUILDER_MASTER_2026-05-07.md
+supersedes: []
+superseded_by: null
+safe_for_autopilot: false
+requires_owner_approval: true
+last_topology_audit: 2026-05-09
+runtime_impact_if_misunderstood: high
+ai_summary: Operational dispatch for builder-AI autopilot post-audit; sequenced phases for fresh-chat handoff.
+last_updated: 2026-05-09
+---
+
 # Builder-AI Master Plan (2026-05-07) — Post-Audit Synthesis
 
 **Authority level:** PLAN — operational dispatch for builder-AI autopilot.

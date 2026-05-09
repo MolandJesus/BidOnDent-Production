@@ -1,3 +1,18 @@
+---
+status: DEFERRED
+authority: PLAN
+scope: map-master-vision
+canonical_source_of_truth: PLAN_MAP_MASTER.md
+supersedes: []
+superseded_by: null
+safe_for_autopilot: false
+requires_owner_approval: true
+last_topology_audit: 2026-05-09
+runtime_impact_if_misunderstood: medium
+ai_summary: Strategic map vision (paused during hardening); blue system, atmosphere, day/night planning.
+last_updated: 2026-05-09
+---
+
 # BidOnDent Map Master Plan
 
 > ### ⚡ HARDENING PHASE NOTICE (2026-04-14, AMENDED 2026-05-07)

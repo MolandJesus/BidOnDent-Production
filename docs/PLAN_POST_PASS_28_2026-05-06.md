@@ -1,3 +1,18 @@
+---
+status: DEFERRED
+authority: PLAN
+scope: post-pass-28-decisions
+canonical_source_of_truth: PLAN_POST_PASS_28_2026-05-06.md
+supersedes: []
+superseded_by: null
+safe_for_autopilot: false
+requires_owner_approval: true
+last_topology_audit: 2026-05-09
+runtime_impact_if_misunderstood: medium
+ai_summary: Owner gate decision document for unlocks after Passes 12–28 polish arc; classifies remaining open items.
+last_updated: 2026-05-09
+---
+
 # Plan: BidOnDent post-Pass-28 (2026-05-06)
 
 **Authority:** PLAN — future direction. Not current truth (REF wins; LAW wins over REF).

@@ -1,3 +1,18 @@
+---
+status: HISTORICAL
+authority: PLAN
+scope: audit-deep-dispatch-2026-05-07
+canonical_source_of_truth: PLAN_AUDIT_DEEP_2026-05-07.md
+supersedes: []
+superseded_by: null
+safe_for_autopilot: true
+requires_owner_approval: false
+last_topology_audit: 2026-05-09
+runtime_impact_if_misunderstood: low
+ai_summary: Audit dispatch (2026-05-07) for Chrome browser AI; targets surfaces 8 prior audits did not deeply test.
+last_updated: 2026-05-09
+---
+
 # Deep Audit Plan for Chrome Browser AI — 2026-05-07 (Pass 9 dispatch)
 
 **Authority:** Audit AI has Chrome extension + Supabase MCP (full dashboard) + GitHub browser tab (signed in) + safe-fix authority for SQL data corrections / cleanup DDL / Studio toggles. Does NOT have source code edit access. Does NOT have `git push`. Owner-authorized "full authority" for in-scope work.

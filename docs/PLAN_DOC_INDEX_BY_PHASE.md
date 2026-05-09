@@ -1,3 +1,18 @@
+---
+status: ACTIVE
+authority: PLAN
+scope: doc-index-by-phase
+canonical_source_of_truth: PLAN_DOC_INDEX_BY_PHASE.md
+supersedes: []
+superseded_by: null
+safe_for_autopilot: true
+requires_owner_approval: false
+last_topology_audit: 2026-05-09
+runtime_impact_if_misunderstood: low
+ai_summary: Pre-declared documentation artifacts that Phase 4–8.5 of v3.3 master plan generate; meta-index.
+last_updated: 2026-05-09
+---
+
 # Section-Doc Index by Phase (PLAN)
 
 **Authority level:** PLAN — pre-declares the documentation artifacts that Phase 4 through Phase 8.5 (and provisional Phase 7.6 / KI-113) of the v3.3 master plan will generate.

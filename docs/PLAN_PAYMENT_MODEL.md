@@ -1,3 +1,18 @@
+---
+status: DEFERRED
+authority: PLAN
+scope: payment-model
+canonical_source_of_truth: PLAN_PAYMENT_MODEL.md
+supersedes: []
+superseded_by: null
+safe_for_autopilot: false
+requires_owner_approval: true
+last_topology_audit: 2026-05-09
+runtime_impact_if_misunderstood: medium
+ai_summary: Payment model design; deferred to post-launch per Hardening Plan (Post-Launch Roadmap F1).
+last_updated: 2026-05-09
+---
+
 # BidOnDent — Payment Model Design
 
 > ### ⛔ DEFERRED (2026-04-14)

@@ -1,3 +1,18 @@
+---
+status: ACTIVE
+authority: LAW
+scope: hardening-execution
+canonical_source_of_truth: LAW_HARDENING_PLAN.md
+supersedes: []
+superseded_by: null
+safe_for_autopilot: false
+requires_owner_approval: true
+last_topology_audit: 2026-05-09
+runtime_impact_if_misunderstood: critical
+ai_summary: Soft Launch Hardening execution authority; Phase 0–6 sequence; North Star + Launch Scope Guardrails.
+last_updated: 2026-05-09
+---
+
 # BidOnDent — Hardening Plan (LAW)
 
 **Authority level:** LAW — execution authority during the hardening phase. Governs all current work.

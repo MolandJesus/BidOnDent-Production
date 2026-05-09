@@ -1,3 +1,18 @@
+---
+status: DEFERRED
+authority: PLAN
+scope: chat-system-imessage
+canonical_source_of_truth: PLAN_CHAT_SYSTEM_IMESSAGE_IOS26.md
+supersedes: []
+superseded_by: null
+safe_for_autopilot: false
+requires_owner_approval: true
+last_topology_audit: 2026-05-09
+runtime_impact_if_misunderstood: low
+ai_summary: Future chat system in iOS 26 iMessage design language with BidOnDent skin; do not implement until trigger fires.
+last_updated: 2026-05-09
+---
+
 # PLAN — Chat System (iOS 26 iMessage Design Language + BidOnDent Skin)
 
 **Authority level:** PLAN — future direction, not current truth. Do not implement without owner-fired trigger condition (see §3).

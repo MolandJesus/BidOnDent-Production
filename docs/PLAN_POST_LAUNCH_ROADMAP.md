@@ -1,3 +1,18 @@
+---
+status: DEFERRED
+authority: PLAN
+scope: post-launch-roadmap
+canonical_source_of_truth: PLAN_POST_LAUNCH_ROADMAP.md
+supersedes: []
+superseded_by: null
+safe_for_autopilot: true
+requires_owner_approval: false
+last_topology_audit: 2026-05-09
+runtime_impact_if_misunderstood: low
+ai_summary: Holding area for everything deferred from Soft Launch Hardening; each entry has trigger + priority band.
+last_updated: 2026-05-09
+---
+
 # BidOnDent — Post-Launch Roadmap
 
 **Created:** 2026-04-14
