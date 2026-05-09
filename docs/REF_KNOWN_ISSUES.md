@@ -1384,6 +1384,26 @@ last_updated: 2026-05-09
 - **Severity:** **P2-INVARIANT-NOT-ENFORCED.**
 - **Status:** RESOLVED 2026-05-09 (Pass 238).
 
+### KI-194: Engine 2 tile-mode authority is split across three competing sources (P3-IMPLICIT-AUTHORITY)
+
+> **Filed 2026-05-09 — Pass 239 hidden-authority evidence inventory.** Surfaced by [`REF_HIDDEN_AUTHORITY_EVIDENCE_2026-05-09.md`](REF_HIDDEN_AUTHORITY_EVIDENCE_2026-05-09.md) §2.2 + §4.1.
+
+- `useMapPaneState.ts` resolves the effective `tileMode` from three competing sources without a single caller-visible authority prop: (1) caller `mapTheme` prop, (2) internal `prefers-color-scheme: dark` media-query listener (when `mapTheme === "auto"`), (3) sibling `externalTileMode` prop (when non-null, overrides both above).
+- Caller has no single prop to declare "I own the tile-mode authority outright."
+- **Fix:** additive `tileModeAuthority` prop with explicit precedence semantics (mirrors Pass 237's `autoFit` design for Engine 3). Out of Phase 2 scope per owner authorization.
+- **Severity:** **P3-IMPLICIT-AUTHORITY.**
+- **Status:** OPEN.
+
+### KI-195: Engine 2 guidance-mode silently auto-clears popups (P3-IMPLICIT-STATE-MUTATION)
+
+> **Filed 2026-05-09 — Pass 239 hidden-authority evidence inventory.** Surfaced by [`REF_HIDDEN_AUTHORITY_EVIDENCE_2026-05-09.md`](REF_HIDDEN_AUTHORITY_EVIDENCE_2026-05-09.md) §2.2 + §4.2.
+
+- When `navigationMode === "guidance"`, an internal effect in `useMapPaneState.ts` (lines 240-244) calls `setShopPopup(null)` + `setSavedPlacePopup(null)` + `setRoutePopup(null)`. The caller's prior selection is discarded without any caller-visible signal.
+- Caller has no opt-out for sticky overlays into guidance mode.
+- **Fix:** surface a `clearOverlaysOnMode` prop (default `true` to preserve current behavior; opt-out for callers that want sticky overlays). Out of Phase 2 scope per owner authorization.
+- **Severity:** **P3-IMPLICIT-STATE-MUTATION.**
+- **Status:** OPEN.
+
 ### KI-193: shadcn/ui primitives lack `motion-reduce:` opt-out on Radix data-state transitions (P2-LAW-CONFORMANCE)
 
 > **Filed 2026-05-09 — Pass 238 characterized exclusion from the JSX reduce-motion audit.** Surfaced by the JSX half of the [`reducedMotionContract.test.ts`](../src/app/__tests__/reducedMotionContract.test.ts) audit.
