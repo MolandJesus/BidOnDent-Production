@@ -34,6 +34,98 @@
 
 import { vi } from "vitest";
 
+// ---------------------------------------------------------------
+// Pass 255 (extension of Pass 253) — jsdom localStorage shim.
+//
+// This vitest+jsdom configuration ships a `window.localStorage`
+// object whose prototype methods (`getItem`, `setItem`,
+// `removeItem`, `clear`, `key`) are unbound (`typeof
+// localStorage.getItem === "undefined"`). The accompanying
+// `--localstorage-file was provided without a valid path` Node
+// warning confirms the half-initialized state.
+//
+// Production browsers expose the full Storage API; this is
+// strictly a test-env gap. Same class as Pass 253's auth-js
+// shim — production runtime is UNTOUCHED, only vitest's
+// `globalThis.window.localStorage` gets a complete in-memory
+// implementation that satisfies the Web Storage contract.
+//
+// Without this shim, `MapLibreServiceCoverageMap` cannot be
+// rendered in jsdom because `useMapPerformanceTracking` reads
+// persisted samples on mount via `readPersistedState` →
+// `storage.getItem(...)` → throws.
+//
+// Rollback: trivial — delete this block. Tests that mount the
+// coverage map host will start throwing again, which is the
+// rollback signal.
+// ---------------------------------------------------------------
+if (typeof window !== "undefined") {
+  const inMemoryStore = new Map<string, string>();
+  const inMemoryStorage: Storage = {
+    get length() {
+      return inMemoryStore.size;
+    },
+    clear: () => {
+      inMemoryStore.clear();
+    },
+    getItem: (key: string) => {
+      return inMemoryStore.has(key) ? inMemoryStore.get(key)! : null;
+    },
+    key: (index: number) => {
+      return Array.from(inMemoryStore.keys())[index] ?? null;
+    },
+    removeItem: (key: string) => {
+      inMemoryStore.delete(key);
+    },
+    setItem: (key: string, value: string) => {
+      inMemoryStore.set(key, String(value));
+    },
+  };
+  // Replace whatever jsdom installed with a fully-functional
+  // in-memory Storage. `defineProperty` is required because the
+  // jsdom-installed property is non-writable in some configs.
+  try {
+    Object.defineProperty(window, "localStorage", {
+      configurable: true,
+      enumerable: true,
+      writable: true,
+      value: inMemoryStorage,
+    });
+  } catch {
+    // Fall back to direct assignment if defineProperty is not
+    // permitted. Either way ensures `getItem` is a function.
+    (window as unknown as { localStorage: Storage }).localStorage = inMemoryStorage;
+  }
+  // Also patch sessionStorage for symmetry — same jsdom quirk.
+  const sessionStore = new Map<string, string>();
+  const inMemorySession: Storage = {
+    get length() {
+      return sessionStore.size;
+    },
+    clear: () => {
+      sessionStore.clear();
+    },
+    getItem: (key: string) => (sessionStore.has(key) ? sessionStore.get(key)! : null),
+    key: (index: number) => Array.from(sessionStore.keys())[index] ?? null,
+    removeItem: (key: string) => {
+      sessionStore.delete(key);
+    },
+    setItem: (key: string, value: string) => {
+      sessionStore.set(key, String(value));
+    },
+  };
+  try {
+    Object.defineProperty(window, "sessionStorage", {
+      configurable: true,
+      enumerable: true,
+      writable: true,
+      value: inMemorySession,
+    });
+  } catch {
+    (window as unknown as { sessionStorage: Storage }).sessionStorage = inMemorySession;
+  }
+}
+
 vi.mock("../app/services/supabase/client", () => {
   // Minimal stub satisfying every consumer surface that tests
   // transitively touch. We deliberately do NOT import the real
