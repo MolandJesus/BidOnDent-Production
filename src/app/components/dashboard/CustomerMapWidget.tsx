@@ -158,6 +158,11 @@ export default function CustomerMapWidget({
           isLight={isLight}
           onShopClick={() => onViewShops?.()}
           onMapClick={() => onViewShops?.()}
+          /* Pass 242 (KI-181 sub-pass B audit): autoFit="always".
+             Customer dashboard preview frames partner shops around the
+             customer; fit-driven preserves the visible set. Explicitization
+             preserves current behavior. */
+          autoFit="always"
         />
 
         {/* Bucket 5.6 (KI-074 partial): top ambient gold lamp overlay — simulates

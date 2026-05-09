@@ -334,3 +334,120 @@ Pass 237 ships:
 
 Next authorized pass (per Phase 2 dispatch packet):
 **Pass 238 — reduced-motion CI invariant promotion.**
+
+---
+
+## §12. Phase 3A landing log (added Pass 241/242 — consolidation, not a parallel doc)
+
+Owner directive (Phase 3A dispatch): "prefer consolidation over
+proliferation. Avoid creating parallel doctrine documents unless
+genuinely necessary." This section extends the Pass 237 design
+with the actual Phase 3A landing record so that a reader of the
+design surface can immediately see what shipped and where.
+
+### §12.1. Sub-pass A landing — Pass 241 (commit `18cc8497`)
+
+- File: `src/app/components/dashboard/MapLibreDashboardMapPreview.tsx`.
+- Added exported `AutoFitMode` type (string union: `"always" |
+"when-no-caller-bounds" | "never"`).
+- Added prop `autoFit?: AutoFitMode` (default `"always"`).
+- Added prop `callerBoundsExplicit?: boolean` (default `false`,
+  consulted ONLY under `"when-no-caller-bounds"` mode; inert under
+  `"always"` and `"never"` — locked by symmetric tests #7 + #8).
+- Added `effectiveFittedView` useMemo that gates `fittedView`
+  upstream of the existing `useState` initializer + `useEffect`
+  consumer. Returns `null` when `autoFit === "never"` or when
+  `autoFit === "when-no-caller-bounds" && callerBoundsExplicit`,
+  otherwise returns `fittedView` unchanged.
+- Test file: `MapLibreDashboardMapPreview.motion.test.tsx`. NEW
+  describe block "Engine 3 — Pass 241 § explicit autoFit
+  authority (KI-181 migration sub-pass A)" with 10 tests covering
+  all four behavior branches plus three discipline locks
+  (default-undefined ≡ "always", inertness under "always",
+  inertness under "never") plus dynamic-recompute invariant +
+  source-level token presence.
+- Validation at landing: 849/849 tests pass; build OK; cspell
+  clean. Default behavior byte-identical to pre-Pass-241.
+
+### §12.2. Sub-pass B landing — Pass 242 (call-site explicitization audit)
+
+Inventory of every production call site of
+`<DashboardMapPreview>` and the `autoFit` decision applied. All
+five edited sites declare `autoFit="always"` to make the existing
+implicit fit-driven behavior caller-visible WITHOUT changing
+runtime semantics. Owner doctrine for sub-pass B: "explicitization
+without semantic movement" — the audit deliberately does NOT
+promote any site to `"never"` or `"when-no-caller-bounds"`.
+That promotion is sub-pass C and requires separate authorization.
+
+| #   | Call site                  | File:line                                                     | Current intent                                                                                                                           | Sub-pass B value                                          | Doctrinal sub-pass C target                                                                     |
+| --- | -------------------------- | ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| 1   | Report-detail mini-map     | `src/app/components/reports/ReportDetailScreen.tsx:367`       | Report-centered with bidding shops; ≥2 shops silently override the caller's `[reportCoords.lat, reportCoords.lng]` center via fittedView | `"always"`                                                | `"when-no-caller-bounds"` + `callerBoundsExplicit` (caller centers on the report intentionally) |
+| 2   | Reports-list overview map  | `src/app/components/reports/ReportsListScreen.tsx:208`        | Multi-report overview; reportPins drive fittedView                                                                                       | `"always"`                                                | `"always"` (genuine fit-driven surface — no change at sub-pass C)                               |
+| 3   | Competitor analysis map    | `src/app/components/reports/CompetitorAnalysisScreen.tsx:347` | Competitor distribution; competitorPins drive fittedView                                                                                 | `"always"`                                                | `"always"` (genuine fit-driven surface — no change at sub-pass C)                               |
+| 4   | Insurer network overview   | `src/app/components/dashboard/InsurerMapWidget.tsx:82`        | Partner shops + active reports framed by fittedView                                                                                      | `"always"`                                                | `"always"` (genuine fit-driven surface — no change at sub-pass C)                               |
+| 5   | Customer dashboard preview | `src/app/components/dashboard/CustomerMapWidget.tsx:153`      | Partner shops around customer; fittedView preserves visible set                                                                          | `"always"`                                                | `"always"` (genuine fit-driven surface — no change at sub-pass C)                               |
+| 6   | Shop dashboard widget      | `src/app/components/dashboard/ShopMapWidget.tsx:146`          | Partner shops + reports + service-area circles framed by fittedView                                                                      | **NOT EDITED — owner-dirty per Phase 2/3 hard-stop list** | `"always"` (when owner releases the file)                                                       |
+
+Important consequences:
+
+- Five of six sites are genuine fit-driven surfaces. For those,
+  sub-pass C (default flip) would change `autoFit` semantics
+  silently if any site continued to omit the prop. The Pass 242
+  explicitization closes that risk for the five edited sites.
+- One site (ReportDetail) is the actual KI-181 hazard: a
+  caller-centered framing that the renderer silently overrides
+  when ≥2 shops are present. Sub-pass C target there is
+  `"when-no-caller-bounds"` + `callerBoundsExplicit`. That
+  change WILL alter visible UX (the map will stop reframing
+  when bidding shops appear) and therefore requires explicit
+  owner authorization with screenshot review.
+- ShopMapWidget is the one remaining unaudited surface in the
+  inventory. It is OWNER-DIRTY per the Phase 2/3 hard-stop list
+  and must NOT be edited until released. When released, the
+  expected sub-pass B value is `"always"` per the same logic
+  as the Insurer/Customer widgets.
+
+### §12.3. Latent hazard surfaced during Pass 241 debugging
+
+The component's default param `reportPins = []` evaluates a
+fresh `[]` literal on every render. When an external caller
+omits `reportPins`, every render produces a new array ref →
+the `allPoints` useMemo (deps `[shops, reportPins]`) recomputes
+→ `fittedView` recomputes → `effectiveFittedView` recomputes →
+the `useEffect` (deps `[center, zoom, effectiveFittedView]`)
+refires → `setViewState` → re-render → infinite loop.
+
+In production this is masked because every observed call site
+passes `reportPins={[...stableArray]}` or `reportPins={[]}`
+explicitly (verified during Pass 242 audit — see table above).
+In the test harness it manifests as a worker-OOM. All Pass 241
+new tests pass `reportPins={[]}` explicitly to mirror the
+pre-existing test pattern and to avoid the loop.
+
+This is filed as a latent hazard for Pass 243 to either:
+
+- promote into a new KI with a defensive fix (hoist `[]` to a
+  module-scope `EMPTY_PINS` constant and use `reportPins =
+EMPTY_PINS` — additive, behavior-preserving), or
+- document the convention that all callers MUST pass
+  `reportPins` explicitly and add a CI invariant test that
+  asserts the convention holds.
+
+The decision belongs to Pass 243.
+
+### §12.4. Sub-pass C (default flip) blockers — carried into Pass 243
+
+The doctrinal target default is `autoFit="when-no-caller-bounds"`.
+Flipping the default would:
+
+- silently change behavior at any unaudited or future call site
+  that omits the prop (currently zero, but the convention
+  should be enforced before the flip),
+- require ShopMapWidget to be released from owner-dirty status
+  and explicitly audited,
+- require explicit owner authorization with UX screenshot
+  review for ReportDetail (the only true KI-181 hazard site).
+
+Sub-pass C is therefore NOT authorized under Phase 3A. Pass 243
+should document the readiness checklist and STOP.

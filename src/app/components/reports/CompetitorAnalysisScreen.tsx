@@ -352,6 +352,10 @@ export default function CompetitorAnalysisScreen({
                   isLight={isLight}
                   onShopClick={(shop) => setFocusedCompetitorId(shop.id ?? null)}
                   onMapClick={onOpenMap}
+                  /* Pass 242 (KI-181 sub-pass B audit): autoFit="always".
+                     Competitor-distribution view is fit-driven by design;
+                     explicitization preserves current behavior. */
+                  autoFit="always"
                 />
               </div>
             ) : (

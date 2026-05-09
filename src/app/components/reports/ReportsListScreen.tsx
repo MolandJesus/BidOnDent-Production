@@ -216,6 +216,11 @@ export default function ReportsListScreen({
                         onSelectReport(pin.id);
                       }
                     }}
+                    /* Pass 242 (KI-181 sub-pass B audit): autoFit="always".
+                       Multi-report overview legitimately benefits from
+                       framing the entire pin set; this is a true fit-driven
+                       surface. Explicitization preserves current behavior. */
+                    autoFit="always"
                   />
                 </div>
                 <div className="flex flex-wrap items-center gap-2 p-3">

@@ -38,8 +38,7 @@ export default function InsurerMapWidget({
   // error-state retry button. Brings InsurerMapWidget into parity with
   // DashboardCoveragePanel (Pass 14 Step 1.5) + CustomerMapWidget + ShopMapWidget
   // (Step 1.6).
-  const { partnerShops, isLoadingShops, fetchError, retryPartnerShops } =
-    useCoveragePartnerShops();
+  const { partnerShops, isLoadingShops, fetchError, retryPartnerShops } = useCoveragePartnerShops();
 
   /** Convert claims/reports to map pins via ZIP→coordinate lookup */
   const reportPins = useMemo<ReportPin[]>(() => {
@@ -86,6 +85,11 @@ export default function InsurerMapWidget({
           zoom={9}
           isLight={isLight}
           onMapClick={onViewShops}
+          /* Pass 242 (KI-181 sub-pass B audit): autoFit="always".
+             Insurer network-overview legitimately frames the partner shop
+             set + active reports; fit-driven by design. Explicitization
+             preserves current behavior. */
+          autoFit="always"
         />
 
         {/* Floating badge — top left */}

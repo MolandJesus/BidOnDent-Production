@@ -371,6 +371,14 @@ export default function ReportDetailScreen({
                 zoom={11}
                 isLight={isLight}
                 onMapClick={onFindShops}
+                /* Pass 242 (KI-181 sub-pass B audit): autoFit="always" matches
+                   pre-Pass-241 implicit behavior. With ≥2 bidding shops the
+                   fittedView memo currently overrides the caller center.
+                   Doctrinal target for sub-pass C is "when-no-caller-bounds"
+                   + callerBoundsExplicit (the caller centers on the report
+                   intentionally), but flipping defaults is NOT authorized
+                   under Phase 3A. Explicit "always" preserves today's UX. */
+                autoFit="always"
               />
               {onFindShops && (
                 <div
