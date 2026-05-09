@@ -32,13 +32,13 @@ Read of [MapLibreShopDirectoryMapPane.tsx:450-510](../../../src/app/components/s
 
 In `MapLibreShopDirectoryMapPane.tsx` JSX (return block, lines ~440-510), four sibling overlays mount at the same depth as `<Map>`. Their render gates:
 
-| # | Overlay                  | Mount line                                                                                                              | Render gate                                                                | Visible during pre-`mapLoaded` window? |
-|---|--------------------------|-------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------|----------------------------------------|
-| 1 | `<Map>` itself           | [:303](../../../src/app/components/shop/MapLibreShopDirectoryMapPane.tsx#L303)                                          | always mounted; tiles load progressively                                   | **Yes** — partially-rendered tiles    |
-| 2 | `<MapLoadingSkeleton>`   | [:461](../../../src/app/components/shop/MapLibreShopDirectoryMapPane.tsx#L461)                                          | always mounted; **internally** branches on `mapLoaded` / `mapLoadFailed`   | **Yes** — spinner + "Loading map..."   |
-| 3 | `<MapTilePicker>`        | [:469](../../../src/app/components/shop/MapLibreShopDirectoryMapPane.tsx#L469)                                          | gated only on `!isGuidanceActive && !suppressTilePicker` — NOT on `mapLoaded` | **Yes** — fully visible               |
-| 4 | `<MapEmptyState>`        | [:478](../../../src/app/components/shop/MapLibreShopDirectoryMapPane.tsx#L478)                                          | always mounted; internally checks `shopCount === 0`                       | **Yes if shopCount===0**              |
-| 5 | `<MapPaneBottomOverlay>` | [:482](../../../src/app/components/shop/MapLibreShopDirectoryMapPane.tsx#L482)                                          | gated only on `!suppressBottomCard` — NOT on `mapLoaded`                  | **Yes** — selected shop card + legend  |
+| #   | Overlay                  | Mount line                                                                     | Render gate                                                                   | Visible during pre-`mapLoaded` window? |
+| --- | ------------------------ | ------------------------------------------------------------------------------ | ----------------------------------------------------------------------------- | -------------------------------------- |
+| 1   | `<Map>` itself           | [:303](../../../src/app/components/shop/MapLibreShopDirectoryMapPane.tsx#L303) | always mounted; tiles load progressively                                      | **Yes** — partially-rendered tiles     |
+| 2   | `<MapLoadingSkeleton>`   | [:461](../../../src/app/components/shop/MapLibreShopDirectoryMapPane.tsx#L461) | always mounted; **internally** branches on `mapLoaded` / `mapLoadFailed`      | **Yes** — spinner + "Loading map..."   |
+| 3   | `<MapTilePicker>`        | [:469](../../../src/app/components/shop/MapLibreShopDirectoryMapPane.tsx#L469) | gated only on `!isGuidanceActive && !suppressTilePicker` — NOT on `mapLoaded` | **Yes** — fully visible                |
+| 4   | `<MapEmptyState>`        | [:478](../../../src/app/components/shop/MapLibreShopDirectoryMapPane.tsx#L478) | always mounted; internally checks `shopCount === 0`                           | **Yes if shopCount===0**               |
+| 5   | `<MapPaneBottomOverlay>` | [:482](../../../src/app/components/shop/MapLibreShopDirectoryMapPane.tsx#L482) | gated only on `!suppressBottomCard` — NOT on `mapLoaded`                      | **Yes** — selected shop card + legend  |
 
 Five sibling overlay surfaces, **none gated on `mapLoaded`** except (2) which renders its own contents (spinner) and (4) which has internal empty-state handling. The audit's "three layered states + faded ROUTE box + faded legend" maps cleanly to:
 
@@ -75,6 +75,7 @@ KI-168 names two acceptable directions; I'll map both:
 > "bottom panels should not render until map hydrated"
 
 **Mechanical change:**
+
 - In `MapLibreShopDirectoryMapPane.tsx` line 482, change `!suppressBottomCard` to `!suppressBottomCard && mapLoaded`.
 - Same treatment for `MapTilePicker` line 469: add `&& mapLoaded` to the gate.
 - Add a 200-300ms entrance fade once `mapLoaded` flips so the chrome doesn't pop in. Prefer the existing `map-ui-enter` keyframe + `motion-reduce:animate-none` paired class (per Pass 190 finding 6, verify the keyframe bakes the reduce guard).
@@ -87,6 +88,7 @@ KI-168 names two acceptable directions; I'll map both:
 > "spinner should be the only visible chrome during load"
 
 **Mechanical change:**
+
 - Render `<MapLoadingSkeleton>` with a more opaque backdrop that fully covers the bottom overlay during load.
 - Or: in `<MapLoadingSkeleton>` while `!mapLoaded`, render an `aria-hidden` opaque scrim covering the full pane that visually obscures the bottom overlays while leaving them in the DOM.
 - Bottom panels remain mounted (saves the entrance animation cost) but are hidden behind the scrim.
