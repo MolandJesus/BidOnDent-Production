@@ -65,8 +65,17 @@ export function HomeOnboardingCard({
         isLight ? "text-slate-800" : "text-white"
       }`}
       style={{
+        // Pass 18 (cowork-A) — LAW Light-Mode Surface Rule violation fix.
+        // Previous gradient started at `rgba(255, 255, 255, 0.98)` which is
+        // explicitly banned per LAW_PROJECT_RULES.md § "Forbidden in light
+        // mode" item 1 ("No pure-white surfaces" — panel/section/card/shell
+        // backgrounds). Replaced with cool blue-gray glass starting from
+        // `rgba(241, 246, 253, 0.96)` (matches the existing mid-stop, drops
+        // the white start). Preserves the cool-glass intent + the depth
+        // gradient direction; satisfies the LAW canonical Light-Mode
+        // Surface Rule baseline. Dark-mode gradient unchanged.
         background: isLight
-          ? "linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(241, 246, 253, 0.94) 50%, rgba(231, 240, 252, 0.92) 100%)"
+          ? "linear-gradient(135deg, rgba(241, 246, 253, 0.96) 0%, rgba(231, 240, 252, 0.92) 50%, rgba(214, 226, 244, 0.88) 100%)"
           : "linear-gradient(135deg, rgba(15, 30, 60, 0.92) 0%, rgba(10, 22, 48, 0.88) 50%, rgba(20, 40, 80, 0.85) 100%)",
       }}
     >
@@ -201,7 +210,16 @@ export function HomeQuickActions({
                   actionSurfaceClasses[index % actionSurfaceClasses.length]
                 } ${
                   isLight
-                    ? "border-[rgba(147,197,253,0.32)] shadow-[0_10px_22px_rgba(15,23,42,0.08),inset_0_1px_0_rgba(255,255,255,0.85),0_0_0_1px_rgba(191,219,254,0.18)] hover:shadow-[0_18px_36px_rgba(15,23,42,0.12),inset_0_1px_0_rgba(255,255,255,0.92),0_0_0_1px_rgba(147,197,253,0.32),0_0_24px_rgba(59,130,246,0.10)] hover:-translate-y-0.5"
+                    ? // Pass 18 (cowork-A) — LAW Light-Mode Surface Rule fix.
+                      // Replaced `inset_0_1px_0_rgba(255,255,255,0.85)` (idle)
+                      // and `rgba(255,255,255,0.92)` (hover) with canonical
+                      // warm-cream highlight `rgba(254,247,232,*)` per
+                      // LAW_PROJECT_RULES.md § "Forbidden in light mode"
+                      // item 2 ("No pure-white inset highlights — top-edge
+                      // highlights must be warm cream rgba(254, 247, 232,
+                      // 0.88-0.92)"). Idle 0.88 / hover 0.92 within the
+                      // documented range.
+                      "border-[rgba(147,197,253,0.32)] shadow-[0_10px_22px_rgba(15,23,42,0.08),inset_0_1px_0_rgba(254,247,232,0.88),0_0_0_1px_rgba(191,219,254,0.18)] hover:shadow-[0_18px_36px_rgba(15,23,42,0.12),inset_0_1px_0_rgba(254,247,232,0.92),0_0_0_1px_rgba(147,197,253,0.32),0_0_24px_rgba(59,130,246,0.10)] hover:-translate-y-0.5"
                     : "hover:-translate-y-0.5 hover:shadow-[0_22px_44px_rgba(2,6,23,0.42),inset_0_1px_0_rgba(147,197,253,0.18),inset_0_-1px_0_rgba(196,144,65,0.18),0_0_0_1px_rgba(96,165,250,0.30),0_0_28px_rgba(37,99,235,0.14),0_0_22px_rgba(196,130,45,0.16)]"
                 }`}
               >

@@ -1,6 +1,12 @@
 /**
  * Photo Upload Utilities for Demo Mode
  * Converts photos to base64 for localStorage storage
+ *
+ * Pass 25 (audit AI) — pruned 4 dead exports per dormant-exports sweep:
+ * `fileToBase64`, `uploadPhotoDemo`, `getLocalStorageUsage`, and
+ * `hasLocalStorageSpace` had zero source-tree consumers (independently
+ * verified vs co-worker AI's earlier finding). `compressImage` survives
+ * with 6 consumers across the photo-upload surfaces.
  */
 
 const MAX_PHOTO_SIZE_BYTES = 25 * 1024 * 1024; // 25MB hard cap before processing
@@ -14,28 +20,6 @@ function validatePhotoFile(file: File): void {
     throw new Error(`File too large (${sizeMB}MB). Maximum supported size is 25MB.`);
   }
 }
-
-/**
- * Convert File to base64 data URL
- * For demo mode - stores photos directly in localStorage
- */
-export const fileToBase64 = (file: File): Promise<string> => {
-  validatePhotoFile(file);
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-
-    reader.onloadend = () => {
-      const base64String = reader.result as string;
-      resolve(base64String);
-    };
-
-    reader.onerror = () => {
-      reject(new Error("Failed to read file"));
-    };
-
-    reader.readAsDataURL(file);
-  });
-};
 
 /**
  * Compress image before converting to base64
@@ -89,66 +73,4 @@ export const compressImage = async (
     reader.onerror = () => reject(new Error("Failed to read file"));
     reader.readAsDataURL(file);
   });
-};
-
-/**
- * Upload photo for demo mode
- * Compresses and converts to base64
- */
-export const uploadPhotoDemo = async (file: File): Promise<string> => {
-  try {
-    // Compress image to reduce localStorage usage
-    const base64 = await compressImage(file, 1200, 0.8);
-
-    if (import.meta.env.DEV)
-      console.log("📸 [DEMO MODE] Photo uploaded:", {
-        originalSize: `${(file.size / 1024).toFixed(2)} KB`,
-        compressedSize: `${((base64.length * 0.75) / 1024).toFixed(2)} KB`,
-        compression: `${((1 - (base64.length * 0.75) / file.size) * 100).toFixed(1)}%`,
-      });
-
-    return base64;
-  } catch (error) {
-    if (import.meta.env.DEV) console.error("❌ [DEMO MODE] Photo upload failed:", error);
-    throw error;
-  }
-};
-
-/**
- * Get estimated localStorage usage
- * Helpful for debugging storage quota issues
- */
-export const getLocalStorageUsage = (): {
-  used: number;
-  usedMB: string;
-  percentUsed: string;
-} => {
-  let total = 0;
-
-  for (const key in localStorage) {
-    if (localStorage.hasOwnProperty(key)) {
-      total += localStorage[key].length + key.length;
-    }
-  }
-
-  // Approximate localStorage limit is 5-10MB (varies by browser)
-  const approximateLimit = 5 * 1024 * 1024; // 5MB
-
-  return {
-    used: total,
-    usedMB: (total / (1024 * 1024)).toFixed(2),
-    percentUsed: ((total / approximateLimit) * 100).toFixed(1),
-  };
-};
-
-/**
- * Check if there's enough space in localStorage
- * Call before uploading multiple photos
- */
-export const hasLocalStorageSpace = (requiredBytes: number = 500000): boolean => {
-  const usage = getLocalStorageUsage();
-  const approximateLimit = 5 * 1024 * 1024; // 5MB
-  const available = approximateLimit - usage.used;
-
-  return available > requiredBytes;
 };

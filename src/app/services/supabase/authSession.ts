@@ -35,7 +35,16 @@ export async function getClerkTokenForEdgeRequests() {
   try {
     return await clerkTokenGetter();
   } catch (error) {
-    console.warn("[Auth] Failed to resolve Clerk token for edge request:", error);
+    // Pass 19 (cowork-A) — security sweep. The error object from
+    // clerkTokenGetter() can carry JWT fragments / expired-token hints /
+    // other auth-session detail that should not surface in production
+    // browser consoles or downstream log-aggregator pipelines. Gate to
+    // DEV-only per the LAW_PROJECT_RULES.md "PII exfiltration defense"
+    // posture; production observability for this failure mode lives in
+    // the edge-function logs, not the browser console.
+    if (import.meta.env.DEV) {
+      console.warn("[Auth] Failed to resolve Clerk token for edge request:", error);
+    }
     return null;
   }
 }

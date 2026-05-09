@@ -1,5 +1,6 @@
 import { supabase } from "./client";
 import { fetchGeocodeSearchResults } from "../navigation/geocodingClient";
+import { createTimeoutAbortController } from "../navigation/requestTimeout";
 import type { PartnerShopMapRecord } from "./types";
 
 export type Coordinates = {
@@ -149,19 +150,60 @@ export function resolveShopCoordinates(shop: PartnerShopMapRecord): Coordinates 
   return zipToCoordinates(shop.zip_code);
 }
 
-export async function getPublicPartnerShops(): Promise<PartnerShopMapRecord[]> {
-  const { data, error } = await supabase
-    .from("public_partner_shops")
-    .select(
-      "id, shop_name, address, city, state, zip_code, latitude, longitude, rating, specialties, phone_number, email, is_active"
-    )
-    .eq("is_active", true)
-    .order("shop_name", { ascending: true });
+/**
+ * Pass 14 (audit AI) — KI-165 root-cause remediation.
+ *
+ * The Supabase JS client does not auto-timeout queries; bare `await` on a
+ * stalled query never resolves, which leaves any upstream loading-state
+ * pinned (e.g. the `useCoveragePartnerShops` hook + the four dashboard
+ * widgets that consume it — CustomerMapWidget's "Finding shops…" pill is
+ * the most user-visible manifestation). Wrap the query in
+ * `createTimeoutAbortController` so the loading-state contract holds even
+ * under backend stalls (cold start, slow query, network blip).
+ *
+ * 8s ceiling matches the canonical pattern used by
+ * `services/navigation/geocodingClient`. Callers may pass their own
+ * `AbortSignal` to override (e.g. for explicit cancel-on-unmount); when
+ * absent, an internal timeout is created and cleared in `finally`.
+ *
+ * Pass 12+ findings: `services/navigation/requestTimeout.ts` is the canonical
+ * helper but only `navigation/` services consumed it pre-Pass-14. This is
+ * the first `services/supabase/` consumer; pattern can extend to the other
+ * 16 unguarded service fetches in subsequent passes (out of scope here).
+ */
+export async function getPublicPartnerShops(
+  signal?: AbortSignal,
+): Promise<PartnerShopMapRecord[]> {
+  const internalRequest = signal ? null : createTimeoutAbortController(8000);
+  const effectiveSignal = signal ?? internalRequest?.controller.signal;
 
-  if (error) {
-    if (import.meta.env.DEV) console.warn("Public partner shops query failed", error.message);
-    throw new Error(error.message || "Failed to load public partner shops");
+  try {
+    const query = supabase
+      .from("public_partner_shops")
+      .select(
+        "id, shop_name, address, city, state, zip_code, latitude, longitude, rating, specialties, phone_number, email, is_active"
+      )
+      .eq("is_active", true)
+      .order("shop_name", { ascending: true });
+
+    const { data, error } = await (effectiveSignal
+      ? query.abortSignal(effectiveSignal)
+      : query);
+
+    if (error) {
+      if (import.meta.env.DEV) console.warn("Public partner shops query failed", error.message);
+      // Surface a user-friendly message when the abort was our internal
+      // timeout (rather than a caller-supplied cancellation). This lets the
+      // UI distinguish "request timed out" from "real error" so retry
+      // affordances can be more forgiving on timeouts.
+      if (internalRequest?.didTimeout()) {
+        throw new Error("Partner shops request timed out — please retry.");
+      }
+      throw new Error(error.message || "Failed to load public partner shops");
+    }
+
+    return (data || []) as PartnerShopMapRecord[];
+  } finally {
+    internalRequest?.clear();
   }
-
-  return (data || []) as PartnerShopMapRecord[];
 }

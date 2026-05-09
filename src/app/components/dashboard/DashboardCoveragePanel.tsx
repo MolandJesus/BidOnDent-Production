@@ -40,7 +40,14 @@ export default function DashboardCoveragePanel({
 }: DashboardCoveragePanelProps) {
   const isLight = appearanceMode === "light";
   const primeVoice = useNavigationVoicePriming();
-  const { partnerShops, isLoadingShops } = useCoveragePartnerShops();
+  // Pass 14 Step 1.5 (audit AI) — destructure fetchError so partial-failure
+  // states surface a retry affordance instead of silently degrading to an
+  // empty/pre-fetch state. Sibling dashboard widgets (CustomerMapWidget,
+  // ShopMapWidget, InsurerMapWidget) already render the error path; this
+  // brings DashboardCoveragePanel into parity. Co-worker AI Pass 14
+  // fetchError-consumer survey surfaced the inconsistency.
+  const { partnerShops, isLoadingShops, fetchError, retryPartnerShops } =
+    useCoveragePartnerShops();
   const [isMapExpanded, setIsMapExpanded] = useState(false);
   // Pass 12 #7 — default tile mode follows appearanceMode so the dashboard
   // Coverage map opens with a tile palette consistent with the surrounding
@@ -276,6 +283,29 @@ export default function DashboardCoveragePanel({
           <p className={`mt-3 text-xs ${isLight ? "text-slate-600" : "text-slate-500"}`}>
             Syncing partner shop markers for the command center...
           </p>
+        ) : fetchError ? (
+          <div
+            className={`mt-3 flex items-center gap-2 text-xs ${
+              isLight ? "text-rose-700" : "text-rose-300"
+            }`}
+            role="status"
+          >
+            <span className="flex-1">
+              Partner shop sync failed. {fetchError.includes("timed out") ? "Request timed out." : ""}
+            </span>
+            <button
+              type="button"
+              onClick={retryPartnerShops}
+              className={`rounded-md border px-2 py-1 font-semibold transition-colors min-h-[28px] motion-reduce:transition-none ${
+                isLight
+                  ? "border-rose-300 bg-rose-50 hover:bg-rose-100"
+                  : "border-rose-400/40 bg-rose-400/10 hover:bg-rose-400/20"
+              }`}
+              aria-label="Retry partner shop sync"
+            >
+              Retry
+            </button>
+          </div>
         ) : null}
       </section>
 

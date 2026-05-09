@@ -183,12 +183,23 @@ export async function updateReportStatus(
       }
     );
     if (result?.success === false || result?.report === null) {
-      console.warn("updateReportStatus: 0 rows updated (report not found or access denied). reportId:", reportId, "clerkUserId:", clerkUserId);
+      // Pass 19 (cowork-A) — security sweep. clerkUserId is user-identifying
+      // PII; do not emit to production browser console. DEV-gated diagnostic
+      // retains debug value during local development; production failures
+      // surface to the user via the existing return-false path + the
+      // upstream toast/error UI per LAW_PROJECT_RULES Law 5.
+      if (import.meta.env.DEV) {
+        console.warn("updateReportStatus: 0 rows updated (report not found or access denied). reportId:", reportId, "clerkUserId:", clerkUserId);
+      }
       return false;
     }
     return true;
   } catch (error) {
-    console.error("updateReportStatus failed. reportId:", reportId, "clerkUserId:", clerkUserId, "error:", error);
+    // Pass 19 (cowork-A) — security sweep. Same reasoning as the warn
+    // branch above: gate the clerkUserId-bearing diagnostic to DEV.
+    if (import.meta.env.DEV) {
+      console.error("updateReportStatus failed. reportId:", reportId, "clerkUserId:", clerkUserId, "error:", error);
+    }
     return false;
   }
 }

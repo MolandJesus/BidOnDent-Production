@@ -53,7 +53,17 @@ export default function CustomerMapWidget({
     "bd-dashboard-section--accent-cyan",
     "bd-dashboard-section--deep",
   ];
-  const { partnerShops: rawShops, isLoadingShops, fetchError } = useCoveragePartnerShops();
+  // Pass 14 Step 1.6 (co-worker AI) — destructure retryPartnerShops for the
+  // error-state retry button. Brings CustomerMapWidget into parity with
+  // DashboardCoveragePanel (Pass 14 Step 1.5) by surfacing a recoverable
+  // affordance instead of a static message that gives the user no path
+  // forward. Pattern matches Step 1.5 exactly.
+  const {
+    partnerShops: rawShops,
+    isLoadingShops,
+    fetchError,
+    retryPartnerShops,
+  } = useCoveragePartnerShops();
   const partnerShops = rawShops as CoveragePartnerShop[];
   const [mapCenter] = useState<[number, number]>(defaultCoverageCenter);
   const [mapZoom] = useState(9);
@@ -329,11 +339,28 @@ export default function CustomerMapWidget({
             className={`bd-dashboard-note flex items-center gap-2 rounded-xl px-3 py-2.5 animate-in fade-in slide-in-from-top-1 duration-200 motion-reduce:animate-none ${
               isLight ? "text-rose-700" : "text-rose-200"
             }`}
+            role="status"
           >
             <Store
               className={`h-4 w-4 shrink-0 ${isLight ? "text-rose-400" : "text-rose-400/60"}`}
             />
-            <p className="text-xs">Could not load shops. Check your connection.</p>
+            <p className="flex-1 text-xs">
+              {fetchError.includes("timed out")
+                ? "Shop sync timed out. Please retry."
+                : "Could not load shops. Check your connection."}
+            </p>
+            <button
+              type="button"
+              onClick={retryPartnerShops}
+              className={`rounded-md border px-2 py-1 text-xs font-semibold transition-colors min-h-[28px] motion-reduce:transition-none ${
+                isLight
+                  ? "border-rose-300 bg-rose-50 hover:bg-rose-100"
+                  : "border-rose-400/40 bg-rose-400/10 hover:bg-rose-400/20"
+              }`}
+              aria-label="Retry shop sync"
+            >
+              Retry
+            </button>
           </div>
         ) : !isLoadingShops ? (
           <div className="flex flex-col items-center gap-1.5 py-3">

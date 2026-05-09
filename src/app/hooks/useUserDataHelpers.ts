@@ -1,28 +1,25 @@
 import { STORAGE_KEYS } from "../constants";
 import type { UserData } from "../types";
-import {
-  getUserCacheKey as buildUserCacheKey,
-  readLocalStorageItemSafely,
-  writeLocalStorageItemSafely,
-} from "./userDataUtils";
 import { isCachedUserData, sanitizeCachedUserData } from "./userDataValidation";
 
-type CachePayloadArgs = {
-  userInfo: UserData["userInfo"];
-  vehicles: UserData["vehicles"];
-  reports: UserData["reports"];
-  bids: UserData["bids"];
-  userPhone: string;
-  redirectInfo: UserData["redirectInfo"];
-  notifications: UserData["notifications"];
-  hasSeenPhotoGuide: boolean;
-  photoStorage: Record<string, string[]>;
-};
-
-type CachedUserDataResult = {
-  raw: string;
-  data: UserData;
-};
+/**
+ * Pass 25 (audit AI) — pruned 6 dead exports from this helper file per
+ * dormant-exports sweep: `getLastActiveEmail`, `loadCachedUserData`,
+ * `saveUserDataCache`, `buildUserDataCachePayload`, `isCloudImageUrl`,
+ * `createSupabaseReportPayload`. Each had zero source-tree consumers
+ * (independently verified vs co-worker AI's earlier finding).
+ *
+ * Surviving exports (consumer counts in parentheses):
+ *  - `normalizeEmail` (11)
+ *  - `getUserCacheKey` (12)
+ *  - `parseCachedUserData` (4)
+ *  - `buildPhotoStorageFromReports` (8)
+ *
+ * Dead-helper imports also dropped: `buildUserCacheKey` aliased import
+ * (used by `loadCachedUserData`/`saveUserDataCache`), `readLocalStorageItemSafely`/
+ * `writeLocalStorageItemSafely` (used by the same dead pair). `STORAGE_KEYS`
+ * stays for `getUserCacheKey` consumer.
+ */
 
 type ReportPhotoSource = {
   id?: string;
@@ -39,35 +36,6 @@ export function getUserCacheKey(email?: string): string {
   return normalized ? `${STORAGE_KEYS.USER_DATA}:${normalized}` : STORAGE_KEYS.USER_DATA;
 }
 
-export function getLastActiveEmail(): string {
-  const lastActive = readLocalStorageItemSafely(STORAGE_KEYS.USER_DATA_LAST_ACTIVE);
-  return normalizeEmail(lastActive || undefined);
-}
-
-export function loadCachedUserData(): CachedUserDataResult | null {
-  const lastActiveEmail = getLastActiveEmail();
-  const lastActiveCacheKey = lastActiveEmail
-    ? buildUserCacheKey(lastActiveEmail)
-    : STORAGE_KEYS.USER_DATA;
-  const cachedData =
-    readLocalStorageItemSafely(lastActiveCacheKey) ||
-    readLocalStorageItemSafely(STORAGE_KEYS.USER_DATA);
-
-  if (!cachedData) {
-    return null;
-  }
-
-  const parsed = parseCachedUserData(cachedData);
-  if (!parsed) {
-    return null;
-  }
-
-  return {
-    raw: cachedData,
-    data: parsed,
-  };
-}
-
 export function parseCachedUserData(raw: string): UserData | null {
   try {
     const parsed: unknown = JSON.parse(raw);
@@ -76,17 +44,6 @@ export function parseCachedUserData(raw: string): UserData | null {
     if (import.meta.env.DEV) console.error("Error loading cached data:", error);
     return null;
   }
-}
-
-export function saveUserDataCache(userData: UserData, email?: string): void {
-  writeLocalStorageItemSafely(
-    buildUserCacheKey(email || userData.userInfo.email),
-    JSON.stringify(userData)
-  );
-  writeLocalStorageItemSafely(
-    STORAGE_KEYS.USER_DATA_LAST_ACTIVE,
-    normalizeEmail(email || userData.userInfo.email)
-  );
 }
 
 export function buildPhotoStorageFromReports(
@@ -102,55 +59,4 @@ export function buildPhotoStorageFromReports(
   });
 
   return photoStorageData;
-}
-
-export function buildUserDataCachePayload(args: CachePayloadArgs): UserData {
-  const {
-    userInfo,
-    vehicles,
-    reports,
-    bids,
-    userPhone,
-    redirectInfo,
-    notifications,
-    hasSeenPhotoGuide,
-    photoStorage,
-  } = args;
-
-  return {
-    userInfo,
-    vehicles,
-    reports,
-    bids,
-    userPhone,
-    redirectInfo,
-    notifications,
-    hasSeenPhotoGuide,
-    photoStorage,
-  };
-}
-
-export function isCloudImageUrl(imageUrl?: string): boolean {
-  return Boolean(imageUrl && (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")));
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- accepts both frontend and Supabase report shapes
-export function createSupabaseReportPayload(report: Record<string, any>) {
-  const vehicleInfo = report.vehicle || report.vehicleInfo || {};
-
-  return {
-    id: report.id,
-    vehicle_make: vehicleInfo.make || "",
-    vehicle_model: vehicleInfo.model || "",
-    vehicle_year: parseInt(vehicleInfo.year || "0", 10),
-    damage_type: report.damageArea || "unknown",
-    damage_severity: "moderate",
-    damage_description: report.description || "",
-    damage_location: report.damageArea || "",
-    photo_urls: report.photos || [],
-    insurance_claim: false,
-    preferred_contact: "email",
-    additional_notes: report.incident || "",
-    status: report.status || "pending",
-  };
 }

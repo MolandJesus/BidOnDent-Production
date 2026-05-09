@@ -108,8 +108,10 @@ export const buildPhotoStorageFromReports = (reportsData: FrontendReport[]) => {
 /** Convert a Supabase report to a frontend report — delegates to canonical adapter. */
 export const transformSupabaseReport = reportFromDb;
 
-/** Convert a frontend DamageReport to Supabase shape for map rendering components — delegates to canonical adapter. */
-export const toMapReportShape = reportToDb;
+// Pass 18b (audit AI) — `toMapReportShape` removed as dead code. Independent
+// grep confirmed zero source-tree consumers (the alias was a thin wrapper
+// around `reportToDb` that never got wired up). Sibling alias
+// `transformSupabaseReport` is alive (5 consumers) and stays.
 
 /** Build a DB-shaped report payload from mixed-shape input — delegates to canonical adapter. */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- accepts both frontend and Supabase report shapes

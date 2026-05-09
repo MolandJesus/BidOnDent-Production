@@ -173,7 +173,22 @@ export default function ShopDirectoryRoutePreviewCard({
                 onClick={() => onSelectRoute(route.id)}
                 type="button"
               >
-                <span className="block font-semibold">{route.estimatedDurationMinutes}m</span>
+                {/*
+                  Pass 13 (audit AI) — KI-162-reopen / KI-169 second-half closure.
+                  Pass 175 added "N min" suffix at shopDirectoryNavigationDerived.ts:173
+                  and ShopDirectoryGuidanceCard.tsx:291 but missed this third render
+                  site (co-worker AI Pass 11 T-C surfaced the partial application).
+                  Without the space + " min" suffix, the duration value rendered as
+                  "{N}m" — a duration formatted as if it were distance — while the
+                  sibling `route.totalDistanceLabel` below renders miles. Two
+                  siblings, two unit semantics, top one mislabeled. This is the
+                  upstream display-side cause of KI-169's "1005m / 853.4 mi" mixed
+                  units bug; the route-engine sanity-clamp shipped in Pass 179
+                  closed the data-side half.
+                */}
+                <span className="block font-semibold">
+                  {route.estimatedDurationMinutes} min
+                </span>
                 <span
                   className={`block text-[10px] ${isActive ? routeSubtextActive : routeSubtext}`}
                 >

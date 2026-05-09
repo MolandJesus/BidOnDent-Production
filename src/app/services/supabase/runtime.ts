@@ -3,6 +3,7 @@ import {
   hasClerkTokenGetter,
   waitForClerkTokenGetter,
 } from "./authSession";
+import { createTimeoutAbortController } from "../navigation/requestTimeout";
 
 // Read Supabase config from environment variables (.env)
 const envUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
@@ -234,6 +235,20 @@ export async function parseSupabaseEdgeResponse<T>(response: Response): Promise<
   return payload as T;
 }
 
+/**
+ * Pass 14 Step 3 (audit AI) — KI-165 root-cause class extension. The shared
+ * `requestSupabaseEdge` wrapper was unguarded against timeouts, so any
+ * downstream consumer (and there are many across the codebase) inherited
+ * the indefinite-hang vulnerability. Wrapping here is the highest-leverage
+ * single fix in the service layer: every consumer benefits without
+ * per-call edits. 10s ceiling — slightly more generous than the 8s used on
+ * read-mostly paths because edge functions cover both reads and writes.
+ *
+ * Caller-supplied `signal` (via `RequestOptions.signal` if present in the
+ * type) is preferred and short-circuits the internal timeout. Otherwise a
+ * fresh `createTimeoutAbortController` is allocated per call and cleared
+ * in `finally`.
+ */
 export async function requestSupabaseEdge<T>(
   path: string,
   options?: RequestOptions
@@ -243,12 +258,21 @@ export async function requestSupabaseEdge<T>(
     headers: options?.headers,
     json: !bodyIsFormData,
   });
-  const response = await fetch(buildSupabaseFunctionUrl(path), {
-    ...options,
-    headers,
-  });
 
-  return parseSupabaseEdgeResponse<T>(response);
+  const callerSignal = (options as RequestInit | undefined)?.signal ?? undefined;
+  const internalRequest = callerSignal ? null : createTimeoutAbortController(10000);
+
+  try {
+    const response = await fetch(buildSupabaseFunctionUrl(path), {
+      ...options,
+      headers,
+      signal: callerSignal ?? internalRequest?.controller.signal,
+    });
+
+    return parseSupabaseEdgeResponse<T>(response);
+  } finally {
+    internalRequest?.clear();
+  }
 }
 
 export function isSupportedSupabaseBucket(bucket: string): bucket is SupportedSupabaseBucket {

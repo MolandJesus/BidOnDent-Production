@@ -54,9 +54,10 @@ export { getInsuranceDirectory };
  */
 export const SHOP_DIRECTORY_IS_PREVIEW = true;
 
-export function getShopDirectory() {
-  return SHOPS;
-}
+// Pass 17 (audit AI) — `getShopDirectory()` removed as dead code. Independent
+// grep + co-worker AI Pass 15 sweep both confirmed zero source-tree consumers.
+// `SHOPS` remains used by `buildShopRecommendations` below. KI-100 status note
+// updated in REF_KNOWN_ISSUES.md to reflect the corrected scope.
 
 export function buildShopRecommendations({
   userType,
