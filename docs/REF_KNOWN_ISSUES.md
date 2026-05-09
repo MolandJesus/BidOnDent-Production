@@ -12,6 +12,17 @@
 
 ---
 
+## §0. AI Operational Onboarding
+
+> Adopted from the [`REF_CONVERGENCE_TOPOLOGY_2026-05-09.md`](REF_CONVERGENCE_TOPOLOGY_2026-05-09.md) §0 pattern (Pass 213). Propagated here Pass 214.
+
+- **What this doc controls:** the canonical inventory of known bugs, gaps, and structural issues, each with a stable `KI-###` identifier, severity, location, and current status. Use it to answer "is this already known?" before filing a duplicate, and "is this fixed yet?" before claiming a regression.
+- **When to trust it:** the "Last updated" line names the most recent pass. Status lines (`OPEN` / `RESOLVED` / `MITIGATED` / `WONTFIX` / `PARTIAL`) are point-in-time. Verify by reading the cited file before assuming current state — closed KIs sometimes regress and re-open under new IDs.
+- **What supersedes it:** [`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md) (intent), [`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md) (what may be fixed pre-launch). Within REF tier: [`REF_SYSTEM_STATE.md`](REF_SYSTEM_STATE.md) wins on system-state facts; this doc wins on bug status. The git log is the durable record of *when* a fix shipped — this doc is the index.
+- **What this doc must NOT be used for:** as a backlog (use [`PLAN_POST_LAUNCH_ROADMAP.md`](PLAN_POST_LAUNCH_ROADMAP.md) for deferred work), as a feature wishlist (KIs are bugs/gaps, not desires), or as a permission to fix anything pre-launch (hardening law gates that). Adding a KI does not authorize a fix pass — it only documents the gap.
+
+---
+
 ### KI-002: Email notifications not delivering
 
 - **Impact:** When a customer receives a bid, or a shop's bid is accepted, there is no notification. Users must poll the app manually.

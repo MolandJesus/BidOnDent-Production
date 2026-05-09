@@ -18,6 +18,17 @@
 
 ---
 
+## §0. AI Operational Onboarding
+
+> Adopted from the [`REF_CONVERGENCE_TOPOLOGY_2026-05-09.md`](REF_CONVERGENCE_TOPOLOGY_2026-05-09.md) §0 pattern (Pass 213). Propagated here Pass 214 per owner authorization.
+
+- **What this doc controls:** the current architecture truth — auth flow, state ownership, role reality, map stack, edge function deploy state, storage invariants, and known runtime bottlenecks. Use it to answer "how does the system actually work right now?" before assuming behavior from older PLAN docs or pre-hardening commit history.
+- **When to trust it:** the "Last updated" line names the most recent pass. Verify against code if a citation looks stale — the repo moves. If code disagrees, fix this doc in the same pass per LAW co-update rule.
+- **What supersedes it:** [`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md), [`LAW_LAYERED_ARCHITECTURE.md`](LAW_LAYERED_ARCHITECTURE.md), [`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md), [`LAW_ANIMATION_AND_ATMOSPHERE.md`](LAW_ANIMATION_AND_ATMOSPHERE.md), [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md). Within the REF tier: this doc wins on system-state truth; [`REF_KNOWN_ISSUES.md`](REF_KNOWN_ISSUES.md) wins on bug status; [`REF_CONVERGENCE_TOPOLOGY_2026-05-09.md`](REF_CONVERGENCE_TOPOLOGY_2026-05-09.md) wins on duplication / convergence inventory.
+- **What this doc must NOT be used for:** authorizing future direction (PLAN tier owns that), justifying new features pre-launch (hardening law forbids it), or explaining why something is the way it is at the philosophical level (LAW tier owns that).
+
+---
+
 ## AI Session Reading Order
 
 Before starting work, read docs in this order based on task type:
