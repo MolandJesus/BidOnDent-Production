@@ -1261,3 +1261,134 @@ last_updated: 2026-05-09
   - [`toRoutePreview()`](../src/app/services/navigation/routeEngine.ts) annotates every OSRM route with the flag at the engine boundary; dev-only `console.warn` carries diagnostic context for upstream tracing.
   - [`PlannerRoutePreview.tsx`](../src/app/components/maps/command-center/PlannerRoutePreview.tsx) chip row consumes the flag with the same amber-ring + `TriangleAlert` pattern as Pass 184. Chips are NOT hidden; the user can still pick a different alternative manually if all options are flagged.
   - 8 new vitest cases including the audit's exact 853.4mi / 1264min reproduction. Suite 597/597 PASS.
+
+### KI-180: Engine 2 imperative `flyTo` bypasses `prefers-reduced-motion` contract (P2-LAW-CONFORMANCE)
+
+> **Filed 2026-05-09 — Pass 229 Block C registration.** Surfaced by [`REF_MAP_UX_COHESION_AUDIT_2026-05-09.md`](REF_MAP_UX_COHESION_AUDIT_2026-05-09.md) §5.
+
+- `MapLibreShopDirectoryViewportManager` issues `map.flyTo()` calls with explicit duration arguments. None consult the `prefers-reduced-motion: reduce` matchMedia query before issuing the animated transition.
+- LAW conformance gap against [`LAW_ANIMATION_AND_ATMOSPHERE.md`](LAW_ANIMATION_AND_ATMOSPHERE.md).
+- **Fix:** addressed in [`PLAN_MAP_CONVERGENCE_SEQUENCE_2026-05-09.md`](PLAN_MAP_CONVERGENCE_SEQUENCE_2026-05-09.md) Phase 2 pass 237 (declarative camera controllers consult reduced-motion before applying).
+- **Severity:** **P2-LAW-CONFORMANCE.**
+- **Status:** OPEN. Resolution gated on LAW_MAP_RENDERER_CONTRACT ratification + Phase 2 authorization.
+
+### KI-181: Engine 3 auto-fit silently overrides caller-supplied viewport (P2-HIDDEN-AUTHORITY)
+
+> **Filed 2026-05-09 — Pass 229 Block C registration.** Surfaced by [`REF_DASHBOARD_PREVIEW_DUPLICATION_2026-05-09.md`](REF_DASHBOARD_PREVIEW_DUPLICATION_2026-05-09.md) §4.
+
+- `MapLibreDashboardMapPreview` auto-fits to the shop bbox whenever ≥2 shop pins exist, ignoring the `center` and `zoom` props the caller supplies. Of the 6 callers, 4 are silently overridden today.
+- No test coverage; no caller-side documentation.
+- **Fix:** addressed in [`PLAN_MAP_CONVERGENCE_SEQUENCE_2026-05-09.md`](PLAN_MAP_CONVERGENCE_SEQUENCE_2026-05-09.md) Phase 1 pass 234 (explicit `autoFit` prop with `'always' | 'when-no-caller-bounds' | 'never'` modes).
+- **Severity:** **P2-HIDDEN-AUTHORITY.**
+- **Status:** OPEN. Resolution gated on LAW ratification + Phase 1 authorization.
+
+### KI-182: "Navigation" denotes two structurally different runtimes (P1-MENTAL-MODEL)
+
+> **Filed 2026-05-09 — Pass 229 Block C registration.** Surfaced by [`REF_NAVIGATION_AUTHORITY_2026-05-09.md`](REF_NAVIGATION_AUTHORITY_2026-05-09.md) §1+§5 and [`REF_MAP_UX_COHESION_AUDIT_2026-05-09.md`](REF_MAP_UX_COHESION_AUDIT_2026-05-09.md) §4.
+
+- `useCoverageNavigationExperience` (Host A, 3 nav hooks) and `useShopDirectoryNavigation` (Host B, 8 nav hooks) deliver different navigation runtimes despite both presenting as "navigation" to users.
+- Coverage navigation: silent (no voice), no toast, no wake-lock, route LOST on reload, no reroute gating.
+- Shop directory navigation: voice + toast + wake-lock + cloud session restore + gated reroute.
+- Highest-impact behavioral inconsistency surfaced by the Block C audit set.
+- **Fix:** addressed in [`PLAN_MAP_CONVERGENCE_SEQUENCE_2026-05-09.md`](PLAN_MAP_CONVERGENCE_SEQUENCE_2026-05-09.md) Phase 3. Two branches mapped (Branch A: coverage grows into Host B; Branch B: coverage downgrades to Tier B preview-only). Owner decides at LAW contract §7.1.
+- **Severity:** **P1-MENTAL-MODEL.**
+- **Status:** OPEN. Resolution gated on LAW ratification + Phase 3 owner branch decision.
+
+### KI-183: "navigation session" string denotes two unrelated concepts with similar storage keys (P2-NAMING-COLLISION)
+
+> **Filed 2026-05-09 — Pass 229 Block C registration.** Surfaced by [`REF_NAVIGATION_AUTHORITY_2026-05-09.md`](REF_NAVIGATION_AUTHORITY_2026-05-09.md) §2.2 and [`REF_SYSTEM_STATE.md`](REF_SYSTEM_STATE.md) §5.5.4 (already flagged there).
+
+- The reducer-managed in-app session (`useNavigationSession` hook + `navigationSessionCloudService`, per-user `bidondent_nav_*` keys) and the legacy external-handoff payload (`navigationSession.ts` service, global `bidondent_navigation_session` key) share the "navigation session" name. Different lifetimes, different cleanup, similar prefixed keys.
+- Risk: AI agent or developer modifies one thinking it is the other.
+- **Fix:** reconcile during Phase 3 Branch A pass 243a, OR rename one of the two concepts in a separate authorized pass.
+- **Severity:** **P2-NAMING-COLLISION.**
+- **Status:** OPEN.
+
+### KI-184: Engine 1 `MapEngineCanvas` lacks `onLoad`/`onError` failure-surface handlers (P2-LIFECYCLE-GAP)
+
+> **Filed 2026-05-09 — Pass 229 Block C registration.** Surfaced by [`REF_MAP_RENDERER_INVENTORY_2026-05-09.md`](REF_MAP_RENDERER_INVENTORY_2026-05-09.md) §4.
+
+- The canonical Tier A engine has no `onLoad` or `onError` handlers wired. Engine 2 has both; Engine 3 has neither but is preview-only.
+- Future LAW_MAP_RENDERER_CONTRACT §3 makes both handlers a non-negotiable obligation for ALL tiers.
+- **Fix:** addressed in [`PLAN_MAP_CONVERGENCE_SEQUENCE_2026-05-09.md`](PLAN_MAP_CONVERGENCE_SEQUENCE_2026-05-09.md) Phase 1 pass 232/233 wave (extended to Engine 1 in a follow-up pass; needs sequencing decision).
+- **Severity:** **P2-LIFECYCLE-GAP.**
+- **Status:** OPEN. Resolution gated on LAW ratification + Phase 1 authorization.
+
+### KI-185: Pitch caps inconsistent and undiscoverable across the three map engines (P3-COHESION)
+
+> **Filed 2026-05-09 — Pass 229 Block C registration.** Surfaced by [`REF_MAP_UX_COHESION_AUDIT_2026-05-09.md`](REF_MAP_UX_COHESION_AUDIT_2026-05-09.md) §2+§7.
+
+- Engine 1: free pitch (no cap).
+- Engine 2: `maxPitch=65` only when `tileMode==='satellite'` OR `navigationMode==='guidance'`; else `maxPitch=0`.
+- Engine 3: gestures suppressed entirely (no pitch possible).
+- A user pitching freely on coverage and then trying to pitch on shop dir browse mode hits the cap with no UI feedback.
+- **Fix:** LAW contract §7.2 open question — owner decides whether to unify across surfaces or declare per-surface intent with discoverable affordance.
+- **Severity:** **P3-COHESION.**
+- **Status:** OPEN.
+
+### KI-186: GPS dual-instantiation risk if both navigation hosts mount simultaneously (P3-LATENT)
+
+> **Filed 2026-05-09 — Pass 229 Block C registration.** Surfaced by [`REF_NAVIGATION_AUTHORITY_2026-05-09.md`](REF_NAVIGATION_AUTHORITY_2026-05-09.md) §2.4.
+
+- Both Host A and Host B independently instantiate `useNavigationGpsTracking`. If both hosts ever mount in the same tree, two `watchPosition` subscriptions are issued. Browser may de-duplicate, but no hook-level guarantee.
+- Not currently triggered (the two surfaces are routed separately).
+- **Fix:** considered in Phase 3 (whichever branch); explicit GPS singleton pattern may be required.
+- **Severity:** **P3-LATENT.**
+- **Status:** OPEN.
+
+### KI-187: Zero engine mount/unmount + failure-surface test coverage (P1-TEST-COVERAGE)
+
+> **Filed 2026-05-09 — Pass 229 Block C registration.** Surfaced by [`REF_MAP_TEST_COVERAGE_GAPS_2026-05-09.md`](REF_MAP_TEST_COVERAGE_GAPS_2026-05-09.md) §2.1.
+
+- 0 of 3 engines have mount/unmount + `onLoad`/`onError` test coverage. Engine 1 has render-only coverage. Engines 2 and 3 have ZERO test coverage.
+- Convergence cannot ship safely without this coverage.
+- **Fix:** [`REF_MAP_TEST_COVERAGE_GAPS_2026-05-09.md`](REF_MAP_TEST_COVERAGE_GAPS_2026-05-09.md) §3 specifies required additions per phase. Pass 228 §5 recommends test-only additions in parallel with LAW ratification.
+- **Severity:** **P1-TEST-COVERAGE.**
+- **Status:** OPEN. May be addressed independently of LAW ratification (test-only changes are safe-for-autopilot).
+
+### KI-188: Zero orchestration-host test coverage (P1-TEST-COVERAGE)
+
+> **Filed 2026-05-09 — Pass 229 Block C registration.** Surfaced by [`REF_MAP_TEST_COVERAGE_GAPS_2026-05-09.md`](REF_MAP_TEST_COVERAGE_GAPS_2026-05-09.md) §2.2.
+
+- 0 of 2 orchestration hosts (`useCoverageNavigationExperience`, `useShopDirectoryNavigation`) have any unit or integration test coverage.
+- SINGLE BIGGEST GAP per Pass 228 §6.
+- **Fix:** [`REF_MAP_TEST_COVERAGE_GAPS_2026-05-09.md`](REF_MAP_TEST_COVERAGE_GAPS_2026-05-09.md) §3.3 specifies Host B parity test as Phase 3 prerequisite.
+- **Severity:** **P1-TEST-COVERAGE.**
+- **Status:** OPEN. May be addressed independently of LAW ratification.
+
+### KI-189: Zero map-bearing surface test coverage (P2-TEST-COVERAGE)
+
+> **Filed 2026-05-09 — Pass 229 Block C registration.** Surfaced by [`REF_MAP_TEST_COVERAGE_GAPS_2026-05-09.md`](REF_MAP_TEST_COVERAGE_GAPS_2026-05-09.md) §2.3.
+
+- 0 of 8 map-bearing surfaces (coverage map, shop directory map, 3 dashboard widgets, ReportsListScreen, ReportDetailScreen, CompetitorAnalysisScreen) have surface-level tests.
+- **Fix:** [`REF_MAP_TEST_COVERAGE_GAPS_2026-05-09.md`](REF_MAP_TEST_COVERAGE_GAPS_2026-05-09.md) §3 specifies required surface tests per phase, starting with `ReportDetailScreen` in Phase 1.
+- **Severity:** **P2-TEST-COVERAGE.**
+- **Status:** OPEN.
+
+### KI-190: `maplibreResizePatch` pre-mount import not enforced by CI (P2-INVARIANT-NOT-ENFORCED)
+
+> **Filed 2026-05-09 — Pass 229 Block C registration.** Surfaced by [`REF_MAP_TEST_COVERAGE_GAPS_2026-05-09.md`](REF_MAP_TEST_COVERAGE_GAPS_2026-05-09.md) §2.4.
+
+- The patch is a non-negotiable invariant (Pass 192 fix; LAW contract §3.1) but no CI test asserts it is imported before any map mount. Removal would silently regress to blank-canvas.
+- **Fix:** add a unit test that asserts the patch's side-effect is observable before any maplibre-gl module is touched. Can ship as a test-only pass independent of LAW ratification.
+- **Severity:** **P2-INVARIANT-NOT-ENFORCED.**
+- **Status:** OPEN.
+
+### KI-191: `prefers-reduced-motion` contract not enforced by CI (P2-INVARIANT-NOT-ENFORCED)
+
+> **Filed 2026-05-09 — Pass 229 Block C registration.** Surfaced by [`REF_MAP_TEST_COVERAGE_GAPS_2026-05-09.md`](REF_MAP_TEST_COVERAGE_GAPS_2026-05-09.md) §2.4.
+
+- `scripts/audit-reduced-motion.mjs` exists but is a one-off audit script, not a CI-enforced test. LAW_ANIMATION_AND_ATMOSPHERE conformance can regress silently.
+- **Fix:** promote the script's checks into a Vitest unit test in Phase 2 (per Pass 228 §4 + §3.2).
+- **Severity:** **P2-INVARIANT-NOT-ENFORCED.**
+- **Status:** OPEN.
+
+### KI-192: PLAN_MAP_UNIFICATION §1.6 caller count is wrong (4 → 6) (P3-DOC-DRIFT)
+
+> **Filed 2026-05-09 — Pass 229 Block C registration.** Surfaced by [`REF_DASHBOARD_PREVIEW_DUPLICATION_2026-05-09.md`](REF_DASHBOARD_PREVIEW_DUPLICATION_2026-05-09.md) §5.
+
+- Pass 217 added §1.6 listing 4 callers of `MapLibreDashboardMapPreview`; Pass 225 grep found 6 (CustomerMapWidget + ShopMapWidget were missed because they live in `dashboard/` not `reports/`).
+- §1.6 also frames the situation as a "duplicate to converge" — Pass 225 §2 reframed it: the 6 callers are call sites of one well-fit component, not duplicates. The convergence question is between Engine 3 and Engines 1/2, not among Engine 3's callers.
+- **Fix:** update §1.6 of [`PLAN_MAP_UNIFICATION_2026-05-08.md`](PLAN_MAP_UNIFICATION_2026-05-08.md) — DEFERRED while that file is owner-dirty. Will ship in a follow-up pass once the file stabilizes.
+- **Severity:** **P3-DOC-DRIFT.**
+- **Status:** OPEN.
