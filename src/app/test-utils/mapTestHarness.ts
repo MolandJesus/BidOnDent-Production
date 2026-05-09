@@ -37,6 +37,7 @@
 
 import { createElement } from "react";
 import type React from "react";
+import type { Mock } from "vitest";
 
 // ---------------------------------------------------------------
 // react-map-gl/maplibre stub factory
@@ -48,6 +49,35 @@ type StubMapProps = {
   onError?: (err: unknown) => void;
 };
 
+/**
+ * Shape of the spy-backed map instance used by controller tests.
+ *
+ * Pass 231i extension. Tests construct one of these via `vi.hoisted`
+ * (so the spies exist before vi.mock factories fire), then pass it
+ * into `createReactMapGlMaplibreStub({ mapInstance })`. The harness
+ * routes `useMap().current` to the supplied instance, which lets
+ * controllers (`mapLibreControllers.tsx`,
+ * `MapLibreShopDirectoryViewportManager.tsx`, etc.) drive their
+ * imperative `flyTo` / `fitBounds` / `jumpTo` calls into spy assertions.
+ *
+ * Each field is a `vi.fn()` Mock — tests own creation + reset, the
+ * harness only consumes. Getters return harmless defaults so any
+ * controller that reads zoom/bearing/pitch in its decision path
+ * proceeds along a defined branch.
+ */
+export type StubMapInstance = {
+  flyTo: Mock;
+  fitBounds: Mock;
+  jumpTo: Mock;
+  easeTo: Mock;
+  panTo: Mock;
+  getZoom: Mock;
+  getCenter: Mock;
+  getBearing: Mock;
+  getPitch: Mock;
+  resize: Mock;
+};
+
 type StubModuleShape = {
   __esModule: true;
   default: (props: StubMapProps) => React.ReactElement;
@@ -57,7 +87,7 @@ type StubModuleShape = {
   Layer: () => React.ReactElement;
   Marker: (props: { children?: React.ReactNode }) => React.ReactElement;
   Popup: (props: { children?: React.ReactNode }) => React.ReactElement;
-  useMap: () => { current: null };
+  useMap: () => { current: StubMapInstance | null };
 };
 
 /**
@@ -71,8 +101,25 @@ type StubModuleShape = {
  * Use inside the test file:
  *
  *   vi.mock('react-map-gl/maplibre', () => createReactMapGlMaplibreStub());
+ *
+ * Pass 231i — to drive `useMap().current` to a spy-backed instance
+ * (controller tests need this), pass `{ mapInstance }`:
+ *
+ *   const { mapInstance } = vi.hoisted(() => ({
+ *     mapInstance: { flyTo: vi.fn(), jumpTo: vi.fn(), ... },
+ *   }));
+ *   vi.mock("react-map-gl/maplibre", async () => {
+ *     const { createReactMapGlMaplibreStub } = await import(".../mapTestHarness");
+ *     return createReactMapGlMaplibreStub({ mapInstance });
+ *   });
+ *
+ * Default behavior (no `mapInstance`) keeps `useMap().current === null`,
+ * which is the contract the early controller tests (Pass 192/193 era)
+ * relied on.
  */
-export function createReactMapGlMaplibreStub(): StubModuleShape {
+export function createReactMapGlMaplibreStub(
+  options: { mapInstance?: StubMapInstance } = {},
+): StubModuleShape {
   // Pass 231g — first real consumer of the stub uncovered that the prior
   // raw-object literal returned by `h()` was not a valid React element under
   // React 18, so any host that rendered `<Map>...</Map>` produced
@@ -104,7 +151,7 @@ export function createReactMapGlMaplibreStub(): StubModuleShape {
     Layer: () => h("div", { "data-testid": "stub-layer" }),
     Marker: ({ children }) => h("div", { "data-testid": "stub-marker" }, children),
     Popup: ({ children }) => h("div", { "data-testid": "stub-popup" }, children),
-    useMap: () => ({ current: null }),
+    useMap: () => ({ current: options.mapInstance ?? null }),
   };
 }
 
