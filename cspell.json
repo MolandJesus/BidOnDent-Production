@@ -423,6 +423,21 @@
     "initplan",
     "pkey",
     "functiondef",
-    "unpushed"
+    "unpushed",
+    "cowork",
+    "Cowork",
+    "COWORK",
+    "exfiltration",
+    "undercount",
+    "undercounted",
+    "standdowns",
+    "gateable",
+    "cutover",
+    "RIGHTPANEL",
+    "proconfig",
+    "polqual",
+    "polrelid",
+    "polwithcheck",
+    "revertable"
   ]
 }
