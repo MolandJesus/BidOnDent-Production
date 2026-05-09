@@ -1374,14 +1374,25 @@ last_updated: 2026-05-09
 - **Severity:** **P2-INVARIANT-NOT-ENFORCED.**
 - **Status:** OPEN.
 
-### KI-191: `prefers-reduced-motion` contract not enforced by CI (P2-INVARIANT-NOT-ENFORCED)
+### KI-191: `prefers-reduced-motion` contract not enforced by CI (P2-INVARIANT-NOT-ENFORCED — RESOLVED 2026-05-09)
 
 > **Filed 2026-05-09 — Pass 229 Block C registration.** Surfaced by [`REF_MAP_TEST_COVERAGE_GAPS_2026-05-09.md`](REF_MAP_TEST_COVERAGE_GAPS_2026-05-09.md) §2.4.
+> **Resolved 2026-05-09 — Pass 238.** Promoted via [`src/app/__tests__/reducedMotionContract.test.ts`](../src/app/__tests__/reducedMotionContract.test.ts).
 
 - `scripts/audit-reduced-motion.mjs` exists but is a one-off audit script, not a CI-enforced test. LAW_ANIMATION_AND_ATMOSPHERE conformance can regress silently.
-- **Fix:** promote the script's checks into a Vitest unit test in Phase 2 (per Pass 228 §4 + §3.2).
+- **Fix shipped (Pass 238):** Vitest test `Reduced-motion contract — Pass 238 CI promotion` (a) spawns the existing CSS audit script and asserts exit 0 (CSS-keyframe half), and (b) walks `src/app/**/*.tsx` and asserts every `animate-in` / `animate-out` Tailwind utility has a `motion-reduce:` partner within the same className window (JSX half). Vendored shadcn/ui primitives are excluded as a characterized gap — see KI-193.
 - **Severity:** **P2-INVARIANT-NOT-ENFORCED.**
-- **Status:** OPEN.
+- **Status:** RESOLVED 2026-05-09 (Pass 238).
+
+### KI-193: shadcn/ui primitives lack `motion-reduce:` opt-out on Radix data-state transitions (P2-LAW-CONFORMANCE)
+
+> **Filed 2026-05-09 — Pass 238 characterized exclusion from the JSX reduce-motion audit.** Surfaced by the JSX half of the [`reducedMotionContract.test.ts`](../src/app/__tests__/reducedMotionContract.test.ts) audit.
+
+- 12 vendored shadcn primitives in `src/app/components/ui/` use `data-[state=open]:animate-in` / `data-[state=closed]:animate-out` (and matching `fade-*` / `zoom-*` / `slide-*` Tailwind utilities) without a `motion-reduce:animate-none` partner: `alert-dialog`, `context-menu`, `dialog`, `drawer`, `dropdown-menu`, `hover-card`, `menubar`, `navigation-menu`, `popover`, `select`, `sheet`, `tooltip`.
+- Each open/close transition therefore animates even when the user has `prefers-reduced-motion: reduce`. LAW_ANIMATION_AND_ATMOSPHERE §3 violation.
+- **Fix:** single sweep that adds `motion-reduce:animate-none` (and equivalent `motion-reduce:fade-in-0` etc. neutralizers as needed) to each primitive's animation utility chain. Then remove the `src/app/components/ui` exclusion from `EXCLUDED_DIRS` in [`reducedMotionContract.test.ts`](../src/app/__tests__/reducedMotionContract.test.ts) so the audit covers the primitives going forward.
+- **Severity:** **P2-LAW-CONFORMANCE.**
+- **Status:** OPEN. Out of Phase 2 scope (operational behavior change across vendored surface).
 
 ### KI-192: PLAN_MAP_UNIFICATION §1.6 caller count is wrong (4 → 6) (P3-DOC-DRIFT)
 
