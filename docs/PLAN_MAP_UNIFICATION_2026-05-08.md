@@ -239,6 +239,14 @@ export type MapProgramShellProps =
 - Pass C.1: introduce `<MapProgramShell>` with `host="dashboard-fullscreen"` and feed existing `<MapLibreServiceCoverageMap>` into it via `<MapEngineCanvas>` extraction. No behavior change.
 - Pass C.2: relocate dashboard-side legend + ROUTE box into shell slots (`legend`, `leftPanel`). This is the structural fix for KI-164 and KI-166 once the shell positioning is authoritative.
 
+#### Step C.1 sub-pass progress (2026-05-09)
+
+- ✅ **Sub-pass 1** (Pass 185, commit `1b38ecdf`): extracted `useMapEngineGeoJSON` hook from `MapLibreServiceCoverageMap`. The 8 memo'd builders now live in `src/app/components/maps/useMapEngineGeoJSON.ts` (102 lines). Host shrunk 368 → 347 lines.
+- ✅ **Sub-pass 1 contract lock** (Pass 186, commit `3d59c5c0`): `useMapEngineGeoJSON.test.tsx` shipped — 3 tests pin the 8-key shape, the route lat/lng→lng/lat coordinate swap, and the search-target double-feature output. Vitest 580/580 passing. Any regression during sub-pass 2 will fail at the hook boundary, not look like a downstream rendering bug.
+- ✅ **Sub-pass 2 pre-flight** (Pass 188, 2026-05-09): grep verified **zero `useRef<MapRef>` / `mapRef.current` / `MapRef` consumers anywhere in `src/`** (`grep -rn "useRef<MapRef\\|MapRef\\b\\|mapRef\\.current" src/` returns nothing outside test files). The host does NOT hand a ref outward — `<MapEngineCanvas>` does **not** need `forwardRef` from day one. This avoids a churn cycle if the extraction had assumed otherwise.
+- ⏭ **Sub-pass 2 (next)**: extract `<MapEngineCanvas>` JSX. Scope = the `<Map>` instance + `AttributionControl` + `NavigationControl` + `MapLibreViewportController` + `MapLibreFollowLocationController` + `MapLibreArrivalCameraEffect` + `<MapLibreCoverageMapLayers>` (the canvas region currently at lines 244-329 of `MapLibreServiceCoverageMap.tsx`). Hook outputs feed in directly. Chrome (`MapSurfaceHeaderBadges`, `MapSurfaceControls`, `MapNavigationHud`, `MapSurfaceStatusBar`, ambient/gold-flow overlays) stays in the host wrapper. No `forwardRef` needed.
+- ⏭ **Sub-pass 3**: introduce `<MapProgramShell host="dashboard-fullscreen">` wrapping `<MapEngineCanvas>` with chrome slots from §2. This is where the host-mounted slot pattern lands.
+
 ### Step D — Migrate `landing-dialog` second (1 pass)
 
 - Replace `CoverageBrowseExperience`'s ad-hoc shell composition with `<MapProgramShell host="landing-dialog">` + slots.

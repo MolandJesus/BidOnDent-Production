@@ -1214,3 +1214,14 @@
 - **Evidence:** [`docs/evidence/pass-11-2026-05-08/PASS_25_HOOKS_UTILS_DORMANT_SWEEP.md`](evidence/pass-11-2026-05-08/PASS_25_HOOKS_UTILS_DORMANT_SWEEP.md) (cowork-A original sweep) + [`docs/evidence/pass-11-2026-05-08/DORMANT_EXPORTS_SWEEP.md`](evidence/pass-11-2026-05-08/DORMANT_EXPORTS_SWEEP.md) (cowork-A) + audit AI's Pass 25 ship commit (uncommitted on disk pending host-side `rm -f .git/*.lock`).
 - **Severity:** **P3-TECH-DEBT** (no user-visible impact, no compilation risk).
 - **Status:** **RESOLVED 2026-05-08 (audit AI Pass 25 — −224 LoC shipped, typecheck PASS).** KI-177 (shadcn ui/) remains open as separate consolidated post-launch janitor target.
+
+### KI-179: Navigation engine route alternatives lack `isImplausible` instrumentation (P3-TECH-DEBT)
+
+> **Filed 2026-05-09 — audit AI Pass 187 review fold-in.** KI-169's third-half wiring (Pass 184) put an amber-ring warn on `RouteOption.isImplausible` chips in `ShopDirectoryRoutePreviewCard`. KI-169's consumer-surface footnote noted that `PlannerRoutePreview` consumes `NavigationRoutePreview[]` from the navigation engine (real OSRM/etc responses), NOT `RouteOption[]` — different data path with no equivalent sanity flag. This KI is the destination that footnote points at.
+
+- **Scope:** the navigation engine path (`src/app/services/navigation/routeEngine.ts` → `useNavigationRoutePreview` → `useCoverageNavigationExperience`) emits `NavigationRoutePreview` objects with `distanceMeters` + `durationSeconds`. None of those structures carry an `isImplausible` flag. If the engine ever returns an absurd route (e.g. an OSRM provider error producing inflated distances), no UI surface warns the user.
+- **Fix direction:** mirror Pass 179's pattern — a `flagImplausibleNavigationRoute()` sanity helper at the engine boundary, with the same plausibility bands (distance > 100mi, duration > 240min, implied speed outside [10, 80] mph). Annotate `NavigationRoutePreview` with optional `isImplausible` + `implausibleReasons` fields, opt-in. Surface in `PlannerRoutePreview` chip row with the same amber-ring + `TriangleAlert` pattern as Pass 184.
+- **Why P3 not P1:** this is theoretical instrumentation — no field reproduction yet on the navigation engine path. The Pass 179 / 184 work was reactive to the audit AI's captured 853mi case, but that case was on the dashboard mini-map (`RouteOption` stub data), not the navigation engine. Until a Sentry log or audit reproduces an implausible navigation-engine route, this is preventive instrumentation.
+- **Evidence cross-link:** [KI-169 third-half consumer-surface footnote](#ki-169-dashboard-mini-map-route-box--alternative-cards-mix-meters--miles--implausible-21-hour-route-value-p2-content--resolved-2026-05-09).
+- **Severity:** **P3-TECH-DEBT.**
+- **Status:** **OPEN — preventive, not blocking.** Defer until a navigation-engine implausibility is observed in Sentry or during browser audit.
