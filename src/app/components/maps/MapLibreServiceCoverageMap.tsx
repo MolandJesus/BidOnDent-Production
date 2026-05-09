@@ -1,8 +1,3 @@
-// Must run before any Map instantiation — patches resize crash
-import "../../utils/maplibreResizePatch";
-
-import Map, { AttributionControl, NavigationControl } from "react-map-gl/maplibre";
-import "maplibre-gl/dist/maplibre-gl.css";
 import { useMemo } from "react";
 import { cn } from "../ui/utils";
 import MapNavigationHud from "./MapNavigationHud";
@@ -11,19 +6,12 @@ import MapSurfaceHeaderBadges from "./MapSurfaceHeaderBadges";
 import MapSurfaceStatusBar from "./MapSurfaceStatusBar";
 import { useMapPerformanceTracking } from "./useMapPerformanceTracking";
 import { useMapEngineGeoJSON } from "./useMapEngineGeoJSON";
-import MapLibreCoverageMapLayers from "./MapLibreCoverageMapLayers";
-import MapLibrePartnerShopLayer, { PARTNER_SHOPS_LAYER_ID } from "./MapLibrePartnerShopLayer";
-import MapLibreReportLayer, { REPORT_MARKERS_LAYER_ID } from "./MapLibreReportLayer";
-import MapLibreDiscoveryPlaceLayer, {
-  DISCOVERY_PLACES_LAYER_ID,
-} from "./MapLibreDiscoveryPlaceLayer";
+import MapEngineCanvas from "./engine/MapEngineCanvas";
+import { PARTNER_SHOPS_LAYER_ID } from "./MapLibrePartnerShopLayer";
+import { REPORT_MARKERS_LAYER_ID } from "./MapLibreReportLayer";
+import { DISCOVERY_PLACES_LAYER_ID } from "./MapLibreDiscoveryPlaceLayer";
 import { getMapSurfaceTheme, resolveMapSurfaceTone } from "./mapSurfaceTheme";
 import { mapLibreStyles, mapLibreTileLabels } from "./mapLibreStyles";
-import {
-  MapLibreViewportController,
-  MapLibreFollowLocationController,
-  MapLibreArrivalCameraEffect,
-} from "./mapLibreControllers";
 import { type MapLibreServiceCoverageMapProps } from "./mapLibreServiceCoverageMapHelpers";
 
 export default function MapLibreServiceCoverageMap({
@@ -235,92 +223,55 @@ export default function MapLibreServiceCoverageMap({
         </div>
       </div>
 
-      {/* ---- MapLibre GL Canvas ---- */}
-      <div
-        className={cn(
-          "coverage-map-canvas h-[280px] sm:h-[380px] md:h-[420px] w-full",
-          theme.mapCanvasClassName,
-          mapHeightClassName
-        )}
-      >
-        <Map
-          id="coverage-map"
-          initialViewState={{
-            longitude: center[1],
-            latitude: center[0],
-            zoom,
-          }}
-          style={{ width: "100%", height: "100%" }}
-          mapStyle={mapStyle}
-          attributionControl={false}
-          minZoom={immersiveFullscreen ? 2 : 8}
-          maxBounds={
-            immersiveFullscreen
-              ? [
-                  [-179.999, -85],
-                  [179.999, 85],
-                ]
-              : undefined
-          }
-          // Cooperative gestures on the embedded preview only — single-finger
-          // touch scrolls the page, two-finger drag pans the map. Without this
-          // the preview map captured all touches and the landing page could
-          // not scroll past it on mobile. The fullscreen dialog keeps the
-          // standard "single-finger pans the map" behavior.
-          cooperativeGestures={!immersiveFullscreen}
-          interactiveLayerIds={interactiveLayerIds}
-          onZoomStart={onZoomStart}
-          onZoomEnd={onZoomEnd}
-          onMoveStart={onMoveStart}
-          onMoveEnd={onMoveEnd}
-          onZoom={handleZoom}
-        >
-          <AttributionControl position="bottom-right" compact />
-          {/* Pass 172 (2026-05-07) — Phase 7 map-program-feel #7: compass +
-              click-to-reset-north in fullscreen / immersive surfaces only.
-              Inline previews on landing + dashboard keep clean chrome
-              (showCompass false) so the embedded card stays minimal; the
-              full-screen experience gets the premium map-program affordance
-              users expect when actually navigating. The map has bearing
-              tracking via MapLibreFollowLocationController so the compass
-              actually reflects heading. */}
-          <NavigationControl position="bottom-right" showCompass={immersiveFullscreen} />
-
-          <MapLibreViewportController center={center} zoom={zoom} revision={revision} />
-          <MapLibreFollowLocationController
-            enabled={followCurrentPosition}
-            currentPosition={currentPosition}
-            revision={followCurrentPositionRevision}
-            guidanceMode={guidanceMode}
-            bearing={currentHeadingDegrees}
-          />
-          <MapLibreArrivalCameraEffect hasArrived={hasArrived} destination={destination ?? null} />
-
-          <MapLibreCoverageMapLayers
-            tone={tone}
-            isNavigationPresentation={isNavigationPresentation}
-            showReportLayer={showReportLayer}
-            routeGeoJSON={routeGeoJSON}
-            routeGeometry={routeGeometry}
-            routeFitKey={routeFitKey}
-            counties={counties}
-            countyGeoJSON={countyGeoJSON}
-            partnerShops={partnerShops}
-            selectedShopId={selectedShopId}
-            onSelectShop={onSelectShop}
-            discoveryPlaces={discoveryPlaces}
-            selectedDiscoveryPlaceId={selectedDiscoveryPlaceId}
-            onSelectDiscoveryPlace={onSelectDiscoveryPlace}
-            gpsAccuracyGeoJSON={gpsAccuracyGeoJSON}
-            gpsPointGeoJSON={gpsPointGeoJSON}
-            gpsHeadingGeoJSON={gpsHeadingGeoJSON}
-            activeSearchTarget={activeSearchTarget}
-            searchTargetRadiusGeoJSON={searchTargetRadiusGeoJSON}
-            searchTargetPointGeoJSON={searchTargetPointGeoJSON}
-            radiusLabelGeoJSON={radiusLabelGeoJSON}
-          />
-        </Map>
-      </div>
+      {/* ---- MapLibre GL Canvas ----
+          Pass 189 — Step C.1 sub-pass 2: lifted into <MapEngineCanvas>.
+          Engine-side concerns (Map instance, Attribution + Navigation
+          controls, viewport / follow-location / arrival-camera controllers,
+          coverage layers) live in src/app/components/maps/engine/. The
+          host now only composes chrome around the canvas region. */}
+      <MapEngineCanvas
+        mapCanvasClassName={theme.mapCanvasClassName}
+        mapHeightClassName={mapHeightClassName}
+        center={center}
+        zoom={zoom}
+        mapStyle={mapStyle}
+        immersiveFullscreen={immersiveFullscreen}
+        interactiveLayerIds={interactiveLayerIds}
+        onZoomStart={onZoomStart}
+        onZoomEnd={onZoomEnd}
+        onMoveStart={onMoveStart}
+        onMoveEnd={onMoveEnd}
+        onZoom={handleZoom}
+        revision={revision}
+        followCurrentPosition={followCurrentPosition}
+        followCurrentPositionRevision={followCurrentPositionRevision}
+        guidanceMode={guidanceMode}
+        currentHeadingDegrees={currentHeadingDegrees}
+        currentPosition={currentPosition}
+        hasArrived={hasArrived}
+        destination={destination}
+        tone={tone}
+        isNavigationPresentation={isNavigationPresentation}
+        showReportLayer={showReportLayer}
+        routeGeoJSON={routeGeoJSON}
+        routeGeometry={routeGeometry}
+        routeFitKey={routeFitKey}
+        counties={counties}
+        countyGeoJSON={countyGeoJSON}
+        partnerShops={partnerShops}
+        selectedShopId={selectedShopId}
+        onSelectShop={onSelectShop}
+        discoveryPlaces={discoveryPlaces}
+        selectedDiscoveryPlaceId={selectedDiscoveryPlaceId}
+        onSelectDiscoveryPlace={onSelectDiscoveryPlace}
+        gpsAccuracyGeoJSON={gpsAccuracyGeoJSON}
+        gpsPointGeoJSON={gpsPointGeoJSON}
+        gpsHeadingGeoJSON={gpsHeadingGeoJSON}
+        activeSearchTarget={activeSearchTarget}
+        searchTargetRadiusGeoJSON={searchTargetRadiusGeoJSON}
+        searchTargetPointGeoJSON={searchTargetPointGeoJSON}
+        radiusLabelGeoJSON={radiusLabelGeoJSON}
+      />
 
       {showSurfaceChrome ? (
         <MapSurfaceStatusBar
