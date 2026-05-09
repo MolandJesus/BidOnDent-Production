@@ -786,16 +786,15 @@
 - **Fix direction:** Same as KI-116 root cause fix. This finding adds a regression-test requirement to Pass 61: enter fullscreen map without an active session, verify no new deviation event fires.
 - **Status:** **RESOLVED-DEPENDENT — Pass 81 (2026-05-07).** With KI-116 RESOLVED via Pass 61's `intelligence.evaluate(snapshot)` gate on `navSession.session.status === "active"` at the single call site in [`useNavigationLifecycleEffects.ts`](../src/app/hooks/useNavigationLifecycleEffects.ts), the deviation engine no longer fires from any mount site without an active nav session. Fullscreen-map entry on the immersive surface is just another mount of the same call site, so the second phantom event cannot reproduce. If a future regression re-introduces deviation toasts during fullscreen entry without an active session, re-open with explicit viewport-transition guard work — the underlying mount-time evaluation guard is at the call site, not at the surface boundary.
 
-### KI-149: "Previous session restored" toast fires on every page load — visual confirmation of KI-134 silent re-auth (P3-UX)
+### KI-149: "Previous session restored" toast — MISDIAGNOSED (toast belongs to navigation-session restore, not auth re-auth) (P5-DOC, status-corrected 2026-05-09)
 
 > **Added 2026-05-07 — external audit AI pass 6 page-load observation.** A "Previous session restored" toast renders on every page load, including post-sign-out + reload. Visible artifact of KI-134's `__clerk_db_jwt` silent re-auth.
 
-- **Impact:** The toast itself acknowledges the silent re-auth to the user. This is honest but normalizes the behavior. Either:
-  - The toast IS the design intent ("we remembered you across sessions") — in which case the Sign Out copy should be honest about this ("Switch Accounts" rename per KI-134 option 2), AND the toast can stay.
-  - The toast is a leak — in which case it should be suppressed AND KI-134 should ship full-destroy semantic (option 1).
-- **Fix direction:** Tied to KI-134 owner decision. If "Switch Accounts" rename: replace toast copy with "Welcome back, Molalign" (one-time per cold session, not on every reload). If full-destroy: suppress toast post-sign-out flow.
-- **Severity:** **P3-UX.** Companion to KI-134; ships in same pass.
-- **Status:** **OPEN — P3-UX.**
+> **Status correction 2026-05-09 (Pass 199).** Source review contradicts the original premise. The toast is fired by [`useNavigationToastBridge.ts:99`](../src/app/features/navigation/useNavigationToastBridge.ts#L99) under `restoredFromCloud && !restoredToastedRef.current`, where `restoredFromCloud` is set by [`useNavigationSession.ts:62`](../src/app/features/navigation/useNavigationSession.ts#L62) **only when an active driving navigation session is hydrated from Supabase/localStorage AND `shouldRestoreSession()` accepts it AND the local session is `idle`**. This has nothing to do with Clerk's `__clerk_db_jwt` cookie or auth-identity restore — it is the in-progress route-guidance pickup ("you were navigating somewhere; resuming"). The audit AI conflated two different "session" concepts (Clerk auth session vs in-progress driving navigation session). The toast does NOT fire on every page load; it fires only when there is a persisted active navigation session to resume. The `restoredToastedRef.current` guard further ensures it fires once per restore lifecycle, not on subsequent renders.
+
+- **Impact:** Original P3-UX framing is invalid. The toast is honest, scoped, and load-bearing UX feedback for the navigation feature. No code action required.
+- **Severity:** **P5-DOC** (downgraded from P3-UX). Misdiagnosis only — kept as historical record so the same audit observation doesn't get re-filed.
+- **Status:** **RESOLVED-AS-MISDIAGNOSIS (Pass 199, 2026-05-09).** No code change. KI-134 stands on its own merits and is unaffected by this correction.
 
 ### KI-150: PWA service worker exists in repo `public/` but not registered in dev — KI-130 likely RESOLVED at production (P3-VERIFY)
 
