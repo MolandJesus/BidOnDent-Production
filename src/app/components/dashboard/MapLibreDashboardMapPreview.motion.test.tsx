@@ -88,9 +88,7 @@ vi.mock("react-map-gl/maplibre", async () => {
 vi.mock("maplibre-gl/dist/maplibre-gl.css", () => ({}));
 vi.mock("../../utils/maplibreResizePatch", () => ({}));
 
-import MapLibreDashboardMapPreview, {
-  type ReportPin,
-} from "./MapLibreDashboardMapPreview";
+import MapLibreDashboardMapPreview, { type ReportPin } from "./MapLibreDashboardMapPreview";
 import type { CoveragePartnerShop } from "../maps/serviceCoverageMapTypes";
 
 const CALLER_CENTER: [number, number] = [37.78, -122.41];
@@ -207,12 +205,7 @@ describe("Engine 3 — Pass 236 § camera authority is controlled viewState", ()
 
   it("forwards onMove so caller-driven viewport sync stays a controlled-component pattern", () => {
     render(
-      <MapLibreDashboardMapPreview
-        shops={[]}
-        center={CALLER_CENTER}
-        zoom={CALLER_ZOOM}
-        isLight
-      />
+      <MapLibreDashboardMapPreview shops={[]} center={CALLER_CENTER} zoom={CALLER_ZOOM} isLight />
     );
     const props = lastMapPropsOrThrow();
     expect(typeof props.onMove).toBe("function");
@@ -223,12 +216,7 @@ describe("Engine 3 — Pass 236 § camera authority is controlled viewState", ()
     // Class A: a prop change must produce an immediate viewport
     // update on the next render frame, with no intermediate values.
     const { rerender } = render(
-      <MapLibreDashboardMapPreview
-        shops={[]}
-        center={CALLER_CENTER}
-        zoom={CALLER_ZOOM}
-        isLight
-      />
+      <MapLibreDashboardMapPreview shops={[]} center={CALLER_CENTER} zoom={CALLER_ZOOM} isLight />
     );
     const initialZoom = lastMapPropsOrThrow().zoom;
     expect(initialZoom).toBe(CALLER_ZOOM);
@@ -236,12 +224,7 @@ describe("Engine 3 — Pass 236 § camera authority is controlled viewState", ()
     const NEXT_CENTER: [number, number] = [40.71, -74.01];
     const NEXT_ZOOM = 13;
     rerender(
-      <MapLibreDashboardMapPreview
-        shops={[]}
-        center={NEXT_CENTER}
-        zoom={NEXT_ZOOM}
-        isLight
-      />
+      <MapLibreDashboardMapPreview shops={[]} center={NEXT_CENTER} zoom={NEXT_ZOOM} isLight />
     );
 
     // The very next captured props must reflect the new caller state
@@ -334,5 +317,60 @@ describe("Engine 3 — Pass 236 § tooltip honors prefers-reduced-motion", () =>
     // the motion-reduce opt-out, this guard surfaces it.
     const matches = ENGINE3_SOURCE.match(/animate-in/g) ?? [];
     expect(matches.length).toBe(1);
+  });
+});
+
+// ---------------------------------------------------------------
+// §5. Dynamic auto-fit recomputation — Pass 237 extension to the
+// KI-181 hidden-authority characterization. Pass 231g pinned the
+// MOUNT-time half (caller vs fittedView at first render). This
+// section pins the DYNAMIC half: when the shops collection changes
+// such that fittedView recomputes, the resolved viewport snaps to
+// the new fit (not the prior one, not the caller `center`).
+//
+// This is the second of two halves the future declarative
+// `autoFit` migration must control. See
+// `docs/REF_ENGINE_3_CAMERA_AUTHORITY_2026-05-09.md` §6.1.
+// ---------------------------------------------------------------
+
+describe("Engine 3 — Pass 237 § dynamic auto-fit recomputation (KI-181 extension)", () => {
+  it("when shops change from one cluster to another, viewport snaps to the new fittedView", () => {
+    // Initial: 2 NY shops. fittedView wins (NY midpoint).
+    const NY_A = makeShop("nyA", 40.7, -74.0);
+    const NY_B = makeShop("nyB", 40.8, -73.9);
+    const { rerender } = render(
+      <MapLibreDashboardMapPreview
+        shops={[NY_A, NY_B]}
+        reportPins={[]}
+        center={CALLER_CENTER}
+        zoom={CALLER_ZOOM}
+        isLight
+      />
+    );
+    const ny = lastMapPropsOrThrow();
+    expect(ny.latitude).toBeCloseTo((40.7 + 40.8) / 2, 5);
+    expect(ny.longitude).toBeCloseTo((-74.0 + -73.9) / 2, 5);
+
+    // Re-render with a completely different cluster: 2 LA shops.
+    // Caller `center` (SF) is unchanged. The renderer MUST snap to
+    // the new LA midpoint, NOT stay on the prior NY frame and NOT
+    // fall back to the caller's SF center.
+    const LA_A = makeShop("laA", 34.05, -118.25);
+    const LA_B = makeShop("laB", 34.15, -118.35);
+    rerender(
+      <MapLibreDashboardMapPreview
+        shops={[LA_A, LA_B]}
+        reportPins={[]}
+        center={CALLER_CENTER}
+        zoom={CALLER_ZOOM}
+        isLight
+      />
+    );
+    const la = lastMapPropsOrThrow();
+    expect(la.latitude).toBeCloseTo((34.05 + 34.15) / 2, 5);
+    expect(la.longitude).toBeCloseTo((-118.25 + -118.35) / 2, 5);
+
+    // Cross-check: the new viewport is NOT the prior NY frame.
+    expect(la.latitude).not.toBeCloseTo(ny.latitude as number, 1);
   });
 });
