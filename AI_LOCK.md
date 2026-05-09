@@ -7,11 +7,11 @@
 ## Active session
 
 **Active branch:** BidOnDent-Horizon-Beta
-**Active AI:** (none — Coverage Map Confidence Expansion lane standdown after Pass 257)
-**Active layer:** (none)
-**Locked files:** (none)
+**Active AI:** Main Builder AI (Persistent Map Session PLANNING lane — owner-authorized 2026-05-09; Passes 258/259/260 = PMS topology audit → PMS architecture options matrix → PMS execution sequencing plan. PLANNING + CHARACTERIZATION ONLY. NO implementation. NO routing changes. NO state lifting. NO map-ownership changes. NO app-shell orchestration. NO preview/fullscreen merge. NO authority/autoFit/camera/gesture/reduced-motion semantic changes. NO sub-pass C touch. NO convergence prep reopen. STOP on any semantic ambiguity surfaced during characterization.)
+**Active layer:** L0 (doc-only)
+**Locked files:** docs/PLAN_PMS_TOPOLOGY_AUDIT_2026-05-09.md (planned, Pass 258), docs/PLAN_PMS_ARCHITECTURE_OPTIONS_2026-05-09.md (planned, Pass 259), docs/PLAN_PMS_EXECUTION_SEQUENCING_2026-05-09.md (planned, Pass 260)
 **Session start:** 2026-05-08 (cowork-A — Pass 26 owner-authorized continuation under "go full auto" directive; doc-only edits, no source files)
-**Last commit:** Pass 257 — Tier B confidence consolidation doc (`docs/REF_TIER_B_CONFIDENCE_MATRIX_2026-05-09.md`). Coverage Map Confidence Expansion lane delivered Passes 255/256/257: coverage map lifecycle confidence suite (+11 tests, jsdom storage shim), reduced-motion preference-flip continuity characterization (+5 tests), and the consolidated Tier B confidence matrix doc (forward constraints for the upcoming PMS lane + owner performance directive baked in). Suite: 927/927 across 91 files, ZERO stderr errors. autoFit/callerBoundsExplicit/sub-pass C/ShopMapWidget UNTOUCHED. services/supabase/client.ts production module UNCHANGED. No runtime semantic changes. Lane reaches authorized stop.
+**Last commit:** Pass 258 — PMS topology audit (`docs/PLAN_PMS_TOPOLOGY_AUDIT_2026-05-09.md`). Adopted as-is from prior-session draft after spot-check verification (engine import lines, call-site files, routing files, gesture-mode source, perf-observer types — all cited references verify against current source). Lane ownership consolidated 2026-05-09: prior session halted mid-transition due to external rate limit; current session promoted to Primary Builder AI for PMS preparation/planning per owner relay 2026-05-09. PMS planning corpus state: Pass 261 (`docs/REF_PMS_PERFORMANCE_BASELINE_2026-05-09.md`, P2 sub-lane, 883c4f55) shipped prior to consolidation; Pass 258 (this commit) landed; Passes 259 (architecture options matrix) + 260 (execution sequencing) authorized for autopilot continuation. Suite: 927/927 across 91 files. autoFit/callerBoundsExplicit/sub-pass C/ShopMapWidget UNTOUCHED. No runtime semantic changes.
 
 ## Cooperative-edit lesson logged (2026-05-08 race outcome)
 
@@ -19,7 +19,7 @@ Pass 14 Step 1.6 was authorized concurrently by both sessions. Co-worker shipped
 
 ## Skills applied this session
 
-(none — text + doc work; no reusable AI pattern surfaced)
+`mola-ai-relay-protocol` — multi-AI relay parsing, lane separation, non-collision discipline, hard-stop adherence under contested topology. Applied across the Passes 261 + 258 ownership consolidation when transitioning from support-lane (P2 sub-lane) to primary builder authority for the PMS planning corpus.
 
 ---
 
