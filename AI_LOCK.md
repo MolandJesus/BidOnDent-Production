@@ -7,7 +7,7 @@
 ## Active session
 
 **Active branch:** BidOnDent-Horizon-Beta
-**Active AI:** (none — Passes 314-316 shipped in yellow-legal-pad. 314 = robots.txt allow-all. 315 = removed unreliable mailto: form (mailto form actions are unreliable across browsers, especially mobile; email link is the primary reliable path; form returns when backend like Calendly/Formspree/Vercel-serverless arrives), added print stylesheet (white paper / black ink / chrome hidden / fade-in reset / page-break-avoid on headings / URLs printed after external links). 316 = static sitemap.xml + TODO_STACEY update reflecting form removal. ZERO BidOnDent source modified. Pass 281 §11 invariants ALL UNTOUCHED. Relay #15-#38 prohibitions: zero violations.)
+**Active AI:** (none — Passes 317-319 shipped in yellow-legal-pad. 317 = fix stale contact.astro copy referencing the form Pass 315 removed ("or use the small form below" → removed); cleaned matching frontmatter comment block. 318 = TODO_STACEY corrections — Calendly-link row no longer claims a contact form exists; favicon row no longer claims a 404 (the placeholder favicon was added in Pass 312). 319 = a11y improvement — skip-to-content link in BaseLayout, invisible until tab focus, with main#main-content as focus target; explicitly authorized by the active builder directive ("accessibility auditing" / "semantic/accessibility cleanup"). ZERO BidOnDent source modified. Pass 281 §11 invariants ALL UNTOUCHED. Relay #15-#38 prohibitions: zero violations. No copy invention — directive's "real-copy replacement as inputs arrive" preserved.)
 **Active layer:** (none)
 **Locked files:** (none)
 
