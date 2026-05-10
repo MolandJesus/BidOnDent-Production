@@ -236,10 +236,12 @@ Per audit AI pass 6 §F: at fullscreen mobile, bottom nav remained accessible + 
 ### §4.1 Production build + Lighthouse — gates Phase 4 of master plan
 
 This is **owner-action OR audit-AI-action via terminal access**. Audit AI's prior passes established this requires:
+
 - Owner: `npm run build && npm run preview` then DevTools → Lighthouse panel
 - OR audit AI: navigates to `localhost:4173` after owner runs preview
 
 For each surface (Landing, Dashboard, Bids, Account, Smart Shop Map, Coverage Dialog):
+
 1. Lighthouse Mobile (default config) — capture full report
 2. Lighthouse Desktop (default config) — capture full report
 3. Lighthouse Accessibility — capture full report
@@ -294,6 +296,7 @@ If audit AI can run VoiceOver via DevTools Accessibility tree inspection or via 
 ### §5.3 Color contrast — Lighthouse + visual
 
 Per surface:
+
 1. Lighthouse Accessibility flagged contrast warnings.
 2. For each: visually verify if the text is genuinely hard to read on top of the actual background (translucent glass surfaces are mostly false positives).
 3. Real failures: flag.
@@ -317,6 +320,7 @@ Per surface:
 DevTools device emulation iPhone SE 375×667 OR iPhone 12 Pro 390×844.
 
 For every interactive element on each surface:
+
 1. Measure hit-box via DevTools Elements > Computed > Box model.
 2. Min 44×44 CSS pixels.
 3. Flag any below threshold.
@@ -336,6 +340,7 @@ KI-136 known offenders: search input (260×34), BidOnDent logo button (148×40).
 ### §6.2 Cross-tab sign-out propagation — verification
 
 Audit AI pass 6 §D was DEFERRED. Verify now:
+
 1. Tab A + Tab B both signed in.
 2. Tab A: Sign Out.
 3. Tab B: does it detect sign-out automatically? Or zombie?
@@ -359,18 +364,18 @@ Audit AI pass 6 §D was DEFERRED. Verify now:
 
 For each open KI not yet verified post-fix (or where the fix was speculative), verify:
 
-| KI | What to verify |
-|---|---|
-| KI-122 | Fullscreen tile mode cycle: roadmap/night/satellite all load correctly. If "Light" ever appears, what does it show? |
-| KI-126 | Wizard empty-state desktop overflow on Step 3 + Step 4. Single CSS rule fix expected. Was it shipped? Pass numbering search needed. |
-| KI-127 | Toast/avatar overlap — should be moot post-KI-116 (toast doesn't fire on dashboard). Verify. |
-| KI-131 | Hero carousel pause on reduce-motion + manual control (Pass 79 shipped). Verify in browser. |
+| KI     | What to verify                                                                                                                        |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------- |
+| KI-122 | Fullscreen tile mode cycle: roadmap/night/satellite all load correctly. If "Light" ever appears, what does it show?                   |
+| KI-126 | Wizard empty-state desktop overflow on Step 3 + Step 4. Single CSS rule fix expected. Was it shipped? Pass numbering search needed.   |
+| KI-127 | Toast/avatar overlap — should be moot post-KI-116 (toast doesn't fire on dashboard). Verify.                                          |
+| KI-131 | Hero carousel pause on reduce-motion + manual control (Pass 79 shipped). Verify in browser.                                           |
 | KI-138 | After owner deploys edge function v51 + planner-applied migration: notification-preferences UX works fully? Or fallback still firing? |
-| KI-141 | Mobile header active tab label (Pass 75 shipped). Verify. |
-| KI-142 | Mobile Quick Actions horizontal-scroll carousel (verified at Pass 77). Re-verify. |
-| KI-149 | "Previous session restored" toast on every page load. Still appearing post-Pass-79 (KI-130 close)? |
-| KI-150 | PWA service worker registers in production build. Verify via `npm run preview` then `navigator.serviceWorker.controller`. |
-| KI-153 | ci.yml permissions block (Pass 74 shipped). Verify GitHub Security tab no longer flags. |
+| KI-141 | Mobile header active tab label (Pass 75 shipped). Verify.                                                                             |
+| KI-142 | Mobile Quick Actions horizontal-scroll carousel (verified at Pass 77). Re-verify.                                                     |
+| KI-149 | "Previous session restored" toast on every page load. Still appearing post-Pass-79 (KI-130 close)?                                    |
+| KI-150 | PWA service worker registers in production build. Verify via `npm run preview` then `navigator.serviceWorker.controller`.             |
+| KI-153 | ci.yml permissions block (Pass 74 shipped). Verify GitHub Security tab no longer flags.                                               |
 
 ---
 
@@ -454,9 +459,10 @@ For each surface in the inventory below, capture light + dark + 375/768/1280 = 6
 - ✓ NO pure white panels in light mode
 - ✓ NO yellow-amber gold
 - ✓ NO flat solid fills (translucent glass everywhere)
-- ✓ bd-* utility class consistency (form fields, cards, buttons)
+- ✓ bd-\* utility class consistency (form fields, cards, buttons)
 
 **Surface inventory** (≈30 surfaces):
+
 - Landing hero
 - Landing OperatingRegions / Coverage section
 - Landing How It Works / Why Choose / Who We Serve
@@ -569,7 +575,7 @@ Save all under `docs/evidence/audit-pass-9-2026-05-NN/`.
 Pause and ping owner before:
 
 - Running a `git push`
-- Modifying `MOLANDJESUS_DESIGN_DECISIONS.md` or any LAW_*.md
+- Modifying `MOLANDJESUS_DESIGN_DECISIONS.md` or any LAW\_\*.md
 - Rotating Service Role Key (KI-152)
 - Applying any migration that involves user-data tables (`damage_reports`, `bids`, `profiles`, `vehicles`)
 - Deploying edge function v51 (owner CLI cleaner per KI-146)

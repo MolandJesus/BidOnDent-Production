@@ -284,3 +284,48 @@ When work came from a multi-AI relay, final reports should say:
 - what remains for the next agent/pass
 
 Keep it direct. Mola wants continuity and judgment, not a generic summary.
+
+---
+
+## Methodology Lessons (2026-05-08 cowork-A + audit AI cooperative session)
+
+Three lessons surfaced during the Pass 12-27 cluster. Apply going forward.
+
+### Lesson 1 — Re-claim AI_LOCK for each work batch
+
+**Symptom (Pass 14 Step 1.6):** cowork-A shipped 3-widget edits while audit AI was reading the same files. No merge conflict because edits were identical scope, but the protocol gap was real.
+
+**Rule:** when starting work after a previous standdown, re-claim `AI_LOCK.md` Active AI before any source-file edit, **even if the work is a continuation of an earlier-authorized track**. The standdown line records "Pass X complete" — it does NOT record "all subsequent edits authorized". Each work batch needs its own claim/standdown cycle.
+
+### Lesson 2 — Per-export grep for dormant-code sweeps
+
+**Symptom (Pass 25 / KI-178 correction):** cowork-A's path-pattern grep methodology missed individual named-import consumers. Pass 25/25b initially reported `photoUtils.ts` "entire file dead" — audit AI's independent verification surfaced 6 live consumers of `compressImage`. Cowork-A also reported `useUserDataHelpers` "5 of 6 dead" — actual export count was 10, with 6 dead.
+
+**Rule:** dormant-export sweeps must enumerate exports by name and grep each individually:
+
+```bash
+grep -rln "<exportName>" src/ --include="*.ts" --include="*.tsx" | grep -v "<file-itself>"
+```
+
+Path-pattern matches (e.g. `from "../utils/photoUtils"`) miss alias-imports (`from "@/utils/photoUtils"`) and named imports of single exports. Per-export-name grep is the canonical methodology.
+
+### Lesson 3 — Verification ceiling inside the sandbox
+
+**Symptom (Pass 22):** cowork-A spent cycles attempting `npm run build` and `vitest` runs that fail due to rollup native-module mismatch (sandbox is x86_64 Linux, host is Apple Silicon arm64). ESLint also unconfigured at project level.
+
+**Rule:** the highest verification reachable from inside the sandbox is `npx tsc --noEmit`. `npm run build`, `vitest`, and any host-Node-binary tooling are **blocked by environmental constraint, not by codebase issues**. Don't waste cycles re-attempting. Flag for host-side run in the standdown line and proceed.
+
+---
+
+## Doc-Channel Coordination (when multiple AIs run simultaneously)
+
+When two or more AIs are authorized to work on the same branch:
+
+1. **Territory matrix.** Pre-divide files/directories by AI in a coordination evidence file (e.g. `docs/evidence/pass-XX-YYYY-MM-DD/JOINT_SESSION_COORDINATION.md`). Example split:
+   - Audit AI primary: `services/`, `hooks/`, root configs (`tsconfig.json`, `vite.config.ts`)
+   - Cowork primary: `components/`, `src/styles/theme.css`, evidence files, `AI_LOCK.md`
+   - Shared (claim AI_LOCK first): `REF_KNOWN_ISSUES.md`, plan docs, anything one AI's writing affects the other's read
+2. **Communicate via codebase doc updates, not direct messages.** When you finish a pass, update `AI_LOCK.md` standdown + drop an evidence file. The next AI reads those before starting.
+3. **Sequential pass numbers.** Pass 12, 13, 14, … carry across both AIs so the chronology stays single-threaded even when work is parallel.
+4. **Convergence is signal.** If two AIs independently reach the same finding (e.g. cowork-A's `STEP_B_SCOPE_CLARIFICATION.md` and audit AI's parallel analysis both flagged Step B as not-feasible-as-scoped on the same day), the finding is stronger. Note convergence in the relevant evidence file.
+5. **Concurrent-edit guard.** If a write fails because another AI already modified the file in the same pass window, write your delta to a separate evidence file rather than retrying. The next coordination-doc revision folds it back in.

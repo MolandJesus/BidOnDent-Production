@@ -36,14 +36,14 @@ NO = do not land at all (intentional design).
 
 Production caller scan (grep `reportPins=` across `src/app/`):
 
-| Caller                                                                  | Passes `reportPins` explicitly? |
-| ----------------------------------------------------------------------- | ------------------------------- |
-| `src/app/components/reports/ReportDetailScreen.tsx:369`                 | YES (`reportPins={reportPins}`) |
-| `src/app/components/reports/ReportsListScreen.tsx:210`                  | YES (`reportPins={reportMapPins}`)|
-| `src/app/components/shop/ShopActiveJobsScreen.tsx:351`                  | YES (`reportPins={jobPins}`)    |
-| `src/app/components/dashboard/InsurerMapWidget.tsx`                     | YES (local useMemo result)      |
-| `src/app/components/dashboard/CustomerMapWidget.tsx`                    | YES (local useMemo result)      |
-| `src/app/components/dashboard/ShopMapWidget.tsx` (owner-dirty)          | YES (local useMemo result)      |
+| Caller                                                         | Passes `reportPins` explicitly?    |
+| -------------------------------------------------------------- | ---------------------------------- |
+| `src/app/components/reports/ReportDetailScreen.tsx:369`        | YES (`reportPins={reportPins}`)    |
+| `src/app/components/reports/ReportsListScreen.tsx:210`         | YES (`reportPins={reportMapPins}`) |
+| `src/app/components/shop/ShopActiveJobsScreen.tsx:351`         | YES (`reportPins={jobPins}`)       |
+| `src/app/components/dashboard/InsurerMapWidget.tsx`            | YES (local useMemo result)         |
+| `src/app/components/dashboard/CustomerMapWidget.tsx`           | YES (local useMemo result)         |
+| `src/app/components/dashboard/ShopMapWidget.tsx` (owner-dirty) | YES (local useMemo result)         |
 
 **Conclusion:** ZERO production callers omit `reportPins`. The
 `reportPins = []` default is defensive only. A singleton extraction
@@ -59,41 +59,41 @@ shows all production callers pass it, never omit it).
 
 ### Hit 1 — `MapLibreDashboardMapPreview.reportPins = []` → **GO**
 
-| Criterion              | Assessment                                                                                  |
-| ---------------------- | ------------------------------------------------------------------------------------------- |
-| Rollback complexity    | One-line: change default to literal `[]` again. Module const survives or is also reverted.  |
-| Blast radius           | Single file (renderer). Singleton const lives at module scope, exported only if test needs. |
-| Semantic sensitivity   | NONE. Production callers always pass; test callers always pass `[]` literal explicitly.     |
-| CI coverage            | Pass 245 simulation tests + Pass 246 reduced-motion tests + Pass 247 footprint test all pass `reportPins={[]}` and remain green. New Pass 251 test adds explicit semantic-equivalence assertion. |
-| Equality semantics     | No consumer relies on inequality. The `allPoints` useMemo deps include `reportPins`; a stable identity REDUCES recomputation. The `fittedView` useMemo gates on `length`, so length is preserved. |
-| Pass 247 §1 conflict   | NO. Pass 247 footprint regex does not lock the `reportPins = []` token.                      |
+| Criterion            | Assessment                                                                                                                                                                                        |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Rollback complexity  | One-line: change default to literal `[]` again. Module const survives or is also reverted.                                                                                                        |
+| Blast radius         | Single file (renderer). Singleton const lives at module scope, exported only if test needs.                                                                                                       |
+| Semantic sensitivity | NONE. Production callers always pass; test callers always pass `[]` literal explicitly.                                                                                                           |
+| CI coverage          | Pass 245 simulation tests + Pass 246 reduced-motion tests + Pass 247 footprint test all pass `reportPins={[]}` and remain green. New Pass 251 test adds explicit semantic-equivalence assertion.  |
+| Equality semantics   | No consumer relies on inequality. The `allPoints` useMemo deps include `reportPins`; a stable identity REDUCES recomputation. The `fittedView` useMemo gates on `length`, so length is preserved. |
+| Pass 247 §1 conflict | NO. Pass 247 footprint regex does not lock the `reportPins = []` token.                                                                                                                           |
 
 **Verdict:** **GO**. Hardening: extract module-scope
 `const EMPTY_REPORT_PINS: ReportPin[] = []` and use as default.
 
 ### Hit 2 — `MapLibreDashboardMapPreview.serviceAreaCircles = []` → **GO**
 
-| Criterion              | Assessment                                                                                |
-| ---------------------- | ----------------------------------------------------------------------------------------- |
-| Rollback complexity    | One-line.                                                                                 |
-| Blast radius           | Same file as Hit 1. Same module-scope const pattern.                                      |
-| Semantic sensitivity   | NONE. `serviceAreaPolygons` useMemo recomputes on identity; consumer is render-only and gated on `length > 0`. |
-| CI coverage            | All existing Pass 245/246/247 tests omit `serviceAreaCircles` (rely on the default). Stable singleton makes those test-side defaults stable too — strengthens, not regresses, existing coverage. |
-| Equality semantics     | No consumer relies on inequality.                                                         |
-| Pass 247 §1 conflict   | NO.                                                                                       |
+| Criterion            | Assessment                                                                                                                                                                                       |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Rollback complexity  | One-line.                                                                                                                                                                                        |
+| Blast radius         | Same file as Hit 1. Same module-scope const pattern.                                                                                                                                             |
+| Semantic sensitivity | NONE. `serviceAreaPolygons` useMemo recomputes on identity; consumer is render-only and gated on `length > 0`.                                                                                   |
+| CI coverage          | All existing Pass 245/246/247 tests omit `serviceAreaCircles` (rely on the default). Stable singleton makes those test-side defaults stable too — strengthens, not regresses, existing coverage. |
+| Equality semantics   | No consumer relies on inequality.                                                                                                                                                                |
+| Pass 247 §1 conflict | NO.                                                                                                                                                                                              |
 
 **Verdict:** **GO**. Same singleton pattern.
 
 ### Hit 3 — `InsurerMapWidget.reports = []` → **DEFER**
 
-| Criterion              | Assessment                                                                                |
-| ---------------------- | ----------------------------------------------------------------------------------------- |
-| Rollback complexity    | One-line.                                                                                 |
-| Blast radius           | Single file. Local `reportPins` useMemo absorbs identity churn into its OWN new array.    |
-| Semantic sensitivity   | NONE.                                                                                     |
-| CI coverage            | No widget-level rerender characterization tests exist. Adding them requires a separate test fixture pass. |
-| Equality semantics     | None.                                                                                     |
-| Reason for DEFER       | Tributary, not a root site. Local useMemo already breaks the identity chain inside the widget — the downstream `reportPins` prop into `<DashboardMapPreview>` already gets a fresh array from the local memo on every `reports`-identity churn, so the widget-level default doesn't propagate identity through. Hardening here is correct but **lower-priority than Hit 1**. Best done together with Hits 4/5 in a future widget-cohort pass. |
+| Criterion            | Assessment                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Rollback complexity  | One-line.                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| Blast radius         | Single file. Local `reportPins` useMemo absorbs identity churn into its OWN new array.                                                                                                                                                                                                                                                                                                                                                        |
+| Semantic sensitivity | NONE.                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| CI coverage          | No widget-level rerender characterization tests exist. Adding them requires a separate test fixture pass.                                                                                                                                                                                                                                                                                                                                     |
+| Equality semantics   | None.                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| Reason for DEFER     | Tributary, not a root site. Local useMemo already breaks the identity chain inside the widget — the downstream `reportPins` prop into `<DashboardMapPreview>` already gets a fresh array from the local memo on every `reports`-identity churn, so the widget-level default doesn't propagate identity through. Hardening here is correct but **lower-priority than Hit 1**. Best done together with Hits 4/5 in a future widget-cohort pass. |
 
 **Verdict:** **DEFER** to a future widget-cohort pass.
 
@@ -108,13 +108,13 @@ Same logic as Hit 3. Twin hardening, lower-priority than Hit 1.
 
 ### Hit 6 — `MapLibreServiceCoverageMap.counties = []` → **GO**
 
-| Criterion              | Assessment                                                                                 |
-| ---------------------- | ------------------------------------------------------------------------------------------ |
-| Rollback complexity    | One-line.                                                                                  |
-| Blast radius           | Single file. Singleton lives at module scope of `MapLibreServiceCoverageMap`.              |
-| Semantic sensitivity   | NONE. `counties` flows into `useMapEngineGeoJSON` which builds GeoJSON; identity churn would otherwise re-fire the GeoJSON memo. |
-| CI coverage            | Existing service-coverage tests (if any) and the `useMapEngineGeoJSON` memo behavior are stable on length/content. New singleton REDUCES recomputation. |
-| Equality semantics     | None.                                                                                      |
+| Criterion            | Assessment                                                                                                                                              |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Rollback complexity  | One-line.                                                                                                                                               |
+| Blast radius         | Single file. Singleton lives at module scope of `MapLibreServiceCoverageMap`.                                                                           |
+| Semantic sensitivity | NONE. `counties` flows into `useMapEngineGeoJSON` which builds GeoJSON; identity churn would otherwise re-fire the GeoJSON memo.                        |
+| CI coverage          | Existing service-coverage tests (if any) and the `useMapEngineGeoJSON` memo behavior are stable on length/content. New singleton REDUCES recomputation. |
+| Equality semantics   | None.                                                                                                                                                   |
 
 **Verdict:** **GO**.
 
@@ -137,13 +137,13 @@ implementation-discipline rule (no over-engineering), do not land.
 
 ### Hit 9 — `CoverageNavigationPlanner.addressSuggestions = []` → **DEFER**
 
-| Criterion              | Assessment                                                                                |
-| ---------------------- | ----------------------------------------------------------------------------------------- |
-| Rollback complexity    | One-line.                                                                                 |
-| Blast radius           | Single file, but the component has 50+ props and is a heavy planner shell.                |
-| Semantic sensitivity   | UNKNOWN without a deeper consumer trace. Pass 250 budget did not include a full trace.    |
-| CI coverage            | Insufficient for confident landing without companion test.                                |
-| Reason for DEFER       | Heavy component, deeper trace needed. Deferred to keep Pass 251 surgical.                 |
+| Criterion            | Assessment                                                                             |
+| -------------------- | -------------------------------------------------------------------------------------- |
+| Rollback complexity  | One-line.                                                                              |
+| Blast radius         | Single file, but the component has 50+ props and is a heavy planner shell.             |
+| Semantic sensitivity | UNKNOWN without a deeper consumer trace. Pass 250 budget did not include a full trace. |
+| CI coverage          | Insufficient for confident landing without companion test.                             |
+| Reason for DEFER     | Heavy component, deeper trace needed. Deferred to keep Pass 251 surgical.              |
 
 **Verdict:** **DEFER**.
 
@@ -214,7 +214,7 @@ authorized stop. Next-pass guidance:
   authorization for a "widget-cohort hardening" lane.
 - DO NOT touch ShopMapWidget (Hit 4) until owner clears its
   dirty status.
-- DO NOT use the EMPTY_* singleton pattern as license to refactor
+- DO NOT use the EMPTY\_\* singleton pattern as license to refactor
   unrelated default-param sites elsewhere in the codebase.
 - DO NOT reopen Phase 3B / sub-pass C theory.
 

@@ -34,11 +34,11 @@ last_updated: 2026-05-09
 Three independent MapLibre `<Map>` instantiations exist in `src/`. Each holds
 its own GL context, source/layer registry, and viewport state.
 
-| # | Engine | File | Lines | Mount-site count | First shipped |
-|---|--------|------|-------|------------------|---------------|
-| 1 | **`MapEngineCanvas`** (canonical headless adapter) | [`src/app/components/maps/engine/MapEngineCanvas.tsx`](../src/app/components/maps/engine/MapEngineCanvas.tsx) | 238 | 1 (`MapLibreServiceCoverageMap`) | Pass 192 (2026-05-08) |
-| 2 | **`MapLibreShopDirectoryMapPane`** (shop directory engine) | [`src/app/components/shop/MapLibreShopDirectoryMapPane.tsx`](../src/app/components/shop/MapLibreShopDirectoryMapPane.tsx) | 552 | 1 self-mount (the file IS the host) | pre-Pass 100 |
-| 3 | **`MapLibreDashboardMapPreview`** (dashboard preview engine) | [`src/app/components/dashboard/MapLibreDashboardMapPreview.tsx`](../src/app/components/dashboard/MapLibreDashboardMapPreview.tsx) | 273 | 6 callers (see §3) | pre-Pass 100 |
+| #   | Engine                                                       | File                                                                                                                              | Lines | Mount-site count                    | First shipped         |
+| --- | ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- | ----- | ----------------------------------- | --------------------- |
+| 1   | **`MapEngineCanvas`** (canonical headless adapter)           | [`src/app/components/maps/engine/MapEngineCanvas.tsx`](../src/app/components/maps/engine/MapEngineCanvas.tsx)                     | 238   | 1 (`MapLibreServiceCoverageMap`)    | Pass 192 (2026-05-08) |
+| 2   | **`MapLibreShopDirectoryMapPane`** (shop directory engine)   | [`src/app/components/shop/MapLibreShopDirectoryMapPane.tsx`](../src/app/components/shop/MapLibreShopDirectoryMapPane.tsx)         | 552   | 1 self-mount (the file IS the host) | pre-Pass 100          |
+| 3   | **`MapLibreDashboardMapPreview`** (dashboard preview engine) | [`src/app/components/dashboard/MapLibreDashboardMapPreview.tsx`](../src/app/components/dashboard/MapLibreDashboardMapPreview.tsx) | 273   | 6 callers (see §3)                  | pre-Pass 100          |
 
 **Engine count: 3 independent MapLibre engines.** Confirms the count
 declared in `PLAN_MAP_UNIFICATION_2026-05-08.md` § 10.
@@ -59,19 +59,19 @@ declared in `PLAN_MAP_UNIFICATION_2026-05-08.md` § 10.
 
 **Lifecycle contract:**
 
-| Concern | Implementation | Notes |
-|---|---|---|
-| Pre-mount safety | `import "../../../utils/maplibreResizePatch"` at top of file | MUST run before any Map instantiation; documented in file header |
-| Mount key | `id="coverage-map"` (static) | Single-instance enforced by static id |
-| Initial viewport | `initialViewState={{longitude, latitude, zoom}}` (uncontrolled) | Subsequent viewport changes flow through `MapLibreViewportController` (declarative ref-based) |
-| Style | `mapStyle={mapStyle}` (StyleSpecification, full reload on swap) | Owner: `MapLibreServiceCoverageMap` |
-| Bounds | `maxBounds` set when NOT immersive; `minZoom` 8/2 conditional | Cooperative gesture mode on embedded preview |
-| Performance handlers | `onZoomStart/End/onMoveStart/End/onZoom` | Sourced from `useMapPerformanceTracking` on host |
-| Imperative handle | None. No `forwardRef`, no `useImperativeHandle` | File header explicitly notes: "Pass 188 pre-flight grep confirmed zero `MapRef` / `mapRef.current` consumers anywhere in `src/`" |
-| Camera mutation | Three controllers child-mounted: `MapLibreViewportController`, `MapLibreFollowLocationController`, `MapLibreArrivalCameraEffect` | All declarative; no host-side `map.flyTo()` calls |
-| Source/layer registration | Single `<MapLibreCoverageMapLayers>` block | Owns counties, partner shops, discovery places, GPS, route, search target |
-| Cleanup | React-managed via component unmount | Resize patch handles known crash; otherwise relies on `react-map-gl/maplibre` |
-| Error boundary | None at engine level | Host (`MapLibreServiceCoverageMap`) does not wrap |
+| Concern                   | Implementation                                                                                                                   | Notes                                                                                                                            |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Pre-mount safety          | `import "../../../utils/maplibreResizePatch"` at top of file                                                                     | MUST run before any Map instantiation; documented in file header                                                                 |
+| Mount key                 | `id="coverage-map"` (static)                                                                                                     | Single-instance enforced by static id                                                                                            |
+| Initial viewport          | `initialViewState={{longitude, latitude, zoom}}` (uncontrolled)                                                                  | Subsequent viewport changes flow through `MapLibreViewportController` (declarative ref-based)                                    |
+| Style                     | `mapStyle={mapStyle}` (StyleSpecification, full reload on swap)                                                                  | Owner: `MapLibreServiceCoverageMap`                                                                                              |
+| Bounds                    | `maxBounds` set when NOT immersive; `minZoom` 8/2 conditional                                                                    | Cooperative gesture mode on embedded preview                                                                                     |
+| Performance handlers      | `onZoomStart/End/onMoveStart/End/onZoom`                                                                                         | Sourced from `useMapPerformanceTracking` on host                                                                                 |
+| Imperative handle         | None. No `forwardRef`, no `useImperativeHandle`                                                                                  | File header explicitly notes: "Pass 188 pre-flight grep confirmed zero `MapRef` / `mapRef.current` consumers anywhere in `src/`" |
+| Camera mutation           | Three controllers child-mounted: `MapLibreViewportController`, `MapLibreFollowLocationController`, `MapLibreArrivalCameraEffect` | All declarative; no host-side `map.flyTo()` calls                                                                                |
+| Source/layer registration | Single `<MapLibreCoverageMapLayers>` block                                                                                       | Owns counties, partner shops, discovery places, GPS, route, search target                                                        |
+| Cleanup                   | React-managed via component unmount                                                                                              | Resize patch handles known crash; otherwise relies on `react-map-gl/maplibre`                                                    |
+| Error boundary            | None at engine level                                                                                                             | Host (`MapLibreServiceCoverageMap`) does not wrap                                                                                |
 
 **Strengths:**
 
@@ -108,22 +108,22 @@ declared in `PLAN_MAP_UNIFICATION_2026-05-08.md` § 10.
 
 **Lifecycle contract:**
 
-| Concern | Implementation | Notes |
-|---|---|---|
-| Pre-mount safety | `import "../../utils/maplibreResizePatch"` | Same pattern as Engine 1 |
-| Mount key | `id="shop-directory-map"` + `key={mapRenderNonce}` | The `mapRenderNonce` allows host-controlled hard remount |
-| Container gating | `{containerReady && (<NavigationErrorBoundary>...)}` | Mount deferred until container has measurable dimensions |
-| Error boundary | `<NavigationErrorBoundary>` wraps the `<Map>` | Better than Engine 1 |
-| Initial viewport | `initialViewState` uncontrolled | Viewport delegated to `MapLibreShopDirectoryViewportManager` child |
-| Style | `mapStyle={mapStyle}` | Tile-mode aware (satellite vs roadmap) |
-| Pitch / zoom envelope | `minZoom`, `maxZoom`, `maxPitch` all gated on `navigationMode === "guidance"` and `tileMode` | Multi-axis conditional behavior — more complex than Engine 1 |
-| Performance handlers | `onClick`, `onMouseMove`, `onMouseLeave` | No move/zoom perf tracking |
-| `onLoad` / `onError` | Both present (`handleMapLoad` / `handleMapLoadError`) | Distinct from Engine 1 |
-| Imperative handle | None directly; viewport manager uses `useMap()` internally | Indirect imperative path through `react-map-gl`'s context |
-| Camera mutation | `<MapLibreShopDirectoryViewportManager>` child uses `useMap()` + `map.flyTo` / `fitBounds` | Imperative mutation lives inside child component |
-| Source/layer registration | Multiple `<Source>/<Layer>` blocks inline (service areas, shop pins) + `<ShopDirectoryMapLayers>` + `<ShopDirectoryNavStepLayers>` + `<ShopDirectoryShopPinLayers>` | Layer authority distributed across 4 child components |
-| Cleanup | React unmount + `mapRenderNonce` allows hard reset | More aggressive than Engine 1 |
-| Standard controls | `GeolocateControl`, `NavigationControl`, `ScaleControl` | Engine 1 only has Navigation + Attribution |
+| Concern                   | Implementation                                                                                                                                                      | Notes                                                              |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| Pre-mount safety          | `import "../../utils/maplibreResizePatch"`                                                                                                                          | Same pattern as Engine 1                                           |
+| Mount key                 | `id="shop-directory-map"` + `key={mapRenderNonce}`                                                                                                                  | The `mapRenderNonce` allows host-controlled hard remount           |
+| Container gating          | `{containerReady && (<NavigationErrorBoundary>...)}`                                                                                                                | Mount deferred until container has measurable dimensions           |
+| Error boundary            | `<NavigationErrorBoundary>` wraps the `<Map>`                                                                                                                       | Better than Engine 1                                               |
+| Initial viewport          | `initialViewState` uncontrolled                                                                                                                                     | Viewport delegated to `MapLibreShopDirectoryViewportManager` child |
+| Style                     | `mapStyle={mapStyle}`                                                                                                                                               | Tile-mode aware (satellite vs roadmap)                             |
+| Pitch / zoom envelope     | `minZoom`, `maxZoom`, `maxPitch` all gated on `navigationMode === "guidance"` and `tileMode`                                                                        | Multi-axis conditional behavior — more complex than Engine 1       |
+| Performance handlers      | `onClick`, `onMouseMove`, `onMouseLeave`                                                                                                                            | No move/zoom perf tracking                                         |
+| `onLoad` / `onError`      | Both present (`handleMapLoad` / `handleMapLoadError`)                                                                                                               | Distinct from Engine 1                                             |
+| Imperative handle         | None directly; viewport manager uses `useMap()` internally                                                                                                          | Indirect imperative path through `react-map-gl`'s context          |
+| Camera mutation           | `<MapLibreShopDirectoryViewportManager>` child uses `useMap()` + `map.flyTo` / `fitBounds`                                                                          | Imperative mutation lives inside child component                   |
+| Source/layer registration | Multiple `<Source>/<Layer>` blocks inline (service areas, shop pins) + `<ShopDirectoryMapLayers>` + `<ShopDirectoryNavStepLayers>` + `<ShopDirectoryShopPinLayers>` | Layer authority distributed across 4 child components              |
+| Cleanup                   | React unmount + `mapRenderNonce` allows hard reset                                                                                                                  | More aggressive than Engine 1                                      |
+| Standard controls         | `GeolocateControl`, `NavigationControl`, `ScaleControl`                                                                                                             | Engine 1 only has Navigation + Attribution                         |
 
 **Strengths:**
 
@@ -172,21 +172,21 @@ declared in `PLAN_MAP_UNIFICATION_2026-05-08.md` § 10.
 
 **Lifecycle contract:**
 
-| Concern | Implementation | Notes |
-|---|---|---|
-| Pre-mount safety | `import "../../utils/maplibreResizePatch"` | Same |
-| Mount key | `id={`dashboard-preview-${mapId}`}` (per-instance via `useId()`) | Allows multiple simultaneous mounts |
-| Initial viewport | **Controlled** — `{...viewState}` + `onMove` setter | Different from Engines 1 & 2 (uncontrolled) |
-| Auto-fit | Computed in `fittedView` `useMemo` from shop coords (≥2 shops) | Bbox + log2 zoom heuristic; not MapLibre `fitBounds` |
-| Style | `mapStyle={mapStyle}` (`isLight` ? roadmap : night) | Style swap triggers full reload |
-| Interactivity | All disabled: `scrollZoom`, `dragPan`, `dragRotate`, `doubleClickZoom`, `touchZoomRotate`, `keyboard` | Click-to-tooltip is the only allowed interaction |
-| Performance handlers | `onClick` only | No move/zoom tracking |
-| `onLoad` / `onError` | Neither | Failure mode is silent |
-| Imperative handle | None | Pure declarative |
-| Camera mutation | `useEffect` resets `viewState` when `center`/`zoom`/`fittedView` props change | Authority conflict risk: if parent controls `center` AND user pans, parent overrides on next render (mitigated by `dragPan={false}`) |
-| Source/layer registration | Inline only — no child layer components | 3 sources: `dashboard-service-areas`, `dashboard-shops`, `dashboard-reports` |
-| Cleanup | React unmount | No special handling |
-| Vignette overlay | Sibling `<div>` after `<Map>` | Pure visual; no map state involvement |
+| Concern                   | Implementation                                                                                        | Notes                                                                                                                                |
+| ------------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Pre-mount safety          | `import "../../utils/maplibreResizePatch"`                                                            | Same                                                                                                                                 |
+| Mount key                 | `id={`dashboard-preview-${mapId}`}` (per-instance via `useId()`)                                      | Allows multiple simultaneous mounts                                                                                                  |
+| Initial viewport          | **Controlled** — `{...viewState}` + `onMove` setter                                                   | Different from Engines 1 & 2 (uncontrolled)                                                                                          |
+| Auto-fit                  | Computed in `fittedView` `useMemo` from shop coords (≥2 shops)                                        | Bbox + log2 zoom heuristic; not MapLibre `fitBounds`                                                                                 |
+| Style                     | `mapStyle={mapStyle}` (`isLight` ? roadmap : night)                                                   | Style swap triggers full reload                                                                                                      |
+| Interactivity             | All disabled: `scrollZoom`, `dragPan`, `dragRotate`, `doubleClickZoom`, `touchZoomRotate`, `keyboard` | Click-to-tooltip is the only allowed interaction                                                                                     |
+| Performance handlers      | `onClick` only                                                                                        | No move/zoom tracking                                                                                                                |
+| `onLoad` / `onError`      | Neither                                                                                               | Failure mode is silent                                                                                                               |
+| Imperative handle         | None                                                                                                  | Pure declarative                                                                                                                     |
+| Camera mutation           | `useEffect` resets `viewState` when `center`/`zoom`/`fittedView` props change                         | Authority conflict risk: if parent controls `center` AND user pans, parent overrides on next render (mitigated by `dragPan={false}`) |
+| Source/layer registration | Inline only — no child layer components                                                               | 3 sources: `dashboard-service-areas`, `dashboard-shops`, `dashboard-reports`                                                         |
+| Cleanup                   | React unmount                                                                                         | No special handling                                                                                                                  |
+| Vignette overlay          | Sibling `<div>` after `<Map>`                                                                         | Pure visual; no map state involvement                                                                                                |
 
 **Strengths:**
 
@@ -211,8 +211,8 @@ declared in `PLAN_MAP_UNIFICATION_2026-05-08.md` § 10.
 
 ### 3.1 `MapEngineCanvas` callers
 
-| Caller | File | Mount role |
-|---|---|---|
+| Caller                       | File                                                                                                                  | Mount role                                                                   |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
 | `MapLibreServiceCoverageMap` | [`src/app/components/maps/MapLibreServiceCoverageMap.tsx`](../src/app/components/maps/MapLibreServiceCoverageMap.tsx) | Sole host. Owns chrome composition, perf tracking, controller orchestration. |
 
 ### 3.2 `MapLibreShopDirectoryMapPane` callers
@@ -220,22 +220,22 @@ declared in `PLAN_MAP_UNIFICATION_2026-05-08.md` § 10.
 The pane is its own host (the file IS the mount site). Surrounding shop
 surfaces compose around it:
 
-| Surrounding surface | File | Composition role |
-|---|---|---|
+| Surrounding surface             | File                                                                                                                        | Composition role                     |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
 | `ShopDirectoryHybridMapSection` | [`src/app/components/shop/ShopDirectoryHybridMapSection.tsx`](../src/app/components/shop/ShopDirectoryHybridMapSection.tsx) | Top-level shop-directory layout host |
-| `ImmersiveMapViewport` | [`src/app/components/shop/ImmersiveMapViewport.tsx`](../src/app/components/shop/ImmersiveMapViewport.tsx) | Fullscreen presentation wrapper |
-| `ShopDirectoryMapPopup` | [`src/app/components/shop/ShopDirectoryMapPopup.tsx`](../src/app/components/shop/ShopDirectoryMapPopup.tsx) | Popup card composed inside the pane |
+| `ImmersiveMapViewport`          | [`src/app/components/shop/ImmersiveMapViewport.tsx`](../src/app/components/shop/ImmersiveMapViewport.tsx)                   | Fullscreen presentation wrapper      |
+| `ShopDirectoryMapPopup`         | [`src/app/components/shop/ShopDirectoryMapPopup.tsx`](../src/app/components/shop/ShopDirectoryMapPopup.tsx)                 | Popup card composed inside the pane  |
 
 ### 3.3 `MapLibreDashboardMapPreview` callers (the duplication target)
 
-| Caller | File | Use case | Tier classification (proposed) |
-|---|---|---|---|
-| `CustomerMapWidget` | [`src/app/components/dashboard/CustomerMapWidget.tsx`](../src/app/components/dashboard/CustomerMapWidget.tsx) | Dashboard widget — customer view | Tier B |
-| `ShopMapWidget` | [`src/app/components/dashboard/ShopMapWidget.tsx`](../src/app/components/dashboard/ShopMapWidget.tsx) | Dashboard widget — shop view | Tier B |
-| `InsurerMapWidget` | [`src/app/components/dashboard/InsurerMapWidget.tsx`](../src/app/components/dashboard/InsurerMapWidget.tsx) | Dashboard widget — insurer view | Tier B |
-| `ReportsListScreen` | [`src/app/components/reports/ReportsListScreen.tsx`](../src/app/components/reports/ReportsListScreen.tsx) | Inline preview for the reports list | Tier B |
-| `ReportDetailScreen` | [`src/app/components/reports/ReportDetailScreen.tsx`](../src/app/components/reports/ReportDetailScreen.tsx) | Per-report context preview | Tier B |
-| `CompetitorAnalysisScreen` | [`src/app/components/reports/CompetitorAnalysisScreen.tsx`](../src/app/components/reports/CompetitorAnalysisScreen.tsx) | Bid competitor geographic context | Tier B |
+| Caller                     | File                                                                                                                    | Use case                            | Tier classification (proposed) |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | ------------------------------ |
+| `CustomerMapWidget`        | [`src/app/components/dashboard/CustomerMapWidget.tsx`](../src/app/components/dashboard/CustomerMapWidget.tsx)           | Dashboard widget — customer view    | Tier B                         |
+| `ShopMapWidget`            | [`src/app/components/dashboard/ShopMapWidget.tsx`](../src/app/components/dashboard/ShopMapWidget.tsx)                   | Dashboard widget — shop view        | Tier B                         |
+| `InsurerMapWidget`         | [`src/app/components/dashboard/InsurerMapWidget.tsx`](../src/app/components/dashboard/InsurerMapWidget.tsx)             | Dashboard widget — insurer view     | Tier B                         |
+| `ReportsListScreen`        | [`src/app/components/reports/ReportsListScreen.tsx`](../src/app/components/reports/ReportsListScreen.tsx)               | Inline preview for the reports list | Tier B                         |
+| `ReportDetailScreen`       | [`src/app/components/reports/ReportDetailScreen.tsx`](../src/app/components/reports/ReportDetailScreen.tsx)             | Per-report context preview          | Tier B                         |
+| `CompetitorAnalysisScreen` | [`src/app/components/reports/CompetitorAnalysisScreen.tsx`](../src/app/components/reports/CompetitorAnalysisScreen.tsx) | Bid competitor geographic context   | Tier B                         |
 
 > **Update vs Pass 217:** That pass listed 4 callers. Pass 223 grep shows
 > **6 callers**. Both `CustomerMapWidget` and `ShopMapWidget` are also
@@ -249,30 +249,30 @@ surfaces compose around it:
 
 ### 4.1 `id` collision risk
 
-| Engine | Map id | Collision risk |
-|---|---|---|
-| 1 | `coverage-map` (static) | Two simultaneous mounts would collide — not currently triggered |
-| 2 | `shop-directory-map` (static) | Same risk |
-| 3 | `dashboard-preview-${useId()}` | Per-instance — safe |
+| Engine | Map id                         | Collision risk                                                  |
+| ------ | ------------------------------ | --------------------------------------------------------------- |
+| 1      | `coverage-map` (static)        | Two simultaneous mounts would collide — not currently triggered |
+| 2      | `shop-directory-map` (static)  | Same risk                                                       |
+| 3      | `dashboard-preview-${useId()}` | Per-instance — safe                                             |
 
 If convergence collapses Engines 1 and 2 into a shared canonical engine,
 the static-id pattern needs a per-host id strategy.
 
 ### 4.2 Shared utilities
 
-| Utility | Used by | Notes |
-|---|---|---|
-| `maplibreResizePatch` | All 3 engines | Critical pre-mount safety. MUST be imported before any `<Map>` instantiation. |
-| `maplibreStyles` | Engines 1 + 3 | Shared style registry |
-| `geoCircle.circleToPolygon` | Engines 2 + 3 | Service-area geometry |
+| Utility                     | Used by       | Notes                                                                         |
+| --------------------------- | ------------- | ----------------------------------------------------------------------------- |
+| `maplibreResizePatch`       | All 3 engines | Critical pre-mount safety. MUST be imported before any `<Map>` instantiation. |
+| `maplibreStyles`            | Engines 1 + 3 | Shared style registry                                                         |
+| `geoCircle.circleToPolygon` | Engines 2 + 3 | Service-area geometry                                                         |
 
 ### 4.3 Camera authority models (3 incompatible patterns)
 
-| Engine | Camera pattern | Mutation entry point |
-|---|---|---|
-| 1 | Uncontrolled + revision-keyed declarative controllers | `MapLibreViewportController`, `MapLibreFollowLocationController`, `MapLibreArrivalCameraEffect` |
-| 2 | Uncontrolled + imperative `useMap()` inside child manager | `MapLibreShopDirectoryViewportManager` |
-| 3 | Controlled (`{...viewState}` + `onMove`) | Direct setter; parent prop overrides via `useEffect` |
+| Engine | Camera pattern                                            | Mutation entry point                                                                            |
+| ------ | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| 1      | Uncontrolled + revision-keyed declarative controllers     | `MapLibreViewportController`, `MapLibreFollowLocationController`, `MapLibreArrivalCameraEffect` |
+| 2      | Uncontrolled + imperative `useMap()` inside child manager | `MapLibreShopDirectoryViewportManager`                                                          |
+| 3      | Controlled (`{...viewState}` + `onMove`)                  | Direct setter; parent prop overrides via `useEffect`                                            |
 
 **Convergence implication:** Pass 226 (lifecycle contract draft) must pick
 ONE camera authority model as canonical. The current three-way split is
@@ -280,22 +280,22 @@ the strongest source of mental-model fragmentation across engines.
 
 ### 4.4 Error / failure surfaces
 
-| Engine | `onLoad` | `onError` | Error boundary | Container gating |
-|---|---|---|---|---|
-| 1 | ✗ | ✗ | ✗ | ✗ |
-| 2 | ✓ | ✓ | ✓ (`NavigationErrorBoundary`) | ✓ |
-| 3 | ✗ | ✗ | ✗ | ✗ |
+| Engine | `onLoad` | `onError` | Error boundary                | Container gating |
+| ------ | -------- | --------- | ----------------------------- | ---------------- |
+| 1      | ✗        | ✗         | ✗                             | ✗                |
+| 2      | ✓        | ✓         | ✓ (`NavigationErrorBoundary`) | ✓                |
+| 3      | ✗        | ✗         | ✗                             | ✗                |
 
 Engine 2 has the strongest failure surface. Convergence target should
 adopt Engine 2's error contract.
 
 ### 4.5 Layer authority distribution
 
-| Engine | Layer authority |
-|---|---|
-| 1 | Single child component (`MapLibreCoverageMapLayers`) — clean |
-| 2 | Distributed across 4+ child components + inline `<Source>` blocks |
-| 3 | Inline only (3 `<Source>` blocks) — clean for the size |
+| Engine | Layer authority                                                   |
+| ------ | ----------------------------------------------------------------- |
+| 1      | Single child component (`MapLibreCoverageMapLayers`) — clean      |
+| 2      | Distributed across 4+ child components + inline `<Source>` blocks |
+| 3      | Inline only (3 `<Source>` blocks) — clean for the size            |
 
 Engine 2's distribution is the source-of-truth concern: if a layer is
 registered by one child but cleaned up by another, style-swap timing

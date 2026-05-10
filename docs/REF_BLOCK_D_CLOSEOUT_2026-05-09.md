@@ -45,14 +45,14 @@ Owner-locked vocabulary going forward:
 
 ## §2. Pass-by-pass delivery
 
-| Pass  | Title                                | Output                                            | Commit       | Lines |
-| ----- | ------------------------------------ | ------------------------------------------------- | ------------ | ----- |
-| 231   | Ratify LAW + PLAN status flips       | LAW_MAP_RENDERER_CONTRACT → CANONICAL; PLAN_MAP_CONVERGENCE_SEQUENCE → ACTIVE | `66c70794` | n/a |
-| 231a  | Runtime philosophy audit             | REF_RUNTIME_PHILOSOPHY_2026-05-09.md              | `129a357b`   | 335   |
-| 231b  | Canonical runtime paths              | REF_CANONICAL_RUNTIME_PATHS_2026-05-09.md         | `0e867eba`   | 356   |
-| 231c  | Map shell + layout hierarchy audit   | REF_MAP_SHELL_HIERARCHY_2026-05-09.md             | `5c87897e`   | 300   |
-| 231d  | Motion + transition contract audit   | REF_MAP_MOTION_CONTRACT_2026-05-09.md             | `366c2a66`   | 282   |
-| 231e  | Test infrastructure prefix           | src/app/test-utils/mapTestHarness.ts + smoke test | `5bc1c3c9`   | 315   |
+| Pass | Title                              | Output                                                                        | Commit     | Lines |
+| ---- | ---------------------------------- | ----------------------------------------------------------------------------- | ---------- | ----- |
+| 231  | Ratify LAW + PLAN status flips     | LAW_MAP_RENDERER_CONTRACT → CANONICAL; PLAN_MAP_CONVERGENCE_SEQUENCE → ACTIVE | `66c70794` | n/a   |
+| 231a | Runtime philosophy audit           | REF_RUNTIME_PHILOSOPHY_2026-05-09.md                                          | `129a357b` | 335   |
+| 231b | Canonical runtime paths            | REF_CANONICAL_RUNTIME_PATHS_2026-05-09.md                                     | `0e867eba` | 356   |
+| 231c | Map shell + layout hierarchy audit | REF_MAP_SHELL_HIERARCHY_2026-05-09.md                                         | `5c87897e` | 300   |
+| 231d | Motion + transition contract audit | REF_MAP_MOTION_CONTRACT_2026-05-09.md                                         | `366c2a66` | 282   |
+| 231e | Test infrastructure prefix         | src/app/test-utils/mapTestHarness.ts + smoke test                             | `5bc1c3c9` | 315   |
 
 Total Block D output: **5 new CANONICAL/REFERENCE docs (1,273 lines)** + **2 LAW/PLAN status promotions** + **1 test-only source module + smoke test (315 lines)**. Zero production runtime changes.
 
@@ -176,34 +176,34 @@ Any other work pauses here.
 
 ## §7. Verification — Block D acceptance checklist
 
-| Item                                                              | Status |
-| ----------------------------------------------------------------- | ------ |
-| LAW_MAP_RENDERER_CONTRACT status = CANONICAL                       | ✅      |
-| PLAN_MAP_CONVERGENCE_SEQUENCE status = ACTIVE                      | ✅      |
-| Three sub-runtimes named + characterized                           | ✅ (231a §2) |
-| Continuity guarantees table per sub-runtime                        | ✅ (231a §3) |
-| Escalation / handoff matrix                                        | ✅ (231a §7) |
-| 9 canonical runtime paths catalogued                               | ✅ (231b §1-§9) |
-| Path-to-pass cross reference                                       | ✅ (231b §11) |
-| 8-surface inventory by archetype                                   | ✅ (231c §2) |
-| 6-layer z-stack canonical                                          | ✅ (231c §3) |
-| Mobile vs desktop divergence documented                            | ✅ (231c §3.4) |
-| Tap-to-expand affordance form for Tier B                           | ✅ (231c §4.2) |
-| Three motion classes (P / A / O)                                   | ✅ (231d §2) |
-| Per-engine motion authority table                                  | ✅ (231d §3) |
-| Reduced-motion inheritance rule (read at engine boundary)          | ✅ (231d §4) |
-| Camera restoration table (no snap-back-on-release)                 | ✅ (231d §6) |
-| Gesture precedence list                                            | ✅ (231d §7) |
-| Transition timing classes for handoffs                             | ✅ (231d §8) |
-| Route-follow camera philosophy                                     | ✅ (231d §9) |
-| MapLibre stub factory                                              | ✅ (231e mapTestHarness.ts) |
-| matchMedia reduced-motion helper                                   | ✅ (231e mapTestHarness.ts) |
-| Viewport fixtures aligned with §11 surfaces                        | ✅ (231e mapTestHarness.ts) |
-| Resize-patch assertion helpers (KI-190 prep)                       | ✅ (231e mapTestHarness.ts) |
-| Smoke test for harness                                             | ✅ (231e mapTestHarness.test.ts; 9/9 pass) |
-| Build still green                                                  | ✅ (3.51s) |
-| Cspell still PASS                                                  | ✅      |
-| No production runtime source touched                               | ✅      |
+| Item                                                      | Status                                     |
+| --------------------------------------------------------- | ------------------------------------------ |
+| LAW_MAP_RENDERER_CONTRACT status = CANONICAL              | ✅                                         |
+| PLAN_MAP_CONVERGENCE_SEQUENCE status = ACTIVE             | ✅                                         |
+| Three sub-runtimes named + characterized                  | ✅ (231a §2)                               |
+| Continuity guarantees table per sub-runtime               | ✅ (231a §3)                               |
+| Escalation / handoff matrix                               | ✅ (231a §7)                               |
+| 9 canonical runtime paths catalogued                      | ✅ (231b §1-§9)                            |
+| Path-to-pass cross reference                              | ✅ (231b §11)                              |
+| 8-surface inventory by archetype                          | ✅ (231c §2)                               |
+| 6-layer z-stack canonical                                 | ✅ (231c §3)                               |
+| Mobile vs desktop divergence documented                   | ✅ (231c §3.4)                             |
+| Tap-to-expand affordance form for Tier B                  | ✅ (231c §4.2)                             |
+| Three motion classes (P / A / O)                          | ✅ (231d §2)                               |
+| Per-engine motion authority table                         | ✅ (231d §3)                               |
+| Reduced-motion inheritance rule (read at engine boundary) | ✅ (231d §4)                               |
+| Camera restoration table (no snap-back-on-release)        | ✅ (231d §6)                               |
+| Gesture precedence list                                   | ✅ (231d §7)                               |
+| Transition timing classes for handoffs                    | ✅ (231d §8)                               |
+| Route-follow camera philosophy                            | ✅ (231d §9)                               |
+| MapLibre stub factory                                     | ✅ (231e mapTestHarness.ts)                |
+| matchMedia reduced-motion helper                          | ✅ (231e mapTestHarness.ts)                |
+| Viewport fixtures aligned with §11 surfaces               | ✅ (231e mapTestHarness.ts)                |
+| Resize-patch assertion helpers (KI-190 prep)              | ✅ (231e mapTestHarness.ts)                |
+| Smoke test for harness                                    | ✅ (231e mapTestHarness.test.ts; 9/9 pass) |
+| Build still green                                         | ✅ (3.51s)                                 |
+| Cspell still PASS                                         | ✅                                         |
+| No production runtime source touched                      | ✅                                         |
 
 ---
 

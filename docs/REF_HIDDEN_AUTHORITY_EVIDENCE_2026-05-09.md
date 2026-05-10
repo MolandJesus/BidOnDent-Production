@@ -19,6 +19,7 @@ last_updated: 2026-05-09
 > behavior change in this pass.
 >
 > Companions:
+>
 > - [`docs/REF_ENGINE_3_CAMERA_AUTHORITY_2026-05-09.md`](REF_ENGINE_3_CAMERA_AUTHORITY_2026-05-09.md) (Pass 237 — Engine 3 deep audit + migration design).
 > - [`docs/REF_RUNTIME_PHILOSOPHY_2026-05-09.md`](REF_RUNTIME_PHILOSOPHY_2026-05-09.md) ("preview owns no camera").
 > - [`docs/REF_KNOWN_ISSUES.md`](REF_KNOWN_ISSUES.md) (KI-180, KI-181, KI-186, KI-194 reconciliation targets).
@@ -85,20 +86,21 @@ follow-on work (out of Phase 2 scope per owner authorization).
 ### §2.2 Engine 2 — `MapLibreShopDirectoryMapPane` (Tier A, Exploratory + Operational)
 
 File: [`src/app/components/shop/MapLibreShopDirectoryMapPane.tsx`](../src/app/components/shop/MapLibreShopDirectoryMapPane.tsx)
-+ state hook
-[`src/app/components/shop/useMapPaneState.ts`](../src/app/components/shop/useMapPaneState.ts).
+
+- state hook
+  [`src/app/components/shop/useMapPaneState.ts`](../src/app/components/shop/useMapPaneState.ts).
 
 **Out of Phase 2 scope** for fixes per owner authorization
 ("Engine 2 convergence or authority migration NOT
 AUTHORIZED"). Inventory recorded here for governance continuity.
 
-| Surface | Location | Override | Tracked under |
-|---------|----------|----------|---------------|
-| Imperative `map.flyTo()` for Class A + Class O | `useMapPaneState.ts` (multiple call sites) | Bypasses `prefers-reduced-motion` contract — caller cannot opt out per-call | **KI-180** (open) |
-| Tile-mode auto-resolution from `prefers-color-scheme: dark` listener | `useMapPaneState.ts` lines 174-186 | When `mapTheme="auto"`, internal media-query listener overrides any caller intent for `tileMode` between renders | **KI-194** (NEW — see §4.1) |
-| `externalTileMode` override effect | `useMapPaneState.ts` lines 188-193 | If a sibling overlay sets `externalTileMode`, internal `setTileMode(externalTileMode)` mutates state without surfacing the change to the original caller | **KI-194** (NEW — same family) |
-| Guidance-mode auto-clear of popups | `useMapPaneState.ts` lines 240-244 | When `navigationMode="guidance"`, internal effect clears `shopPopup` / `savedPlacePopup` / `routePopup` regardless of caller intent | **KI-195** (NEW — see §4.2) |
-| `prevTileModeRef` transition detector | `MapLibreShopDirectoryMapPane.tsx` lines 185-206 | Ref captures `tileMode` to detect transitions; not a hidden override of caller intent — the ref reflects current prop. Declarative. | n/a (not hidden authority) |
+| Surface                                                              | Location                                         | Override                                                                                                                                                 | Tracked under                  |
+| -------------------------------------------------------------------- | ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
+| Imperative `map.flyTo()` for Class A + Class O                       | `useMapPaneState.ts` (multiple call sites)       | Bypasses `prefers-reduced-motion` contract — caller cannot opt out per-call                                                                              | **KI-180** (open)              |
+| Tile-mode auto-resolution from `prefers-color-scheme: dark` listener | `useMapPaneState.ts` lines 174-186               | When `mapTheme="auto"`, internal media-query listener overrides any caller intent for `tileMode` between renders                                         | **KI-194** (NEW — see §4.1)    |
+| `externalTileMode` override effect                                   | `useMapPaneState.ts` lines 188-193               | If a sibling overlay sets `externalTileMode`, internal `setTileMode(externalTileMode)` mutates state without surfacing the change to the original caller | **KI-194** (NEW — same family) |
+| Guidance-mode auto-clear of popups                                   | `useMapPaneState.ts` lines 240-244               | When `navigationMode="guidance"`, internal effect clears `shopPopup` / `savedPlacePopup` / `routePopup` regardless of caller intent                      | **KI-195** (NEW — see §4.2)    |
+| `prevTileModeRef` transition detector                                | `MapLibreShopDirectoryMapPane.tsx` lines 185-206 | Ref captures `tileMode` to detect transitions; not a hidden override of caller intent — the ref reflects current prop. Declarative.                      | n/a (not hidden authority)     |
 
 ### §2.3 Engine 3 — `MapLibreDashboardMapPreview` (Tier B, Preview)
 
@@ -107,8 +109,8 @@ File: [`src/app/components/dashboard/MapLibreDashboardMapPreview.tsx`](../src/ap
 **Fully audited in Pass 237.** See
 [`docs/REF_ENGINE_3_CAMERA_AUTHORITY_2026-05-09.md`](REF_ENGINE_3_CAMERA_AUTHORITY_2026-05-09.md).
 
-| Surface | Location | Override | Tracked under |
-|---------|----------|----------|---------------|
+| Surface           | Location    | Override                                                                                                                     | Tracked under     |
+| ----------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------- | ----------------- |
 | `fittedView` memo | lines 49-79 | When `shops.length >= 2` (or `allPoints.length >= 2`), derived bounds-fit viewport silently overrides caller `center`/`zoom` | **KI-181** (open) |
 
 Migration to declarative `autoFit` prop designed in Pass 237 §5.
@@ -123,16 +125,16 @@ Mount-time half pinned by Pass 231g; dynamic half pinned by Pass
 
 File: navigation host hooks (per [`docs/REF_RUNTIME_PHILOSOPHY_2026-05-09.md`](REF_RUNTIME_PHILOSOPHY_2026-05-09.md)).
 
-| Surface | Override | Tracked under |
-|---------|----------|---------------|
+| Surface                                                                                  | Override                                                       | Tracked under |
+| ---------------------------------------------------------------------------------------- | -------------------------------------------------------------- | ------------- |
 | Cloud-resumed navigation session can override caller-supplied initial route on hydration | **KI-045** (open — depends on backend schema in connected env) |
 
 Already characterized; no Pass 239 delta needed.
 
 ### §3.2 GPS dual-instantiation risk
 
-| Surface | Override | Tracked under |
-|---------|----------|---------------|
+| Surface                                                                                                                                                                      | Override                  | Tracked under |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- | ------------- |
 | Two simultaneously-mounted navigation hosts could each subscribe to `navigator.geolocation.watchPosition`, double-charging battery + creating two competing position streams | **KI-186** (open, latent) |
 
 Already characterized; no Pass 239 delta needed.
@@ -188,15 +190,15 @@ Both new KIs filed in
 
 ## §5. KI reconciliation summary
 
-| KI | Status before Pass 239 | Status after Pass 239 |
-|-----|------------------------|------------------------|
-| KI-180 (Engine 2 imperative flyTo bypasses reduced-motion) | OPEN | OPEN — no change. Out of Phase 2 scope. Cross-referenced from §2.2. |
-| KI-181 (Engine 3 fittedView silent override) | OPEN | OPEN — no change. Migration design in Pass 237 awaits owner authorization. |
-| KI-186 (GPS dual-instantiation risk) | OPEN, latent | OPEN, latent — no change. Cross-referenced from §3.2. |
-| KI-191 (reduced-motion contract not CI-enforced) | RESOLVED (Pass 238) | RESOLVED — confirmed. |
-| KI-193 (shadcn/ui reduced-motion gap) | OPEN (filed Pass 238) | OPEN — confirmed. |
-| **KI-194 (Engine 2 tile-mode dual-override)** | — | **NEW — filed by Pass 239.** |
-| **KI-195 (Engine 2 guidance-mode auto-clears popups)** | — | **NEW — filed by Pass 239.** |
+| KI                                                         | Status before Pass 239 | Status after Pass 239                                                      |
+| ---------------------------------------------------------- | ---------------------- | -------------------------------------------------------------------------- |
+| KI-180 (Engine 2 imperative flyTo bypasses reduced-motion) | OPEN                   | OPEN — no change. Out of Phase 2 scope. Cross-referenced from §2.2.        |
+| KI-181 (Engine 3 fittedView silent override)               | OPEN                   | OPEN — no change. Migration design in Pass 237 awaits owner authorization. |
+| KI-186 (GPS dual-instantiation risk)                       | OPEN, latent           | OPEN, latent — no change. Cross-referenced from §3.2.                      |
+| KI-191 (reduced-motion contract not CI-enforced)           | RESOLVED (Pass 238)    | RESOLVED — confirmed.                                                      |
+| KI-193 (shadcn/ui reduced-motion gap)                      | OPEN (filed Pass 238)  | OPEN — confirmed.                                                          |
+| **KI-194 (Engine 2 tile-mode dual-override)**              | —                      | **NEW — filed by Pass 239.**                                               |
+| **KI-195 (Engine 2 guidance-mode auto-clears popups)**     | —                      | **NEW — filed by Pass 239.**                                               |
 
 ---
 

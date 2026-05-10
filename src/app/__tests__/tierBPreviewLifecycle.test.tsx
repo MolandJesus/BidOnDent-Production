@@ -268,13 +268,7 @@ describe("Tier B preview — Pass 254 §2 repeated rerender stability", () => {
 describe("Tier B preview — Pass 254 §3 prop churn stability", () => {
   it("autoFit=never: rapid center/zoom changes always reflect latest caller intent", () => {
     const view = render(
-      <MapLibreDashboardMapPreview
-        shops={[]}
-        center={[10, 20]}
-        zoom={5}
-        isLight
-        autoFit="never"
-      />
+      <MapLibreDashboardMapPreview shops={[]} center={[10, 20]} zoom={5} isLight autoFit="never" />
     );
     let snap = lastMapPropsOrThrow();
     expect(snap.latitude).toBeCloseTo(10, 5);
@@ -282,13 +276,7 @@ describe("Tier B preview — Pass 254 §3 prop churn stability", () => {
     expect(snap.zoom).toBe(5);
 
     view.rerender(
-      <MapLibreDashboardMapPreview
-        shops={[]}
-        center={[30, 40]}
-        zoom={8}
-        isLight
-        autoFit="never"
-      />
+      <MapLibreDashboardMapPreview shops={[]} center={[30, 40]} zoom={8} isLight autoFit="never" />
     );
     snap = lastMapPropsOrThrow();
     expect(snap.latitude).toBeCloseTo(30, 5);

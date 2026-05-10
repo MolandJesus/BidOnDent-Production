@@ -86,9 +86,9 @@ describe("friendlyEdgeError — pass-through and fallback", () => {
   });
 
   it("returns fallback when the message contains schema vocabulary", () => {
-    expect(friendlyEdgeError(new Error('null value in column "user_id" violates not-null constraint'))).toBe(
-      "Something went wrong. Please try again."
-    );
+    expect(
+      friendlyEdgeError(new Error('null value in column "user_id" violates not-null constraint'))
+    ).toBe("Something went wrong. Please try again.");
     expect(friendlyEdgeError(new Error('foreign key constraint "vehicles_user_id_fkey"'))).toBe(
       "Something went wrong. Please try again."
     );
