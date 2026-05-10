@@ -44,3 +44,7 @@ is the seam.
 - [`cn.ts`](./cn.ts) — class-name helper (`clsx` + `tailwind-merge`).
   Extracted Pass 299 (2026-05-10) per
   [`docs/REF_PASS_298_FIRST_MICRO_EXTRACTION_SPEC_CN_2026-05-10.md`](../../docs/REF_PASS_298_FIRST_MICRO_EXTRACTION_SPEC_CN_2026-05-10.md).
+- [`useOnlineStatus.ts`](./useOnlineStatus.ts) — browser online/offline
+  status hook. Reports state only; consumer renders its own offline UX.
+  Extracted Pass 301 (2026-05-10) per
+  [`docs/REF_PASS_300_PLATFORM_CORE_PRESSURE_AUDIT_2026-05-10.md`](../../docs/REF_PASS_300_PLATFORM_CORE_PRESSURE_AUDIT_2026-05-10.md) §5.

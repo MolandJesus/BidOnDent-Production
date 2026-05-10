@@ -28,7 +28,7 @@ import { useNotificationEvents, NotificationProvider } from "./features/notifica
 import { useNotifications } from "./features/notifications/NotificationContext";
 import { useDeepLinkNavigation } from "./hooks/useDeepLinkNavigation";
 import NotificationToast from "./components/ui/NotificationToast";
-import { useOnlineStatus } from "./hooks/useOnlineStatus";
+import { useOnlineStatus } from "@/platform-core/useOnlineStatus";
 import { useServiceWorkerUpdate } from "./hooks/useServiceWorkerUpdate";
 
 // Import constants
