@@ -7,7 +7,15 @@
 ## Active session
 
 **Active branch:** BidOnDent-Horizon-Beta
-**Active AI:** (none — Pass 313 yellow-legal-pad mobile calmness + chrome lightening + leakage cleanup shipped at commit 4b8f4d1. Mobile responsive calibration: h1 2rem mobile→2.5rem 40rem+; h2 1.5rem→1.75rem; section padding 4rem mobile→8rem→12rem at lg+; horizontal 1.25rem mobile→1.5rem. Chrome lightened: header padding 1.25rem mobile, footer 2.5rem mobile (was 4rem). Added :focus-visible quiet gold ring for keyboard a11y. Added meta theme-color, canonical, Open Graph + Twitter card meta to BaseLayout. Removed user-visible "[last name TBD]" brackets globally — site reads naturally as "Stacey" until real last name arrives. Removed visible admin-note captions from contact.astro. Commented out about.astro "How she got here" section that was rendering bracketed placeholder text. Shortened resources captions ("PDF · about N pages" → "about N pages"). NEW src/pages/404.astro fits the rest of the site (was default Astro 404). NEW .nvmrc pins Node 20 for deployment readiness. 9 files; +130/-60. ZERO BidOnDent source modified. Pass 281 §11 invariants in BidOnDent ALL UNTOUCHED. Relay #15-#38 prohibitions: zero violations.)
+**Active AI:** (none — Passes 314-316 shipped in yellow-legal-pad. 314 = robots.txt allow-all. 315 = removed unreliable mailto: form (mailto form actions are unreliable across browsers, especially mobile; email link is the primary reliable path; form returns when backend like Calendly/Formspree/Vercel-serverless arrives), added print stylesheet (white paper / black ink / chrome hidden / fade-in reset / page-break-avoid on headings / URLs printed after external links). 316 = static sitemap.xml + TODO_STACEY update reflecting form removal. ZERO BidOnDent source modified. Pass 281 §11 invariants ALL UNTOUCHED. Relay #15-#38 prohibitions: zero violations.)
+**Active layer:** (none)
+**Locked files:** (none)
+
+---
+
+## Previous standdown (preserved for trail — Pass 313)
+
+**Active AI (prior — Pass 313):** (none — Pass 313 yellow-legal-pad mobile calmness + chrome lightening + leakage cleanup shipped at commit 4b8f4d1. Mobile responsive calibration: h1 2rem mobile→2.5rem 40rem+; h2 1.5rem→1.75rem; section padding 4rem mobile→8rem→12rem at lg+; horizontal 1.25rem mobile→1.5rem. Chrome lightened: header padding 1.25rem mobile, footer 2.5rem mobile (was 4rem). Added :focus-visible quiet gold ring for keyboard a11y. Added meta theme-color, canonical, Open Graph + Twitter card meta to BaseLayout. Removed user-visible "[last name TBD]" brackets globally — site reads naturally as "Stacey" until real last name arrives. Removed visible admin-note captions from contact.astro. Commented out about.astro "How she got here" section that was rendering bracketed placeholder text. Shortened resources captions ("PDF · about N pages" → "about N pages"). NEW src/pages/404.astro fits the rest of the site (was default Astro 404). NEW .nvmrc pins Node 20 for deployment readiness. 9 files; +130/-60. ZERO BidOnDent source modified. Pass 281 §11 invariants in BidOnDent ALL UNTOUCHED. Relay #15-#38 prohibitions: zero violations.)
 **Active layer:** (none)
 **Locked files:** (none)
 
