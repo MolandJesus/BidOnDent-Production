@@ -29,17 +29,17 @@ last_updated: 2026-05-09
 
 ## §1. Path index
 
-| # | Path | Sub-runtime | Tier | Convergence phase |
-|---|---|---|---|---|
-| P1 | Coverage exploration | Exploratory | A | LAW lifecycle conformance only |
-| P2 | Shop operational navigation | Operational | A | Phase 2 (Engine 2 contract) |
-| P3 | Dashboard preview exploration | Preview | B | Phase 1 |
-| P4 | Preview → operational escalation | Preview → Exploratory → Operational | B → A | Phase 1 (preview half) |
-| P5 | Session restore | Operational | A | Phase 2 |
-| P6 | Reroute lifecycle | Operational | A | Phase 2 |
-| P7 | Route abandonment | Operational | A | Phase 2 |
-| P8 | Viewport persistence | Exploratory + Preview | A + B | Phase 1 (preview), Phase 3 (exploratory) |
-| P9 | Multi-device continuity | Operational | A | Out of launch envelope |
+| #   | Path                             | Sub-runtime                         | Tier  | Convergence phase                        |
+| --- | -------------------------------- | ----------------------------------- | ----- | ---------------------------------------- |
+| P1  | Coverage exploration             | Exploratory                         | A     | LAW lifecycle conformance only           |
+| P2  | Shop operational navigation      | Operational                         | A     | Phase 2 (Engine 2 contract)              |
+| P3  | Dashboard preview exploration    | Preview                             | B     | Phase 1                                  |
+| P4  | Preview → operational escalation | Preview → Exploratory → Operational | B → A | Phase 1 (preview half)                   |
+| P5  | Session restore                  | Operational                         | A     | Phase 2                                  |
+| P6  | Reroute lifecycle                | Operational                         | A     | Phase 2                                  |
+| P7  | Route abandonment                | Operational                         | A     | Phase 2                                  |
+| P8  | Viewport persistence             | Exploratory + Preview               | A + B | Phase 1 (preview), Phase 3 (exploratory) |
+| P9  | Multi-device continuity          | Operational                         | A     | Out of launch envelope                   |
 
 ---
 
@@ -51,6 +51,7 @@ coverage map to investigate the spatial possibilities.
 **Sub-runtime:** Exploratory Navigation.
 **Today's surface:** coverage map (Engine 1 + Host A).
 **Today's behavior:**
+
 - User-owned camera (free pan/zoom/pitch).
 - Coverage layer rendered.
 - Tap on shop pin → bottom sheet with shop summary + "Get directions"
@@ -61,6 +62,7 @@ coverage map to investigate the spatial possibilities.
   preview NOT restored.
 
 **Target behavior:**
+
 - Same Exploratory contract.
 - Add: optional viewport persistence per
   [`REF_RUNTIME_PHILOSOPHY_2026-05-09.md`](REF_RUNTIME_PHILOSOPHY_2026-05-09.md)
@@ -87,6 +89,7 @@ A shop driver commits to driving to a customer's location.
 **Sub-runtime:** Operational Navigation.
 **Today's surface:** shop directory map (Engine 2 + Host B).
 **Today's behavior:**
+
 - User commits via "Navigate" button.
 - Cloud session created (`bidondent_nav_session_*` per-user).
 - Wake-lock acquired.
@@ -98,6 +101,7 @@ A shop driver commits to driving to a customer's location.
 - On end: cloud session cleared, wake-lock released.
 
 **Target behavior:**
+
 - Same Operational contract.
 - Camera: declarative + revision-keyed per LAW §2 (currently
   imperative — KI-180).
@@ -122,6 +126,7 @@ without leaving the dashboard.
 from CustomerMapWidget, ShopMapWidget, InsurerMapWidget,
 ReportsListScreen, ReportDetailScreen, CompetitorAnalysisScreen.
 **Today's behavior:**
+
 - Caller passes `center` + `zoom`.
 - Component silently overrides caller viewport when ≥2 shop pins
   exist (auto-fit to bbox). Hidden authority.
@@ -131,6 +136,7 @@ ReportsListScreen, ReportDetailScreen, CompetitorAnalysisScreen.
 - No onLoad/onError surfaced to caller.
 
 **Target behavior:**
+
 - Caller passes `center` + `zoom` AND explicit `autoFit` prop
   (`'always' | 'when-no-caller-bounds' | 'never'`).
 - Hidden override forbidden.
@@ -153,6 +159,7 @@ a route, commits.
 
 **Sub-runtime:** Preview → Exploratory → Operational.
 **Today's behavior:**
+
 - Tap-to-expand works inconsistently across the 6 callers (some
   navigate to a list screen, some to nothing, ReportDetailScreen
   shows the preview as decoration only).
@@ -161,6 +168,7 @@ a route, commits.
   "Navigate" creates the Operational session correctly (P2's path).
 
 **Target behavior:**
+
 - Per [`REF_RUNTIME_PHILOSOPHY_2026-05-09.md`](REF_RUNTIME_PHILOSOPHY_2026-05-09.md)
   §7.1: every preview surface escalates to a defined Exploratory
   surface, carrying viewport + selected pin (if any).
@@ -177,14 +185,14 @@ specific carry-forward semantics declared per surface.
 
 **Carry-forward map (proposed):**
 
-| Caller | Expand target | Carry forward |
-|---|---|---|
-| CustomerMapWidget | full coverage map | viewport + customer location |
-| ShopMapWidget | shop directory map | viewport + shop selection |
-| InsurerMapWidget | insurer claims map (future) | viewport + claim filter |
-| ReportsListScreen | full reports map | viewport + active filter |
-| ReportDetailScreen | shop directory map filtered by report area | viewport + report context |
-| CompetitorAnalysisScreen | shop directory map in analysis mode | viewport + analysis params |
+| Caller                   | Expand target                              | Carry forward                |
+| ------------------------ | ------------------------------------------ | ---------------------------- |
+| CustomerMapWidget        | full coverage map                          | viewport + customer location |
+| ShopMapWidget            | shop directory map                         | viewport + shop selection    |
+| InsurerMapWidget         | insurer claims map (future)                | viewport + claim filter      |
+| ReportsListScreen        | full reports map                           | viewport + active filter     |
+| ReportDetailScreen       | shop directory map filtered by report area | viewport + report context    |
+| CompetitorAnalysisScreen | shop directory map in analysis mode        | viewport + analysis params   |
 
 This map is owner-reviewable; owner may revise during Phase 1
 authorization.
@@ -197,6 +205,7 @@ User reloads mid-route, OR signs back in on the same device.
 
 **Sub-runtime:** Operational Navigation.
 **Today's behavior:**
+
 - Cloud session restored via `navigationSessionCloudService` per
   Host B's logic.
 - Local session (`bidondent_nav_session_*`) restored on next mount.
@@ -207,6 +216,7 @@ User reloads mid-route, OR signs back in on the same device.
   of the cold-start path.
 
 **Target behavior:**
+
 - Same restore behavior, but explicit "Restored navigation" toast on
   first frame after restore.
 - Wake-lock re-acquisition prompted if user-interaction event
@@ -232,6 +242,7 @@ Driver deviates from the planned route.
 
 **Sub-runtime:** Operational Navigation.
 **Today's behavior:**
+
 - `detectDeviation` flags off-route condition.
 - `shouldTriggerReroute` gates the prompt (sustained deviation
   threshold, last-prompt cooldown, route-stale guard).
@@ -242,6 +253,7 @@ Driver deviates from the planned route.
   the gate).
 
 **Target behavior:**
+
 - Same. This path is currently well-formed.
 - Add: explicit telemetry when gate prevents reroute (today the
   prevention is silent; debugging an over/under-firing reroute is
@@ -261,6 +273,7 @@ out.
 
 **Sub-runtime:** Operational Navigation.
 **Today's behavior:**
+
 - Explicit "End navigation": Host B clears local + cloud session,
   releases wake-lock, voice silent, camera releases to user.
 - App close: cloud session persists. Next session restores (P5).
@@ -268,6 +281,7 @@ out.
   KI-188.
 
 **Target behavior:**
+
 - Same. Per [`REF_RUNTIME_PHILOSOPHY_2026-05-09.md`](REF_RUNTIME_PHILOSOPHY_2026-05-09.md)
   §7.3: confirmation prompt required if route < 90% complete and
   user did NOT arrive.
@@ -287,6 +301,7 @@ navigates away, then back.
 
 **Sub-runtime:** Exploratory + Preview.
 **Today's behavior:**
+
 - Shop directory map (Exploratory): viewport survives in-app route
   changes via Host B's per-user persistence. Survives reload via
   same.
@@ -295,6 +310,7 @@ navigates away, then back.
 - Preview surfaces: stateless on every render.
 
 **Target behavior:**
+
 - Per [`REF_RUNTIME_PHILOSOPHY_2026-05-09.md`](REF_RUNTIME_PHILOSOPHY_2026-05-09.md)
   §3: Exploratory viewport persists per-surface. Preview never
   persists.
@@ -334,16 +350,16 @@ established at Block D authorization) requires the pass to declare
 which path it preserves, changes, or escalates. This table feeds
 that declaration.
 
-| Pass (proposed) | Surface | Touches paths | Sub-runtimes touched | Tier semantics touched |
-|---|---|---|---|---|
-| 232 | ReportDetailScreen | P3, P4 | Preview | C-candidate (or B with stricter props) |
-| 233 | ReportsListScreen | P3, P4 | Preview | B |
-| 234 | 3 dashboard widgets | P3, P4 | Preview | B |
-| 235 | CompetitorAnalysisScreen | P3, P4 | Preview | B |
-| 236 | Engine 2 contract | P2, P5, P6, P7 | Operational | A |
-| 237 | Engine 2 reduced-motion + declarative camera | P2, P5, P6, P7 | Operational | A |
-| 238 | Engine 2 layer authority + UX (P7 confirm) | P2, P7 | Operational | A |
-| 239+ | Coverage classification (Branch A/B/C) | P1, P8 | Exploratory (or escalate to Operational) | A |
+| Pass (proposed) | Surface                                      | Touches paths  | Sub-runtimes touched                     | Tier semantics touched                 |
+| --------------- | -------------------------------------------- | -------------- | ---------------------------------------- | -------------------------------------- |
+| 232             | ReportDetailScreen                           | P3, P4         | Preview                                  | C-candidate (or B with stricter props) |
+| 233             | ReportsListScreen                            | P3, P4         | Preview                                  | B                                      |
+| 234             | 3 dashboard widgets                          | P3, P4         | Preview                                  | B                                      |
+| 235             | CompetitorAnalysisScreen                     | P3, P4         | Preview                                  | B                                      |
+| 236             | Engine 2 contract                            | P2, P5, P6, P7 | Operational                              | A                                      |
+| 237             | Engine 2 reduced-motion + declarative camera | P2, P5, P6, P7 | Operational                              | A                                      |
+| 238             | Engine 2 layer authority + UX (P7 confirm)   | P2, P7         | Operational                              | A                                      |
+| 239+            | Coverage classification (Branch A/B/C)       | P1, P8         | Exploratory (or escalate to Operational) | A                                      |
 
 ---
 

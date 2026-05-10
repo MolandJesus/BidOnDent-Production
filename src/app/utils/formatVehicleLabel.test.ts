@@ -34,7 +34,9 @@ describe("formatVehicleLabel", () => {
   });
 
   it("drops duplicated make when model is tightly prefixed (Mazda6 case — KI-124 #2)", () => {
-    expect(formatVehicleLabel({ year: "2014", make: "Mazda", model: "Mazda6" })).toBe("2014 Mazda6");
+    expect(formatVehicleLabel({ year: "2014", make: "Mazda", model: "Mazda6" })).toBe(
+      "2014 Mazda6"
+    );
   });
 
   it("drops duplicated make when model exactly equals make (case-insensitive)", () => {
@@ -43,7 +45,9 @@ describe("formatVehicleLabel", () => {
 
   it("does NOT drop make when model only shares a partial prefix shorter than make", () => {
     // "BMW" make + "BM W3" model — model does not start with "bmw " or equal "bmw"
-    expect(formatVehicleLabel({ year: "2020", make: "BMW", model: "BM W3" })).toBe("2020 BMW BM W3");
+    expect(formatVehicleLabel({ year: "2020", make: "BMW", model: "BM W3" })).toBe(
+      "2020 BMW BM W3"
+    );
   });
 
   it("tolerates null/undefined fields without crashing", () => {

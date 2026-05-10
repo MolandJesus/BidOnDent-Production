@@ -185,20 +185,20 @@ last_updated: 2026-05-09
 
 **Field definitions and allowed values:**
 
-| Field                             | Type                | Allowed values / format                                                                       |
-| --------------------------------- | ------------------- | --------------------------------------------------------------------------------------------- |
-| `status`                          | enum                | `CANONICAL` \| `ACTIVE` \| `SUPERSEDED` \| `ARCHIVED` \| `DEFERRED` \| `HISTORICAL`           |
-| `authority`                       | enum                | `LAW` \| `REFERENCE` \| `PLAN` \| `OPS`                                                       |
-| `scope`                           | slug                | short lowercase-hyphenated topic owned by this doc (e.g. `system-state`, `map-unification`)   |
-| `canonical_source_of_truth`       | path or self        | path to the doc that wins on this concept; self-reference if THIS doc is canonical            |
-| `supersedes`                      | list of paths       | docs this one replaces (move replaced docs to `docs/archive/` per LAW co-update rule)         |
-| `superseded_by`                   | path or `null`      | path to the newer doc, or `null` if still current                                             |
-| `safe_for_autopilot`              | bool                | `true` if AI may edit additively without owner gate; `false` for LAW + apex canon docs        |
-| `requires_owner_approval`         | bool                | `true` if every edit requires explicit owner authorization in-session                         |
-| `last_topology_audit`             | ISO date            | `YYYY-MM-DD` of the most recent convergence/drift check against this doc                      |
-| `runtime_impact_if_misunderstood` | enum                | `low` \| `medium` \| `high` \| `critical` — drives AI caution level                           |
-| `ai_summary`                      | string ≤120 chars   | one-sentence operational summary for AI warmup; not marketing prose                           |
-| `last_updated`                    | ISO date            | `YYYY-MM-DD` of the most recent content edit                                                  |
+| Field                             | Type              | Allowed values / format                                                                     |
+| --------------------------------- | ----------------- | ------------------------------------------------------------------------------------------- |
+| `status`                          | enum              | `CANONICAL` \| `ACTIVE` \| `SUPERSEDED` \| `ARCHIVED` \| `DEFERRED` \| `HISTORICAL`         |
+| `authority`                       | enum              | `LAW` \| `REFERENCE` \| `PLAN` \| `OPS`                                                     |
+| `scope`                           | slug              | short lowercase-hyphenated topic owned by this doc (e.g. `system-state`, `map-unification`) |
+| `canonical_source_of_truth`       | path or self      | path to the doc that wins on this concept; self-reference if THIS doc is canonical          |
+| `supersedes`                      | list of paths     | docs this one replaces (move replaced docs to `docs/archive/` per LAW co-update rule)       |
+| `superseded_by`                   | path or `null`    | path to the newer doc, or `null` if still current                                           |
+| `safe_for_autopilot`              | bool              | `true` if AI may edit additively without owner gate; `false` for LAW + apex canon docs      |
+| `requires_owner_approval`         | bool              | `true` if every edit requires explicit owner authorization in-session                       |
+| `last_topology_audit`             | ISO date          | `YYYY-MM-DD` of the most recent convergence/drift check against this doc                    |
+| `runtime_impact_if_misunderstood` | enum              | `low` \| `medium` \| `high` \| `critical` — drives AI caution level                         |
+| `ai_summary`                      | string ≤120 chars | one-sentence operational summary for AI warmup; not marketing prose                         |
+| `last_updated`                    | ISO date          | `YYYY-MM-DD` of the most recent content edit                                                |
 
 **Schema rules:**
 

@@ -53,6 +53,8 @@ Mola's informal inserts such as "also add this", "what ChatGPT wanted to add", "
 
 If the user says "just planning" or "don't do anything yet", do not edit files. If the user says "go full auto" or "do so yourself", proceed within scope and stop only for hard-stop risks such as LAW conflicts, destructive data changes, auth/storage invariants, schema migrations, provider changes, deploy/secret actions, or overwriting unrelated work.
 
+When multiple AIs run on the same branch, re-claim `AI_LOCK.md` Active AI for **each** work batch, even if continuing an earlier-authorized track. Standdown lines record "Pass X complete" — they do NOT carry permission forward. Per-batch claim/standdown is mandatory. See `docs/REF_AI_COLLABORATION_PROTOCOL.md` § Methodology Lessons.
+
 Full protocol: [`docs/REF_AI_COLLABORATION_PROTOCOL.md`](docs/REF_AI_COLLABORATION_PROTOCOL.md).
 
 ---

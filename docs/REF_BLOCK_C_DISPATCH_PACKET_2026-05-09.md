@@ -22,17 +22,17 @@ last_updated: 2026-05-09
 
 ## §1. Block C delivery summary
 
-| Pass | Tier | Doc | Commit | Lines |
-|---|---|---|---|---|
-| 223 | REF | REF_MAP_RENDERER_INVENTORY_2026-05-09 | `9d226c4a` | 323 |
-| 224 | REF | REF_NAVIGATION_AUTHORITY_2026-05-09 | `c7f58a84` | 265 |
-| 225 | REF | REF_DASHBOARD_PREVIEW_DUPLICATION_2026-05-09 | `ae2d75d9` (amended) | 240 |
-| 225.5 | REF | REF_MAP_UX_COHESION_AUDIT_2026-05-09 | `2e2c3653` | 259 |
-| 226 | LAW (DRAFT) | LAW_MAP_RENDERER_CONTRACT | `ea0c9877` | 291 |
-| 227 | PLAN (PROPOSED) | PLAN_MAP_CONVERGENCE_SEQUENCE_2026-05-09 | `553a957e` | 218 |
-| 228 | REF | REF_MAP_TEST_COVERAGE_GAPS_2026-05-09 | `e4809ced` | 225 |
-| 229 | REF (update) | REF_KNOWN_ISSUES (KI-180 → KI-192) | `833e0184` | +131 |
-| 230 | REF | this doc | (this commit) | — |
+| Pass  | Tier            | Doc                                          | Commit               | Lines |
+| ----- | --------------- | -------------------------------------------- | -------------------- | ----- |
+| 223   | REF             | REF_MAP_RENDERER_INVENTORY_2026-05-09        | `9d226c4a`           | 323   |
+| 224   | REF             | REF_NAVIGATION_AUTHORITY_2026-05-09          | `c7f58a84`           | 265   |
+| 225   | REF             | REF_DASHBOARD_PREVIEW_DUPLICATION_2026-05-09 | `ae2d75d9` (amended) | 240   |
+| 225.5 | REF             | REF_MAP_UX_COHESION_AUDIT_2026-05-09         | `2e2c3653`           | 259   |
+| 226   | LAW (DRAFT)     | LAW_MAP_RENDERER_CONTRACT                    | `ea0c9877`           | 291   |
+| 227   | PLAN (PROPOSED) | PLAN_MAP_CONVERGENCE_SEQUENCE_2026-05-09     | `553a957e`           | 218   |
+| 228   | REF             | REF_MAP_TEST_COVERAGE_GAPS_2026-05-09        | `e4809ced`           | 225   |
+| 229   | REF (update)    | REF_KNOWN_ISSUES (KI-180 → KI-192)           | `833e0184`           | +131  |
+| 230   | REF             | this doc                                     | (this commit)        | —     |
 
 **Total:** 8 new docs + 1 KI registration + 1 closeout. ~2,150 lines of
 audit + contract + plan. **Zero runtime changes.** Zero engine swaps.
@@ -134,14 +134,14 @@ Before Pass 232 (Phase 1 step 1) executes, the following MUST be true:
 
 Assuming owner ratifies + answers open questions:
 
-| Order | Pass | Type | Risk |
-|---|---|---|---|
-| 1 | 231a | test-only — add Engine 3 mount/unmount test | low |
-| 2 | 231b | test-only — add `autoFit` prop behavior test (against current behavior to lock baseline) | low |
-| 3 | 232 | convergence — `ReportDetailScreen` Tier C/B lock + `autoFit` prop + onLoad/onError | low |
-| 4 | 233 | convergence — `ReportsListScreen` Tier B lock | low |
-| 5 | 234 | convergence — 3 dashboard widgets Tier B lock | low |
-| 6 | 235 | convergence — `CompetitorAnalysisScreen` Tier B lock | low |
+| Order | Pass | Type                                                                                     | Risk |
+| ----- | ---- | ---------------------------------------------------------------------------------------- | ---- |
+| 1     | 231a | test-only — add Engine 3 mount/unmount test                                              | low  |
+| 2     | 231b | test-only — add `autoFit` prop behavior test (against current behavior to lock baseline) | low  |
+| 3     | 232  | convergence — `ReportDetailScreen` Tier C/B lock + `autoFit` prop + onLoad/onError       | low  |
+| 4     | 233  | convergence — `ReportsListScreen` Tier B lock                                            | low  |
+| 5     | 234  | convergence — 3 dashboard widgets Tier B lock                                            | low  |
+| 6     | 235  | convergence — `CompetitorAnalysisScreen` Tier B lock                                     | low  |
 
 This brings Phase 1 to completion. Phase 1 gate then triggers Phase 2
 authorization request (separate dispatch).

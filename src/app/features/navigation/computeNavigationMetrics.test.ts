@@ -9,16 +9,16 @@
  */
 import { describe, expect, it } from "vitest";
 
-import {
-  computeETA,
-  formatDistance,
-  haversineDistanceMiles,
-} from "./computeNavigationMetrics";
+import { computeETA, formatDistance, haversineDistanceMiles } from "./computeNavigationMetrics";
 
 describe("haversineDistanceMiles", () => {
   it("returns 0 for identical coordinates", () => {
-    expect(haversineDistanceMiles({ latitude: 33.749, longitude: -84.388 }, { latitude: 33.749, longitude: -84.388 }))
-      .toBeCloseTo(0, 5);
+    expect(
+      haversineDistanceMiles(
+        { latitude: 33.749, longitude: -84.388 },
+        { latitude: 33.749, longitude: -84.388 }
+      )
+    ).toBeCloseTo(0, 5);
   });
 
   it("computes ATL → LAX distance to within 1% of known great-circle (~1946 mi)", () => {

@@ -32,8 +32,7 @@ export default function ShopMapWidget({
   // Pass 14 Step 1.6 (co-worker AI) — destructure retryPartnerShops for the
   // error-state retry button. Brings ShopMapWidget into parity with
   // DashboardCoveragePanel (Pass 14 Step 1.5) + CustomerMapWidget (Step 1.6).
-  const { partnerShops, isLoadingShops, fetchError, retryPartnerShops } =
-    useCoveragePartnerShops();
+  const { partnerShops, isLoadingShops, fetchError, retryPartnerShops } = useCoveragePartnerShops();
   const { serviceAreas, isLoading: isLoadingAreas } = useShopServiceAreas();
   const isLight = appearanceMode === "light";
   const statSurfaceClasses = ["bd-dashboard-section--accent-blue", "bd-dashboard-section--deep"];

@@ -103,8 +103,7 @@ showing pre-determined spatial context inside a larger UI.
   Gestures suppressed. Tap-to-expand affordance escalates to an
   Operational or Exploratory surface.
 - **Interruption semantics:** N/A — preview is read-only context.
-- **Today's implementation:** `MapLibreDashboardMapPreview` (Engine
-  3) called from 6 surfaces.
+- **Today's implementation:** `MapLibreDashboardMapPreview` (Engine 3) called from 6 surfaces.
 - **Examples:** ReportDetailScreen mini-map, dashboard "shops near
   me" widget.
 
@@ -115,14 +114,14 @@ showing pre-determined spatial context inside a larger UI.
 A **continuity guarantee** is a promise about what survives across a
 boundary. The boundaries that matter:
 
-| Boundary | Operational | Exploratory | Preview |
-|---|---|---|---|
-| Component remount (revision-keyed) | route preserved | viewport preserved | none |
-| Route change (intra-app) | route preserved | viewport preserved | none |
-| Page reload | route restored from cloud | viewport may restore from local | none |
-| App background → foreground | wake-lock released, route resumed | viewport preserved | none |
-| Sign-out / account switch | route cleared | viewport cleared | N/A |
-| Multi-device | future: cloud session restore on second device | not guaranteed | not applicable |
+| Boundary                           | Operational                                    | Exploratory                     | Preview        |
+| ---------------------------------- | ---------------------------------------------- | ------------------------------- | -------------- |
+| Component remount (revision-keyed) | route preserved                                | viewport preserved              | none           |
+| Route change (intra-app)           | route preserved                                | viewport preserved              | none           |
+| Page reload                        | route restored from cloud                      | viewport may restore from local | none           |
+| App background → foreground        | wake-lock released, route resumed              | viewport preserved              | none           |
+| Sign-out / account switch          | route cleared                                  | viewport cleared                | N/A            |
+| Multi-device                       | future: cloud session restore on second device | not guaranteed                  | not applicable |
 
 Hidden authority is forbidden. If a surface's continuity behavior
 does not match the table, that is a bug, not a design choice.
@@ -136,6 +135,7 @@ focus. Each sub-runtime declares which interruptions it tolerates and
 which it preempts.
 
 ### 4.1 Operational
+
 - **Tolerated:** OS-level focus loss (calls, notifications). Resume on
   return. Wake-lock yields and re-acquires.
 - **Preempts:** any in-app navigation away from the operational
@@ -145,11 +145,13 @@ which it preempts.
 - **Reroute:** gated by [`shouldTriggerReroute`](../src/app/services/navigation/rerouteGate.ts). Off-route detection must NOT trigger reroute prompts during route preview or unconfirmed exploration.
 
 ### 4.2 Exploratory
+
 - **Tolerated:** any interruption. State may be discarded on context
   switch.
 - **Preempts:** nothing. User may abandon any time.
 
 ### 4.3 Preview
+
 - **Tolerated:** any. No state to lose.
 - **Preempts:** nothing.
 
@@ -159,13 +161,13 @@ which it preempts.
 
 Persistence is the disk/cloud cost the runtime is allowed to take.
 
-| Concern | Operational | Exploratory | Preview |
-|---|---|---|---|
-| Local viewport (per-surface) | yes | yes | no |
-| Local session (per-user) | yes (`bidondent_nav_session_*`) | optional | no |
-| Cloud session (per-user) | **required** | optional / future | no |
-| External handoff (Apple/Google/Waze) | yes (`bidondent_navigation_session` legacy global key) | no | no |
-| Telemetry of route decisions | yes | aggregate only | no |
+| Concern                              | Operational                                            | Exploratory       | Preview |
+| ------------------------------------ | ------------------------------------------------------ | ----------------- | ------- |
+| Local viewport (per-surface)         | yes                                                    | yes               | no      |
+| Local session (per-user)             | yes (`bidondent_nav_session_*`)                        | optional          | no      |
+| Cloud session (per-user)             | **required**                                           | optional / future | no      |
+| External handoff (Apple/Google/Waze) | yes (`bidondent_navigation_session` legacy global key) | no                | no      |
+| Telemetry of route decisions         | yes                                                    | aggregate only    | no      |
 
 KI-183 (storage-key naming collision between in-app session and
 external-handoff payload) MUST be resolved before any new persistence
@@ -179,15 +181,15 @@ Authority = who decides what when models disagree. Locked by
 [`LAW_MAP_RENDERER_CONTRACT.md`](LAW_MAP_RENDERER_CONTRACT.md) §2 +
 this doc §6.
 
-| Decision | Operational | Exploratory | Preview |
-|---|---|---|---|
-| Camera (pan/zoom) | runtime owns when guidance active; user owns otherwise | user owns | caller owns |
-| Pitch | runtime sets pitch in guidance mode; user gestures ignored | user owns within tier-defined caps | none (gestures suppressed) |
-| Route choice | user picks; runtime commits | user picks; runtime suggests | N/A |
-| Reroute | runtime owns (gated by `shouldTriggerReroute`) | none | N/A |
-| Layer visibility | runtime owns (guidance layers always on during guidance) | user owns within tier-defined toggles | caller owns |
-| Audio (voice) | runtime owns | none | none |
-| Wake-lock | runtime owns | none | none |
+| Decision          | Operational                                                | Exploratory                           | Preview                    |
+| ----------------- | ---------------------------------------------------------- | ------------------------------------- | -------------------------- |
+| Camera (pan/zoom) | runtime owns when guidance active; user owns otherwise     | user owns                             | caller owns                |
+| Pitch             | runtime sets pitch in guidance mode; user gestures ignored | user owns within tier-defined caps    | none (gestures suppressed) |
+| Route choice      | user picks; runtime commits                                | user picks; runtime suggests          | N/A                        |
+| Reroute           | runtime owns (gated by `shouldTriggerReroute`)             | none                                  | N/A                        |
+| Layer visibility  | runtime owns (guidance layers always on during guidance)   | user owns within tier-defined toggles | caller owns                |
+| Audio (voice)     | runtime owns                                               | none                                  | none                       |
+| Wake-lock         | runtime owns                                               | none                                  | none                       |
 
 ---
 
@@ -252,6 +254,7 @@ answer them — that is owner authority — but it constrains the
 acceptable answer space.
 
 ### 8.1 Coverage navigation: Tier A vs Tier B
+
 - Today: coverage is **silent**, no voice, no toast, no wake-lock,
   no cloud restore.
 - Per §2, that matches **Exploratory Navigation**, not Operational.
@@ -269,6 +272,7 @@ acceptable answer space.
   retains authority.
 
 ### 8.2 Pitch caps
+
 - Per §6, pitch authority differs by sub-runtime. A unified cap
   across surfaces would conflate runtimes.
 - Recommendation: declare per-runtime caps (Operational: 65°
@@ -277,6 +281,7 @@ acceptable answer space.
   (subtle pitch indicator on Exploratory) makes the cap legible.
 
 ### 8.3 Cross-surface camera continuity
+
 - Per §3, viewport continuity is per-surface for Exploratory and
   per-route for Operational. Cross-surface continuity (e.g. coverage
   viewport flowing into shop directory viewport) is NOT a current
@@ -285,12 +290,14 @@ acceptable answer space.
   Future feature, file as PLAN doc when prioritized.
 
 ### 8.4 Tier C dedicated engine
+
 - Per §2.3, Preview is stateless and minimally interactive. Engine
   3 already serves it well.
 - Recommendation: NO dedicated Tier C engine. Tier B with stricter
   props (`autoFit`, gesture suppression flags) suffices.
 
 ### 8.5 Engine 2 imperative `flyTo` deadline
+
 - Per §6, Operational runtime owns camera. Imperative `flyTo` is
   the implementation mechanism today.
 - LAW contract §2 forbids imperative camera in Tier A AFTER
@@ -304,23 +311,23 @@ acceptable answer space.
 
 ## §9. Vocabulary lock (binding from this commit)
 
-| Term | Use it for | Do NOT use it for |
-|---|---|---|
-| Navigation | the product surface family — never alone in load-bearing prose | a specific runtime |
-| Operational Navigation | sub-runtime per §2.1 | exploratory map browsing |
-| Exploratory Navigation | sub-runtime per §2.2 | committed driving |
-| Preview Navigation | sub-runtime per §2.3 | full-surface map work |
-| Tier A | LAW contract canonical interactive | preview surfaces |
-| Tier B | LAW contract operational preview | guidance-active surfaces |
-| Tier C | LAW contract decorative | anything with gestures |
-| Host A | `useCoverageNavigationExperience` orchestration host | the engine it pairs with |
-| Host B | `useShopDirectoryNavigation` orchestration host | the engine it pairs with |
-| Engine 1 | `MapEngineCanvas` | any other component |
-| Engine 2 | `MapLibreShopDirectoryMapPane` | any other component |
-| Engine 3 | `MapLibreDashboardMapPreview` | any other component |
-| Continuity guarantee | a §3-table commitment | a casual observation |
-| Authority | a §6-table assignment | a casual observation |
-| Escalation / handoff | a §7-defined transition | any UI navigation |
+| Term                   | Use it for                                                     | Do NOT use it for        |
+| ---------------------- | -------------------------------------------------------------- | ------------------------ |
+| Navigation             | the product surface family — never alone in load-bearing prose | a specific runtime       |
+| Operational Navigation | sub-runtime per §2.1                                           | exploratory map browsing |
+| Exploratory Navigation | sub-runtime per §2.2                                           | committed driving        |
+| Preview Navigation     | sub-runtime per §2.3                                           | full-surface map work    |
+| Tier A                 | LAW contract canonical interactive                             | preview surfaces         |
+| Tier B                 | LAW contract operational preview                               | guidance-active surfaces |
+| Tier C                 | LAW contract decorative                                        | anything with gestures   |
+| Host A                 | `useCoverageNavigationExperience` orchestration host           | the engine it pairs with |
+| Host B                 | `useShopDirectoryNavigation` orchestration host                | the engine it pairs with |
+| Engine 1               | `MapEngineCanvas`                                              | any other component      |
+| Engine 2               | `MapLibreShopDirectoryMapPane`                                 | any other component      |
+| Engine 3               | `MapLibreDashboardMapPreview`                                  | any other component      |
+| Continuity guarantee   | a §3-table commitment                                          | a casual observation     |
+| Authority              | a §6-table assignment                                          | a casual observation     |
+| Escalation / handoff   | a §7-defined transition                                        | any UI navigation        |
 
 ---
 
