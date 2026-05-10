@@ -98,12 +98,12 @@ export default function MapBidSheet({
         <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-slate-500/40" />
 
         {/* Header */}
-        <div className="mb-5 flex items-start justify-between">
-          <div>
+        <div className="mb-5 flex items-start justify-between gap-3">
+          <div className="min-w-0 flex-1">
             <h3 className={cn("text-lg font-bold", isDark ? "text-blue-200" : "text-slate-800")}>
               Place Bid
             </h3>
-            <p className={cn("mt-0.5 text-sm", isDark ? "text-slate-400" : "text-slate-500")}>
+            <p className={cn("mt-0.5 truncate text-sm", isDark ? "text-slate-400" : "text-slate-500")}>
               {vehicleLabel}
               {report.damageArea ? ` — ${report.damageArea}` : ""}
             </p>
