@@ -1,4 +1,4 @@
-import { cn } from "../../ui/utils";
+import { cn } from "@/platform-core/cn";
 import { getMapSurfaceTheme } from "../mapSurfaceTheme";
 import type { MapSurfaceTone } from "../serviceCoverageMapTypes";
 import type { NavigationSpeedLimitConfidence } from "../../../types/navigation";
@@ -46,7 +46,7 @@ export default function NavigationActiveSpeedPanel({
     <div className="pointer-events-none absolute bottom-[calc(max(env(safe-area-inset-bottom),0.75rem)_+_10rem)] right-3 z-[560] flex max-w-[min(220px,calc(100%-1.5rem))] flex-col items-end gap-2 sm:gap-2.5 sm:right-4 md:right-[5rem] md:max-w-[248px]">
       <div
         className={cn(
-          "map-liquid-rail pointer-events-auto relative overflow-hidden rounded-[1.45rem] border p-2 sm:p-2.5",
+          "map-liquid-rail pointer-events-auto relative overflow-hidden rounded-[1.45rem] border p-2 sm:p-2.5 animate-in fade-in slide-in-from-right-3 duration-400 motion-reduce:animate-none",
           theme.panelStrongClassName
         )}
       >

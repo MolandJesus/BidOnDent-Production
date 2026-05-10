@@ -7,7 +7,7 @@
  * - useShopDirectorySession = search/filter/map state
  * - useShopDirectoryNavigation = navigation lifecycle + guidance + route intelligence
  */
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { WebsiteIdentity } from "../services/auth/websiteIdentity";
 import type { MarketUserType } from "../services/intelligence/marketIntelligence";
 import type { ShopMapListing } from "../services/intelligence/shopMapExperience";
@@ -20,7 +20,7 @@ import {
   useNavigationVoiceAlerts,
 } from "../features/navigation";
 import {
-  getPreferredVoiceLabel,
+  getNavigationVoicePersonaLabel,
   supportsVoiceGuidance,
 } from "../services/navigation/voiceGuidance";
 import { navigationDestinationToSessionWaypoint } from "../services/navigation/navigationDestinationAdapters";
@@ -77,7 +77,12 @@ export function useShopDirectoryNavigation({
 
   const shopNavigationGps = useNavigationGpsTracking({
     gpsTrackingEnabled: guidanceSettings.gpsTrackingEnabled,
-    speedLimitMonitorEnabled: guidanceSettings.speedLimitMonitorEnabled,
+    // Pass 61b (2026-05-07) — KI-116 symptoms 5/6: speed-limit Overpass
+    // lookups must only fire when there is a truly active navigation
+    // session. Otherwise they spam the network from passive shop-browse
+    // surfaces using the user's idle GPS coordinate.
+    speedLimitMonitorEnabled:
+      guidanceSettings.speedLimitMonitorEnabled && navSession.session.status === "active",
   });
 
   const guidanceSelectedDestination = useMemo(
@@ -138,6 +143,11 @@ export function useShopDirectoryNavigation({
     voicePersona: guidanceSettings.voicePersona,
     voiceVolumePreset: guidanceSettings.voiceVolumePreset,
     selectedRouteIndex,
+    // Pass 57 (2026-05-07): the reroute lifecycle owns the OSRM refetch when
+    // it is `pending` (request in flight) or `cooldown` (just landed). Silent
+    // off-route auto-refetch must stand down to avoid double-firing.
+    suppressOffRouteRefetch:
+      reroute.state.status === "pending" || reroute.state.status === "cooldown",
   });
 
   useNavigationVoiceAlerts(
@@ -402,16 +412,47 @@ export function useShopDirectoryNavigation({
     });
   };
 
+  // Pass 54: defer reroute confirmation (and cooldown start) until the OSRM
+  // refresh actually delivers a new route. If OSRM fails (routeError set),
+  // cancel the reroute so the user isn't stuck in cooldown without a new route.
+  const pendingRerouteFetchedAtRef = useRef<string | null>(null);
+
   const handleReviewRoute = reroute.isEligible
     ? () => {
         const request = reroute.requestReroute(session.selectedRouteId);
         if (request) {
+          // Snapshot the current routePreview.fetchedAt so the effect below
+          // can detect when the refresh has produced a NEW route.
+          pendingRerouteFetchedAtRef.current = shopGuidancePreview.routePreview?.fetchedAt ?? "";
           // Force a fresh route calculation from the user's current GPS position
           shopGuidancePreview.refreshRoutePreview();
-          reroute.confirmReroute();
         }
       }
     : undefined;
+
+  useEffect(() => {
+    if (reroute.state.status !== "pending") return;
+    const baseline = pendingRerouteFetchedAtRef.current;
+    if (baseline === null) return;
+
+    const nextFetchedAt = shopGuidancePreview.routePreview?.fetchedAt ?? null;
+    if (nextFetchedAt && nextFetchedAt !== baseline) {
+      pendingRerouteFetchedAtRef.current = null;
+      reroute.confirmReroute();
+      return;
+    }
+
+    if (shopGuidancePreview.routeError) {
+      pendingRerouteFetchedAtRef.current = null;
+      reroute.cancelReroute();
+    }
+  }, [
+    reroute.state.status,
+    shopGuidancePreview.routePreview?.fetchedAt,
+    shopGuidancePreview.routeError,
+    reroute.confirmReroute,
+    reroute.cancelReroute,
+  ]);
 
   return {
     navigationMode,
@@ -482,7 +523,11 @@ export function useShopDirectoryNavigation({
 
     voiceMode: guidanceSettings.voiceMode,
     voiceVolumePreset: guidanceSettings.voiceVolumePreset,
-    preferredVoiceLabel: getPreferredVoiceLabel(guidanceSettings.voicePersona),
+    // Pass 72 (2026-05-07) — KI-124 #5: surface the stable persona display
+    // label ("British (smooth)"), not the OS-resolved voice.name ("Google UK
+    // English Female") which varies by browser/platform. The resolved voice
+    // name remains available via getPreferredVoiceLabel for diagnostics.
+    preferredVoiceLabel: getNavigationVoicePersonaLabel(guidanceSettings.voicePersona),
     voiceGuidanceSupported: supportsVoiceGuidance(),
     onVoiceModeChange: handleVoiceModeChange,
     onVoiceVolumePresetChange: handleVoiceVolumePresetChange,

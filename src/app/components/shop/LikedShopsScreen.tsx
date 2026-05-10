@@ -201,6 +201,10 @@ export default function LikedShopsScreen({
                     zoom={9}
                     isLight={isLight}
                     onShopClick={(shop) => setFocusedShopId(shop.id ?? null)}
+                    /* Pass 243 (KI-181 sub-pass B sweep): autoFit="always"
+                       preserves the pre-Pass-241 fit-driven default for
+                       this saved-shops map. */
+                    autoFit="always"
                   />
                 </div>
               ) : (

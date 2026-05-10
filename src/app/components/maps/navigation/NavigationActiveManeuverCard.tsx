@@ -1,5 +1,5 @@
 import { ArrowRight, ArrowUp, CornerDownLeft, CornerDownRight, RotateCcw } from "lucide-react";
-import { cn } from "../../ui/utils";
+import { cn } from "@/platform-core/cn";
 import { formatTurnDistance } from "../mapRoutePresentation";
 import { getMapSurfaceTheme } from "../mapSurfaceTheme";
 import type { MapSurfaceTone } from "../serviceCoverageMapTypes";

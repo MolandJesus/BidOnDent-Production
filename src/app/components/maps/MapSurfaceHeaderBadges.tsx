@@ -1,4 +1,4 @@
-import { cn } from "../ui/utils";
+import { cn } from "@/platform-core/cn";
 import { getMapSurfaceTheme } from "./mapSurfaceTheme";
 import type { MapSurfaceTone } from "./serviceCoverageMapTypes";
 
@@ -16,7 +16,7 @@ export default function MapSurfaceHeaderBadges({
   const theme = getMapSurfaceTheme(tone);
 
   return (
-    <div className="pointer-events-auto flex flex-wrap items-start gap-2">
+    <div className="pointer-events-auto flex flex-wrap items-start gap-2 animate-in fade-in slide-in-from-top-2 duration-400 motion-reduce:animate-none">
       <div
         className={cn(
           "min-w-0 sm:min-w-[200px] px-2.5 py-2 sm:px-3.5 sm:py-2.5",

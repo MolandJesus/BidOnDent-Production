@@ -121,7 +121,13 @@ export function useShopMapInteraction({
         if (mapInstance && clusterId != null) {
           mapInstance.getClusterExpansionZoom(Number(clusterId), (_err, zoom) => {
             const coords = (feature.geometry as GeoJSON.Point).coordinates;
-            e.target.flyTo({ center: [coords[0], coords[1]], zoom: Math.min(zoom, 17) });
+            // Pass 95: tighten cluster-expand fly to match Pass 89 premium feel
+            e.target.flyTo({
+              center: [coords[0], coords[1]],
+              zoom: Math.min(zoom, 17),
+              duration: 850,
+              curve: 1.4,
+            });
           });
         }
         return;
@@ -137,6 +143,21 @@ export function useShopMapInteraction({
               lng: shop.mapResult.coordinates.longitude,
               lat: shop.mapResult.coordinates.latitude,
               shop,
+            });
+            // Pass 171 (2026-05-07) — Phase 7 map-program-feel #16: smooth
+            // pan-to-pin on click + upper-third offset so the popup/sheet
+            // doesn't cover the pin. Audit AI's premium-map spec: "Apple
+            // Maps and Google Maps both ease the camera to the upper-third
+            // of viewport when a pin is selected." Negative y offset moves
+            // the visual center DOWN, which moves the pin UP visually.
+            // Reduce-motion: MapLibre's flyTo internally gates duration via
+            // window prefers-reduced-motion (TransformAnimation hooks),
+            // verified across Pass 89/95/166.
+            e.target.flyTo({
+              center: [shop.mapResult.coordinates.longitude, shop.mapResult.coordinates.latitude],
+              offset: [0, -Math.floor(e.target.getCanvas().height / 6)],
+              duration: 600,
+              curve: 1.4,
             });
           }
         }

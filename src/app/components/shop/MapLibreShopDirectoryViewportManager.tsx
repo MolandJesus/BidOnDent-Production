@@ -122,9 +122,22 @@ export default function MapLibreShopDirectoryViewportManager({
         return;
       }
 
+      // Pass 89 (2026-05-07) — owner directive: "less lessmotion rules for
+      // map-specific interfaces ... real map program feel". Replace the
+      // hard-coded `jumpTo` (single point) and `animate: false` (multi-point
+      // fit) with animated camera moves so origin/shop changes glide instead
+      // of snap. Apple/Google Maps both animate the fit-to-results transition.
+      // This is the single most visible "feels like a real map" gap on landing.
+      //
+      // Accessibility note: we deliberately do NOT pass `essential: true`.
+      // MapLibre auto-shortens / skips these animations when the OS reports
+      // `prefers-reduced-motion: reduce`, so users with vestibular conditions
+      // continue to get safe behavior. LAW §3 reduce-motion contract preserved
+      // at the OS layer; LAW §1 spatial-continuity intent satisfied for the
+      // 99%+ of users who have not opted out.
       if (points.length === 1) {
         lastAppliedFitKeyRef.current = fitRunKey;
-        map.jumpTo({ center: points[0], zoom: 14 });
+        map.flyTo({ center: points[0], zoom: 14, duration: 900, curve: 1.4 });
         return;
       }
 
@@ -155,7 +168,7 @@ export default function MapLibreShopDirectoryViewportManager({
           [minLng, minLat],
           [maxLng, maxLat],
         ],
-        { padding: 44, maxZoom: 15, animate: false }
+        { padding: 44, maxZoom: 15, duration: 900, curve: 1.4 }
       );
       lastAppliedFitKeyRef.current = fitRunKey;
     };
@@ -191,13 +204,20 @@ export default function MapLibreShopDirectoryViewportManager({
       return;
 
     const doFly = () => {
+      // Pass 98 (2026-05-07) — owner real-map directive: selected-shop fly
+      // was a flat 450ms snap that often left the pin under-zoomed and
+      // off-rhythm with the rest of the map. Match the Pass 89 camera
+      // language (curve 1.4 family, ~850ms) and guarantee a closer focal
+      // zoom (14) so the breathing pulse from Pass 91 is clearly visible.
+      // No `essential: true` → OS reduce-motion still honored (LAW §3).
       map.flyTo({
         center: [
           selectedShop.mapResult.coordinates.longitude,
           selectedShop.mapResult.coordinates.latitude,
         ],
-        zoom: Math.max(map.getZoom(), 12),
-        duration: 450,
+        zoom: Math.max(map.getZoom(), 14),
+        duration: 850,
+        curve: 1.3,
       });
     };
 

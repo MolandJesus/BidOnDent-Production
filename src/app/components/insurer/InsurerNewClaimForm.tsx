@@ -32,9 +32,9 @@ export default function InsurerNewClaimForm({
 }: InsurerNewClaimFormProps) {
   const isLight = appearanceMode === "light";
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-end sm:items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-end sm:items-center justify-center z-50 p-4 animate-in fade-in duration-200 motion-reduce:animate-none">
       <div
-        className={`bd-glass-floating rounded-t-2xl sm:rounded-2xl w-full max-w-2xl overflow-hidden max-h-[90vh] overflow-y-auto${isLight ? " bd-light-surface" : ""}`}
+        className={`bd-glass-floating rounded-t-2xl sm:rounded-2xl w-full max-w-2xl overflow-hidden max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-4 sm:slide-in-from-bottom-2 sm:zoom-in-95 duration-300 motion-reduce:animate-none${isLight ? " bd-light-surface" : ""}`}
       >
         <div className="p-4 sm:p-6">
           <h2
@@ -66,7 +66,7 @@ export default function InsurerNewClaimForm({
 
           {selectedShop && (
             <div
-              className={`mb-4 p-4 border rounded-lg ${
+              className={`mb-4 p-4 border rounded-lg animate-in fade-in slide-in-from-top-2 duration-300 motion-reduce:animate-none ${
                 isLight
                   ? "bg-green-50/60 border-green-200/50"
                   : "bg-green-400/10 border-green-400/20"

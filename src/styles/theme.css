@@ -53,10 +53,8 @@ body {
   }
 }
 
-/* Control Hierarchy Variants */
-.bd-glass-control--primary {
-  /* Inherit .bd-glass-control, but can be used for clarity */
-}
+/* Control Hierarchy Variants — `.bd-glass-control--primary` is implied by the
+   base `.bd-glass-control` rule; only the secondary variant carries overrides. */
 
 .bd-glass-control--secondary {
   border: none;
@@ -354,6 +352,15 @@ body {
     animation: slide-in-right 0.3s ease-out;
   }
 
+  /* Pass 56 (2026-05-07) — LAW §3 reduce-guard for the slide-in-right toast
+     keyframe. See docs/evidence/pass-56-2026-05-07/ANIMATION_KEYFRAME_AUDIT.md
+     §C Gap-2. Consumers: NotificationToast.tsx, AccountOverlays.tsx. */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-slide-in-right {
+      animation: none !important;
+    }
+  }
+
   /* ============================================================================
    * RESPONSIVE IMAGE OPTIMIZATION FOR LANDING PAGE
    * ============================================================================ */
@@ -405,7 +412,7 @@ body {
   .coverage-map-brand-badge {
     /* Pass 13h (2026-05-06) — top inset migrated from pure white 0.7 to
        cream 0.7 per LAW Light-Mode Surface Rule (no pure-white insets). */
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(var(--bd-blur-medium));
     box-shadow:
       0 10px 26px rgba(30, 58, 138, 0.16),
       inset 0 1px 0 rgba(252, 240, 208, 0.7),
@@ -467,8 +474,8 @@ body {
       rgba(232, 242, 254, 0.84),
       rgba(241, 245, 249, 0.76)
     ) !important;
-    backdrop-filter: blur(20px) saturate(1.1);
-    -webkit-backdrop-filter: blur(20px) saturate(1.1);
+    backdrop-filter: blur(var(--bd-blur-medium)) saturate(1.1);
+    -webkit-backdrop-filter: blur(var(--bd-blur-medium)) saturate(1.1);
     box-shadow:
       0 14px 32px rgba(15, 23, 42, 0.12),
       0 4px 12px rgba(59, 130, 246, 0.06),
@@ -492,7 +499,7 @@ body {
 
   .maplibregl-ctrl-group button:hover {
     background: rgba(59, 130, 246, 0.08) !important;
-    color: rgb(29 78 216);
+    color: rgb(29 78 216); /* NOSONAR css:S7924 — translucent hover layer over solid map control glass; effective contrast computed against the underlying glass body, not the 0.08 alpha overlay */
   }
 
   .maplibregl-ctrl-group button:active {
@@ -522,7 +529,7 @@ body {
   [data-map-tone="dark"] .maplibregl-ctrl-group button:hover,
   [data-map-theme="dark"] .maplibregl-ctrl-group button:hover {
     background: rgba(59, 130, 246, 0.15) !important;
-    color: rgb(224 242 254);
+    color: rgb(224 242 254); /* NOSONAR css:S7924 — translucent hover layer over dark-mode map control glass; effective contrast computed against the dark navy body, not the 0.15 alpha overlay */
   }
 
   /* Scale control — glass treatment.
@@ -536,8 +543,8 @@ body {
       rgba(232, 242, 254, 0.84),
       rgba(241, 245, 249, 0.72)
     ) !important;
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(var(--bd-glass-blur));
+    -webkit-backdrop-filter: blur(var(--bd-glass-blur));
     font-weight: 600 !important;
     font-size: 10px !important;
     color: rgb(51 65 85) !important;
@@ -556,8 +563,8 @@ body {
     isolation: isolate;
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.16);
-    backdrop-filter: blur(28px) saturate(1.12);
-    -webkit-backdrop-filter: blur(28px) saturate(1.12);
+    backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.12);
+    -webkit-backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.12);
     box-shadow:
       0 24px 60px rgba(15, 23, 42, 0.18),
       0 8px 26px rgba(59, 130, 246, 0.08),
@@ -607,7 +614,9 @@ body {
   }
 
   .map-ui-enter {
-    animation: mapUiEnter 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    /* Pass 282 (2026-05-09): easing curve tokenized as --bd-ease-entrance.
+       Duration 420ms preserved inline (per-purpose value). */
+    animation: mapUiEnter 420ms var(--bd-ease-entrance) both;
   }
 
   .map-ui-enter-delay-1 {
@@ -747,15 +756,17 @@ body {
   background: linear-gradient(180deg, rgba(232, 242, 254, 0.84), rgba(241, 245, 249, 0.76));
   color: rgb(15 23 42);
   padding: 0.9rem 1rem;
-  backdrop-filter: blur(28px) saturate(1.12);
-  -webkit-backdrop-filter: blur(28px) saturate(1.12);
+  backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.12);
+  -webkit-backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.12);
   box-shadow:
     0 24px 60px rgba(15, 23, 42, 0.14),
     0 8px 26px rgba(59, 130, 246, 0.06),
     inset 0 1px 0 rgba(252, 240, 208, 0.5),
     inset 0 -1px 0 rgba(148, 163, 184, 0.06);
   font-family: "SF Pro Display", "SF Pro Text", "Segoe UI", sans-serif;
-  animation: mapPopupEnter 280ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  /* Pass 282 (2026-05-09): easing curve tokenized as --bd-ease-entrance.
+     Duration 280ms preserved inline (per-purpose value). */
+  animation: mapPopupEnter 280ms var(--bd-ease-entrance) both;
 }
 
 @keyframes mapPopupEnter {
@@ -947,6 +958,26 @@ body {
   --bd-flow-loop-med: 18s;
   --bd-flow-loop-fast: 4.2s;
   --bd-flow-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  /* Pass 282 (2026-05-09) — entrance physics easing, distinct from flow-ease.
+     Used by mapUiEnter (line 617) and mapPopupEnter (line 765). The
+     cubic-bezier(0.2, 0.8, 0.2, 1) overshoot-then-settle curve carries
+     emotional weight separate from --bd-flow-ease infinite-loop motion.
+     Do NOT collapse into --bd-flow-ease — distinct emotional intent
+     per LAW_ANIMATION_AND_ATMOSPHERE.md trust+spatial-continuity filter. */
+  --bd-ease-entrance: cubic-bezier(0.2, 0.8, 0.2, 1);
+  /* Pass 283 (2026-05-09) — backdrop-blur depth tier tokens.
+     Three-tier hierarchy from theme.css inline survey (Pass 280 §8.1):
+       --bd-blur-heavy   — primary glass depth (was 20 inline sites)
+       --bd-blur-medium  — secondary glass / subdued depth (was 12 inline sites)
+       --bd-blur-light   — lightest glass / mobile-optimized (was 2 inline sites)
+     Existing --bd-glass-blur (16px) continues as the named glass-primitive
+     token; the 3 new tokens are TIER tokens for the depth hierarchy.
+     Variant values (14, 18, 22, 24, 26, 32 px) remain inline as
+     special-case adjustments — emotional asymmetry preserved per
+     relay #14 + Pass 281 §11 invariant #4 (atmospheric layer choreography). */
+  --bd-blur-heavy: 28px;
+  --bd-blur-medium: 20px;
+  --bd-blur-light: 10px;
 }
 
 /* ============================================================
@@ -1006,8 +1037,8 @@ body {
    Use on marketing/landing cards where visible presence matters more than dashboard calm.
    Dark variant lives below in the dark-mode override block. */
 .bd-glass-card--landing {
-  /* Pass C-fix (KI-082, 2026-05-04 owner feedback "new boarder design isnt
-     smoth gradient at all"): the prior pass stacked two 1px rings (bronze
+  /* Pass C-fix (KI-082, 2026-05-04 owner feedback "new boarder design isn't
+     smooth gradient at all"): the prior pass stacked two 1px rings (bronze
      0.18 + cool 0.22) on top of a 1px bronze rim, producing a stamped
      2-3px hard edge. Fix replaces hard rings with feathered diffuse
      halos so trim reads as premium light, not paint:
@@ -1300,8 +1331,11 @@ body {
     radial-gradient(ellipse 80% 60% at 50% 0%, rgba(196, 130, 45, 0.18) 0%, transparent 60%),
     radial-gradient(ellipse 60% 80% at 100% 50%, rgba(220, 150, 60, 0.1) 0%, transparent 70%);
   /* orbDrift gives a 4-stop translate+scale loop. 28s keeps it under perceptual
-     threshold — the eye registers depth, not motion. */
-  animation: orbDrift 28s ease-in-out infinite;
+     threshold — the eye registers depth, not motion.
+     Pass 282 (2026-05-09): 28s tokenized as --bd-flow-loop-slow (canonical
+     atmospheric drift cadence). Counter-pair at line 1335 stays inline at
+     36s (variant; not tokenized — distinct emotional intent). */
+  animation: orbDrift var(--bd-flow-loop-slow) ease-in-out infinite;
 }
 
 .bd-dashboard-atmosphere::after {
@@ -1372,8 +1406,8 @@ body {
   padding: 0.2rem 0.55rem;
   font-size: 0.75rem;
   font-weight: 500;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(var(--bd-blur-light));
+  -webkit-backdrop-filter: blur(var(--bd-blur-light));
   /* Pass 27 (2026-05-06): cream-gold inset highlight per locked Premium Gold
      Palette (LAW_PROJECT_RULES.md § Light-Mode Surface Rule). Replaces pure
      white inset rgba(255,255,255,0.65) — same LAW slip pattern fixed in
@@ -1468,8 +1502,8 @@ body {
   border: 1px solid rgba(191, 219, 254, 0.5);
   background: linear-gradient(180deg, rgba(248, 252, 255, 0.86) 0%, rgba(240, 248, 255, 0.78) 100%);
   color: #0f172a;
-  backdrop-filter: blur(28px) saturate(1.5);
-  -webkit-backdrop-filter: blur(28px) saturate(1.5);
+  backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.5);
+  -webkit-backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.5);
   border-radius: var(--bd-radius-panel);
   box-shadow:
     var(--bd-glass-shadow-floating),
@@ -1515,8 +1549,8 @@ body {
 }
 
 .bd-shell-header--light {
-  backdrop-filter: blur(28px) saturate(1.4) brightness(1.02);
-  -webkit-backdrop-filter: blur(28px) saturate(1.4) brightness(1.02);
+  backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.4) brightness(1.02);
+  -webkit-backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.4) brightness(1.02);
   /* LAW: cool blue dominant glass + premium gold lamp + bronze trim. Matches
      the locked dashboard panel palette. See LAW_PROJECT_RULES.md § Premium
      Gold Palette. */
@@ -1917,8 +1951,8 @@ body {
     0 0 0 1px rgba(191, 219, 254, 0.28),
     0 0 24px rgba(59, 130, 246, 0.08),
     0 0 36px rgba(196, 130, 45, 0.16);
-  backdrop-filter: blur(20px) saturate(1.4);
-  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  backdrop-filter: blur(var(--bd-blur-medium)) saturate(1.4);
+  -webkit-backdrop-filter: blur(var(--bd-blur-medium)) saturate(1.4);
 }
 
 .dark .bd-glass-card--map,
@@ -2183,8 +2217,8 @@ body {
     radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255, 248, 235, 0.12), transparent 70%),
     linear-gradient(180deg, rgba(255, 253, 248, 0.9) 0%, rgba(250, 247, 240, 0.86) 100%);
   color: #1e293b;
-  backdrop-filter: blur(28px) saturate(1.5);
-  -webkit-backdrop-filter: blur(28px) saturate(1.5);
+  backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.5);
+  -webkit-backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.5);
   box-shadow:
     0 8px 32px rgba(15, 23, 42, 0.08),
     0 0 0 1px rgba(200, 180, 150, 0.1),
@@ -2199,8 +2233,8 @@ body {
     radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255, 248, 235, 0.12), transparent 70%),
     linear-gradient(180deg, rgba(255, 253, 248, 0.92) 0%, rgba(250, 247, 240, 0.88) 100%);
   color: #1e293b;
-  backdrop-filter: blur(28px) saturate(1.5);
-  -webkit-backdrop-filter: blur(28px) saturate(1.5);
+  backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.5);
+  -webkit-backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.5);
   box-shadow:
     0 8px 32px rgba(15, 23, 42, 0.08),
     0 0 0 1px rgba(200, 180, 150, 0.1),
@@ -2327,8 +2361,8 @@ body {
     radial-gradient(ellipse 80% 50% at 50% 0%, rgba(196, 144, 65, 0.05), transparent 70%),
     linear-gradient(180deg, rgba(244, 250, 254, 0.84) 0%, rgba(226, 238, 252, 0.76) 100%);
   color: #1e293b;
-  backdrop-filter: blur(28px) saturate(1.5);
-  -webkit-backdrop-filter: blur(28px) saturate(1.5);
+  backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.5);
+  -webkit-backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.5);
   box-shadow:
     0 22px 60px rgba(15, 42, 92, 0.15),
     0 0 0 1px rgba(196, 144, 65, 0.24),
@@ -2590,8 +2624,8 @@ body {
   background:
     radial-gradient(ellipse 80% 50% at 50% 0%, rgba(96, 165, 250, 0.06), transparent 70%),
     linear-gradient(180deg, rgba(255, 253, 248, 0.84) 0%, rgba(250, 247, 240, 0.76) 100%);
-  backdrop-filter: blur(28px) saturate(1.4);
-  -webkit-backdrop-filter: blur(28px) saturate(1.4);
+  backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.4);
+  -webkit-backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.4);
   box-shadow:
     0 16px 42px rgba(15, 23, 42, 0.1),
     inset 0 1px 0 rgba(255, 255, 252, 0.96),
@@ -2629,8 +2663,8 @@ body {
 
 [data-appearance-mode="light"] .bd-report-progress {
   background: linear-gradient(180deg, rgba(255, 253, 248, 0.8) 0%, rgba(250, 247, 240, 0.72) 100%);
-  backdrop-filter: blur(28px) saturate(1.4);
-  -webkit-backdrop-filter: blur(28px) saturate(1.4);
+  backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.4);
+  -webkit-backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.4);
   box-shadow: inset 0 1px 0 rgba(255, 255, 252, 0.94);
 }
 
@@ -2759,18 +2793,18 @@ body {
 
 /* ── Light-mode frosted blur for report surfaces ── */
 [data-appearance-mode="light"] .bd-report-section {
-  backdrop-filter: blur(28px) saturate(1.4);
-  -webkit-backdrop-filter: blur(28px) saturate(1.4);
+  backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.4);
+  -webkit-backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.4);
 }
 
 [data-appearance-mode="light"] .bd-report-input {
-  backdrop-filter: blur(20px) saturate(1.3);
-  -webkit-backdrop-filter: blur(20px) saturate(1.3);
+  backdrop-filter: blur(var(--bd-blur-medium)) saturate(1.3);
+  -webkit-backdrop-filter: blur(var(--bd-blur-medium)) saturate(1.3);
 }
 
 [data-appearance-mode="light"] .bd-report-note {
-  backdrop-filter: blur(20px) saturate(1.3);
-  -webkit-backdrop-filter: blur(20px) saturate(1.3);
+  backdrop-filter: blur(var(--bd-blur-medium)) saturate(1.3);
+  -webkit-backdrop-filter: blur(var(--bd-blur-medium)) saturate(1.3);
 }
 
 .bd-report-divider-line {
@@ -2906,6 +2940,12 @@ body {
    Shared premium glass treatment for the rest of the dashboard.
    ============================================================ */
 
+/* NOSONAR css:S4666 — intentional second `:root` block. The first `:root`
+   (line ~895) defines the BD glass utility tokens; this second block
+   defines dashboard-surface tokens. Cascade order is structural: dashboard
+   tokens land after glass tokens so a later override is possible. Merging
+   would force one giant `:root` and break the topical separation that the
+   rest of the codebase navigates by. */
 :root {
   /* D4 (final v2): NAVY dashboard surfaces in dark with GOLD trim + lamp glow.
      Backgrounds stay deep navy (the user-approved dark blue base); amber is
@@ -2920,10 +2960,10 @@ body {
      Pass 7 (KI-081): ceiling-lamp alpha 0.14 -> 0.18 + ellipse height 30% ->
      34% so the lit-from-above presence is unmistakable on dark dashboard. */
   /* Pass F (KI-085, owner feedback "still look like light is stamped on...
-     instead of haing prmium gold lighting coming from behihind"): body
+     instead of having premium gold lighting coming from behind"): body
      opacity dropped 0.92/0.88 -> 0.78/0.72 so the DashboardAtmosphere
      page-level gold lamps (D6/D7/D8/D9/D10) show THROUGH the translucent
-     glass body. Combined with existing backdrop-filter blur(20px), this
+     glass body. Combined with existing backdrop-filter blur(var(--bd-blur-medium)), this
      creates real liquid-glass refraction instead of stamped paint.
      Internal ceiling-lamp radial held at 0.18 (Pass A win) — the radial
      paints subtle warm presence on the top edge that catches the eye, the
@@ -3034,6 +3074,12 @@ body {
   --bd-dashboard-ghost-text: rgba(252, 240, 208, 0.88);
 }
 
+/* NOSONAR css:S4666 — intentional second `[data-appearance-mode="light"]`
+   block. The first block (line ~2160) defines page-level glass surface
+   tokens for light mode; this second block defines dashboard-specific
+   light-mode tokens scoped to the dashboard surface system. Cascade order
+   is structural and must stay after the dashboard `:root` block above so
+   light overrides can land last. Merging would break topical separation. */
 [data-appearance-mode="light"] {
   /* LAW (do not break): light-mode surfaces are warm ivory/champagne with
      visible bronze trim, riding on a cool blue-gray canvas. Variation, not
@@ -3124,8 +3170,8 @@ body {
   overflow: hidden;
   /* Liquid glass: blur for translucency + saturate for shimmer + slight
      brightness boost to make the glass feel illuminated, not flat. */
-  backdrop-filter: blur(20px) saturate(1.4) brightness(1.02);
-  -webkit-backdrop-filter: blur(20px) saturate(1.4) brightness(1.02);
+  backdrop-filter: blur(var(--bd-blur-medium)) saturate(1.4) brightness(1.02);
+  -webkit-backdrop-filter: blur(var(--bd-blur-medium)) saturate(1.4) brightness(1.02);
 }
 
 .bd-dashboard-panel::before,
@@ -4316,7 +4362,7 @@ body {
    so they read as lit-from-page-atmosphere, not edge-trimmed. Owner
    verbatim 2026-05-04: "for future landing page design updates,
    sections still need work as well as more gold areas and lighting
-   prmium." This is the structural primitive (Item 1 of Codex's prompt
+   premium." This is the structural primitive (Item 1 of Codex's prompt
    bundle); items 2-5 (eyebrow chip glow, CTA pill glow, list
    checkmarks, divider tint) deferred until owner verifies this primitive
    reads correctly. Section-LEVEL canon — extends the directional triad
@@ -4660,7 +4706,7 @@ body {
   background:
     radial-gradient(120% 80% at 50% 0%, rgba(196, 144, 65, 0.12) 0%, transparent 70%),
     rgba(228, 140, 55, 0.1);
-  color: rgba(253, 220, 160, 1);
+  color: rgba(253, 220, 160, 1); /* NOSONAR css:S7924 — canon-locked premium gold glass surface (LAW MOLANDJESUS_DESIGN_DECISIONS); cream-on-bronze body sits over dark navy panel and reads correctly. SonarQube can't compute contrast through translucent gold gradient. */
   /* Pass 11 #1 — liquid gold glass: cream catchlight on top edge,
      bronze rim on bottom edge, atmospheric outer halo. Layered
      within the LAW 0.22 single-layer cream cap. */
@@ -4705,7 +4751,7 @@ body {
   background:
     radial-gradient(140% 90% at 50% 0%, rgba(196, 144, 65, 0.18) 0%, transparent 65%),
     rgba(228, 140, 55, 0.22);
-  color: rgba(253, 220, 160, 1);
+  color: rgba(253, 220, 160, 1); /* NOSONAR css:S7924 — canon-locked premium gold glass button (LAW MOLANDJESUS_DESIGN_DECISIONS); same translucent-gold-on-navy reading as .bd-notice--warn body. */
   /* Pass 11 #1 — liquid gold glass: cream catchlight on top, bronze
      rim on bottom, soft warm bloom + lifted contact shadow. Reads as
      a backlit gold lozenge on dark navy. */
@@ -4824,7 +4870,7 @@ body {
   background:
     radial-gradient(120% 100% at 50% 0%, rgba(196, 144, 65, 0.14) 0%, transparent 70%),
     rgba(228, 140, 55, 0.16);
-  color: rgba(253, 220, 160, 1);
+  color: rgba(253, 220, 160, 1); /* NOSONAR css:S7924 — chip-scale variant of canon-locked .bd-notice--warn surface (LAW MOLANDJESUS_DESIGN_DECISIONS); cream text reads correctly against layered translucent gold gradient over navy. */
   /* Pass 11 #1 — chip-scale liquid gold gloss: subtle top catchlight
      + faint bronze underline + tight warm halo. Smaller surface, so
      all values are dialed lower than the button. */
@@ -4840,4 +4886,55 @@ body {
   color: rgba(110, 70, 18, 1);
   /* Light: clean cream chip, no atmospheric depth. */
   box-shadow: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* Pass 68 (2026-05-07) — KI-135: WCAG 2.4.1 skip-link.               */
+/* Hidden from sighted users until keyboard focus, then renders as a  */
+/* top-left pinned glass pill matching the bd-* identity.             */
+/* ------------------------------------------------------------------ */
+.bd-skip-link {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 9999;
+  /* Visually hidden — preserved for assistive tech and keyboard focus. */
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 0.625rem 1rem;
+  border-radius: 0.75rem;
+  background: rgba(15, 23, 42, 0.92);
+  color: rgb(241, 245, 249);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid rgba(96, 165, 250, 0.45);
+  box-shadow:
+    0 12px 28px rgba(2, 6, 23, 0.42),
+    0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+.bd-skip-link:focus,
+.bd-skip-link:focus-visible {
+  /* Reveal pinned glass pill on focus. */
+  clip: auto;
+  clip-path: none;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  outline: 2px solid rgb(147, 197, 253);
+  outline-offset: 2px;
+}
+
+[data-appearance-mode="light"] .bd-skip-link {
+  background: rgba(255, 253, 248, 0.96);
+  color: rgb(15, 23, 42);
+  border-color: rgba(196, 144, 65, 0.55);
+  box-shadow:
+    0 12px 28px rgba(15, 23, 42, 0.18),
+    0 0 0 1px rgba(196, 144, 65, 0.12);
 }

@@ -1,10 +1,25 @@
+---
+status: CANONICAL
+authority: LAW
+scope: layered-architecture
+canonical_source_of_truth: LAW_LAYERED_ARCHITECTURE.md
+supersedes: []
+superseded_by: null
+safe_for_autopilot: false
+requires_owner_approval: true
+last_topology_audit: 2026-05-09
+runtime_impact_if_misunderstood: critical
+ai_summary: Four-layer model (L1 design / L2 interface / L3 orchestration / L4 backend); file-size budgets; forbidden flows.
+last_updated: 2026-05-09
+---
+
 # BidOnDent — Layered Architecture (LAW)
 
 **Authority level:** LAW — governs all new and migrated code organization. Cannot be violated without explicit per-session override from the project owner.
 
 **Last updated:** 2026-05-04
 
-**Status:** Active. Charter for the v3.3 master plan (Phases 1.5 through 8.5). Existing files are grandfathered; new files must comply.
+**Status:** ACTIVE — charter for the v3.3 master plan (Phases 1.5 through 8.5). Existing files are grandfathered; new files must comply.
 
 ---
 

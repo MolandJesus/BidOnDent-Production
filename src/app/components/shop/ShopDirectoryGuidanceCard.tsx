@@ -86,7 +86,7 @@ export default function ShopDirectoryGuidanceCard({
 
   return (
     <div
-      className={`pointer-events-auto absolute left-3 z-[510] max-w-[calc(100vw-1.5rem)] sm:left-4 ${
+      className={`pointer-events-auto absolute left-3 z-[510] max-w-[calc(100vw-1.5rem)] sm:left-4 animate-in fade-in slide-in-from-left-3 duration-400 motion-reduce:animate-none ${
         isCompactDensity ? "w-[16rem] sm:w-[17rem]" : "w-[18rem] sm:w-[19rem]"
       }`}
       style={{ bottom: "max(3.5rem, calc(env(safe-area-inset-bottom, 0px) + 2.4rem))" }}
@@ -139,7 +139,7 @@ export default function ShopDirectoryGuidanceCard({
             <span
               className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] ${refreshBadge}`}
             >
-              <LoaderCircle className="h-3 w-3 animate-spin" />
+              <LoaderCircle className="h-3 w-3 animate-spin motion-reduce:animate-none" />
               Refreshing
             </span>
           ) : null}
@@ -288,7 +288,7 @@ export default function ShopDirectoryGuidanceCard({
               <p
                 className={`mt-1 text-sm font-semibold ${isDark ? "text-white" : "text-slate-800"}`}
               >
-                {remainingEtaLabel || etaLabel || `${selectedRoute.estimatedDurationMinutes}m`}
+                {remainingEtaLabel || etaLabel || `${selectedRoute.estimatedDurationMinutes} min`}
               </p>
             </div>
             <div className={`rounded-xl border px-2 py-2 text-center ${glassChip}`}>

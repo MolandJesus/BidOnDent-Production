@@ -1,5 +1,5 @@
 import { List, LocateFixed, Settings2, Volume2 } from "lucide-react";
-import { cn } from "../../ui/utils";
+import { cn } from "@/platform-core/cn";
 import type { MapSurfaceTone } from "../serviceCoverageMapTypes";
 
 type NavigationActionRailProps = {
@@ -67,50 +67,62 @@ export default function NavigationActionRail({
           type="button"
           onClick={onToggleTurnList}
           className={cn(
-            "relative z-10 inline-flex h-11 w-11 items-center justify-center rounded-[1rem] border transition-all duration-200 active:scale-[0.94] sm:h-11 sm:w-11",
+            "relative z-10 inline-flex min-h-[44px] min-w-[44px] flex-col items-center justify-center gap-0.5 rounded-[1rem] border px-1 py-1 transition-all duration-200 active:scale-[0.94]",
             actionButtonClassName(tone, turnListOpen)
           )}
           aria-pressed={turnListOpen}
           aria-label="Toggle turn-by-turn list"
         >
           <List className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
+          <span className="text-[9px] font-semibold uppercase tracking-wide leading-none opacity-80">
+            Turns
+          </span>
         </button>
         {showVoiceControl ? (
           <button
             type="button"
             onClick={onToggleVoiceControls}
             className={cn(
-              "relative z-10 inline-flex h-11 w-11 items-center justify-center rounded-[1rem] border transition-all duration-200 active:scale-[0.94] sm:h-11 sm:w-11",
+              "relative z-10 inline-flex min-h-[44px] min-w-[44px] flex-col items-center justify-center gap-0.5 rounded-[1rem] border px-1 py-1 transition-all duration-200 active:scale-[0.94]",
               actionButtonClassName(tone, voiceControlsOpen)
             )}
             aria-pressed={voiceControlsOpen}
             aria-label="Toggle voice guidance"
           >
             <Volume2 className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
+            <span className="text-[9px] font-semibold uppercase tracking-wide leading-none opacity-80">
+              Voice
+            </span>
           </button>
         ) : null}
         <button
           type="button"
           onClick={onToggleSettings}
           className={cn(
-            "relative z-10 inline-flex h-11 w-11 items-center justify-center rounded-[1rem] border transition-all duration-200 active:scale-[0.94] sm:h-11 sm:w-11",
+            "relative z-10 inline-flex min-h-[44px] min-w-[44px] flex-col items-center justify-center gap-0.5 rounded-[1rem] border px-1 py-1 transition-all duration-200 active:scale-[0.94]",
             actionButtonClassName(tone, settingsOpen)
           )}
           aria-pressed={settingsOpen}
           aria-label="Navigation settings"
         >
           <Settings2 className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
+          <span className="text-[9px] font-semibold uppercase tracking-wide leading-none opacity-80">
+            Settings
+          </span>
         </button>
         <button
           type="button"
           onClick={onRecenter}
           className={cn(
-            "relative z-10 inline-flex h-11 w-11 items-center justify-center rounded-[1rem] border transition-all duration-200 active:scale-[0.94] sm:h-11 sm:w-11",
+            "relative z-10 inline-flex min-h-[44px] min-w-[44px] flex-col items-center justify-center gap-0.5 rounded-[1rem] border px-1 py-1 transition-all duration-200 active:scale-[0.94]",
             actionButtonClassName(tone, false)
           )}
           aria-label="Re-center map"
         >
           <LocateFixed className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
+          <span className="text-[9px] font-semibold uppercase tracking-wide leading-none opacity-80">
+            Center
+          </span>
         </button>
       </div>
     </div>

@@ -25,8 +25,8 @@ export default function InsurerConnectFormModal({
   onCancel,
 }: InsurerConnectFormModalProps) {
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bd-glass-floating rounded-2xl max-w-lg w-full">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-in fade-in duration-200 motion-reduce:animate-none">
+      <div className="bd-glass-floating rounded-2xl max-w-lg w-full animate-in fade-in zoom-in-95 duration-300 motion-reduce:animate-none">
         <div className="p-4 sm:p-6">
           <div className="flex items-start justify-between gap-3 mb-4">
             <div>

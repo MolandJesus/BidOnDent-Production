@@ -148,7 +148,16 @@ export function useMapPaneState(config: MapPaneStateConfig) {
 
   useEffect(() => {
     if (mapLoaded) return;
-    const timer = setTimeout(() => setMapLoadFailed(true), 12_000);
+    // Pass 267 — bump from 12s → 25s. The 12s ceiling fired prematurely
+    // on slower mount paths (e.g. customer dashboard via
+    // ShopDirectoryHybridStage where the map mounts alongside sidebar +
+    // header + widget cohort), and especially after Safari memory-pressure
+    // reloads where everything competes for CPU on resume. Tiles often
+    // rendered well before maplibre's `load` event fired, so the user
+    // saw the failure overlay over a working map. The hard-failure path
+    // is `handleMapLoadError` (onError), not this timeout — this is a
+    // slow-load fallback only.
+    const timer = setTimeout(() => setMapLoadFailed(true), 25_000);
     return () => clearTimeout(timer);
   }, [mapLoaded]);
 

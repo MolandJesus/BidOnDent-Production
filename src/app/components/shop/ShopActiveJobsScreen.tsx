@@ -352,6 +352,11 @@ export default function ShopActiveJobsScreen({
                     center={jobMapCenter}
                     zoom={10}
                     isLight={isLight}
+                    /* Pass 243 (KI-181 sub-pass B sweep): autoFit="always"
+                       preserves the pre-Pass-241 fit-driven default for
+                       this multi-job overview. See REF_ENGINE_3_CAMERA_
+                       AUTHORITY_2026-05-09.md §12.2. */
+                    autoFit="always"
                   />
                 </div>
                 <div className="flex flex-wrap items-center gap-2 p-3">
@@ -385,7 +390,7 @@ export default function ShopActiveJobsScreen({
       <div className="px-4 py-4 space-y-4">
         {dbJobsLoading && mergedJobs.length === 0 ? (
           <div className="bd-dashboard-panel bd-dashboard-panel--deep p-5 sm:p-8 text-center">
-            <div className="mx-auto mb-3 h-8 w-8 animate-spin rounded-full border-2 border-blue-400/30 border-t-blue-400" />
+            <div className="mx-auto mb-3 h-8 w-8 animate-spin motion-reduce:animate-none rounded-full border-2 border-blue-400/30 border-t-blue-400" />
             <p className={isLight ? "text-slate-600" : "text-blue-100/70"}>
               Loading active jobs&hellip;
             </p>

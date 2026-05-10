@@ -1,3 +1,18 @@
+---
+status: CANONICAL
+authority: REFERENCE
+scope: code-organization
+canonical_source_of_truth: REF_CODE_ORGANIZATION.md
+supersedes: []
+superseded_by: null
+safe_for_autopilot: true
+requires_owner_approval: false
+last_topology_audit: 2026-05-09
+runtime_impact_if_misunderstood: medium
+ai_summary: Current repo structure, weak seams, extraction boundaries; governs hardening-scope refactors.
+last_updated: 2026-05-09
+---
+
 ## Map/Design Governance Direction (2026-03-22)
 
 The future BidOnDent map/platform/design vision is now governed by:
@@ -22,11 +37,11 @@ All future map/product/design direction is planned/aspirational unless otherwise
 > - When a hardening pass changes seams, file boundaries, or extraction paths, update the relevant section of this doc in the same pass.
 
 **Last updated:** April 14, 2026 (Hardening phase began — architecture work scoped to Phase 2 of the Hardening Plan)
-**Status:** Active source-of-truth audit
+**Status:** CANONICAL — active source-of-truth audit
 
 **Date**: March 22, 2026  
 **Scope**: Current checked-out BidOnDent repo only  
-**Status**: Active source-of-truth for code structure and design-system governance
+**Status**: CANONICAL — active source-of-truth for code structure and design-system governance
 
 ## Purpose
 

@@ -19,13 +19,19 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- updated_at trigger function (used by older migrations — same logic, kept for compat)
+-- Pass 174 (2026-05-07) — KI-158 source patch: SET search_path = public
+-- inside the CREATE OR REPLACE so the lock survives edge function cold starts.
+-- The bootstrap at supabase/functions/server/database_init.tsx:56-63 was
+-- reissuing CREATE OR REPLACE without the lock, wiping it every cold start
+-- and triggering function_search_path_mutable advisor on every audit pass.
 CREATE OR REPLACE FUNCTION public.handle_updated_at()
 RETURNS TRIGGER AS $$
 BEGIN
   NEW.updated_at = NOW();
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql
+SET search_path = public;
 
 -- Clerk JWT identity helper — extracts clerk user ID from request.jwt.claims
 CREATE OR REPLACE FUNCTION public.requesting_clerk_user_id()

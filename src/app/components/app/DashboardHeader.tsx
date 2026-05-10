@@ -225,6 +225,16 @@ export default function DashboardHeader({
           />
         </button>
 
+        {/* Pass 75 (2026-05-07) — KI-141: surface the active tab label on mobile so
+            users keep their orientation between Dashboard / Bids / Account / etc.
+            (desktop already shows it via the <h2> below; this is the mobile twin). */}
+        <span
+          className={`md:hidden truncate text-sm font-semibold leading-tight ${isLightAppearance ? "text-slate-700" : "text-slate-100"}`}
+          aria-hidden="true"
+        >
+          {activeTabLabel}
+        </span>
+
         <div className="hidden md:block">
           <h2
             className={`text-xl font-semibold leading-tight ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
@@ -248,7 +258,7 @@ export default function DashboardHeader({
           )}
           <div ref={searchRef} className="relative hidden lg:block">
             <div
-              className={`flex items-center gap-2 px-3 py-2 min-w-[260px] rounded-xl border transition-colors ${
+              className={`flex items-center gap-2 px-3 py-2 min-h-[44px] min-w-[260px] rounded-xl border transition-colors ${
                 searchOpen
                   ? isLightAppearance
                     ? "border-blue-400/55 bg-blue-50/85 ring-2 ring-blue-300/25 shadow-[0_2px_8px_rgba(15,30,60,0.12),inset_0_1px_0_rgba(252,238,204,0.78)]"
@@ -373,9 +383,11 @@ export default function DashboardHeader({
               aria-label={
                 showNotifications
                   ? "Close notifications"
-                  : unreadCount > 0
-                    ? `Open notifications, ${unreadCount} unread`
-                    : "Open notifications"
+                  : unreadCount > 9
+                    ? "Open notifications, more than 9 unread"
+                    : unreadCount > 0
+                      ? `Open notifications, ${unreadCount} unread`
+                      : "Open notifications"
               }
               aria-controls="dashboard-notification-center"
               aria-expanded={showNotifications}

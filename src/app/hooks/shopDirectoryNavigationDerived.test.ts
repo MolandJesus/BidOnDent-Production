@@ -177,7 +177,7 @@ describe("computeRemainingLabels", () => {
     });
     expect(result.remainingDurationSeconds).toBe(900);
     expect(result.remainingDistanceMeters).toBe(12000);
-    expect(result.liveRemainingEtaLabel).toBe("15m");
+    expect(result.liveRemainingEtaLabel).toBe("15 min");
     expect(result.liveRemainingDistanceLabel).not.toBeNull();
   });
 });

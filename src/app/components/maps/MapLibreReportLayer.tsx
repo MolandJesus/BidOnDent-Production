@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Source, Layer, useMap } from "react-map-gl/maplibre";
 import type { MapLayerMouseEvent } from "react-map-gl/maplibre";
 import { ReportDetailDrawer } from "./ReportDetailDrawer";
@@ -54,6 +54,82 @@ export default function MapLibreReportLayer({
   const [selectedReport, setSelectedReport] = useState<DamageReport | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
+  /* ── Pass 99: Report pin set drop-in fade (owner real-map directive)
+   *
+   * Mirrors the Pass 97 shop-pin drop-in fade for the report side. When
+   * the visible report set changes (filter switch, refetch, role change),
+   * the cluster + individual report layers fade in over 500ms ease-out
+   * cubic instead of snapping. Driven imperatively via setPaintProperty
+   * because react-map-gl's declarative paint would clobber the rAF.
+   *
+   * Static `circle-opacity` values for CLUSTER_LAYER_ID and LAYER_ID are
+   * removed from declarative paint blocks below for the same reason.
+   * Reduce-motion users get final opacity instantly.
+   */
+  const { current: mapForFade } = useMap();
+  const reportSetSignature = useMemo(() => {
+    const features = geojson?.features ?? [];
+    const count = features.length;
+    if (count === 0) return "empty";
+    const first = (features[0]?.properties as Record<string, unknown>)?.id ?? "?";
+    const last = (features[count - 1]?.properties as Record<string, unknown>)?.id ?? "?";
+    return `${count}|${first}|${last}|${isDark ? "d" : "l"}`;
+  }, [geojson, isDark]);
+  const reportFadeRafRef = useRef<number | null>(null);
+  useEffect(() => {
+    if (!mapForFade || reportSetSignature === "empty") return;
+    const m = mapForFade.getMap?.() ?? mapForFade;
+    if (!m || typeof m.setPaintProperty !== "function") return;
+
+    const reduceMotion =
+      typeof window !== "undefined" &&
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const REPORT_FINAL = isDark ? 0.95 : 0.92;
+    const CLUSTER_FINAL = 0.85;
+    const setOps = (reportOp: number, clusterOp: number) => {
+      try {
+        if (m.getLayer && m.getLayer(LAYER_ID)) {
+          m.setPaintProperty(LAYER_ID, "circle-opacity", reportOp);
+        }
+        if (m.getLayer && m.getLayer(CLUSTER_LAYER_ID)) {
+          m.setPaintProperty(CLUSTER_LAYER_ID, "circle-opacity", clusterOp);
+        }
+      } catch {
+        // Layers not yet added — harmless
+      }
+    };
+
+    if (reduceMotion) {
+      setOps(REPORT_FINAL, CLUSTER_FINAL);
+      return;
+    }
+
+    const start = performance.now();
+    const duration = 500;
+    setOps(0, 0);
+    const tick = (now: number) => {
+      const p = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setOps(REPORT_FINAL * eased, CLUSTER_FINAL * eased);
+      if (p < 1) {
+        reportFadeRafRef.current = requestAnimationFrame(tick);
+      } else {
+        reportFadeRafRef.current = null;
+      }
+    };
+    reportFadeRafRef.current = requestAnimationFrame(tick);
+
+    return () => {
+      if (reportFadeRafRef.current !== null) {
+        cancelAnimationFrame(reportFadeRafRef.current);
+        reportFadeRafRef.current = null;
+      }
+      setOps(REPORT_FINAL, CLUSTER_FINAL);
+    };
+  }, [mapForFade, reportSetSignature, isDark]);
+
   // Auto-open drawer for focused report (e.g. navigated from dashboard)
   const [focusHandled, setFocusHandled] = useState(false);
   useEffect(() => {
@@ -95,7 +171,13 @@ export default function MapLibreReportLayer({
         if (source && clusterId != null) {
           source.getClusterExpansionZoom(Number(clusterId), (_err, zoom) => {
             const coords = (feature.geometry as GeoJSON.Point).coordinates;
-            e.target.flyTo({ center: [coords[0], coords[1]], zoom: Math.min(zoom, 17) });
+            // Pass 95: tighten cluster-expand fly to match Pass 89 premium feel
+            e.target.flyTo({
+              center: [coords[0], coords[1]],
+              zoom: Math.min(zoom, 17),
+              duration: 850,
+              curve: 1.4,
+            });
           });
         }
         return;
@@ -221,7 +303,9 @@ export default function MapLibreReportLayer({
         clusterMaxZoom={14}
         clusterRadius={45}
       >
-        {/* ── Cluster circles ── */}
+        {/* ── Cluster circles
+         * NOTE: `circle-opacity` intentionally absent — Pass 99 manages it
+         * imperatively for the drop-in fade animation. */}
         <Layer
           id={CLUSTER_LAYER_ID}
           type="circle"
@@ -229,7 +313,6 @@ export default function MapLibreReportLayer({
           paint={{
             "circle-color": isDark ? "#f59e0b" : "#d97706",
             "circle-radius": ["step", ["get", "point_count"], 16, 5, 22, 15, 28],
-            "circle-opacity": 0.85,
             "circle-stroke-width": 2.5,
             "circle-stroke-color": isDark ? "#fcd34d" : "#92400e",
           }}
@@ -270,7 +353,8 @@ export default function MapLibreReportLayer({
                 isDark ? "#64748b" : "#475569",
                 isDark ? "#f59e0b" : "#d97706",
               ],
-              "circle-opacity": isDark ? 0.95 : 0.92,
+              // NOTE: `circle-opacity` intentionally absent — Pass 99 manages
+              // it imperatively for the drop-in fade animation.
               "circle-stroke-width": 3,
               "circle-stroke-color": [
                 "match",

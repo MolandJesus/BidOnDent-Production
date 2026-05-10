@@ -8,9 +8,73 @@ import { mapLibreStyles } from "../maps/mapLibreStyles";
 import type { CoveragePartnerShop } from "../maps/serviceCoverageMapTypes";
 import type { MapLayerMouseEvent, ViewState } from "react-map-gl/maplibre";
 import { circleToPolygon } from "../../utils/geoCircle";
+import { markEngineMount, markEngineDispose } from "../../utils/perfMarks";
 
 export type ReportPin = { id: string; lat: number; lng: number; label: string };
 export type ServiceAreaCircle = { lat: number; lng: number; radiusMiles: number };
+
+/**
+ * Pass 251 (KI-196 hardening) — module-scope empty-array singletons.
+ *
+ * The renderer previously used inline `[]` literals as defaults
+ * for `reportPins` and `serviceAreaCircles`. Inline defaults
+ * produce a fresh array identity on every render when a caller
+ * omits the prop, which churns downstream `useMemo` dependency
+ * comparisons and (for `reportPins`) propagates into the
+ * `useEffect` that calls `setViewState`, causing the latent
+ * render-loop hazard documented in KI-196 / KI-181 §12.3.
+ *
+ * Production callers always pass these props explicitly today
+ * (verified Pass 242 audit + Pass 250 caller-side scan), so
+ * these singletons are defensive only — zero behavior change
+ * for any existing call site, but eliminates the latent loop
+ * for any future caller that omits.
+ *
+ * Exported for test-side identity assertions.
+ */
+export const EMPTY_REPORT_PINS: ReportPin[] = Object.freeze([] as ReportPin[]) as ReportPin[];
+export const EMPTY_SERVICE_AREA_CIRCLES: ServiceAreaCircle[] = Object.freeze(
+  [] as ServiceAreaCircle[]
+) as ServiceAreaCircle[];
+
+/**
+ * Pass 241 (Phase 3A sub-pass A) — explicit camera-authority surface.
+ *
+ * Engine 3's auto-fit (the `fittedView` memo derived from shops/pins)
+ * was previously a hidden-authority surface (KI-181): when ≥2 shops
+ * existed, the renderer silently overrode caller-supplied
+ * `center`/`zoom`. This prop makes that authority caller-visible
+ * WITHOUT changing default behavior.
+ *
+ * Modes:
+ *  - "always"                — fit whenever ≥2 fit-points exist.
+ *                              This is the default and matches the
+ *                              pre-Pass-241 implicit behavior
+ *                              exactly. KI-181 baseline preserved.
+ *  - "never"                 — ignore `fittedView`. Caller-supplied
+ *                              `center`/`zoom` always win. Use this
+ *                              when the caller has an intentional
+ *                              framing (e.g. single-report focus).
+ *  - "when-no-caller-bounds" — fit only if the caller has NOT
+ *                              signalled explicit bounds via the
+ *                              companion `callerBoundsExplicit`
+ *                              prop. When `callerBoundsExplicit ===
+ *                              true`, behaves like `"never"`.
+ *                              Otherwise behaves like `"always"`.
+ *                              This is the doctrinal target default
+ *                              for sub-pass C (NOT flipped here).
+ *
+ * Sub-pass A authority discipline (per
+ * `docs/REF_ENGINE_3_CAMERA_AUTHORITY_2026-05-09.md` §5.3):
+ *   - Default MUST stay `"always"` to preserve every Phase 1 surface.
+ *   - No call-site changes in this pass (those are sub-pass B).
+ *   - No default flip in this pass (that is sub-pass C).
+ *   - "Preview owns no camera" remains intact: this prop selects
+ *     between caller props and the existing `fittedView` memo;
+ *     no imperative camera APIs are introduced. The Pass 236
+ *     source-level guards continue to enforce that absence.
+ */
+export type AutoFitMode = "always" | "when-no-caller-bounds" | "never";
 
 type MapLibreDashboardMapPreviewProps = {
   shops: CoveragePartnerShop[];
@@ -22,21 +86,45 @@ type MapLibreDashboardMapPreviewProps = {
   onShopClick?: (shop: CoveragePartnerShop) => void;
   onReportPinClick?: (pin: ReportPin) => void;
   onMapClick?: () => void;
+  /**
+   * Pass 241 — explicit auto-fit authority. Default `"always"`
+   * preserves the pre-Pass-241 implicit-fit behavior (KI-181
+   * baseline). See `AutoFitMode` for full mode semantics.
+   */
+  autoFit?: AutoFitMode;
+  /**
+   * Pass 241 — companion signal consulted ONLY when
+   * `autoFit === "when-no-caller-bounds"`. When `true`, the caller
+   * declares that `center`/`zoom` are intentional bounds the
+   * renderer must not override. Ignored under `"always"` and
+   * `"never"`. Default `false` (preserves implicit-fit behavior
+   * under the "when-no-caller-bounds" mode for callers who have
+   * not yet been audited).
+   */
+  callerBoundsExplicit?: boolean;
 };
 
 export default function MapLibreDashboardMapPreview({
   shops,
-  reportPins = [],
-  serviceAreaCircles = [],
+  reportPins = EMPTY_REPORT_PINS,
+  serviceAreaCircles = EMPTY_SERVICE_AREA_CIRCLES,
   center,
   zoom,
   isLight,
   onShopClick,
   onReportPinClick,
   onMapClick,
+  autoFit = "always",
+  callerBoundsExplicit = false,
 }: MapLibreDashboardMapPreviewProps) {
   const mapId = useId();
   const mapStyle = isLight ? mapLibreStyles.roadmap : mapLibreStyles.night;
+
+  useEffect(() => {
+    const engineId = `e3:${mapId}`;
+    markEngineMount(engineId);
+    return () => markEngineDispose(engineId);
+  }, [mapId]);
 
   /* ── Auto-fit: compute center+zoom from all pins when 2+ exist ── */
   const allPoints = useMemo(() => {
@@ -71,20 +159,36 @@ export default function MapLibreDashboardMapPreview({
     return { latitude: cLat, longitude: cLng, zoom: z };
   }, [shops, allPoints]);
 
+  /* Pass 241 — explicit autoFit authority gate.
+   * `effectiveFittedView` collapses the new (autoFit, callerBoundsExplicit)
+   * authority surface back into the pre-existing single nullable
+   * `fittedView`-shaped value the consumer below already knows how
+   * to handle. This keeps the consumer (`useState` initializer +
+   * `useEffect`) untouched in shape — only the value flowing into
+   * it carries the new authority semantics. Defaults
+   * (`autoFit="always"`, `callerBoundsExplicit=false`) yield
+   * `effectiveFittedView === fittedView`, preserving KI-181
+   * baseline behavior exactly. */
+  const effectiveFittedView = useMemo(() => {
+    if (autoFit === "never") return null;
+    if (autoFit === "when-no-caller-bounds" && callerBoundsExplicit) return null;
+    return fittedView;
+  }, [autoFit, callerBoundsExplicit, fittedView]);
+
   /* Controlled viewport — responds when parent changes center/zoom */
   const [viewState, setViewState] = useState<Pick<ViewState, "longitude" | "latitude" | "zoom">>({
-    longitude: fittedView?.longitude ?? center[1],
-    latitude: fittedView?.latitude ?? center[0],
-    zoom: fittedView?.zoom ?? zoom,
+    longitude: effectiveFittedView?.longitude ?? center[1],
+    latitude: effectiveFittedView?.latitude ?? center[0],
+    zoom: effectiveFittedView?.zoom ?? zoom,
   });
 
   useEffect(() => {
-    if (fittedView) {
-      setViewState(fittedView);
+    if (effectiveFittedView) {
+      setViewState(effectiveFittedView);
     } else {
       setViewState({ longitude: center[1], latitude: center[0], zoom });
     }
-  }, [center, zoom, fittedView]);
+  }, [center, zoom, effectiveFittedView]);
 
   const geojson = useMemo(
     () => ({
@@ -236,6 +340,7 @@ export default function MapLibreDashboardMapPreview({
             className="bd-map-tooltip"
           >
             <span
+              className="animate-in fade-in zoom-in-95 duration-200 motion-reduce:animate-none"
               style={{
                 display: "block",
                 maxWidth: 180,

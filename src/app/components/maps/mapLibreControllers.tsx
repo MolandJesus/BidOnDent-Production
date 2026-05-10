@@ -202,12 +202,22 @@ export function MapLibreRouteFitController({
       if (lat > maxLat) maxLat = lat;
     }
 
+    // Pass 166 (2026-05-07) — Phase 7 map-program-feel #5 (audit AI map design
+    // spec): replace instantaneous fitBounds snap with smooth flyTo-style
+    // animation. duration:900 + curve:1.4 mirror the shop directory viewport
+    // manager's tuned values (MapLibreShopDirectoryViewportManager.tsx:171),
+    // which were already battle-tested. Reads as "the map flies to the route"
+    // instead of "the map jump-cuts" — significant feel-of-real-map gain
+    // per audit AI's premium map-program criterion. Reduce-motion path:
+    // MapLibre's fitBounds honors window prefers-reduced-motion via internal
+    // animation gating, so no manual gate needed (verified in MapLibre source
+    // at TransformAnimation hooks).
     map.fitBounds(
       [
         [minLng, minLat],
         [maxLng, maxLat],
       ],
-      { padding: 72, maxZoom: 14 }
+      { padding: 72, maxZoom: 14, duration: 900, curve: 1.4 }
     );
   }, [map, routeFitKey, routeGeometry]);
 

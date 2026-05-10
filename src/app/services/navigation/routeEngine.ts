@@ -8,6 +8,41 @@ import type {
 import { isProviderCircuitOpen, runWithProviderHealth } from "./providerHealth";
 import { type OsrmStep, buildStepInstruction } from "./routeEngineVoiceBuilder";
 
+/**
+ * Pass 203 (2026-05-09) KI-179 — sanity-check navigation-engine route output
+ * against plausibility bands for a local body-shop trip. Mirrors the
+ * `flagImplausibleRoute` helper shipped Pass 179 for the dashboard mini-map
+ * `RouteOption` data path. The navigation engine consumes real OSRM
+ * responses (not stubs), but coordinate corruption upstream — origin
+ * defaulting to (0,0), a stale stub destination, etc. — could still cause
+ * the engine to return absurd routes. This helper does NOT suppress; it
+ * surfaces a structured flag + reasons so consumers can render a warn UI.
+ *
+ * Bands (chosen to match Pass 179 — same plausibility model):
+ *   - distance > 100 mi
+ *   - duration > 240 min (4 hours)
+ *   - implied speed outside [10, 80] mph
+ */
+export function flagImplausibleNavigationRoute(input: {
+  distanceMiles: number;
+  durationMinutes: number;
+}): { isImplausible: boolean; reasons: string[] } {
+  const reasons: string[] = [];
+  if (input.distanceMiles > 100) {
+    reasons.push(`distance ${input.distanceMiles.toFixed(1)}mi exceeds 100mi band`);
+  }
+  if (input.durationMinutes > 240) {
+    reasons.push(`duration ${Math.round(input.durationMinutes)}min exceeds 240min band`);
+  }
+  if (input.distanceMiles > 0.1 && input.durationMinutes > 0) {
+    const impliedMph = input.distanceMiles / (input.durationMinutes / 60);
+    if (impliedMph < 10 || impliedMph > 80) {
+      reasons.push(`implied speed ${impliedMph.toFixed(1)}mph outside [10,80] band`);
+    }
+  }
+  return { isImplausible: reasons.length > 0, reasons };
+}
+
 type RouteEngineArgs = {
   origin: NavigationCoordinate;
   destination: NavigationDestination;
@@ -57,6 +92,17 @@ function toRoutePreview(
   destinationName: string,
   fetchedAt: string
 ): NavigationRoutePreview {
+  const distanceMiles = route.distance / 1609.34;
+  const durationMinutes = route.duration / 60;
+  const sanityFlag = flagImplausibleNavigationRoute({ distanceMiles, durationMinutes });
+
+  if (sanityFlag.isImplausible && import.meta.env.DEV) {
+    console.warn(
+      `[KI-179] implausible navigation-engine route to "${destinationName}": ${sanityFlag.reasons.join("; ")} ` +
+        `| distance=${distanceMiles.toFixed(1)}mi duration=${Math.round(durationMinutes)}min`
+    );
+  }
+
   return {
     provider: "osrm-public",
     distanceMeters: route.distance,
@@ -69,6 +115,9 @@ function toRoutePreview(
         )
       ) || [],
     fetchedAt,
+    ...(sanityFlag.isImplausible
+      ? { isImplausible: true, implausibleReasons: sanityFlag.reasons }
+      : {}),
   };
 }
 

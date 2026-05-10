@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState, type ComponentType, type ReactNode } from "react";
-import { useAuth as useClerkAuth } from "@clerk/clerk-react";
+// Pass 286 (2026-05-09): redirected through useAuth wrapper per Pass 278 §10
+// step 3-4 thin-wrapper retrofit. getToken() semantics preserved exactly.
+import { useAuth } from "../../hooks/useAuth";
 import { motion, useReducedMotion } from "motion/react";
 import { Activity, Building2, CircleCheck, Clock3, FileStack, Shield } from "lucide-react";
 import {
@@ -18,7 +20,7 @@ type AdminIntakeOperationsPanelProps = {
 export default function AdminIntakeOperationsPanel({
   primaryColor,
 }: AdminIntakeOperationsPanelProps) {
-  const { getToken } = useClerkAuth();
+  const { getToken } = useAuth();
   const reduceMotion = useReducedMotion();
   const [isLoading, setIsLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");

@@ -3,7 +3,7 @@
 import * as React from "react";
 import { PanelLeftIcon } from "lucide-react";
 
-import { cn } from "./utils";
+import { cn } from "@/platform-core/cn";
 import { Button } from "./button";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "./sheet";
 import { SIDEBAR_WIDTH_MOBILE } from "./sidebar-constants";

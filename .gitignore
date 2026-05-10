@@ -11,6 +11,11 @@ dist
 *.pem
 *.key
 
+# Local-only auth-cookie exports for mobile evidence capture (Pass 44 Strategy A)
+# Owner exports Clerk session cookies into this file; never committed.
+mobile-auth-cookies.json
+docs/evidence/**/mobile-auth-cookies.json
+
 # Supabase CLI local config (created by `supabase link`)
 .supabase/
 supabase/.temp/

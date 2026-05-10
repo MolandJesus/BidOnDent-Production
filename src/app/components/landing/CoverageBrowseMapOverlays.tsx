@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import type { MapSurfaceTheme, MapTileMode } from "../maps/serviceCoverageMapTypes";
 import type { CoveragePartnerShop } from "../maps/serviceCoverageMapTypes";
-import { cn } from "../ui/utils";
+import { cn } from "@/platform-core/cn";
 
 type SidebarView = "search" | "explore" | "saved" | "shops";
 

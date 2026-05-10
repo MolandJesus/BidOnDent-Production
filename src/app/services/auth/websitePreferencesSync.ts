@@ -8,6 +8,7 @@ import {
   buildSupabaseFunctionUrl,
   SUPABASE_EDGE_ROUTES,
 } from "../supabase/runtime";
+import { createTimeoutAbortController } from "../navigation/requestTimeout";
 
 type SyncPayload = {
   accountType?: "customer" | "shop" | "insurer";
@@ -29,22 +30,36 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
 
-async function withTimeout<T>(promise: Promise<T>, timeoutMs = SYNC_TIMEOUT_MS): Promise<T> {
-  return new Promise<T>((resolve, reject) => {
-    const timeoutId = window.setTimeout(() => {
-      reject(new Error("Website preferences request timed out"));
-    }, timeoutMs);
-
-    promise
-      .then((value) => {
-        window.clearTimeout(timeoutId);
-        resolve(value);
-      })
-      .catch((error) => {
-        window.clearTimeout(timeoutId);
-        reject(error);
-      });
-  });
+/**
+ * Pass 15 (audit AI) — auth-sync canonical timeout migration.
+ *
+ * The previous local `withTimeout` helper used a `Promise.race`-style
+ * wrapper that rejected the awaited Promise on timeout but did NOT abort
+ * the underlying fetch — leaving a soft resource leak (network request
+ * continued until server response, even though the consumer had moved on).
+ *
+ * Migrated to the canonical `createTimeoutAbortController` pattern shipped
+ * across Pass 14 (services/supabase/map.ts, services/networkProfiles.ts,
+ * services/supabase/runtime.ts, services/supabase/edgeFunctions.ts,
+ * services/supabase/adminIntake.ts, components/landing/WaitlistCapture.tsx)
+ * so the abort signal propagates to fetch and the network request is
+ * actually canceled. Same 5s ceiling preserved.
+ */
+async function withTimeout<T>(
+  fetchFactory: (signal: AbortSignal) => Promise<T>,
+  timeoutMs = SYNC_TIMEOUT_MS,
+): Promise<T> {
+  const request = createTimeoutAbortController(timeoutMs);
+  try {
+    return await fetchFactory(request.controller.signal);
+  } catch (error) {
+    if (request.didTimeout()) {
+      throw new Error("Website preferences request timed out");
+    }
+    throw error;
+  } finally {
+    request.clear();
+  }
 }
 
 export async function fetchWebsiteSessionMemoryFromCloud(identity: WebsiteIdentity) {
@@ -56,11 +71,12 @@ export async function fetchWebsiteSessionMemoryFromCloud(identity: WebsiteIdenti
   url.searchParams.set("websiteUserKey", identity.websiteUserKey);
 
   try {
-    const response = await withTimeout(
+    const response = await withTimeout(async (signal) =>
       fetch(url.toString(), {
         headers: await buildHeaders(),
         method: "GET",
-      })
+        signal,
+      }),
     );
 
     if (!response.ok) {
@@ -90,7 +106,7 @@ export async function saveWebsiteSessionMemoryToCloud({
   }
 
   try {
-    const response = await withTimeout(
+    const response = await withTimeout(async (signal) =>
       fetch(WEBSITE_PREFERENCES_ENDPOINT, {
         body: JSON.stringify({
           accountType,
@@ -99,7 +115,8 @@ export async function saveWebsiteSessionMemoryToCloud({
         }),
         headers: await buildHeaders(),
         method: "POST",
-      })
+        signal,
+      }),
     );
 
     if (!response.ok) {

@@ -29,26 +29,38 @@ export function useNotificationPreferences() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  // Pass 83 (2026-05-07) — KI-138 client gap: surface to the UI when the
+  // initial GET failed and the user is editing local defaults rather than
+  // their persisted preferences. The optimistic-save path will keep retrying
+  // on every toggle, but the user deserves to know the source of truth is
+  // local-only until the next successful round-trip.
+  const [isUsingDefaults, setIsUsingDefaults] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const isRemote = useRef(false);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let mounted = true;
     setIsLoading(true);
     setError(null);
+    setLoadError(null);
 
     getNotificationPreferences()
       .then((prefs) => {
         if (mounted) {
           isRemote.current = true;
           setPreferences(prefs);
+          setIsUsingDefaults(false);
           setIsLoading(false);
         }
       })
-      .catch(() => {
+      .catch((err) => {
         if (mounted) {
           // Fall back to local defaults so the UI is always interactive
           isRemote.current = false;
           setPreferences({ ...DEFAULT_PREFERENCES });
+          setIsUsingDefaults(true);
+          setLoadError(err instanceof Error ? err.message : "Failed to load");
           setIsLoading(false);
         }
       });
@@ -56,6 +68,10 @@ export function useNotificationPreferences() {
     return () => {
       mounted = false;
     };
+  }, [reloadKey]);
+
+  const reload = useCallback(() => {
+    setReloadKey((k) => k + 1);
   }, []);
 
   const update = useCallback(
@@ -72,6 +88,8 @@ export function useNotificationPreferences() {
         isRemote.current = true;
         setPreferences(updated);
         setError(null);
+        setIsUsingDefaults(false);
+        setLoadError(null);
       } catch (err) {
         // Preserve the optimistic local state — better to keep the user's
         // intent visible than to revert to stale defaults.
@@ -83,5 +101,5 @@ export function useNotificationPreferences() {
     []
   );
 
-  return { preferences, isLoading, isSaving, error, update };
+  return { preferences, isLoading, isSaving, error, update, isUsingDefaults, loadError, reload };
 }

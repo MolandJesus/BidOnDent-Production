@@ -1,7 +1,15 @@
 import { useState } from "react";
 import { supabase } from "../../services/supabase/client";
+import { createTimeoutAbortController } from "../../services/navigation/requestTimeout";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Pass 14 Step 3 (co-worker AI) — KI-165 root-cause class extension.
+// 8s ceiling matches the canonical 8s GET pattern from Step 1
+// (getPublicPartnerShops). The waitlist insert is a public-form write
+// path; without timeout protection, a hung Supabase request stalls the
+// "submitting…" state forever and the user never recovers.
+const WAITLIST_INSERT_TIMEOUT_MS = 8000;
 
 export default function WaitlistCapture() {
   const [email, setEmail] = useState("");
@@ -13,19 +21,25 @@ export default function WaitlistCapture() {
     if (!EMAIL_RE.test(trimmed)) return;
 
     setStatus("submitting");
+    const request = createTimeoutAbortController(WAITLIST_INSERT_TIMEOUT_MS);
     try {
-      const { error } = await supabase.from("platform_activity_events").insert({
-        event_type: "waitlist_signup",
-        actor_id: trimmed,
-        outcome: "captured",
-        source: "landing-cta",
-        payload: {},
-      });
+      const { error } = await supabase
+        .from("platform_activity_events")
+        .insert({
+          event_type: "waitlist_signup",
+          actor_id: trimmed,
+          outcome: "captured",
+          source: "landing-cta",
+          payload: {},
+        })
+        .abortSignal(request.controller.signal);
       if (error) throw error;
       setStatus("success");
       setEmail("");
     } catch {
       setStatus("error");
+    } finally {
+      request.clear();
     }
   };
 

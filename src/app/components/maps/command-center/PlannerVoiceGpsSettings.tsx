@@ -14,7 +14,7 @@ import {
   Volume2,
   VolumeX,
 } from "lucide-react";
-import { cn } from "../../ui/utils";
+import { cn } from "@/platform-core/cn";
 import type { MapSurfaceTheme, MapSurfaceTone } from "../serviceCoverageMapTypes";
 import type {
   NavigationGuidanceSettings,

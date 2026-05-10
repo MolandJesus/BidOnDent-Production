@@ -5,7 +5,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 
 import { Map, GeolocateControl, NavigationControl, ScaleControl } from "react-map-gl/maplibre";
 import { Source, Layer } from "react-map-gl/maplibre";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Expand } from "lucide-react";
 import { usePublicServiceAreas } from "../../hooks/usePublicServiceAreas";
 import { circleToPolygon } from "../../utils/geoCircle";
@@ -32,6 +32,7 @@ import {
 import { useMapPaneState } from "./useMapPaneState";
 import MapPaneAtmosphereOverlays from "./MapPaneAtmosphereOverlays";
 import MapPaneInfoPopups from "./MapPaneInfoPopups";
+import { markEngineMount, markEngineDispose } from "../../utils/perfMarks";
 
 import type { ShopDirectoryMapPaneProps } from "./shopDirectoryMapPaneTypes";
 
@@ -91,6 +92,11 @@ export default function MapLibreShopDirectoryMapPane({
   onTileModeChange,
   overlayDensity = "default",
 }: ShopDirectoryMapPaneProps) {
+  useEffect(() => {
+    markEngineMount("e2:shop-directory");
+    return () => markEngineDispose("e2:shop-directory");
+  }, []);
+
   const {
     containerRef,
     containerReady,
@@ -174,6 +180,33 @@ export default function MapLibreShopDirectoryMapPane({
     overlayDensity,
   });
 
+  /* ── Pass 93: Tile-mode cross-fade (owner real-map directive) ──────
+   * Switching night ↔ satellite ↔ roadmap previously swapped the MapLibre
+   * style instantly — visually jarring. We now flash a brief tinted overlay
+   * over the canvas (250ms fade-in, 350ms fade-out) so the swap reads as a
+   * smooth dissolve rather than a hard cut. The overlay's tint matches the
+   * destination tileMode so the eye lands gently on the new palette.
+   * Reduce-motion users skip the overlay entirely. */
+  const [tileFadeKey, setTileFadeKey] = useState(0);
+  const prevTileModeRef = useRef(tileMode);
+  useEffect(() => {
+    if (prevTileModeRef.current === tileMode) return;
+    prevTileModeRef.current = tileMode;
+    const reduceMotion =
+      typeof window !== "undefined" &&
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) return;
+    setTileFadeKey((k) => k + 1);
+  }, [tileMode]);
+
+  const tileFadeTint =
+    tileMode === "night"
+      ? "rgba(10, 26, 56, 0.65)"
+      : tileMode === "satellite"
+        ? "rgba(12, 20, 32, 0.55)"
+        : "rgba(232, 238, 248, 0.55)";
+
   /* ── Service area circles ─────────────────────────────────────── */
   const { areas: publicServiceAreas } = usePublicServiceAreas();
   const serviceAreaGeoJson = useMemo(
@@ -205,18 +238,45 @@ export default function MapLibreShopDirectoryMapPane({
       }
     >
       <MapPaneAtmosphereOverlays isNight={isNight} isSatellite={isSatellite} />
-      {/* ── Header badges ── */}
-      {!suppressHeader && (
-        <MapPaneHeaderBadges
-          isDark={isDark}
-          userType={userType}
-          selectedOrigin={selectedOrigin}
-          shopCount={shops.length}
+      {/* Pass 100 — KI-112 F6: extend landing-side bd-liquid-gold-flow sheen to
+          the map surface frame so the marketplace activity ribbon reads kin
+          to the landing surfaces. Very subtle opacity (0.18 dark / 0.10 light)
+          so the map remains the dominant signal. Reduce-motion users get
+          static (animation suppressed by the existing @media block in
+          theme.css §bd-liquid-gold-flow). */}
+      <div
+        aria-hidden="true"
+        className={`bd-liquid-gold-flow ${isDark ? "bd-liquid-gold-flow--dark" : "bd-liquid-gold-flow--light"} pointer-events-none absolute inset-0 z-[205]`}
+        style={{ opacity: isDark ? 0.18 : 0.1 }}
+      />
+      {/* Pass 93: tile-mode cross-fade overlay (key forces remount per swap) */}
+      {tileFadeKey > 0 && (
+        <div
+          key={tileFadeKey}
+          aria-hidden="true"
+          className="bd-tile-fade pointer-events-none absolute inset-0 z-[210]"
+          style={{ backgroundColor: tileFadeTint }}
         />
       )}
+      {/* ── Header badges ──
+          Pass 197 (KI-168 sub-pass 2): gated on `mapLoaded && !mapLoadFailed`
+          + wrapped in `map-ui-enter` so the top-left "live shop card" the audit
+          flagged fades in atomically with the bottom overlay (Pass 194) and
+          tile picker (Pass 196). Closes the third + final transition-state
+          overlay named in the Pass 192 inventory. */}
+      {!suppressHeader && mapLoaded && !mapLoadFailed && (
+        <div className="map-ui-enter">
+          <MapPaneHeaderBadges
+            isDark={isDark}
+            userType={userType}
+            selectedOrigin={selectedOrigin}
+            shopCount={shops.length}
+          />
+        </div>
+      )}
 
-      {onExpandMap ? (
-        <div className="pointer-events-none absolute right-3 top-3 z-[520]">
+      {onExpandMap && mapLoaded && !mapLoadFailed ? (
+        <div className="pointer-events-none absolute right-3 top-3 z-[520] map-ui-enter animate-in fade-in zoom-in-95 duration-300 motion-reduce:animate-none">
           <button
             type="button"
             onClick={onExpandMap}
@@ -255,6 +315,7 @@ export default function MapLibreShopDirectoryMapPane({
             onMouseMove={handleMapMouseMove}
             onMouseLeave={() => setCursor("")}
             onLoad={handleMapLoad}
+            onIdle={handleMapLoad}
             onError={handleMapLoadError}
             attributionControl={{ compact: true }}
           >
@@ -419,47 +480,61 @@ export default function MapLibreShopDirectoryMapPane({
         onSwitchToListMode={onSwitchToListMode}
       />
 
-      {!isGuidanceActive && !suppressTilePicker && (
-        <MapTilePicker
-          compact={isCompactOverlay}
-          isDark={isDark}
-          tileMode={tileMode}
-          setTileMode={setTileMode}
-        />
+      {/* Pass 196 (KI-168 sub-pass 3): gate tile picker on `mapLoaded && !mapLoadFailed`
+          so it doesn't render at full opacity while the loading skeleton blurs the
+          rest of the chrome — same pattern as Pass 194 (sub-pass 1) on the bottom
+          overlay. Wrapped in `map-ui-enter` (420ms cubic-bezier; reduced-motion
+          guard at theme.css:700-707) for the soft cross-fade once tiles are ready. */}
+      {!isGuidanceActive && !suppressTilePicker && mapLoaded && !mapLoadFailed && (
+        <div className="map-ui-enter">
+          <MapTilePicker
+            compact={isCompactOverlay}
+            isDark={isDark}
+            tileMode={tileMode}
+            setTileMode={setTileMode}
+          />
+        </div>
       )}
 
       <MapEmptyState isDark={isDark} shopCount={shops.length} />
 
-      {/* ── Bottom gradient overlay: selected shop card + legend ── */}
-      {!suppressBottomCard && (
-        <MapPaneBottomOverlay
-          isDark={isDark}
-          selectedShop={selectedShop}
-          selectedRoute={selectedRoute}
-          hasArrived={hasArrived}
-          onOpenShopDirections={onOpenShopDirections}
-          onStartNavigation={onStartNavigation}
-          canStartNavigation={canUseNavigationActionForSelectedShop}
-          directionsActionLabel={selectedShopActionLabel}
-          hasLiveNavigation={selectedShopHasLiveNavigation}
-          isLoadingRoute={isLoadingRoute}
-          navigationSessionStatus={navigationSessionStatus}
-          remainingDistanceLabel={remainingDistanceLabel}
-          remainingEtaLabel={remainingEtaLabel}
-          routeError={routeError}
-          usingLiveRoutes={usingLiveRoutes}
-          compact={Boolean(children && selectedRoute)}
-          showSavedPlaces={showSavedPlaces}
-          onToggleSavedPlaces={() => setShowSavedPlaces((v) => !v)}
-          showReports={showReports}
-          onToggleReports={() => setShowReports((v) => !v)}
-          reportCount={reportCount}
-          showRoutes={showRoutes}
-          onToggleRoutes={() => setShowRoutes((v) => !v)}
-          reportStatusFilter={reportStatusFilter}
-          onReportStatusFilterChange={setReportStatusFilter}
-          density={overlayDensity}
-        />
+      {/* ── Bottom gradient overlay: selected shop card + legend ──
+          Pass 194 (KI-168 sub-pass 1): gated on `mapLoaded && !mapLoadFailed`
+          so the ROUTE box + legend don't bleed through during the pre-hydrated
+          window. Wrapped in `map-ui-enter` (420ms cubic-bezier with built-in
+          `prefers-reduced-motion: reduce` guard at theme.css:700-707) so the
+          chrome cross-fades in once tiles are ready instead of popping. */}
+      {!suppressBottomCard && mapLoaded && !mapLoadFailed && (
+        <div className="map-ui-enter">
+          <MapPaneBottomOverlay
+            isDark={isDark}
+            selectedShop={selectedShop}
+            selectedRoute={selectedRoute}
+            hasArrived={hasArrived}
+            onOpenShopDirections={onOpenShopDirections}
+            onStartNavigation={onStartNavigation}
+            canStartNavigation={canUseNavigationActionForSelectedShop}
+            directionsActionLabel={selectedShopActionLabel}
+            hasLiveNavigation={selectedShopHasLiveNavigation}
+            isLoadingRoute={isLoadingRoute}
+            navigationSessionStatus={navigationSessionStatus}
+            remainingDistanceLabel={remainingDistanceLabel}
+            remainingEtaLabel={remainingEtaLabel}
+            routeError={routeError}
+            usingLiveRoutes={usingLiveRoutes}
+            compact={Boolean(children && selectedRoute)}
+            showSavedPlaces={showSavedPlaces}
+            onToggleSavedPlaces={() => setShowSavedPlaces((v) => !v)}
+            showReports={showReports}
+            onToggleReports={() => setShowReports((v) => !v)}
+            reportCount={reportCount}
+            showRoutes={showRoutes}
+            onToggleRoutes={() => setShowRoutes((v) => !v)}
+            reportStatusFilter={reportStatusFilter}
+            onReportStatusFilterChange={setReportStatusFilter}
+            density={overlayDensity}
+          />
+        </div>
       )}
 
       {/* Search area pills — hidden during guidance */}

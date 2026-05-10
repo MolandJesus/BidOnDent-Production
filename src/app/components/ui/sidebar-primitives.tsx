@@ -4,7 +4,7 @@ import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { VariantProps } from "class-variance-authority";
 
-import { cn } from "./utils";
+import { cn } from "@/platform-core/cn";
 import { Input } from "./input";
 import { Separator } from "./separator";
 import { Skeleton } from "./skeleton";

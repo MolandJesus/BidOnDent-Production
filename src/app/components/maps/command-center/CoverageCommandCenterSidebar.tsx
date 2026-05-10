@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import type { CoveragePartnerShop, MapSurfaceTone, MapTileMode } from "../serviceCoverageMapTypes";
 import { getNavigationProviderLabel } from "../../../services/navigation/externalNavigation";
 import type { ExternalNavigationSession } from "../../../types/navigation";
-import { cn } from "../../ui/utils";
+import { cn } from "@/platform-core/cn";
 import {
   formatApproximateDriveWindow,
   formatDistanceMiles,

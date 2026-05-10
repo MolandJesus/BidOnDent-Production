@@ -6,7 +6,7 @@ import type { NavigationAddressResult, NavigationAddressSuggestion } from "../..
 import { getRoleCollectionTitle } from "../../services/intelligence/shopMapExperience";
 import type { MapTheme, MapViewMode, Place, SavedPlace } from "../../types/mapDomain";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
-import { cn } from "../ui/utils";
+import { cn } from "@/platform-core/cn";
 import ShopDirectoryOriginSearch from "./ShopDirectoryOriginSearch";
 
 const SORT_OPTIONS: Array<{ value: ShopSortOption; label: string }> = [

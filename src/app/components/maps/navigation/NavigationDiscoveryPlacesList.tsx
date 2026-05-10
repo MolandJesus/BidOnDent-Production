@@ -6,7 +6,7 @@
  */
 
 import { Fuel, Globe, MapPinned, Navigation } from "lucide-react";
-import { cn } from "../../ui/utils";
+import { cn } from "@/platform-core/cn";
 import type {
   CoverageSearchTarget,
   MapSurfaceTheme,
@@ -96,7 +96,7 @@ export default function NavigationDiscoveryPlacesList({
   if (!activeSearchTarget) {
     return (
       <div className={cn("p-4 text-sm", theme.panelClassName)}>
-        Real market places appear after an active ZIP or live-location search exists.
+        Search a ZIP or use your location to see nearby places.
       </div>
     );
   }
@@ -110,12 +110,12 @@ export default function NavigationDiscoveryPlacesList({
             className={cn("space-y-3 rounded-[1rem] p-4", theme.panelClassName)}
           >
             <div className="flex items-start justify-between gap-3">
-              <div className="h-4 w-28 animate-pulse rounded bg-slate-300/40" />
-              <div className="h-5 w-16 animate-pulse rounded-full bg-slate-300/40" />
+              <div className="h-4 w-28 animate-pulse motion-reduce:animate-none rounded bg-slate-300/40" />
+              <div className="h-5 w-16 animate-pulse motion-reduce:animate-none rounded-full bg-slate-300/40" />
             </div>
-            <div className="h-3 w-full animate-pulse rounded bg-slate-300/40" />
-            <div className="h-3 w-4/5 animate-pulse rounded bg-slate-300/40" />
-            <div className="h-3 w-1/2 animate-pulse rounded bg-slate-300/40" />
+            <div className="h-3 w-full animate-pulse motion-reduce:animate-none rounded bg-slate-300/40" />
+            <div className="h-3 w-4/5 animate-pulse motion-reduce:animate-none rounded bg-slate-300/40" />
+            <div className="h-3 w-1/2 animate-pulse motion-reduce:animate-none rounded bg-slate-300/40" />
           </div>
         ))}
       </div>
@@ -126,7 +126,7 @@ export default function NavigationDiscoveryPlacesList({
     return (
       <div
         className={cn(
-          "rounded-[1rem] border px-4 py-3 text-sm",
+          "rounded-[1rem] border px-4 py-3 text-sm animate-in fade-in slide-in-from-top-1 duration-200 motion-reduce:animate-none",
           tone === "light"
             ? "border-amber-200 bg-amber-50 text-amber-900"
             : "border-amber-300/20 bg-amber-500/10 text-amber-200"
@@ -139,8 +139,13 @@ export default function NavigationDiscoveryPlacesList({
 
   if (discoveryPlaces.length === 0) {
     return (
-      <div className={cn("p-4 text-sm", theme.panelClassName)}>
-        No live places were returned for this role lens in the current area.
+      <div
+        className={cn(
+          "p-4 text-sm animate-in fade-in slide-in-from-top-1 duration-200 motion-reduce:animate-none",
+          theme.panelClassName
+        )}
+      >
+        No nearby places found in this area yet.
       </div>
     );
   }
@@ -151,7 +156,7 @@ export default function NavigationDiscoveryPlacesList({
         <div className={cn("p-4", theme.accentPanelClassName)}>
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <div className={theme.metricLabelClassName}>Selected live place</div>
+              <div className={theme.metricLabelClassName}>Selected place</div>
               <div className={cn("mt-2 text-lg font-semibold", theme.titleClassName)}>
                 {selectedDiscoveryPlace.label}
               </div>
@@ -173,7 +178,7 @@ export default function NavigationDiscoveryPlacesList({
             <span className={theme.softBadgeClassName}>
               {selectedDiscoveryPlace.distanceMiles.toFixed(1)} miles away
             </span>
-            <span className={theme.softBadgeClassName}>OpenStreetMap live data</span>
+            <span className={theme.softBadgeClassName}>Live OpenStreetMap data</span>
             <span
               className={cn(
                 "rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em]",
@@ -258,7 +263,7 @@ export default function NavigationDiscoveryPlacesList({
             </span>
           </div>
           <div className={cn("mt-3 text-xs", theme.secondaryTextClassName)}>
-            {place.distanceMiles.toFixed(1)} miles away • OpenStreetMap live data •{" "}
+            {place.distanceMiles.toFixed(1)} miles away • Live OpenStreetMap data •{" "}
             {place.qualityLabel} quality ({place.qualityScore})
           </div>
           <div className="mt-3 flex flex-wrap gap-2">

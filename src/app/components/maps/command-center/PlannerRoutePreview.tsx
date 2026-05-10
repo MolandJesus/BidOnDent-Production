@@ -5,8 +5,8 @@
  * All state and orchestration remain in the parent shell.
  */
 
-import { MapPinned, Navigation, RefreshCcw, Route } from "lucide-react";
-import { cn } from "../../ui/utils";
+import { MapPinned, Navigation, RefreshCcw, Route, TriangleAlert } from "lucide-react";
+import { cn } from "@/platform-core/cn";
 import {
   formatApproximateDriveWindow,
   formatDistanceMiles,
@@ -92,27 +92,13 @@ export default function PlannerRoutePreview({
                 <div className={cn("rounded-[0.875rem] px-2.5 py-2", theme.panelClassName)}>
                   <div
                     className={cn(
-                      "h-2.5 w-16 animate-pulse rounded",
+                      "h-2.5 w-16 animate-pulse motion-reduce:animate-none rounded",
                       tone === "light" ? "bg-slate-300/50" : "bg-slate-500/30"
                     )}
                   />
                   <div
                     className={cn(
-                      "mt-1.5 h-5 w-12 animate-pulse rounded",
-                      tone === "light" ? "bg-slate-300/50" : "bg-slate-500/30"
-                    )}
-                  />
-                </div>
-                <div className={cn("rounded-[0.875rem] px-2.5 py-2", theme.panelClassName)}>
-                  <div
-                    className={cn(
-                      "h-2.5 w-20 animate-pulse rounded",
-                      tone === "light" ? "bg-slate-300/50" : "bg-slate-500/30"
-                    )}
-                  />
-                  <div
-                    className={cn(
-                      "mt-1.5 h-5 w-14 animate-pulse rounded",
+                      "mt-1.5 h-5 w-12 animate-pulse motion-reduce:animate-none rounded",
                       tone === "light" ? "bg-slate-300/50" : "bg-slate-500/30"
                     )}
                   />
@@ -120,13 +106,27 @@ export default function PlannerRoutePreview({
                 <div className={cn("rounded-[0.875rem] px-2.5 py-2", theme.panelClassName)}>
                   <div
                     className={cn(
-                      "h-2.5 w-12 animate-pulse rounded",
+                      "h-2.5 w-20 animate-pulse motion-reduce:animate-none rounded",
                       tone === "light" ? "bg-slate-300/50" : "bg-slate-500/30"
                     )}
                   />
                   <div
                     className={cn(
-                      "mt-1.5 h-5 w-10 animate-pulse rounded",
+                      "mt-1.5 h-5 w-14 animate-pulse motion-reduce:animate-none rounded",
+                      tone === "light" ? "bg-slate-300/50" : "bg-slate-500/30"
+                    )}
+                  />
+                </div>
+                <div className={cn("rounded-[0.875rem] px-2.5 py-2", theme.panelClassName)}>
+                  <div
+                    className={cn(
+                      "h-2.5 w-12 animate-pulse motion-reduce:animate-none rounded",
+                      tone === "light" ? "bg-slate-300/50" : "bg-slate-500/30"
+                    )}
+                  />
+                  <div
+                    className={cn(
+                      "mt-1.5 h-5 w-10 animate-pulse motion-reduce:animate-none rounded",
                       tone === "light" ? "bg-slate-300/50" : "bg-slate-500/30"
                     )}
                   />
@@ -166,6 +166,12 @@ export default function PlannerRoutePreview({
                     const durationMinutes = Math.round(route.durationSeconds / 60);
                     const comparedToFastestSeconds =
                       route.durationSeconds - routeAlternatives[0].durationSeconds;
+                    // Pass 203 (KI-179) — mirror Pass 184's amber-ring +
+                    // TriangleAlert chip pattern: when the navigation engine
+                    // returns a route flagged by `flagImplausibleNavigationRoute`,
+                    // surface it without hiding the chip so the user can still
+                    // pick a different alternative manually.
+                    const isImplausible = route.isImplausible === true;
 
                     return (
                       <button
@@ -173,16 +179,35 @@ export default function PlannerRoutePreview({
                         type="button"
                         onClick={() => onSelectRouteIndex(index)}
                         className={cn(
-                          "min-w-[5.5rem] flex-1 rounded-[0.875rem] border px-2.5 py-2 text-left backdrop-blur-2xl transition-all duration-200",
+                          "relative min-w-[5.5rem] flex-1 rounded-[0.875rem] border px-2.5 py-2 text-left backdrop-blur-2xl transition-all duration-200",
                           isSelected
                             ? tone === "light"
                               ? "border-sky-300/80 bg-[linear-gradient(180deg,rgba(239,246,255,0.96),rgba(219,234,254,0.86))]"
                               : "border-cyan-400/30 bg-[linear-gradient(180deg,rgba(6,182,212,0.18),rgba(15,23,42,0.78))]"
                             : tone === "light"
                               ? "border-[rgba(140,82,22,0.28)] bg-[linear-gradient(180deg,rgba(247,232,194,0.72),rgba(232,238,248,0.68))] hover:bg-[linear-gradient(180deg,rgba(247,232,194,0.88),rgba(232,238,248,0.84))]"
-                              : "border-white/10 bg-slate-900/76 hover:bg-slate-900/88"
+                              : "border-white/10 bg-slate-900/76 hover:bg-slate-900/88",
+                          isImplausible
+                            ? tone === "light"
+                              ? "ring-1 ring-amber-300"
+                              : "ring-1 ring-amber-400/40"
+                            : ""
                         )}
+                        aria-label={
+                          isImplausible
+                            ? `${index === 0 ? "Fastest" : `Alt ${index}`}, ${formatDistanceMiles(distanceMiles)}, ${durationMinutes} min. Verify route — ${(route.implausibleReasons ?? []).join("; ")}`
+                            : undefined
+                        }
                       >
+                        {isImplausible ? (
+                          <TriangleAlert
+                            className={cn(
+                              "absolute right-1 top-1 h-2.5 w-2.5",
+                              tone === "light" ? "text-amber-500" : "text-amber-300"
+                            )}
+                            aria-hidden="true"
+                          />
+                        ) : null}
                         <div className={cn("text-xs font-semibold", theme.titleClassName)}>
                           {index === 0 ? "Fastest" : `Alt ${index}`}
                         </div>

@@ -6,7 +6,7 @@
  * This component receives every computed value as props and renders only.
  */
 
-import { cn } from "../../ui/utils";
+import { cn } from "@/platform-core/cn";
 import type { MapSurfaceTheme, MapSurfaceTone } from "../serviceCoverageMapTypes";
 import type { NavigationDiagnosticsSignal } from "../../../services/navigation/navigationDiagnosticsSignal";
 import type { ProviderHealthSummary } from "../../../services/navigation/providerHealth";

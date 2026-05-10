@@ -3,7 +3,7 @@
 import * as React from "react";
 
 import { useIsMobile } from "./use-mobile";
-import { cn } from "./utils";
+import { cn } from "@/platform-core/cn";
 import {
   SIDEBAR_COOKIE_NAME,
   SIDEBAR_COOKIE_MAX_AGE,

@@ -42,6 +42,18 @@ export type UseNavigationRoutePreviewArgs = {
   voicePersona: NavigationVoicePersona;
   voiceVolumePreset: NavigationVoiceVolumePreset;
   selectedRouteIndex: number;
+  /**
+   * When `true`, the silent ~100m off-route auto-refetch is suppressed.
+   * Pass 57 (2026-05-07): consumers should set this to `true` whenever
+   * `useNavigationReroute` reports status `pending` or `cooldown` — the
+   * manual reroute lifecycle is already handling the off-route condition
+   * (active OSRM fetch + UI prompt + cooldown window). Allowing both paths
+   * to fire simultaneously caused duplicate OSRM requests for the same
+   * deviation. See docs/evidence/pass-53-2026-05-07/PASS_AUTOPILOT_TRACKER
+   * §F3 + Pass 53 navigation engine audit §D. Optional; defaults to `false`
+   * which preserves prior behavior for any consumer not yet wired.
+   */
+  suppressOffRouteRefetch?: boolean;
 };
 
 export type NavigationRoutePreviewState = {
@@ -67,6 +79,7 @@ export function useNavigationRoutePreview({
   voicePersona,
   voiceVolumePreset,
   selectedRouteIndex,
+  suppressOffRouteRefetch = false,
 }: UseNavigationRoutePreviewArgs): NavigationRoutePreviewState {
   const [routePreview, setRoutePreview] = useState<NavigationRoutePreview | null>(null);
   const [routeAlternatives, setRouteAlternatives] = useState<NavigationRoutePreview[]>([]);
@@ -128,10 +141,16 @@ export function useNavigationRoutePreview({
         ? !lastRouteOriginCoordinateRef.current ||
           haversineMiles(currentPosition, lastRouteOriginCoordinateRef.current) >= 0.18
         : false;
+    // Pass 57 (2026-05-07): when the manual reroute lifecycle is mid-flight
+    // (`pending` or `cooldown`), suppress the silent off-route auto-refetch
+    // to prevent duplicate OSRM requests for the same deviation. The reroute
+    // hook will call `refreshRoutePreview()` directly via
+    // `useShopDirectoryNavigation`'s confirm-timing effect.
+    const offRouteShouldTriggerRefresh = isOffRoute && !suppressOffRouteRefetch;
     const shouldRefreshRoute =
       !routePreview ||
       hasDestinationChanged ||
-      isOffRoute ||
+      offRouteShouldTriggerRefresh ||
       (originTracksGps ? gpsMovedEnough : hasOriginChanged);
 
     if (!shouldRefreshRoute) {

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MapPin } from "lucide-react";
 import { useScrollAnimation } from "../../hooks/useScrollAnimation";
 import { useParallaxOffset } from "../../hooks/useParallaxOffset";
@@ -8,7 +8,7 @@ import type { NavigationDiscoveryRole } from "../../services/navigation/placeDis
 import { getMapSurfaceTheme } from "../maps/mapSurfaceTheme";
 import type { MapSurfaceTone } from "../maps/serviceCoverageMapTypes";
 import ServiceCoverageMap from "../maps/MapLibreServiceCoverageMap";
-import { cn } from "../ui/utils";
+import { cn } from "@/platform-core/cn";
 import CoverageMapDialog from "./CoverageMapDialog";
 import CoverageNearestShops from "./CoverageNearestShops";
 import CoverageSearchPanel from "./CoverageSearchPanel";
@@ -27,6 +27,38 @@ export default function OperatingRegionsSection({
   const coverage = useOperatingRegionsCoverage({ isLightAppearance });
   const isMobile = useMediaQuery("(max-width: 767px)");
   const parallaxY = useParallaxOffset(isMobile ? 0.06 : 0.12);
+
+  // Pass 49 (KI-053) — lazy-mount the inline coverage map. Until the user
+  // scrolls within ~200px of the map slot, render a same-height placeholder
+  // so MapLibre's render loop does not compete with landing-page chrome
+  // (parallax / scroll / hero / GPS hooks) for the main thread. Pass 48
+  // traces showed 687-897ms of long-task burden on this surface vs 0ms on
+  // CoverageMapDialog under identical pan/zoom/hover load. One-way gate:
+  // once mounted, stays mounted.
+  const mapSlotRef = useRef<HTMLDivElement | null>(null);
+  const [isMapMounted, setIsMapMounted] = useState(false);
+  useEffect(() => {
+    if (isMapMounted) return;
+    const el = mapSlotRef.current;
+    if (!el) return;
+    if (typeof IntersectionObserver === "undefined") {
+      // SSR / very old browser fallback — mount immediately, no perf gain
+      // but no behavior regression.
+      setIsMapMounted(true);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setIsMapMounted(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "200px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [isMapMounted]);
 
   // Cross-component opener: hero map double-taps dispatch this event so the
   // landing dialog state stays owned here (where the coverage hook lives) but
@@ -397,57 +429,68 @@ export default function OperatingRegionsSection({
                     onUseCurrentLocation={coverage.handleUseCurrentLocation}
                   />
                   <div
+                    ref={mapSlotRef}
                     className={cn(
                       "mt-4 overflow-hidden rounded-[1.5rem] border p-2 sm:p-2.5 lg:p-3",
                       stageTheme.panelClassName
                     )}
                   >
-                    <ServiceCoverageMap
-                      className="rounded-[1.25rem]"
-                      mapHeightClassName="h-[380px] sm:h-[500px] lg:h-[580px]"
-                      center={coverage.mapView.center}
-                      zoom={coverage.mapView.zoom}
-                      revision={coverage.mapView.revision}
-                      tileMode={coverage.tileMode}
-                      counties={coverage.countyCenters}
-                      partnerShops={coverage.mapPartnerShops}
-                      activeSearchTarget={coverage.mapFocusTarget}
-                      radiusMeters={coverage.radiusMeters}
-                      radiusMiles={coverage.radiusMiles}
-                      regionCount={operatingRegions.length}
-                      selectedShopId={coverage.selectedShopId}
-                      showSurfaceChrome={false}
-                      showNavigationHud={false}
-                      routeGeometry={coverage.routeGeometry}
-                      routeFitKey={coverage.navigation.routePreview?.fetchedAt ?? null}
-                      currentPosition={
-                        coverage.navigation.currentPosition
-                          ? [
-                              coverage.navigation.currentPosition.lat,
-                              coverage.navigation.currentPosition.lng,
-                            ]
-                          : null
-                      }
-                      gpsAccuracyMeters={coverage.navigation.gpsAccuracyMeters}
-                      currentSpeedMph={coverage.navigation.currentSpeedMph}
-                      postedSpeedLimitMph={
-                        coverage.navigation.speedLimitSnapshot?.speedLimitMph ?? null
-                      }
-                      postedSpeedLimitConfidence={
-                        coverage.navigation.speedLimitSnapshot?.confidence ?? null
-                      }
-                      speedLimitMatchDistanceMeters={
-                        coverage.navigation.speedLimitSnapshot?.matchDistanceMeters ?? null
-                      }
-                      nearestRoadName={coverage.navigation.speedLimitSnapshot?.roadName ?? null}
-                      nextInstruction={coverage.navigation.nextStep?.instruction ?? null}
-                      voiceMode={coverage.navigation.settings.voiceMode}
-                      onTileModeChange={coverage.setTileMode}
-                      onCenterActive={() => coverage.centerOnTarget(coverage.mapFocusTarget)}
-                      onResetView={coverage.resetOverviewMap}
-                      onExpand={() => coverage.setIsMapExpanded(true)}
-                      onSelectShop={coverage.handleSelectShopById}
-                    />
+                    {isMapMounted ? (
+                      <ServiceCoverageMap
+                        className="rounded-[1.25rem]"
+                        mapHeightClassName="h-[380px] sm:h-[500px] lg:h-[580px]"
+                        center={coverage.mapView.center}
+                        zoom={coverage.mapView.zoom}
+                        revision={coverage.mapView.revision}
+                        tileMode={coverage.tileMode}
+                        counties={coverage.countyCenters}
+                        partnerShops={coverage.mapPartnerShops}
+                        activeSearchTarget={coverage.mapFocusTarget}
+                        radiusMeters={coverage.radiusMeters}
+                        radiusMiles={coverage.radiusMiles}
+                        regionCount={operatingRegions.length}
+                        selectedShopId={coverage.selectedShopId}
+                        showSurfaceChrome={false}
+                        showNavigationHud={false}
+                        routeGeometry={coverage.routeGeometry}
+                        routeFitKey={coverage.navigation.routePreview?.fetchedAt ?? null}
+                        currentPosition={
+                          coverage.navigation.currentPosition
+                            ? [
+                                coverage.navigation.currentPosition.lat,
+                                coverage.navigation.currentPosition.lng,
+                              ]
+                            : null
+                        }
+                        gpsAccuracyMeters={coverage.navigation.gpsAccuracyMeters}
+                        currentSpeedMph={coverage.navigation.currentSpeedMph}
+                        postedSpeedLimitMph={
+                          coverage.navigation.speedLimitSnapshot?.speedLimitMph ?? null
+                        }
+                        postedSpeedLimitConfidence={
+                          coverage.navigation.speedLimitSnapshot?.confidence ?? null
+                        }
+                        speedLimitMatchDistanceMeters={
+                          coverage.navigation.speedLimitSnapshot?.matchDistanceMeters ?? null
+                        }
+                        nearestRoadName={coverage.navigation.speedLimitSnapshot?.roadName ?? null}
+                        nextInstruction={coverage.navigation.nextStep?.instruction ?? null}
+                        voiceMode={coverage.navigation.settings.voiceMode}
+                        onTileModeChange={coverage.setTileMode}
+                        onCenterActive={() => coverage.centerOnTarget(coverage.mapFocusTarget)}
+                        onResetView={coverage.resetOverviewMap}
+                        onExpand={() => coverage.setIsMapExpanded(true)}
+                        onSelectShop={coverage.handleSelectShopById}
+                      />
+                    ) : (
+                      <div
+                        aria-hidden="true"
+                        className={cn(
+                          "h-[380px] rounded-[1.25rem] sm:h-[500px] lg:h-[580px]",
+                          stageTheme.panelClassName
+                        )}
+                      />
+                    )}
 
                     <div className="mt-4 flex flex-col gap-3 px-1 sm:flex-row sm:items-center sm:justify-between">
                       <p

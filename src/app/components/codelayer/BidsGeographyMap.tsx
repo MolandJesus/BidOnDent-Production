@@ -62,6 +62,10 @@ export default function BidsGeographyMap({
                   onShopClick(shop.id);
                 }
               }}
+              /* Pass 243 (KI-181 sub-pass B sweep): autoFit="always"
+                 preserves the pre-Pass-241 fit-driven default for this
+                 bid-geography distribution map. */
+              autoFit="always"
             />
           </div>
           <div className="flex flex-wrap items-center gap-2 p-3">

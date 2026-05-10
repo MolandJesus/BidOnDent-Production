@@ -449,7 +449,7 @@ export default function BusinessInquirySection({
 
               {submitMessage && (
                 <div
-                  className={`mt-4 p-3 rounded-lg text-sm font-medium ${
+                  className={`mt-4 p-3 rounded-lg text-sm font-medium animate-in fade-in slide-in-from-bottom-1 duration-300 motion-reduce:animate-none ${
                     submitMessage.startsWith("✓")
                       ? isLightAppearance
                         ? "bg-emerald-50 text-emerald-700 border border-emerald-200/60"

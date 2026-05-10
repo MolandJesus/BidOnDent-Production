@@ -1,0 +1,54 @@
+{
+  "capturedAt": "2026-05-07T11:58:55.235Z",
+  "url": "http://localhost:5173/",
+  "viewports": [
+    {
+      "viewport": "1280",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 401 ()"
+      ],
+      "consoleErrorCount": 1,
+      "surfaces": {
+        "landing": {
+          "label": "landing",
+          "viewport": "1280",
+          "tracePath": "docs/evidence/pass-48-2026-05-07/trace-landing-1280.json",
+          "bytes": 40299305,
+          "canvasFound": true
+        },
+        "dialog": {
+          "label": "dialog",
+          "viewport": "1280",
+          "tracePath": "docs/evidence/pass-48-2026-05-07/trace-dialog-1280.json",
+          "bytes": 37630730,
+          "canvasFound": true
+        },
+        "dialogCtaClicked": "Coverage Map"
+      }
+    },
+    {
+      "viewport": "375",
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 401 ()"
+      ],
+      "consoleErrorCount": 1,
+      "surfaces": {
+        "landing": {
+          "label": "landing",
+          "viewport": "375",
+          "tracePath": "docs/evidence/pass-48-2026-05-07/trace-landing-375.json",
+          "bytes": 29761362,
+          "canvasFound": true
+        },
+        "dialog": {
+          "label": "dialog",
+          "viewport": "375",
+          "tracePath": "docs/evidence/pass-48-2026-05-07/trace-dialog-375.json",
+          "bytes": 29327040,
+          "canvasFound": true
+        },
+        "dialogCtaClicked": "Coverage Map"
+      }
+    }
+  ]
+}

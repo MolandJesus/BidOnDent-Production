@@ -1,4 +1,5 @@
 import type { DamageReport } from "../../types";
+import { formatVehicleLabel } from "../../utils/formatVehicleLabel";
 
 export type ClaimData = {
   id: string;
@@ -31,7 +32,11 @@ export type ClaimData = {
 export function transformReportsToClaims(reports: DamageReport[]): ClaimData[] {
   return reports.map((report: DamageReport, index: number) => {
     const vehicleData = report?.vehicle || report?.vehicleInfo || {};
-    const vehicleParts = [vehicleData.year, vehicleData.make, vehicleData.model].filter(Boolean);
+    const vehicleLabel = formatVehicleLabel({
+      year: vehicleData.year,
+      make: vehicleData.make,
+      model: vehicleData.model,
+    });
     const rawStatus = String(report?.status ?? "pending").toLowerCase();
     const inferredStatus =
       rawStatus === "completed" ? "approved" : rawStatus === "in-review" ? "reviewing" : "pending";
@@ -65,7 +70,7 @@ export function transformReportsToClaims(reports: DamageReport[]): ClaimData[] {
       customerEmail: report?.customerEmail || "Not provided",
       customerPhone: report?.customerPhone || "Not provided",
       policyNumber: report?.policyNumber || "Not provided",
-      vehicle: vehicleParts.length > 0 ? vehicleParts.join(" ") : "Vehicle details pending",
+      vehicle: vehicleLabel.length > 0 ? vehicleLabel : "Vehicle details pending",
       vin,
       damageType: report?.damageArea || report?.damageType || "Damage report",
       incidentDate: reportedAt ? new Date(reportedAt).toLocaleDateString() : "N/A",

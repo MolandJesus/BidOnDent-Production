@@ -9,7 +9,7 @@ import {
   CheckCircle2,
   XCircle,
 } from "lucide-react";
-import { cn } from "../ui/utils";
+import { cn } from "@/platform-core/cn";
 import {
   STATUS_LABELS,
   TIMELINE_LABELS,
@@ -165,7 +165,11 @@ export default function ShopEstimateInboxScreen({
       <div className="px-4 py-4 space-y-3">
         {loading && (
           <div className="flex flex-col items-center justify-center py-16">
-            <svg className="h-8 w-8 animate-spin text-blue-400" viewBox="0 0 24 24" fill="none">
+            <svg
+              className="h-8 w-8 animate-spin motion-reduce:animate-none text-blue-400"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
               <circle
                 cx="12"
                 cy="12"

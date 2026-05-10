@@ -1,5 +1,5 @@
 import { AlertTriangle, LocateFixed, MapPinned, Navigation, RefreshCw, Search } from "lucide-react";
-import { cn } from "../ui/utils";
+import { cn } from "@/platform-core/cn";
 import { getMapSurfaceTheme } from "../maps/mapSurfaceTheme";
 import CoverageNearestShopCard from "./CoverageNearestShopCard";
 import {
@@ -31,9 +31,10 @@ export default function CoverageNearestShops({
 
   return (
     <div
-      className={
-        className || cn(isLandingShowcase ? "p-4 lg:p-5" : "p-3", theme.panelStrongClassName)
-      }
+      className={cn(
+        className || cn(isLandingShowcase ? "p-4 lg:p-5" : "p-3", theme.panelStrongClassName),
+        "animate-in fade-in slide-in-from-bottom-2 duration-400 motion-reduce:animate-none"
+      )}
     >
       {isLandingShowcase ? (
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
@@ -127,7 +128,7 @@ export default function CoverageNearestShops({
       {fetchError ? (
         <div
           className={cn(
-            "mt-3 flex flex-col gap-2 rounded-[1.2rem] border px-3 py-3 sm:flex-row sm:items-center sm:justify-between",
+            "mt-3 flex flex-col gap-2 rounded-[1.2rem] border px-3 py-3 sm:flex-row sm:items-center sm:justify-between animate-in fade-in slide-in-from-top-1 duration-200 motion-reduce:animate-none",
             tone === "light"
               ? "border-rose-200 bg-rose-50 text-rose-800"
               : "border-rose-400/20 bg-rose-500/10 text-rose-100"

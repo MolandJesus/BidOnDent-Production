@@ -91,6 +91,21 @@ export function getPreferredVoiceLabel(voicePersona: NavigationVoicePersona) {
   return getPreferredVoice(voicePersona)?.name || null;
 }
 
+/**
+ * Pass 72 (2026-05-07) — KI-124 #5. The persona key (e.g. `british-smooth`)
+ * is the user-selected abstraction. The actual voice resolved by the OS
+ * (e.g. `Google UK English Female`) is a system-side detail — its name
+ * varies by platform/browser. Surfaces should lead with this stable, human
+ * persona label; the resolved system voice (if any) is a sub-detail.
+ */
+const NAVIGATION_VOICE_PERSONA_LABELS: Record<NavigationVoicePersona, string> = {
+  "british-smooth": "British (smooth)",
+};
+
+export function getNavigationVoicePersonaLabel(voicePersona: NavigationVoicePersona): string {
+  return NAVIGATION_VOICE_PERSONA_LABELS[voicePersona] ?? voicePersona;
+}
+
 export function cancelVoiceGuidance() {
   clearResumeWatchdog();
   const speechSynthesis = getSpeechSynthesisController();

@@ -28,7 +28,7 @@ import { useNotificationEvents, NotificationProvider } from "./features/notifica
 import { useNotifications } from "./features/notifications/NotificationContext";
 import { useDeepLinkNavigation } from "./hooks/useDeepLinkNavigation";
 import NotificationToast from "./components/ui/NotificationToast";
-import { useOnlineStatus } from "./hooks/useOnlineStatus";
+import { useOnlineStatus } from "@/platform-core/useOnlineStatus";
 import { useServiceWorkerUpdate } from "./hooks/useServiceWorkerUpdate";
 
 // Import constants
@@ -45,6 +45,7 @@ import { buildDashboardRouterProps } from "./utils/buildDashboardRouterProps";
 import { completeShopOnboarding, completeInsurerOnboarding } from "./utils/onboardingHandlers";
 import { renderLandingPage } from "./utils/renderLandingPage";
 import { lazyWithRetry } from "./utils/lazyWithRetry";
+import { clearStalePlanningNavSessions } from "./utils/clearStaleNavSessions";
 import type { ViewMode, DamageReport } from "./types";
 
 // Import components
@@ -56,6 +57,8 @@ import ShopOnboarding from "./components/shop/ShopOnboarding";
 import InsurerOnboarding from "./components/insurer/InsurerOnboarding";
 import DevDemoCustomerApp from "./components/dev/DevDemoCustomerApp";
 import DevDemoShopApp from "./components/dev/DevDemoShopApp";
+import EmbeddedBrowserBanner from "./components/dev/EmbeddedBrowserBanner";
+import { MapSessionProvider } from "./components/maps/MapSessionProvider";
 import { readDevDemoMode } from "./utils/devDemoMode";
 
 // Standalone pages (lazy-loaded — only fetched when hash route is visited)
@@ -95,6 +98,16 @@ function AppContent() {
   const { signOut, openSignUp, openUserProfile } = useClerk();
   const { getToken, isLoaded: isClerkAuthLoaded } = useClerkAuth();
   const userProfile = user ? extractUserProfile(user) : null;
+
+  // Pass 61 (2026-05-07) — KI-117: sweep stale `bidondent_nav_session_*` keys
+  // on app mount. Any session still in `status: "planning"` with no
+  // `activatedAt` (or untouched >30 min) is the stale carrier behind the
+  // phantom "737mi off route" banner described in KI-116. Even after the
+  // KI-116 engine gate ships, these stale keys are a privacy + state-leak
+  // surface across reload + sign-out boundaries. Pure side-effect, runs once.
+  useEffect(() => {
+    clearStalePlanningNavSessions();
+  }, []);
 
   // Safety timeout: if Clerk hasn't loaded within 12s (network issues, wrong key,
   // misconfigured domain), force past the loading gate so the landing page renders
@@ -467,7 +480,15 @@ export default function App() {
       appearance={clerkAppearance}
       afterSignOutUrl="/"
     >
-      <AppWithToast />
+      {/* Pass 170 (2026-05-07) — Google OAuth disallowed_useragent
+          mitigation. Renders dev-only banner if the app is loaded inside
+          VS Code Simple Browser / Electron / Android WebView, telling
+          the developer to open localhost in real Chrome OR use
+          ?demo=customer to bypass Clerk auth. Production short-circuits. */}
+      <EmbeddedBrowserBanner />
+      <MapSessionProvider>
+        <AppWithToast />
+      </MapSessionProvider>
     </ClerkProvider>
   );
 }

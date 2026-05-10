@@ -28,7 +28,7 @@ import { Drawer as DrawerPrimitive } from "vaul";
 import { X } from "lucide-react";
 import type { MapSurfaceTone } from "../maps/serviceCoverageMapTypes";
 import { getMapSurfaceTheme } from "../maps/mapSurfaceTheme";
-import { cn } from "../ui/utils";
+import { cn } from "@/platform-core/cn";
 
 type MobileMapBottomSheetProps = {
   tone: MapSurfaceTone;

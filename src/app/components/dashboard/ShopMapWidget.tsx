@@ -29,7 +29,11 @@ export default function ShopMapWidget({
   reports = [],
   onViewShops,
 }: ShopMapWidgetProps) {
-  const { partnerShops, isLoadingShops, fetchError } = useCoveragePartnerShops();
+  // Pass 14 Step 1.6 (co-worker AI) — destructure retryPartnerShops for the
+  // error-state retry button. Brings ShopMapWidget into parity with
+  // DashboardCoveragePanel (Pass 14 Step 1.5) + CustomerMapWidget (Step 1.6).
+  const { partnerShops, isLoadingShops, fetchError, retryPartnerShops } =
+    useCoveragePartnerShops();
   const { serviceAreas, isLoading: isLoadingAreas } = useShopServiceAreas();
   const isLight = appearanceMode === "light";
   const statSurfaceClasses = ["bd-dashboard-section--accent-blue", "bd-dashboard-section--deep"];
@@ -113,7 +117,27 @@ export default function ShopMapWidget({
     "Live repair activity";
 
   return (
-    <section className="bd-dashboard-panel bd-dashboard-panel--accent-blue overflow-hidden">
+    /*
+     * ShopMapWidget — Tier B preview surface (Pass 234).
+     *
+     * Convergence metadata (per Block D execution doctrine):
+     *  1. Runtime paths touched     : P3 (preview-surface exploration); P4 escalation already wired via onViewShops → operational shop directory.
+     *  2. Runtime classes touched   : Preview only.
+     *  3. Tier semantics touched    : Tier B preview (panel-embedded). Surface now self-declares data-runtime-class + data-tier-semantic + data-expand-target (shop-directory).
+     *  4. Motion classes touched    : none.
+     *  5. Shell hierarchy impact    : Panel-first archetype preserved (231c §6). Map block has visible "View Map" CTA + onMapClick=onViewShops on the engine, satisfying 231c §4.2.
+     *  6. Authority semantics       : unchanged.
+     *  7. Reduced-motion inheritance: unchanged.
+     *  8. Hidden-authority risk     : zero.
+     *  9. Continuity guarantees     : unaffected.
+     * 10. Rollback semantics        : revert this hunk; behavior reverts to anonymous section.
+     */
+    <section
+      className="bd-dashboard-panel bd-dashboard-panel--accent-blue overflow-hidden"
+      data-runtime-class="preview"
+      data-tier-semantic="B"
+      data-expand-target="shop-directory"
+    >
       {/* Embedded mini-map — Bucket 1.3 (KI-074 partial): inner-glass bezel
           ring eliminates the flat seam between panel chrome and map canvas. */}
       <div className="relative h-[180px] md:h-[200px] rounded-xl ring-1 ring-[rgba(96,165,250,0.16)] ring-inset overflow-hidden">
@@ -210,11 +234,28 @@ export default function ShopMapWidget({
 
         {fetchError && (
           <div
-            className={`bd-dashboard-note mt-2.5 flex items-center gap-2 rounded-xl px-3 py-2 ${
+            className={`bd-dashboard-note mt-2.5 flex items-center gap-2 rounded-xl px-3 py-2 animate-in fade-in slide-in-from-top-1 duration-200 motion-reduce:animate-none ${
               isLight ? "text-rose-700" : "text-rose-200"
             }`}
+            role="status"
           >
-            <p className="text-xs">Could not load network data.</p>
+            <p className="flex-1 text-xs">
+              {fetchError.includes("timed out")
+                ? "Network sync timed out. Please retry."
+                : "Could not load network data."}
+            </p>
+            <button
+              type="button"
+              onClick={retryPartnerShops}
+              className={`rounded-md border px-2 py-1 text-xs font-semibold transition-colors min-h-[28px] motion-reduce:transition-none ${
+                isLight
+                  ? "border-rose-300 bg-rose-50 hover:bg-rose-100"
+                  : "border-rose-400/40 bg-rose-400/10 hover:bg-rose-400/20"
+              }`}
+              aria-label="Retry network sync"
+            >
+              Retry
+            </button>
           </div>
         )}
 

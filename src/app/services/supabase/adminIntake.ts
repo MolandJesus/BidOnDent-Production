@@ -1,6 +1,12 @@
 import { buildEdgeFunctionUrl } from "./edgeFunctions";
 import { activityEventFromDb } from "./adapters";
+import { fetchWithTimeout } from "../navigation/requestTimeout";
 import type { ActivityEvent as AppActivityEvent } from "../../types";
+
+// Pass 14 (co-worker AI) — KI-165 root-cause class closure for adminIntake.
+// 8s ceiling for GET, 12s for POST. Local helper removed in Pass 16
+// (audit AI) once co-worker's Pass 15 extracted `fetchWithTimeout` to
+// `services/navigation/requestTimeout.ts`. Behavior unchanged.
 
 export type SubmissionStatus = "submitted" | "reviewing" | "approved" | "rejected";
 
@@ -50,12 +56,16 @@ export async function loadAdminIntakeOperations(
   getClerkToken: () => Promise<string | null>
 ): Promise<AdminIntakeOperationsPayload> {
   const accessToken = await getRequiredClerkToken(getClerkToken);
-  const response = await fetch(buildEdgeFunctionUrl("/admin/intake-operations"), {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
+  const response = await fetchWithTimeout(
+    buildEdgeFunctionUrl("/admin/intake-operations"),
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
     },
-  });
+    8000,
+  );
 
   const result = await response.json();
 
@@ -85,14 +95,18 @@ export async function updateAdminSubmissionStatus(
   }
 ) {
   const accessToken = await getRequiredClerkToken(getClerkToken);
-  const response = await fetch(buildEdgeFunctionUrl("/admin/intake-operations/status"), {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
+  const response = await fetchWithTimeout(
+    buildEdgeFunctionUrl("/admin/intake-operations/status"),
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(params),
     },
-    body: JSON.stringify(params),
-  });
+    12000,
+  );
 
   const result = await response.json();
 

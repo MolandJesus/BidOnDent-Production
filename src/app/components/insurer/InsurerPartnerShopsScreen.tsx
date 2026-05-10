@@ -363,6 +363,10 @@ export default function InsurerPartnerShopsScreen({
                   zoom={9}
                   isLight={isLight}
                   onShopClick={(shop) => setFocusedPartnerId(shop.id ?? null)}
+                  /* Pass 243 (KI-181 sub-pass B sweep): autoFit="always"
+                     preserves the pre-Pass-241 fit-driven default for
+                     this partner-distribution view. */
+                  autoFit="always"
                 />
               </div>
             ) : (

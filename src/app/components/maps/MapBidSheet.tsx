@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from "react";
 import { DollarSign, Clock, FileText, X, Send } from "lucide-react";
-import { cn } from "../ui/utils";
+import { cn } from "@/platform-core/cn";
 import type { DamageReport } from "../../types";
 
 /** Strip non-numeric characters except decimal point, return raw number string */
@@ -80,7 +80,7 @@ export default function MapBidSheet({
     <div className="fixed inset-0 z-[60] flex items-end justify-center">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200 motion-reduce:animate-none"
         onClick={onClose}
         role="presentation"
       />
@@ -88,7 +88,7 @@ export default function MapBidSheet({
       {/* Sheet */}
       <div
         className={cn(
-          "relative z-10 w-full max-w-lg rounded-t-2xl p-6 pb-[max(2rem,env(safe-area-inset-bottom))]",
+          "relative z-10 w-full max-w-lg rounded-t-2xl p-6 pb-[max(2rem,env(safe-area-inset-bottom))] animate-in slide-in-from-bottom-4 duration-300 motion-reduce:animate-none",
           isDark
             ? "bg-gradient-to-b from-slate-900/82 to-blue-950/78 border-t border-blue-400/22 backdrop-blur-xl backdrop-saturate-150 shadow-[0_-32px_90px_-16px_rgba(2,6,23,0.55),0_0_80px_rgba(196,130,45,0.22),0_0_60px_rgba(59,130,246,0.12),inset_0_1px_0_rgba(196,144,65,0.36),inset_0_-1px_0_rgba(140,82,22,0.32),inset_0_-2px_0_rgba(252,240,208,0.06)]"
             : "bg-gradient-to-b from-sky-50/84 via-blue-50/80 to-slate-50/76 border-t border-[rgba(140,82,22,0.32)] backdrop-blur-xl backdrop-saturate-150 shadow-[0_-28px_80px_-16px_rgba(196,144,65,0.18),0_0_32px_rgba(196,130,45,0.10),0_0_60px_rgba(196,130,45,0.06),inset_0_1px_0_rgba(252,240,208,0.92)]"
@@ -98,12 +98,12 @@ export default function MapBidSheet({
         <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-slate-500/40" />
 
         {/* Header */}
-        <div className="mb-5 flex items-start justify-between">
-          <div>
+        <div className="mb-5 flex items-start justify-between gap-3">
+          <div className="min-w-0 flex-1">
             <h3 className={cn("text-lg font-bold", isDark ? "text-blue-200" : "text-slate-800")}>
               Place Bid
             </h3>
-            <p className={cn("mt-0.5 text-sm", isDark ? "text-slate-400" : "text-slate-500")}>
+            <p className={cn("mt-0.5 truncate text-sm", isDark ? "text-slate-400" : "text-slate-500")}>
               {vehicleLabel}
               {report.damageArea ? ` — ${report.damageArea}` : ""}
             </p>
@@ -127,7 +127,7 @@ export default function MapBidSheet({
         {error && (
           <div
             className={cn(
-              "mb-4 rounded-lg px-3 py-2 text-sm",
+              "mb-4 rounded-lg px-3 py-2 text-sm animate-in fade-in slide-in-from-top-1 duration-200 motion-reduce:animate-none",
               isDark
                 ? "bg-red-500/15 text-red-300 border border-red-400/25"
                 : "bg-red-50 text-red-700 border border-red-200"
@@ -277,7 +277,11 @@ export default function MapBidSheet({
           )}
         >
           {isSubmitting ? (
-            <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+            <svg
+              className="h-4 w-4 animate-spin motion-reduce:animate-none"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
               <circle
                 cx="12"
                 cy="12"

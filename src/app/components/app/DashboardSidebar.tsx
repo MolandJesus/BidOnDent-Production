@@ -78,7 +78,7 @@ export default function DashboardSidebar({
         <button
           onClick={onLogoClick}
           aria-label="Open dashboard home"
-          className="flex items-center gap-2.5 cursor-pointer bg-transparent"
+          className="flex min-h-[44px] items-center gap-2.5 cursor-pointer bg-transparent"
           type="button"
         >
           <span

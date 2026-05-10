@@ -4,6 +4,7 @@ import {
   buildSupabaseFunctionUrl,
   SUPABASE_EDGE_ROUTES,
 } from "../supabase/runtime";
+import { createTimeoutAbortController } from "../navigation/requestTimeout";
 
 type WebsiteAccountType = "customer" | "shop" | "insurer";
 
@@ -85,22 +86,28 @@ function areCollectionsEmpty(collections: WebsiteRelationshipCollections) {
   );
 }
 
-async function withTimeout<T>(promise: Promise<T>, timeoutMs = SYNC_TIMEOUT_MS): Promise<T> {
-  return new Promise<T>((resolve, reject) => {
-    const timeoutId = window.setTimeout(() => {
-      reject(new Error("Website relationships request timed out"));
-    }, timeoutMs);
-
-    promise
-      .then((value) => {
-        window.clearTimeout(timeoutId);
-        resolve(value);
-      })
-      .catch((error) => {
-        window.clearTimeout(timeoutId);
-        reject(error);
-      });
-  });
+/**
+ * Pass 15 (audit AI) — auth-sync canonical timeout migration.
+ * Same migration as `websitePreferencesSync.ts`: replaces the prior
+ * `Promise.race`-style wrapper (soft resource leak — fetch continued
+ * after timeout) with the canonical `createTimeoutAbortController`
+ * pattern (proper fetch abort via signal). 5s ceiling preserved.
+ */
+async function withTimeout<T>(
+  fetchFactory: (signal: AbortSignal) => Promise<T>,
+  timeoutMs = SYNC_TIMEOUT_MS,
+): Promise<T> {
+  const request = createTimeoutAbortController(timeoutMs);
+  try {
+    return await fetchFactory(request.controller.signal);
+  } catch (error) {
+    if (request.didTimeout()) {
+      throw new Error("Website relationships request timed out");
+    }
+    throw error;
+  } finally {
+    request.clear();
+  }
 }
 
 export async function fetchWebsiteRelationshipCollectionsFromCloud(identity: WebsiteIdentity) {
@@ -112,11 +119,12 @@ export async function fetchWebsiteRelationshipCollectionsFromCloud(identity: Web
   url.searchParams.set("websiteUserKey", identity.websiteUserKey);
 
   try {
-    const response = await withTimeout(
+    const response = await withTimeout(async (signal) =>
       fetch(url.toString(), {
         headers: await buildHeaders(),
         method: "GET",
-      })
+        signal,
+      }),
     );
 
     if (!response.ok) {
@@ -190,7 +198,7 @@ export async function saveWebsiteRelationshipCollectionsToCloud({
   const collections = extractRelationshipCollections(sessionMemory);
 
   try {
-    const response = await withTimeout(
+    const response = await withTimeout(async (signal) =>
       fetch(WEBSITE_RELATIONSHIPS_ENDPOINT, {
         body: JSON.stringify({
           accountType,
@@ -199,7 +207,8 @@ export async function saveWebsiteRelationshipCollectionsToCloud({
         }),
         headers: await buildHeaders(),
         method: "POST",
-      })
+        signal,
+      }),
     );
 
     if (!response.ok) {

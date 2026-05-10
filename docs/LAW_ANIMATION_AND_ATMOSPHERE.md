@@ -1,3 +1,18 @@
+---
+status: CANONICAL
+authority: LAW
+scope: animation-atmosphere
+canonical_source_of_truth: LAW_ANIMATION_AND_ATMOSPHERE.md
+supersedes: []
+superseded_by: null
+safe_for_autopilot: false
+requires_owner_approval: true
+last_topology_audit: 2026-05-09
+runtime_impact_if_misunderstood: high
+ai_summary: Motion canon — trust + spatial-continuity filter, 29 keyframes, mandatory prefers-reduced-motion contract.
+last_updated: 2026-05-09
+---
+
 # BidOnDent — Animation & Atmosphere (LAW)
 
 **Authority level:** LAW — governs all motion, animation, and atmosphere work in BidOnDent. Cannot be violated without explicit per-session override from the project owner.
@@ -99,7 +114,13 @@ The codebase has **29 unique CSS keyframes** across two files. They are the cano
 | `spinSlow`   | Slow rotation (loading indicators)      |
 | `bounceSoft` | Soft bounce (subtle, single-cycle only) |
 
-**Inventory total: 29 unique keyframes.**
+### G. Map cross-fade (1) — `src/styles/animations.css` (added 2026-05-07, Pass 93)
+
+| Keyframe     | Purpose                                                                                                                                                  |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `bdTileFade` | One-shot tinted overlay flash masking MapLibre tile-style swap (night ↔ satellite ↔ roadmap). 600ms ease, 0 → 0.85 → 0 opacity. Reduce-motion guarded. |
+
+**Inventory total: 30 unique keyframes.**
 
 ---
 

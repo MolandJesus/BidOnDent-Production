@@ -1,0 +1,21 @@
+[
+  {
+    "_comment": "EXAMPLE ONLY — do not commit real values. Copy this file to mobile-auth-cookies.json (gitignored) and replace with your real Clerk session cookies exported from a logged-in Chrome devtools (Application > Cookies > http://localhost:5173).",
+    "name": "__session",
+    "value": "REPLACE_WITH_CLERK_SESSION_TOKEN",
+    "domain": "localhost",
+    "path": "/",
+    "httpOnly": true,
+    "secure": false,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "__client_uat",
+    "value": "REPLACE_WITH_CLERK_CLIENT_UAT_TIMESTAMP",
+    "domain": "localhost",
+    "path": "/",
+    "httpOnly": false,
+    "secure": false,
+    "sameSite": "Lax"
+  }
+]

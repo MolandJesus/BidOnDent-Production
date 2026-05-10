@@ -7,7 +7,7 @@ import {
   DrawerDescription,
   DrawerClose,
 } from "../ui/drawer";
-import { cn } from "../ui/utils";
+import { cn } from "@/platform-core/cn";
 import ImageWithFallback from "../codelayer/ImageWithFallback";
 import type { DamageReport } from "../../types";
 import type { MapTheme } from "../../types/mapDomain";

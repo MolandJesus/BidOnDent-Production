@@ -1,27 +1,42 @@
+---
+status: CANONICAL
+authority: REFERENCE
+scope: known-issues
+canonical_source_of_truth: REF_KNOWN_ISSUES.md
+supersedes: []
+superseded_by: null
+safe_for_autopilot: true
+requires_owner_approval: false
+last_topology_audit: 2026-05-09
+runtime_impact_if_misunderstood: medium
+ai_summary: Stable KI-### registry of bugs, gaps, structural issues with status, severity, location.
+last_updated: 2026-05-09
+---
+
 # BidOnDent — Known Issues (REFERENCE)
 
 **Authority level:** REFERENCE — describes current known gaps, bugs, and structural issues.
 
-**Last updated:** 2026-05-06 (Pass 33 — `c4b8caf3` — closed the final Hard-NO scope: `.bd-report-progress-node` + `.bd-report-progress-rail` light-mode insets migrated to cream `rgba(252,240,208,Xα)` per identical Pass 27/28 pattern. Owner directive "go full auto on building" authorized the unlock. **LAW pure-white-inset slip story is now repo-wide complete** — zero `.bd-*` light-mode surfaces emit forbidden white-inset specular. Earlier same day: Pass 29 plan doc landed — [`docs/PLAN_POST_PASS_28_2026-05-06.md`](PLAN_POST_PASS_28_2026-05-06.md) — classifies all remaining open work by gate type. Pass 24 + 27 + 28 closed the LAW pure-white-inset slip story across `src/app` outside the (now-closed) Hard-NO `.bd-report-progress-*` scope: Pass 24 base `.bd-glass-card` (theme.css), Pass 27 `.bd-glass-badge` (theme.css), Pass 28 swept 7 inline `boxShadow` sites across 6 component files (landing/AboutOpportunitySection, landing/CoverageNearestShops, landing/HeroSection ×2, landing/WhoWeServeSection, codelayer/HomeScreenSections, codelayer/report/ReportHeader). All migrated to locked Premium Gold Palette cream `rgba(252,240,208,Xα)`. Repo-wide grep on the canonical surgical pattern `inset 0 1px 0 rgba(255,255,255,0.5+)` across `src/app` now returns ZERO matches. Earlier same day: KI-012 RESOLVED — Realtime bid-channel status surfaced as a live/stale chip in `BidsSummaryHeader`. `useBidsForReport` already exported `connectionStatus`; threaded through `BidsScreenProps` → `BidsScreen` → header. Renders as green "Live" / amber "Reconnecting…" / slate "Offline · last known" / hidden when `idle` (seed reports). Closes the silent-fallback trust gap. KI-118 RESOLVED — three-layer fix landed: `DEFAULT_COORDINATE_ANCHOR` moved Dallas TX → White Plains NY in [`directoryAdapterUtils.ts`](../src/app/services/intelligence/directoryAdapterUtils.ts) (Pass 13), 9 NY metro cities added to `CITY_COORDINATE_DIRECTORY` (Pass 13b), 3 region aliases added — westchester / hudson valley / new york (Pass 13c). Verified at the user surface: dashboard "Find Shops" cards now show in-region NY shops at ~4.5 mi instead of 700+ mi cross-country fallback. Pass 13d–13h LAW Premium Gold pure-white-inset sweep: removed orphan `.map-command-sidebar-shell`, migrated `.bd-glass-floating`, `.bd-dashboard-section--accent-rose`, `.maplibregl-popup-content`, `.maplibregl-popup-tip`, `.maplibregl-ctrl-attrib`, `.maplibregl-ctrl-group`, `.coverage-map-brand-badge`, and `.maplibregl-ctrl-scale` to cool-blue + cream-gold family. Prior 2026-05-05: KI-057 RESOLVED — `queueMicrotask` defer + `mounted` short-circuit in `useBidsForReport.ts` eliminates StrictMode dev `phx_join → phx_leave → phx_join` cycling. Phase 7.6 close — KI-113 RESOLVED via 45-file reduced-motion sweep + MotionConfig wrap. Phase 8 close — KI-109 RESOLVED, KI-110 RESOLVED-WITH-RESIDUAL, KI-108 partial closure)
+**Last updated:** 2026-05-07 (External audit AI passes 4-5 — 7 more KIs added: KI-138 notification_preferences table missing (P1, ROOT CAUSE confirmed via Supabase MCP — `notification_preferences` table does not exist in production; edge handler 500s on every call), KI-139 reduced-motion CSS coverage gap (40 keyframes vs 23 guards; P2), KI-140 mobile map legend density (P2), KI-141 mobile header missing title (P3), KI-142 mobile Quick Actions discoverability (P3), KI-143 "Offline · last known" pill verification (P3), KI-144 Supabase advisor lint cluster (13 security + 198 perf; P3-batched). **KI-101 RESOLVED** — audit AI applied SQL fix via Supabase MCP under owner fix-authority; planner verified independently via Supabase MCP query. **KI-118 expanded scope** — confirmed sheet-pattern-class issue, single `useEscapeToClose` hook fix. **KI-126 re-scoped** — desktop two-column-grid empty-state only; mobile single-column unaffected. Earlier today: KIs 116/117/122/123/124/125/126/127 (passes 1-2), 128/129/130/131/132/133 (pass 3), 134/135/136/137 (post-pass-3). Numbering jump 118 → 122 to avoid collision with archived KIs 119/120/121. **Pass 55** archived 70 RESOLVED/WONTFIX entries; **Pass 53** added KI-075 description correction; **Pass 54** fixed reroute confirm-timing bug.)
 
 **Update rules:**
 
 - Add new issues as discovered. Use next available ID.
 - When fixed, mark `Status: RESOLVED (date)` — do not delete.
-- Prune RESOLVED issues older than 3 months to `docs/archive/`.
+- Periodically prune RESOLVED entries to `docs/archive/RESOLVED_KIS_<DATE>.md` (most recent: Pass 55, 2026-05-07).
 
 ---
 
-## Launch Blockers
+## §0. AI Operational Onboarding
 
-### KI-001: Marketplace reports are unbounded for shops/insurers
+> Adopted from the [`REF_CONVERGENCE_TOPOLOGY_2026-05-09.md`](REF_CONVERGENCE_TOPOLOGY_2026-05-09.md) §0 pattern (Pass 213). Propagated here Pass 214.
 
-- **Impact:** Shop and insurer dashboards fetch ALL `damage_reports` with no pagination and no geographic filtering. Will degrade at ~100 reports and break at ~500+.
-- **Location:** [useMarketplaceReports.ts](../src/app/hooks/useMarketplaceReports.ts) calls `getAllDamageReports()` → edge function `getMarketplaceReports` which does `select('*').is('deleted_at', null)` with no limit.
-- **Current reality:** Every shop sees every report from every city. This makes the marketplace unusable at any real scale.
-- **Fix direction:** Wire `getReportsInServiceArea` (already built) to filter by shop's PostGIS service area. Add pagination (`limit`/`offset`) to the marketplace endpoint. As interim, add a `limit(100)` to the query.
-- **Status:** RESOLVED (2026-04-16) — `getMarketplaceReports` now auto-filters for shops via `resolveShopGeoReportIds` (PostGIS `find_reports_in_service_area` RPC). Shops with service areas see only geo-relevant reports. Shops without service areas fall back to 50 most recent. Insurers/admins bounded to 100. Requires edge function redeploy.
-- **Residual:** Shops without configured service areas see unbounded-ish fallback (50 limit). The real fix is ensuring all shops configure service areas during onboarding.
+- **What this doc controls:** the canonical inventory of known bugs, gaps, and structural issues, each with a stable `KI-###` identifier, severity, location, and current status. Use it to answer "is this already known?" before filing a duplicate, and "is this fixed yet?" before claiming a regression.
+- **When to trust it:** the "Last updated" line names the most recent pass. Status lines (`OPEN` / `RESOLVED` / `MITIGATED` / `WONTFIX` / `PARTIAL`) are point-in-time. Verify by reading the cited file before assuming current state — closed KIs sometimes regress and re-open under new IDs.
+- **What supersedes it:** [`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md) (intent), [`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md) (what may be fixed pre-launch). Within REF tier: [`REF_SYSTEM_STATE.md`](REF_SYSTEM_STATE.md) wins on system-state facts; this doc wins on bug status. The git log is the durable record of _when_ a fix shipped — this doc is the index.
+- **What this doc must NOT be used for:** as a backlog (use [`PLAN_POST_LAUNCH_ROADMAP.md`](PLAN_POST_LAUNCH_ROADMAP.md) for deferred work), as a feature wishlist (KIs are bugs/gaps, not desires), or as a permission to fix anything pre-launch (hardening law gates that). Adding a KI does not authorize a fix pass — it only documents the gap.
+
+---
 
 ### KI-002: Email notifications not delivering
 
@@ -36,30 +51,6 @@
   5. Deploy edge function: `supabase functions deploy server --project-ref wmdcnjgtsppftrofaqqa`
   6. Test: submit a bid → verify customer receives email
 - **Status:** Open — P0 launch blocker. Code-side complete; blocked on human secret deployment.
-
-### KI-003: Rate limiter identity key from query params, not JWT
-
-- **Impact:** Security issue. Rate limit key is derived from `url.searchParams.get('clerkUserId')` — a client-supplied value. A malicious client can pass a different userId to get a separate rate limit bucket, effectively bypassing rate limits.
-- **Location:** [server/index.ts:119](../supabase/functions/server/index.ts#L119) — `const identity = url.searchParams.get('clerkUserId') ?? url.searchParams.get('customerClerkUserId') ?? null`
-- **Current reality:** Rate limiting works for honest clients. Easy to bypass by any client that varies the query param.
-- **Fix direction:** Extract identity from the verified Clerk JWT session (already parsed by `requireClerkSession`) rather than from query params. This requires restructuring the rate limit check to happen after (or during) auth verification, or extracting the JWT subject without full verification for rate-limit-only purposes.
-- **Status:** RESOLVED (2026-04-16) — `extractJwtSubject()` decodes the JWT `sub` claim from the Authorization header instead of trusting query params. Falls back to IP-only if no JWT present. Requires edge function redeploy.
-
-### KI-004: No bid acceptance confirmation dialog
-
-- **Impact:** Accepting a bid is a financial commitment. Currently fires immediately on click with no "are you sure?" step. Accidental taps on mobile could accept a bid unintentionally.
-- **Location:** [BidsScreen.tsx:299-320](../src/app/components/codelayer/BidsScreen.tsx#L299) — `onAccept` callback fires mutation directly. Has optimistic rollback on failure (good) but no pre-confirmation.
-- **Current reality:** Click → mutation fires → notification pushed. No confirmation step.
-- **Fix direction:** Add a confirmation dialog/bottom sheet before calling `onAcceptBid`. Show shop name, price, timeframe. "Accept this bid?" with confirm/cancel.
-- **Status:** RESOLVED (2026-04-16) — `BidAcceptConfirmationDialog` added with Radix AlertDialog. Shows shop name, price, timeframe before confirming.
-
-### KI-005: Many mutation failures only console.error
-
-- **Impact:** When API calls fail, users see nothing — the UI appears to freeze or silently revert. Violates Law 5 (Errors Are User-Visible).
-- **Location:** Multiple handlers in [buildDashboardRouterProps.ts](../src/app/utils/buildDashboardRouterProps.ts) — `onRejectBid`, `onUpdateJobStatus`, `onConfirmCompletion`, `onSaveVehicles` catch errors but only throw or console.error. No toast/UI feedback.
-- **Current reality:** Some paths do have error toasts (marketplace report fetch, bid submission). Many do not.
-- **Fix direction:** Add toast notifications to all async mutation handlers. Use the existing `NotificationContext.showToast()` pattern.
-- **Status:** RESOLVED (2026-04-16) — `showErrorToast` callback added to `buildDashboardRouterProps`. All mutation handlers (`onRejectBid`, `onSaveVehicles`, `onUpdateJobStatus`, `onDeleteReport`, `onConfirmCompletion`) now show error toasts on failure via `NotificationContext.showToast()`.
 
 ---
 
@@ -81,14 +72,6 @@
 - **Fix direction:** Post-launch, migrate to React Router or TanStack Router. URL becomes source of truth. `useNavigation` hook replaced by router's navigation API.
 - **Status:** Open — P2 (does not block launch, blocks growth)
 
-### KI-012: Bids have split state ownership
-
-- **Impact:** `useUserData` holds stale bids from initial fetch. `useBidsForReport` holds live bids with Realtime subscription. `DashboardRouter` merges them with `liveBids.length > 0 ? liveBids : bids`. If Realtime disconnects, user silently falls back to stale data with no indicator.
-- **Location:** [DashboardRouter.tsx:260](../src/app/routers/DashboardRouter.tsx#L260) — merge logic. [useBidsForReport.ts](../src/app/hooks/useBidsForReport.ts) — live bids.
-- **Current reality:** Works when Realtime is connected. Silent degradation on disconnect.
-- **Fix direction:** Add a "live" indicator or reconnection status. Consider making `useBidsForReport` the sole source for bid data when viewing bids.
-- **Status:** RESOLVED (2026-05-06) — `connectionStatus` from `useBidsForReport` is now surfaced through `BidsScreenProps` → `BidsScreen` → `BidsSummaryHeader` as a status chip: green "Live" when connected, amber "Reconnecting…" on transient error, slate "Offline · last known" when disconnected, hidden for seed/idle reports. Pure read-side trust signal — no behavior change to merge logic. **Parity follow-up (2026-05-06, same day):** the same chip now renders in [`ReportDetailScreen.tsx`](../src/app/components/reports/ReportDetailScreen.tsx) so customers reading a single report see the same trust signal as on the bids list. Helper duplicated locally (no JSX restructuring of `BidsSummaryHeader`). The deeper architectural fix (sole-source ownership) remains a P3 post-launch refactor.
-
 ---
 
 ## Data / Type / Model Issues
@@ -109,13 +92,6 @@
 - **Fix direction:** Align domain type to use DB values, or ensure adapter always translates. Post-launch refactor.
 - **Status:** Open — P3 (narrowed: no active status-write violations remain)
 
-### KI-022: updateReportStatus silent failure after bid acceptance
-
-- **Impact:** After a customer accepts a bid, the report status should update to reflect the accepted state. Previously failed silently because the update was a separate client-to-server call that could fail independently.
-- **Root cause:** The accept-bid flow was client-orchestrated across 3 separate API calls: (1) update bid status, (2) update report status, (3) create job assignment. When call #2 or #3 failed (network, timeout, navigation), the report stayed "pending" despite the bid being accepted.
-- **Fix:** Moved report status update and job assignment creation into the server-side `updateBidStatus` handler. When a bid is accepted, the server atomically: accepts the bid, auto-rejects competitors, updates report status to "accepted", and creates a job assignment. Client no longer orchestrates these separately.
-- **Status:** RESOLVED (2026-04-16) — Server-side atomic accept-bid flow in `bids.ts`. Client helper `handleAcceptBid` simplified to single API call + local state update. Requires edge function redeploy.
-
 ---
 
 ## Product / Workflow Gaps
@@ -127,22 +103,6 @@
 - **Current reality:** Insurer can view all marketplace reports and "approve/deny" them by patching report fields. This is a demo-grade implementation.
 - **Fix direction:** Defer real insurer investment until a real insurer signs up. Current stub is acceptable for soft launch if expectations are managed. Do not invest further.
 - **Status:** Open — P3 (acknowledged, not blocking)
-
-### KI-031: Empty view placeholders with no content
-
-- **Impact:** Three `ViewMode` entries route to screens with no real content or backend: `competitor-analysis`, `insurance-companies`, `liked-shops`.
-- **Location:** [useNavigation.ts VALID_VIEW_MODES](../src/app/hooks/useNavigation.ts#L12), various `onView*` handlers in `buildDashboardRouterProps`.
-- **Current reality:** The screens still exist and ViewMode values are preserved, but the dead-end quick action tiles ("Competitors", "Browse Insurers") have been removed from shop and insurer home dashboards. ShopDirectoryScreen no longer routes to `competitor-analysis`. The empty screens are no longer reachable from normal navigation flows.
-- **Residual:** The ViewMode values, route entries in DashboardSecondaryViews, navigation callbacks in buildDashboardRouterProps, and the screen components themselves remain for future use. `liked-shops` remains reachable via customer shop directory flow but renders a functional (if empty) saved-shops UI.
-- **Status:** RESOLVED (2026-04-16) — dead-end navigation surfaces removed
-
-### KI-032: Demo mode wired into production navigation
-
-- **Impact:** ~150 lines of conditional logic across navigation, routing, and data fetching. Adds complexity to every feature. Should be behind a URL param or separate deploy per Hardening Plan Group 3a.
-- **Location:** [useNavigation.ts](../src/app/hooks/useNavigation.ts) (enableDemoMode/exitDemoMode), [buildDashboardRouterProps.ts](../src/app/utils/buildDashboardRouterProps.ts) (demoMode conditionals), [DashboardRouter.tsx](../src/app/routers/DashboardRouter.tsx).
-- **Current reality:** Demo mode sparkles button removed from header/sidebar. Demo mode is no longer accessible from normal user navigation. The demo-switcher view, DemoAccountSwitcher component, and demo state logic remain for developer/investor use but require programmatic access. URL param gating (Group 3a) remains a post-launch improvement.
-- **Residual:** Demo conditional logic still present in routing/data-fetching code (~150 lines). Full URL param gating deferred.
-- **Status:** RESOLVED (2026-04-16) — demo mode hidden from production navigation surfaces
 
 ---
 
@@ -170,21 +130,6 @@
 - **Fix direction:** Post-launch: reviews/ratings, then dispute workflow, then payment with escrow.
 - **Status:** Open — P3 (deferred to post-launch)
 
-### KI-043: Non-shop sessions trigger shop service-area API noise in account flows
-
-- **Impact:** Customer/insurer account surface validation can emit avoidable `404/500` console noise tied to shop service-area fetch paths. This weakens runtime trust signals during QA and obscures real errors.
-- **Current reality:** RESOLVED. `useShopServiceAreas()` now supports explicit enable guards, `useDashboardData()` only fetches service areas for shop users, and `ServiceAreaEditorModal` only fetches when opened.
-- **Fix direction:** Keep shop-only service-area loading behind role- or modal-aware guards whenever new surfaces reuse this hook.
-- **Status:** RESOLVED (2026-04-17)
-
-### KI-044: Customer estimate request fetch can fail auth on dashboard reload
-
-- **Impact:** Customer dashboard reloads can emit `500` console errors and leave estimate-request state incomplete when the edge function rejects the current Clerk token issuer.
-- **Current reality:** Root cause was a startup race in the web client: some edge requests could fire before the Clerk token getter was registered, causing the request runtime to fall back to the Supabase anon key during dashboard hydration. That degraded into misleading Clerk issuer failures on the edge and noisy reload-time console errors.
-- **Fix direction:** Resolved code-side by making `buildSupabaseEdgeHeadersAsync()` wait briefly for Clerk token registration before falling back to anon auth.
-- **Validation:** Fresh browser reload captured `GET /functions/v1/server/estimate-requests?clerkUserId=...` returning `200` twice with no `Invalid Clerk token issuer` error. Remaining reload-time `500` noise is currently tied to `/functions/v1/server/navigation-session`, not estimate requests.
-- **Status:** RESOLVED (2026-04-17) — verified in browser against the live edge environment.
-
 ### KI-045: Navigation session cloud sync depends on missing backend schema in the connected environment
 
 - **Impact:** Authenticated dashboard loads could emit `500` noise from `/functions/v1/server/navigation-session`, and navigation session cross-device continuity is unavailable while the connected Supabase environment lacks `public.navigation_sessions`.
@@ -193,144 +138,17 @@
 - **Validation:** After the hardening patch, a clean dashboard reload on a fresh page showed the normal edge hydration requests returning `200` and no `navigation-session` requests during the cooldown window.
 - **Status:** MITIGATED (2026-04-17) — runtime noise suppressed client-side; backend schema drift still exists.
 
-### KI-046: Browser geocoding flows depended on direct Nominatim requests
-
-- **Impact:** Smart Shop Map origin search, navigation address suggestions, and report coordinate fallback could fail in-browser when direct requests to `nominatim.openstreetmap.org` were blocked or noisy, which weakened the map program's reload/search trust path.
-- **Current reality:** Resolved. Shared browser geocoding callers now use the public `/functions/v1/server/geocode/search` route on the Supabase `server` function, which proxies the Nominatim request server-side.
-- **Fix direction:** Keep browser geocoding behind the shared edge proxy and reuse that route for future place-search/geocode flows instead of adding new direct provider fetches in UI-facing code.
-- **Validation:** Fresh desktop reload, live origin search (`Yonkers NY`), and mobile reload at `375x812` all returned `200` from `/functions/v1/server/geocode/search` with no direct browser requests to `nominatim.openstreetmap.org` observed.
-- **Status:** RESOLVED (2026-04-17) — deployed live on the connected Supabase project.
-
-### KI-048: Workflow handlers leak data and allow cross-user mutation
-
-- **Impact:** `getJobAssignments` returns enriched job rows including customer name/email/phone with no auth check — public PII read by anyone who hits the route (the `server` edge function is deployed `--no-verify-jwt`, so the Supabase gateway does not block unauthenticated calls). `updateJobAssignmentStatus` and `createJobAssignment` require a Clerk session but perform no ownership check, so any authenticated user can flip any assignment's status by ID or author assignments naming arbitrary parties. `submitInsuranceClaim` and `updateClaimDecision` use `requireMarketplaceContext`, which permits shop accounts to author insurer-only claim decisions (privilege escalation into insurer authority).
-- **Location:** [supabase/functions/server/handlers/workflow.ts](../supabase/functions/server/handlers/workflow.ts); [utils/authz.ts](../supabase/functions/server/utils/authz.ts).
-- **Fix:** Code-side complete (Pass 5.5 / Pass 1, 2026-04-25). Added `requireInsurerContext` helper to `utils/authz.ts`. In `workflow.ts`: `getJobAssignments` now calls `requireAuthenticatedProfile` and rejects callers who are neither the named shop nor admin (403). `updateJobAssignmentStatus` pre-fetches the row and rejects callers not in `{shop, customer, insurer}_clerk_user_id` and not admin (403). `createJobAssignment` rejects callers who are not the named customer and not admin (403). `submitInsuranceClaim` and `updateClaimDecision` switched from `requireMarketplaceContext` to `requireInsurerContext` (insurer or admin only — verified UI callers are insurer-gated at [DashboardRouter.tsx:320-355](../src/app/routers/DashboardRouter.tsx#L320) and [DashboardSecondaryViews.tsx:286-310](../src/app/routers/DashboardSecondaryViews.tsx#L286), so no UI surface affected). `getWorkflowErrorStatus` updated to surface 403 for both `Marketplace access required` and `Insurer access required`. Build green (3.34s, 0 errors); tests 568/568 passing. Per-route verification artifacts captured in the pass log section of `LAW_HARDENING_PLAN.md`.
-- **Remaining (human-only):** Edge function redeploy required: `supabase functions deploy server --project-ref wmdcnjgtsppftrofaqqa --no-verify-jwt`. After deploy, run the per-route verification checklist against the live edge environment and capture the actual status codes.
-- **Status:** RESOLVED (code-side, 2026-04-25 — pending edge function redeploy + live verification).
-
-### KI-049: Customer completion does not propagate to job_assignments
-
-- **Impact:** When a customer confirms repair completion, `damage_reports.status` is set to `"completed"` but the linked `job_assignments` row is not touched. The shop's Active Jobs view reads from `job_assignments`, so the customer's completion is invisible to the shop indefinitely. Two source-of-truth rows on the same workflow disagree.
-- **Location:** [supabase/functions/server/handlers/reports.ts](../supabase/functions/server/handlers/reports.ts) `updateReport`.
-- **Fix:** Code-side complete (Pass 5.5 / Pass 2, 2026-04-25). `updateReport` now propagates: when the incoming `status` is `'completed'` and the report row update succeeds, the matching `job_assignments` row (status in `scheduled`/`in_progress`/`awaiting_parts`, not soft-deleted) is updated to `'completed'` in the same handler. A `repair_completed` activity event linking both IDs is emitted fire-and-forget. Propagation is non-fatal — assignment update failure is logged but does not roll back the report update. Note: the bid-accept "active vs accepted" label is **not** drift (adapter-reconciled by `normalizeReportStatus` per KI-021); the completion path was the only real lifecycle drift. Build green (3.22s, 0 errors); tests 568/568 passing.
-- **Validation:** Local runtime verified 2026-04-26 by secondary AI (GPT-5.4-high) against the served edge function — `updateReport` call completed, the linked `job_assignments` row moved to `completed`, and a `repair_completed` activity event was written. Prod live verification still pending deploy.
-- **Remaining (human-only):** Edge function redeploy (`supabase functions deploy server --project-ref wmdcnjgtsppftrofaqqa --no-verify-jwt`). Then customer flow → confirm completion → shop's Active Jobs view shows the assignment as `completed` after refetch.
-- **Status:** RESOLVED (code-side + local runtime verified 2026-04-26 — pending prod redeploy + prod live verification).
-
-### KI-050: Authenticated marketplace falls back to seed data on cold start
-
-- **Impact:** When live marketplace data is empty (cold-start with no live reports OR fetch failure), `useDashboardData` substituted `SEED_DAMAGE_REPORTS` for shop and insurer marketplace surfaces. An authenticated shop saw a populated marketplace and formed a false impression of platform liquidity. Contradicted the locked Hardening Plan Phase 4A.2 gate criterion ("Empty states no longer show fake shops").
-- **Location:** [src/app/routers/useDashboardData.ts](../src/app/routers/useDashboardData.ts).
-- **Fix:** Code-side complete (Pass 5.5 / Pass 3, 2026-04-25). `SEED_DAMAGE_REPORTS` import removed from `useDashboardData.ts`. `shopInsurerReports = liveMarketplaceReports` (direct passthrough). `usingSeedFallback = false`. Empty live data now renders the per-screen empty state already present on [ShopRequestsScreen.tsx:354-360](../src/app/components/shop/ShopRequestsScreen.tsx#L354) ("No repair requests yet"), [ShopActiveJobsScreen.tsx:392-401](../src/app/components/shop/ShopActiveJobsScreen.tsx#L392) ("No active jobs yet"), [InsurerClaimsScreen.tsx:347-359](../src/app/components/insurer/InsurerClaimsScreen.tsx#L347) ("No claims yet"). The amber `isSeedData` banners on all three screens are now unreachable but kept in code as harmless dead branches (cleanup deferred — out of pass scope). Seed-id mutation guards (`String(id).startsWith("seed-")`) preserved as belt-and-suspenders. `SEED_DAMAGE_REPORTS` constant stays exported for demo-mode use. No backend change. Build green (3.23s, 0 errors); tests 568/568 passing.
-- **Validation:** Live visual verification complete 2026-04-26 by secondary AI (GPT-5.4-high) on all three target screens (`ShopRequestsScreen`, `ShopActiveJobsScreen`, `InsurerClaimsScreen`) in both light and map-dark appearance modes. Empty state was forced via network interception of marketplace + job-assignment feeds rather than seed/demo records. All three screens rendered the expected empty copy ("No repair requests yet" / "No active jobs yet" / "No claims yet") with no example-data banner and no layout breakage. No new accounts required.
-- **Status:** RESOLVED (code-side + live visual verification complete 2026-04-26 — no further verification required for this KI; client-only change, no deploy needed).
-
-### KI-051: CSP missing overpass-api.de blocks public map place discovery
-
-- **Impact:** The fullscreen coverage command center promises address and point-of-interest search, but in-browser the connect-src CSP in `vite.config.ts` did not allow `overpass-api.de`, while `src/app/services/navigation/placeDiscovery.ts` and `src/app/services/navigation/speedLimit.ts` fetch that domain directly. Result: richer place-discovery behavior was broken when the public full map opened from `CoverageMapDialog.tsx` and from the search surface in `PlannerAddressSearch.tsx`. Static recommendations still rendered; live discovery did not.
-- **Location:** [vite.config.ts](../vite.config.ts) (CSP `connect-src`); [src/app/services/navigation/placeDiscovery.ts](../src/app/services/navigation/placeDiscovery.ts); [src/app/services/navigation/speedLimit.ts](../src/app/services/navigation/speedLimit.ts); consumers in [src/app/components/maps/command-center/PlannerAddressSearch.tsx](../src/app/components/maps/command-center/PlannerAddressSearch.tsx) and [src/app/components/landing/CoverageMapDialog.tsx](../src/app/components/landing/CoverageMapDialog.tsx).
-- **Fix:** Option (b) shipped — `https://overpass-api.de` added to the dev-server `connect-src` allow-list in `vite.config.ts` on **2026-04-29 in commit `c7664c85`** (`fix(ui): friendly edge-error mapping + CSP allow-list overpass-api.de`). Production is statically served from Vercel with no separate CSP header (verified: no `vercel.json`, no `_headers`, no meta-tag CSP in `index.html`), so production browsers had unrestricted access throughout — only the dev-server browser audits were CSP-blocked. The 2026-04-26 audit observation was against pre-fix dev server.
-- **Validation:** 2026-05-02 doc audit confirmed line 79 of `vite.config.ts` includes `https://overpass-api.de` in `connect-src`. Both `placeDiscovery.ts:67` and `speedLimit.ts:96` fetch the allowed origin directly with no proxy needed.
-- **Note on lingering "Load failed" sightings:** The "Real nearby places: Load failed" string seen in the post-Pass-6 audit screenshots (2026-05-02) is the **browser's native fetch failure message** (Safari renders `Load failed`; Chrome renders `Failed to fetch`), surfaced unmapped through `NavigationDiscoveryPlacesList`. Post-CSP-fix, that message indicates a downstream issue (Overpass rate limit, transient outage, or browser network error) — not a CSP block. If it recurs persistently, file as a new KI scoped to provider-reliability or to routing the message through `edgeErrorMessage.ts:39` for friendlier copy.
-- **Status:** RESOLVED 2026-04-29 (commit `c7664c85`). KI status sync 2026-05-02 (this update).
-
-### KI-052: Public map invents travel time/distance for zero-distance demo routes (RESOLVED 2026-05-04)
-
-- **Impact:** The landing-page coverage command center showed `0.0 mi` plus `6–9 min` before route start and `50 ft` plus `1 min` after start, on a recommendation pinned to identical coordinates as its origin. Trust gap on the strongest public product surface — implies route metrics that do not exist.
-- **Location:** Root cause: minimum-distance / minimum-duration floors in [src/app/components/maps/mapRoutePresentation.ts](../src/app/components/maps/mapRoutePresentation.ts). Surfaced in [src/app/components/maps/command-center/PlannerRoutePreview.tsx](../src/app/components/maps/command-center/PlannerRoutePreview.tsx) and [src/app/components/landing/CoverageActiveNavigationLayout.tsx](../src/app/components/landing/CoverageActiveNavigationLayout.tsx) which consume the floored values directly. Demo data in [src/app/components/landing/coverageData.ts](../src/app/components/landing/coverageData.ts) pins ZIP `10601` to the same coordinates as `BidOnDent Metro Hub`, which is what triggers the zero-distance edge case in the live demo.
-- **Current reality:** Detected during the 2026-04-26 local audit pass. Build green. Issue only surfaces when origin and destination resolve to the same coordinates — but that exact case is reachable via the public demo path, so it is user-visible.
-- **Fix direction:** Remove the minimum-distance and minimum-duration floors in `mapRoutePresentation.ts` so zero-distance and arrival-adjacent states render as `0 mi` / `Arrived` / blank, instead of synthetic numbers. Cross-check the consuming components handle the new zero/null shape. Optionally also separate the two coordinate-identical demo entries in `coverageData.ts` so the demo flow tests a real route by default.
-- **Fix shipped:** `formatApproximateDriveWindow` returns null when `distanceMiles < 0.05` (≈260 ft, "you're already at the destination" threshold) instead of fabricating "6–9 min". `formatTurnDistance` returns null when `distanceFeet < 50` instead of flooring to "50 ft". `formatDurationMinutes` returns null when `durationSeconds < 30` instead of flooring to "1 min". All caller fallbacks verified: PlannerRoutePreview L208/289 use `||` fallback; NavigationSummarySheet L47-48 has `"--"` fallback; NavigationActiveManeuverCard L91/L106 use `||` "Waiting for the next precise road cue" / "Upcoming step will appear here"; NavigationTurnListSheet L73-75 uses `.filter(Boolean)` array compose. No caller crashes on null. Build clean (3817.64 KiB precache stable); typecheck clean; branch-aware forbidden grep ZERO.
-- **Family follow-up (2026-05-04 evening):** `CoverageBrowseExperience.tsx:312` `routeMinutes` derivation used inline `Math.max(1, Math.round(durationSeconds / 60))` floor, fabricating "1 min" for genuine zero-duration routes (same anti-pattern as the original KI-052 + the 2026-05-04 PlannerRoutePreview sub-fix). Replaced with the canonical `>= 30s` honesty threshold; consumer at `CoverageBrowseMapOverlays.tsx:201` already renders `routeMinutes ?? "--"`, so no caller change required. `arrivalLabel` left intact — `Date.now() + 0` evaluates to current time which is technically honest at the destination, not a fabrication.
-- **Family follow-up (2026-05-04 evening, 2/2):** `shareEta.ts:23` "min remaining" share string used `Math.max(1, Math.round(Number(durationMinutes)))` floor, fabricating "1 min remaining" in shared/copied ETA messages when the driver had effectively arrived (rounded duration < 1 min). Replaced with `>= 1` gate that omits the segment entirely below threshold; the share message still includes destination + arrival label + distance, so the omission reads as "you're there" instead of "1 min away" lying to whoever you texted. No caller change — `buildEtaMessage` returns the joined segments, missing-segment safe.
-- **Family final cleanup (2026-05-04, 3/3) — Phase 2:** `useShopDirectoryRoutePreview.ts:102` `estimatedDurationMinutes` derivation and `shopDirectoryNavigationDerived.ts:173` `liveRemainingEtaLabel` formatting both used `Math.max(1, Math.round(seconds / 60))` floors that fabricated "1 min" for sub-30s routes / sub-30s remaining time. Replaced with plain `Math.round(seconds / 60)` — at <30s the value renders as 0, which is honest. The shopDirectoryNavigationDerived path is already gated by `liveNavigationActive && remainingDurationSeconds > 0`, and once the user actually arrives the `hasArrivedForDestination` branch shows "Arrived" instead. The estimatedDurationMinutes consumers (ShopDirectoryGuidanceCard L291, shopDirectoryRoutePanelUtils L127) render `${value}m` / `${value} min` directly — sub-30s routes will read as "0m" / "0 min" rather than fabricating "1m". Honest. Closes the KI-052 family permanently — no remaining `Math.max(1, Math.round(seconds/60))` route-minute fabrications in src/app/. The 6 remaining `Math.max(1, ...)` hits in MapSurfaceStatusBar / PlannerDiagnosticsPanel / InsurerPartnerShopCard are honest "X ago" timestamp rounding (different pattern, intentionally floored to never show "0m ago" — kept).
-- **Status:** RESOLVED 2026-05-04. KI-052 family closed. Skill: none — pure utility-function honesty fix.
-
-### KI-054: Dev-server CSP did not allow local Supabase, forcing brittle in-process proxy workarounds for browser audits
-
-- **Impact:** The Vite dev-server CSP `connect-src` only allowed `https://*.supabase.co` (cloud), so any browser audit that pointed the app at the local Docker Supabase stack (`http://127.0.0.1:54321`) had every request blocked. The 2026-04-26 audit AI worked around this by spinning a same-origin Node proxy on port 4174, then later baking it into the repo as `scripts/local-browser-proxy.mjs` + an `http-proxy` dev dep + a second npm script. That proxy was a single point of failure: when its terminal was killed (or it OOM'd) the "dev server" appeared dead in-browser, even though Vite was still up.
-- **Location:** [vite.config.ts](../vite.config.ts) `server.headers["Content-Security-Policy"]` `connect-src` directive.
-- **Fix:** Code-side complete (2026-04-26).
-  - Extended dev-server CSP `connect-src` to include `http://127.0.0.1:54321`, `http://localhost:54321`, `ws://127.0.0.1:54321`, `ws://localhost:54321`. This header is emitted by Vite's dev server only — production CSP (Vercel headers) is unaffected.
-  - Simplified `scripts/dev-local-browser.mjs` to point Vite directly at the local Supabase API URL discovered via `supabase status -o env` (was previously pointing at the proxy origin). Now exposes `BIDONDENT_LOCAL_SUPABASE_URL` env override for the rare host/port deviation case.
-  - Deleted `scripts/local-browser-proxy.mjs` (no longer needed).
-  - Removed `http-proxy` dev dependency and the `local-browser-proxy` npm script from `package.json`.
-  - Updated `docs/GETTING_STARTED.md` and `docs/REF_AI_BROWSER_NAVIGATION.md` to reflect the simpler one-command flow targeting `localhost:5173` directly.
-  - Build green (3.79s, 0 errors); tests 568/568 passing.
-- **Why this matters beyond the immediate fix:** The proxy approach hid the real architecture from devs (browser thought Supabase lived at 4174) and added a fragile process to the audit hot path. Fixing CSP at the source means future audit AIs have one less moving piece to keep alive and one less thing that can crash mid-pass.
-- **Status:** RESOLVED (code-side, 2026-04-26 — no deploy needed; dev-only change).
-
-### KI-055: Customer-owned data could disappear after Clerk ID rotation
-
-- **Impact:** A returning customer could lose visibility of saved vehicles, report history, and customer-scoped bid access after a Clerk identity rotation or legacy `NULL` ownership state. The app header/profile still rendered because profile lookup fell back by email, but strict handler queries against the current `session.clerkUserId` could surface only a partial slice of the owned data.
-- **Location:** [vehicles.ts](../supabase/functions/server/handlers/vehicles.ts), [reports.ts](../supabase/functions/server/handlers/reports.ts), and the customer ownership branch in [bids.ts](../supabase/functions/server/handlers/bids.ts).
-- **Root cause:** Ownership rows existed under a mix of current `clerk_user_id`, historical `clerk_user_id`, and legacy `NULL` values linked by stable `user_id`. The previous recovery shape only ran the `user_id` fallback when the primary `clerk_user_id` query returned zero rows, which missed mixed accounts that had both current and legacy rows.
-- **Fix:** RESOLVED code-side and deployed live on 2026-04-27. All three handlers now always merge the candidate-`clerk_user_id` query with a `user_id` ownership sweep, dedupe by row id, sort the merged result, and self-heal stale or `NULL` `clerk_user_id` values to the current session ID. Live SQL verification on project `wmdcnjgtsppftrofaqqa` confirmed a single vehicle ownership bucket (`user_37l2aa5TqRLeLesZQIq5ibdXUul = 20`) with no remaining `NULL` rows after the deployed fetch path ran.
-- **Validation:** Local live UI verification after deploy showed `Account > My Vehicles` rendering `20 vehicles`, and the report intake step-1 saved-vehicle picker showed `20 saved` entries for the affected account.
-- **Status:** RESOLVED (2026-04-27, commit `a62d683e`) — deployed to production and live-verified.
-
 ### KI-053: Map performance budget overruns on landing/fullscreen map
 
 - **Impact:** During the 2026-04-26 audit, `mapPerformance.ts` repeatedly logged pan/zoom samples exceeding the configured budgets (observed: 502ms, 520ms, 543ms, with one 2096ms burst against 380ms / 450ms budgets). The instrumentation already exists; the budgets are being missed. Performance impact on map-first UX, especially on lower-end devices.
 - **Location:** Instrumentation in [src/app/services/navigation/mapPerformance.ts](../src/app/services/navigation/mapPerformance.ts). Triggered during landing-page map and fullscreen `CoverageMapDialog.tsx` interactions.
 - **Current reality:** Detected during the 2026-04-26 local audit pass. Observability is in place — no data-collection work needed. The data shows the budgets are not being met today.
-- **Fix direction:** Investigate which layer/source/event handler is dominating frame time during pan/zoom (likely either the marker rendering path, the route geometry source, or un-throttled effects in the map controllers). Profile with Chrome DevTools performance panel before authoring any fix. Out of pre-launch scope unless investigation reveals a cheap win.
-- **Status:** Open — P4 (polish; observability already exists, fix needs profiling).
-
-### KI-056: Realtime live updates not flowing for Clerk-authenticated channels
-
-- **Impact:** Authenticated subscribers (browser-side, Clerk-issued JWT) successfully connected to Supabase Realtime but `postgres_changes` events never delivered. Customer Bids tab and shop Active Jobs tab silently failed to update on cross-account writes; the only way to see new bids was to refresh the page.
-- **Location:** `src/app/services/supabase/client.ts` (Realtime auth wiring); `src/app/App.tsx` (refresh interval); `supabase/migrations/20260429000001_realtime_publication.sql` (publication membership).
-- **Root cause (compound):**
-  1. The frontend injected a Clerk JWT into Realtime via a one-time `setAuth(token)` call on Clerk-load. After the token's short lifetime expired, every subsequent `channel.subscribe` silently failed against the cached stale token, and the modern `accessToken` callback option wasn't configured.
-  2. The local Supabase `supabase_realtime` publication had zero tables — Realtime only forwards `postgres_changes` events for tables that are publication members. Production (`wmdcnjgtsppftrofaqqa`) already had the right tables, but local was missing them, and any fresh staging would have hit the same gap.
-  3. RLS policies on the affected tables were already correct: they use `requesting_clerk_user_id()` (the JWT-`sub` helper at `20251230000001_full_schema.sql:31`), not `auth.uid()`-based comparisons. No policy rewrite was applied.
-- **Fix (commit `1c34e44f` plus follow-up):**
-  1. `client.ts`: pass an async `accessToken` callback to `createClient` that fetches a fresh `getToken({ template: "supabase" })` from Clerk at channel-join time. Eliminates the token-expiry race on initial subscribe.
-  2. `client.ts`: convert `setSupabaseRealtimeAuth()` to a no-op (kept for backward compat).
-  3. `client.ts`: add `refreshRealtimeAuth()` which fetches a fresh Clerk JWT and calls `realtime.setAuth(token)` to broadcast it to every live channel — needed for long-lived channels because the `accessToken` callback only fires at channel-join, not on heartbeat.
-  4. `App.tsx`: drop the now-redundant initial `setSupabaseRealtimeAuth` call; add a 50s `refreshRealtimeAuth()` interval in the Clerk-load effect (cleared on unmount).
-  5. `useBidsForReport.ts`: defensive retry-once (2s delay) on `CHANNEL_ERROR` for the case where Clerk session is mid-refresh at subscribe time.
-  6. `migrations/20260429000001_realtime_publication.sql`: idempotent DO block that adds `bids`, `damage_reports`, and `estimate_requests` to `supabase_realtime`. Tolerates the publication not existing and skips already-member tables.
-- **Validation:** Phase 3 audit (2026-04-30) against production: WebSocket connected with Clerk JWT, `phx_reply status:"ok"` received for all subscribed bid channels, live INSERT against `bids` delivered to a customer-side subscriber after a token refresh on a near-expiry JWT.
-- **Status:** RESOLVED — frontend code changes committed; production publication already had the necessary tables. No production schema changes were applied directly.
-
-### KI-057: Realtime channel cycling in React StrictMode (dev only)
-
-- **Impact:** In development, React StrictMode double-invokes effects. `useBidsForReport` creates channels, StrictMode cleanup removes them, then mounts again. This causes `phx_join → phx_leave → phx_join` cycling on every Bids tab open. Channels do eventually settle with `phx_reply status:"ok"` but the cycling produces misleading "WebSocket closed before connection established" console warnings.
-- **Location:** `src/app/hooks/useBidsForReport.ts` + `src/app/services/realtime/RealtimeBidService.ts`.
-- **Current reality:** Cosmetic in dev. StrictMode is disabled in production builds (Vite's `npm run build` removes double-invoke behavior). Phase 3 live test (2026-04-30) confirmed channels reach `SUBSCRIBED` state and receive INSERT events in production-equivalent conditions. No fix needed for prod.
-- **Fix direction:** If dev DX becomes painful, add an unmount guard using `AbortController` or move subscription to a non-StrictMode-affected location. Not worth the complexity until it causes a real dev workflow issue.
-- **Note:** A near-expiry JWT at channel-creation time can cause the first join to use the anon role. The 50s `refreshRealtimeAuth()` interval mitigates this — calling `rt.setAuth(freshToken)` updates all channel auth and delivers any queued events.
-- **Fix (2026-05-05, two commits):** The KI's stated scope (`useBidsForReport.ts` + `RealtimeBidService.ts`) was under-scoped — the StrictMode cycling pattern manifests across **8 vulnerable subscription sites**, not 1. Initial scope shipped in commit `e4946e20` (`useBidsForReport.ts` only); audit-driven follow-up extended coverage to the remaining 7 sites in a second commit. Pattern uniformly applied: (1) wrap `subscribeXxx(...)` call in `queueMicrotask(doSubscribe)`; (2) add `if (!mounted) return;` short-circuit at the top of `doSubscribe`; (3) cleanup sets `mounted = false`. Mechanism: React 18 StrictMode invokes mount → cleanup → mount synchronously within one render task; the cleanup sets `mounted = false` before any microtask fires, so the first invocation's deferred subscribe is short-circuited. Only the second (real) mount's `queueMicrotask` actually opens a channel. Eliminates `phx_join → phx_leave → phx_join` cycling and the "WebSocket closed before connection established" console warning across all dev surfaces. Production behavior unchanged (one-tick delay is imperceptible; channel-creation path identical; `accessToken` callback fires at channel-join time as before — verified at [`src/app/services/supabase/client.ts:80-88`](../src/app/services/supabase/client.ts#L80) — so the microtask delay does NOT reorder auth-dependent calls). Reused existing `mounted` flag rather than `AbortController` — smaller diff, no new state, no test impact (vs service-layer defer which would have broken `RealtimeBidService.test.ts` synchronous expectations at lines 75-90, 110-125, 247-265). Verified: `npm run typecheck` clean, `npm run build` green.
-- **Audit follow-up files (commit 2):** [`useCustomerBidNotifications.ts`](../src/app/hooks/useCustomerBidNotifications.ts), [`useShopBidStatusNotifications.ts`](../src/app/hooks/useShopBidStatusNotifications.ts), [`useCustomerReportStatusNotifications.ts`](../src/app/hooks/useCustomerReportStatusNotifications.ts), [`useShopEstimateStatusNotifications.ts`](../src/app/hooks/useShopEstimateStatusNotifications.ts), [`useCustomerEstimateResponseNotifications.ts`](../src/app/hooks/useCustomerEstimateResponseNotifications.ts), [`useInsurerClaimNotifications.ts`](../src/app/hooks/useInsurerClaimNotifications.ts), [`useReportLayerData.ts`](../src/app/hooks/useReportLayerData.ts) (2 channels). 7 files / 8 subscription sites. Within X+ ≤8 valve.
-- **Independent confirmation (Sonnet, 2026-05-05):** [`docs/archive/AUDIT_MAP_FUNCTIONALITY_2026-05-05_SONNET_archived_2026-05-06.md`](archive/AUDIT_MAP_FUNCTIONALITY_2026-05-05_SONNET_archived_2026-05-06.md) audit ran against HEAD `708d0d38` (pre-Builder-fix) and independently observed the same `WebSocket is closed before the connection is established` cycling on every dashboard route, ~3-5s cadence (their finding M-004 P2). The audit was authored without knowledge of the in-flight Builder KI-057 work; the convergence on the same root cause is independent corroboration that the issue described in this KI is real and surface-broad. Audit recommended verifying production build behavior — the KI's pre-existing Phase 3 live test (2026-04-30) plus the structural nature of the fix (eliminates the racing pair, not a delay-based mask) together cover that.
-- **Status:** RESOLVED 2026-05-05 (initial scope + audit-driven full-coverage follow-up; independently corroborated by Sonnet visual+map audit pass M-004).
-
-### KI-047: Supabase security advisor flagged public tables in staging and leads projects
-
-- **Impact:** Supabase security advisor reported `Table publicly accessible` on two separate hosted projects. In BidOnDent staging, six public-facing app tables had drifted away from their canonical RLS state. In the separate `bidondent-leads` Prisma project, `public."Lead"` and `public._prisma_migrations` were granted to `anon`/`authenticated` without RLS.
-- **Current reality:** RESOLVED. Staging project `lhhdqycnhweaxqviwdqt` had an orphan remote migration row `001` blocking schema operations; after repairing that history row, the targeted backfill migration `supabase/migrations/20260423000001_remote_rls_backfill.sql` was applied remotely. Leads project `yjbugpzarlyidgxbljjn` received a targeted remote migration that enables RLS on `public."Lead"` and `public._prisma_migrations` with no public policies.
-- **Validation:** `supabase migration list` now shows aligned local/remote history for both fix directories. Linked `supabase db dump --schema public` confirms `ENABLE ROW LEVEL SECURITY` on the leads tables and the expected staging policies for `shop_interest_submissions`, `insurer_interest_submissions`, `platform_activity_events`, `job_assignments`, `notification_preferences`, and `shop_service_areas`.
-- **Status:** RESOLVED (2026-04-23)
-
-### KI-058: Persisted signed URLs in damage_reports.photo_urls expire after 24h
-
-- **Impact:** Damage report photos broke ~24h after upload. The dashboard rendered placeholder icons instead of photos. Users had to refresh hopelessly — refreshing didn't help because the persisted URL itself was dead.
-- **Location:** [supabase/functions/server/handlers/storage.ts](../supabase/functions/server/handlers/storage.ts) `handleUploadPhoto` was returning a 24h signed URL as `publicUrl`; the client persisted that into `damage_reports.photo_urls` (text[]).
-- **Root cause:** Conflated upload-time signing (one-shot, 24h max) with persistence-suitable URLs. Read paths via `hydrateReport` would have re-signed correctly, but they were operating on already-expired URL strings the next day.
-- **Fix (2026-05-02):** Storage pointer pattern. Upload returns `storage://<bucket>/<path>` pointer. DB stores pointers. Read paths re-sign at every request via `hydrateSignedStorageUrl()` / `hydrateSignedStorageUrls()`. Backfill migration `20260501000001_storage_pointer_backfill.sql` converted 4 prod rows. See [`SUPABASE_SETUP_GUIDE.md`](SUPABASE_SETUP_GUIDE.md) §16 and the `supabase-storage-signed-urls` skill.
-- **Status:** RESOLVED (2026-05-02). All hydrate read paths audited (`reports.ts`, `workflow.ts`, `vehicles.ts`, `profiles.ts`, `network_profiles.ts`); only `getJobAssignments` had a bypass which was fixed in the same commit.
-- **2026-05-03 follow-up:** re-audit confirmed the read paths are still clean. One narrow gap closed in the same pass: `hydrateReport` in `reports.ts` had a catch-block fallback that returned the raw `record.photo_urls` (storage:// pointers) when hydration threw, which would leak unhydrated pointers to the client. Fallback now returns an empty array — fails closed instead of leaking. Requires edge function redeploy to take effect in production.
-
-### KI-059: Gateway `verify_jwt: true` breaks Clerk JWT auth
-
-- **Impact:** When `verify_jwt: true` is configured for the `server` edge function, the Supabase gateway returns `401 UNAUTHORIZED_LEGACY_JWT` for every Clerk-authenticated request before the function runs. Symptom: signed-in users see empty dashboards and unrenderable photos.
-- **Location:** Function `verify_jwt` flag + `supabase/config.toml` `[functions.server]` block.
-- **Root cause:** The Supabase gateway only validates JWTs signed by Supabase's own JWT secret. Clerk JWTs (signed by Clerk) cannot pass gateway validation. The function does its own Clerk verification via `requireClerkSession()`, which only runs if the gateway lets the request through.
-- **Fix (2026-05-02):** Set `verify_jwt: false` and pin it in `supabase/config.toml` `[functions.server]` so future deploys read it from config and don't need `--no-verify-jwt` on every command. Symptom-mapping table at [`SUPABASE_SETUP_GUIDE.md`](SUPABASE_SETUP_GUIDE.md) §17.
-- **Status:** RESOLVED (2026-05-02). Skill: `supabase-clerk-edge-function`.
+- **Pass 48 re-frame (2026-05-07, commit `7fb190a2`):** Profiled the originally-suspected surface (`CoverageMapDialog`) and the landing inline coverage map under identical pan/zoom/hover load. Result: dialog showed **0 ms** long-task burden on both viewports. The actual hot surface is the **landing inline coverage map** (687 ms @ 1280, 897 ms @ 375), where co-mounted landing-page chrome (parallax / scroll / hero / GPS hooks) competes with MapLibre's render loop on the main thread. Top contributors are V8 internals (4× `InvokeApiInterruptCallback` bursts at 166-171 ms) and MapLibre internals — both provider-side hard stops. Mobile additionally shows `V8.GC_MC_BACKGROUND_MARKING` in the top-10 (memory pressure on 375). Full evidence: [`docs/evidence/pass-48-2026-05-07/PERF_ANALYSIS.md`](evidence/pass-48-2026-05-07/PERF_ANALYSIS.md). Marker-render and route-geometry suspects retired; the cheap-win sequence F.1-F.5 documented there.
+- **Pass 49 partial fix (2026-05-07):** F.1 implemented — landing inline `<ServiceCoverageMap>` is now lazy-mounted behind an `IntersectionObserver` (`rootMargin: "200px"`) inside `OperatingRegionsSection.tsx`. Same-height `aria-hidden` placeholder until intersection. **When the user does not scroll to the map, MapLibre never executes** — confirmed by trace (post-trace `mapMounted: false` assertion + `maplibre-gl.js` absent from top-10 URLs in noscroll trace; present at 197.5 ms in scrolled trace). Map cost is preserved when needed (scrolled 1280: 670 ms vs Pass 48 baseline 687 ms — within noise, expected). Full analysis: [`docs/evidence/pass-49-2026-05-07/PERF_ANALYSIS_AFTER.md`](evidence/pass-49-2026-05-07/PERF_ANALYSIS_AFTER.md).
+- **Pass 85 partial fix (2026-05-07):** F.2 closed. [`useParallaxOffset.ts`](../src/app/hooks/useParallaxOffset.ts) was already RAF-throttled + passive-listener + reduced-motion gated; remaining waste was sub-pixel re-renders. Hook now quantizes to integer pixels and bails the `setOffset` when the new value matches the previous, eliminating React re-renders during sub-pixel scroll deltas in HeroSection + OperatingRegionsSection (the two parallax consumers on the landing surface).
+- **Pass 86 partial fix (2026-05-07):** F.3 closed. Repo-wide audit of `addEventListener("scroll" | "wheel" | "touch*")` returned only two scroll listeners — `useParallaxOffset` (already `{ passive: true }` per Pass 49) and [`LandingPageHeader.tsx`](../src/app/components/landing/LandingPageHeader.tsx) (header shadow toggle). The header listener is now also `{ passive: true }` since it never calls `preventDefault`. No `wheel`/`touch*` listeners exist on the landing surface.
+- **Remaining work:** F.4 (defer/idle GPS speed-limit init off the landing render path), F.5 (provider-side investigation — out of pre-launch scope). Each scoped as a separate pass.
+- **Status:** PARTIAL RESOLUTION (2026-05-07, Passes 49 + 85 + 86) — F.1 + F.2 + F.3 shipped; F.4-F.5 still open. P4 (polish; no functional regression).
 
 ### KI-060: Two legacy edge functions still deployed and unused
 
@@ -338,30 +156,6 @@
 - **Location:** Edge function listing for project `wmdcnjgtsppftrofaqqa`. Frontend code calls only `/server/<route>`.
 - **Fix direction:** Verify zero traffic to either via `get_logs`. Delete via Dashboard → Edge Functions → three-dot → Delete. `make-server-9f243523` is referenced in `SUPABASE_SETUP_GUIDE.md` §13 as a "legacy alias for compatibility" — that note can also be removed when the function is deleted. Tracked as Post-Launch L1 (per the existing roadmap reference in §13).
 - **Status:** Open — low priority. Nothing breaks if left in place; deletion is housekeeping.
-
-### KI-061: Production compute over-provisioned for current data footprint
-
-- **Impact:** `wmdcnjgtsppftrofaqqa` was running on **Medium** compute (~$60/mo) for 16 MB of database content and 2 auth users. Bill was ~$100/mo across the org. Compute downgrade is reversible at any time.
-- **Location:** Supabase Dashboard → project → Settings → Compute and Disk.
-- **Fix (2026-05-02):** Downgraded production to **Micro** (~$10/mo). Saves ~$50/mo. Will need to revisit when real traffic begins; Micro can hit shared_buffers/connection limits earlier than Medium under load.
-- **Status:** RESOLVED (2026-05-02). Skill: `supabase-pro-cost-control`.
-
-### KI-062: Hero scene bid cards not hidden on mobile — layout overflow regression
-
-- **Impact:** At ≤767px viewport width the hero right-column scene (3 `bd-bid-card-float` elements) remains in the DOM and overflows into the left column. The "Repair Completed!" card covers the "Learn More" secondary CTA and the trust chip row. Observed at 375px and 680px in both light and dark modes. Plan Decision #4 requires hiding the entire right-side scene on mobile.
-- **Location:** `src/app/components/landing/HeroSection.tsx` — bid card elements use absolute positioning with no `hidden md:block` or `md:hidden`-guarded wrapper class on the scene container.
-- **Root cause:** Pass C added the hero scene; the mobile CSS motion budget guard (`@media (max-width: 767px)`) only disables `animation` on `bd-bid-card-float` — it does not set `display: none` on the scene container or bid card elements.
-- **Fix direction:** Wrap the hero right-column scene in a `hidden md:flex` (or `md:block`) container so it collapses on mobile, or add `display: none` to the mobile CSS block for `bd-bid-card-float` elements.
-- **Status:** RESOLVED 2026-05-03 — added `display: none !important` to the existing `@media (max-width: 767px) .bd-bid-card-float` rule in `theme.css`. System-level guard, safe because `bd-bid-card-float` is pinned to hero-scene context only (Pass B). Visible at 375/680px in both modes confirmed fixed.
-
-### KI-063: Hero scene has 3 floating bid chip cards (plan spec: 2); card labels imply real operational data
-
-- **Impact:** Anti-Goal #9 in `PLAN_LANDING_LIQUID_MAP_INTELLIGENCE.md` requires bid card text to be "obviously sample/illustrative or use generic labels." Current labels: "Avg. response < 48 hrs", "Repair Completed! / Bid selected and scheduled through platform" read as live operational claims. The plan specified 2 chips with labels "Quote • $1,240" and "ETA 4 days." A third chip ("NY Active Service Region") is also present beyond the plan spec.
-- **Location:** `src/app/components/landing/HeroSection.tsx` — hero scene bid card elements.
-- **Fix direction:** Reduce to 2 cards. Update labels to be clearly sample/illustrative (e.g., "Quote • $1,240", "ETA 4 days") per plan spec.
-- **Status:** RESOLVED 2026-05-03 — both subparts now closed:
-  - Anti-Goal #9 copy: Card 1 "Bids Received / Avg. response < 48 hrs" → "Sample quote / $1,240 estimate" (circle "3" → "$"); Card 3 "Repair Completed! / Bid selected and scheduled through platform" → "Estimated ETA / ~4 days for sample repair".
-  - Decision #2 card count: NY / Active Service Region badge removed from hero scene — count now 2, matching plan spec. Same NY content stays communicated via hero eyebrow ("Now serving New York"), trust chip ("Now available in NY"), and Coverage section region chips, so no factual loss to landing.
 
 ### KI-064: Honda Accord dashboard thumbnail renders as a solid red rectangle
 
@@ -397,43 +191,6 @@
   - SQL inspection (against the dev/staging Supabase project): run the SELECT from the previous bullet to see whether `photo_urls` is empty, a `storage://` pointer, or a hydrated URL.
   - Production: still no mutation without explicit owner sign-off.
 
-### KI-065: Defense-in-depth gap — multiple raw `<img>` sites can render `storage://` if server hydration catch-clause fires
-
-- **Impact:** The server-side hydration path (`supabase/functions/server/handlers/reports.ts:95-150`, `vehicles.ts`, `profiles.ts`, `network_profiles.ts`) wraps `hydrateSignedStorageUrl(s)` in a try/catch that returns the raw `photo_urls` / `image_url` / `profile_image_url` if hydration throws. That catch-fallback can leak `storage://` pointers to the client. Several frontend render sites bind those URLs directly to `<img src=...>` without using either `ImageWithFallback` wrapper, so a hydration failure produces an invisible/broken image rather than a designed fallback. Theoretical exposure under normal flow; real exposure if hydration throws (e.g. Storage outage, RLS edit, expired service-role token, missing object).
-- **What was hardened in this pass (commit-level fixes, not a full sweep):**
-  - `src/app/components/figma/ImageWithFallback.tsx` now mirrors the codelayer `ImageWithFallback` `storage://` guard, so its 4 existing callsites (`BenefitsSection`, `dashboard/DashboardHeader`, `dashboard/ProfileDropdown`, `account/AccountHeader`) are protected zero-cost.
-  - `src/app/components/app/DashboardSidebar.tsx:265` and `src/app/components/app/DashboardHeader.tsx:431` profile-image conditionals now drop through to the initials avatar (designed fallback) when `userImageUrl` starts with `storage://`.
-  - `src/app/components/codelayer/account/EditProfileModal.tsx:133` profile-image conditional now drops through to the default profile image when `profileImage` starts with `storage://`.
-- **Sites still rendering raw `<img>` with user/DB-sourced URLs (no fallback wrapper):**
-  - `src/app/components/reports/ReportDetailScreen.tsx:447` — full-size selected report photo
-  - `src/app/components/reports/PhotoGalleryLightbox.tsx:69, 128` — main lightbox image + thumbnail strip
-  - `src/app/components/maps/ReportDetailDrawer.tsx:176` — drawer photo strip
-  - `src/app/components/maps/ReportLayerPopup.tsx:41` — map popup preview thumbnail
-  - `src/app/components/shop/ShopRequestCard.tsx:204` — shop-side request preview
-  - `src/app/components/shop/ShopDetailSheet.tsx:109` — shop record image
-  - `src/app/components/insurer/InsurerClaimCard.tsx:136` — insurer claim preview
-  - `src/app/components/insurer/InsurerPartnerShopCard.tsx:65` — insurer partner-shop image
-- **Fix direction (next pass):** the cleanest move is to wrap each of these in the codelayer `ImageWithFallback` (matches the dashboard report-card treatment from V1 — premium glass placeholder on `storage://` / empty / load-error). Minimal-surface alternative: add a tiny `isRenderableMediaUrl` shared util and gate each conditional like the three sites fixed in this pass. Either way, low risk; the surfaces above all already render hydrated URLs in normal flow.
-- **Root-cause alternative:** instead of patching ~8 frontend sites, consider tightening the server hydration catch path so it returns `null` (or empty array) rather than the raw `storage://` string. That makes downstream rendering uniformly safe — `<img src="">` falls back via the standard onError path, and `null` skips the conditional entirely. Tradeoff: loses the ability to present a "soft" hydration failure (showing the raw record) in dev/debug.
-- **Status:** RESOLVED 2026-05-03 (commit `01c3f300`). Phase 3 of the merge-readiness autopilot pass swept all eight remaining sites in the inventory above and replaced the raw `<img>` with `ImageWithFallback` (which already guards `storage://` and onError). Server hydrate catch-path can no longer leak a broken image to any user-media surface in the app — every render path now lands on either a real signed URL or the premium glass-tile fallback. Architecture-side root-cause fix (server hydrate returning `null` instead of raw `storage://`) deferred — defensive coverage on the client is now complete and uniform, removing the urgency. Skill: `supabase-storage-signed-urls`.
-
-### KI-066: Visual LAW palette drift remains in selected dashboard shadow stacks
-
-- **Impact:** The locked 2026-05-03 LAW palette forbids the older yellow-amber register (`rgba(220,165,90,*)`, `rgba(220,140,50,*)`, `rgba(160,95,25,*)`, `rgba(254,248,220,*)`) and pure-white inset highlights on premium surfaces. A targeted planning sweep found remaining dashboard overlay/panel shadow stacks still using those values. New polish layered on top would inherit the drift and make the gold language harder to control.
-- **Location:** `src/app/components/dashboard/ProfileDropdown.tsx` inline `boxShadow`; `src/app/components/dashboard/NotificationCenter.tsx` empty-state icon plate shadow; `src/styles/theme.css` light-mode `.bd-dashboard-panel::before` / `.bd-dashboard-section::before` and corner-lamp `::after` rules. Full file/line queue is in `docs/archive/2026-05-03-visual-handoffs/PLAN_DESIGN_POLISH_QUEUE_OPUS_2026-05-03_archived_2026-05-04.md` P0 (archived; queue items consumed by Pass G/H/I/J/K/L/M/N/O).
-- **Fix direction:** Run the P0 grep sweep from `archive/2026-05-03-visual-handoffs/PLAN_DESIGN_POLISH_QUEUE_OPUS_2026-05-03_archived_2026-05-04.md` before adding any new visual polish. Replace stale yellow-amber values with the locked bronze/champagne values from `LAW_PROJECT_RULES.md` § Premium Gold Palette. Replace load-bearing pure-white insets with champagne/cream or cool ice-blue insets as appropriate.
-- **Status:** RESOLVED 2026-05-03. Multi-pass sweep across the dashboard, landing, and map control surface families:
-  - Light dashboard surfaces: `6f541f89` + `fb60f03d` (theme.css panel/section/report rules; ProfileDropdown, NotificationCenter, MarketStatusIndicator, CustomerMapWidget, MapLibreDashboardMapPreview, MobileBottomNav, ProfileRoleStats, ShopMapWidget, InsurerMapWidget, DashboardAtmosphere, DashboardSidebar footer + avatar rings, DashboardHeader white-body surfaces).
-  - Dark dashboard surfaces: `51876a72` (mirror of light pass on the `:` dark branches across the same files).
-  - Landing surfaces: `55fa2755` (AboutOpportunitySection, AboutPage, BenefitsSection, CTASection, HeroSection, InsurerPartnershipPage, LandingPageHeader, OperatingRegionsSection, TrustStatsSection — light + dark, theatrical role preserved with cream-warm gradients on TrustStats commitment cards, cool blue-cream on hero floating chips).
-  - Map control surfaces: this commit (`mapSurfaceTheme.ts` light branch — segmented, secondary/compact/icon buttons, soft badges, list cards, tertiary surfaces — moved off white-body and white insets onto the cool blue-cream + bronze trim + cream inset family).
-    Branch-aware grep on dashboard + landing + maps now returns zero forbidden-register hits in light branches; dark branches across dashboard surfaces also clean. Deeper map leaf components (MapBidSheet, MapLibrePartnerShopLayer, navigation/_, command-center/_) deferred to a dedicated map-polish pass — central `mapSurfaceTheme.ts` propagation gives the bulk of the visual win without risking regressions on Codex's recent immersive-map work. Skill: `bd-design-identity`.
-  - **Component-leaf follow-up (this pass):** Repository-wide grep surfaced four additional active component-level drift sites missed by the prior sweep — aligned to the locked palette: `src/app/components/codelayer/ImageWithFallback.tsx` (fallback inset), `src/app/components/codelayer/HomeScreenSections.tsx` (mobile right-edge fade affordance), `src/app/components/codelayer/HomeReportsList.tsx` (report card thumbnail plate, light + dark), and `src/styles/theme.css` `.bd-dashboard-panel::after` global/dark corner lamp (light variant was already aligned). Component-side branch is now zero-hit for all forbidden registers (`grep -rn "rgba(220, *165, *90\\|rgba(220, *140, *50" src/app/` returns nothing).
-  - **Map leaf follow-up (FULLY RESOLVED 2026-05-03):** All ~14 deferred map leaf components closed across 4 sub-commits per the cloud autopilot pass: `148c61ef` (navigation/), `bc0691d1` (command-center/), `e3870b23` (MapLibre\*), `8e3aa8ac` (ReportDetailDrawer + MapBidSheet verified clean). Decorative 1px starfield pinpricks in `MapLibreServiceCoverageMap.tsx:185–190` preserved per LAW case-by-case provision.
-  - **KI-066c (theme.css ~108 forbidden hits) — RESOLVED 2026-05-03 (commit `d54b9f05`):** Disciplined per-family global sweep (Python regex script) closed 113 forbidden-register hits across `bd-glass-card--landing/dashboard`, `bd-glass-badge` variants, `bd-shell-header--dark`, `bd-glow-pool`, `bd-report-flow`, `bd-dashboard-section--accent-*` families, `bd-dashboard-primary-button` states, `bd-bid-card-float` sheen, light-mode token shadow halos. Light-mode ivory body gradients (rgba(254,248,232), rgba(248,238,215), rgba(254,247,230), rgba(247,235,210)) explicitly PRESERVED per LAW Light-Mode Surface Rule — only trim/halo/lamp/cream-inset registers were swapped. Branch-aware grep across `src/styles/theme.css` now returns zero forbidden-register hits.
-  - **KI-066d (4 audit-discovered residuals) — RESOLVED 2026-05-03:** Multi-AI audit caught 4 forbidden-register hits the KI-066c Python sweep missed: theme.css L857 (`--bd-warm-dark-amber-ellipse-top` `rgba(220,140,40,0.3)` → `rgba(196,130,45,0.30)`), theme.css L1529 (`.bd-glass-card--landing-warm` dark inset `rgba(255,230,175,0.32)` → `rgba(252,240,208,0.32)`), theme.css L1589 (`.bd-dashboard-atmosphere` dark top radial `rgba(220,140,40,0.26)` → `rgba(196,130,45,0.26)`), theme.css L3447 (`.bd-gold-sheen-hover` sweep midpoint `rgba(220,165,80,0.3)` → `rgba(196,144,65,0.30)`). Branch-aware grep on `src/styles/theme.css` + `src/app/components/` + `src/app/` now returns ZERO forbidden-register hits. Codebase at 100% LAW palette compliance.
-  - **Bucket 1.2 audit (dashboard hand-rolled shadow re-verification) — SKIP, no-op:** Multi-AI audit verified all 7 files claimed in the Phase A1 commit message (`ProfileDropdown.tsx`, `NotificationCenter.tsx`, `DashboardHeader.tsx`, `CustomerMapWidget.tsx`, `ShopMapWidget.tsx`, `InsurerMapWidget.tsx`, `DashboardSidebar.tsx`) are already 6-criteria depth-bar compliant from prior KI-066 work or are fully class-based and inherit from theme.css tokens. `DashboardSidebar.tsx` does not exist — real nav is `MobileBottomNav.tsx` + `DesktopNavTabs.tsx` (both forbidden-clean). No edits required.
-
 ### KI-067: Mobile fullscreen coverage map opens too sheet-first for a map-first product
 
 - **Impact:** Mobile screenshots show the full coverage map experience dominated by the command sheet/panel on open, with the map mostly hidden. That undercuts BidOnDent's map-first identity and makes the fullscreen interaction feel like a form drawer instead of an immersive spatial browser. Some screenshots also suggest close affordance duplication/confusion.
@@ -441,343 +198,39 @@
 - **Fix direction:** Default mobile fullscreen map to a compact/peek sheet state so the map remains visible, then allow deliberate expansion. Preserve the owner-approved double-tap/double-click gate from the hero map. Keep one obvious close path, protect bottom safe-area spacing, and verify Search/Explore/Saved/Shops modes in light and dark.
 - **Status:** Partial — softer pattern shipped 2026-05-03 (commit `fc4b5c56`): NotificationCenter and ProfileDropdown popovers now anchor near the bottom of the viewport on mobile (with safe-area padding) and carry a bronze/gold drag-handle bar at the top — visual reachability fix without committing to full sheet conversion. The full map dialog bottom-sheet height reshape itself remains deferred (HOLD per relay — Codex territory; needs explicit owner approval before reshape).
 
-### KI-068: Shop family load-bearing white surfaces (light mode)
+### KI-075: Future navigation engine + map functional buildout (ACTIVE — UNLOCKED 2026-05-07; engine inventory corrected 2026-05-07 Pass 53)
 
-- **Impact:** Repository-wide audit during the Phase A3 cloud autopilot pass surfaced 36 files in `src/app/components/shop/` with 77 hits of `bg-white/[789]+` or `rgba(255,255,255,0.7+)` load-bearing surfaces. Light-mode whitening risk concentrated in shop directory shell, immersive map top bar/origin picker, sheets/modals, search/origin/route panels, and screen headers. Dark-side bg-white/[0.04-0.10] low-opacity overlays were preserved (atmospheric accents per LAW).
-- **Status:** RESOLVED 2026-05-03 across 5 sub-commits per sub-family:
-  - `73db2f2e` — sheets/modals (ShopDetailSheet, shopDetailSheetParts, ShopBidModal, ShopRatingModal)
-  - `7b150f58` — directory shell + immersive (ShopDirectoryHybridStage, ShopDirectoryHybridHeader, ShopDirectoryHybridMapSection, ShopDirectoryHero, ImmersiveMapTopBar, ImmersiveOriginPicker, ImmersiveMapResultsDrawer)
-  - `23b2562c` — map overlays + info panel (ShopDirectoryMapOverlays, ShopDirectoryMapPaneOverlays, ShopDirectoryMapPaneInlineUI, ShopDirectoryMapInfoPanel, MapLibreShopDirectoryMapPane)
-  - `6c2cf166` — search/origin/route panels (ShopDirectorySearchPanel, ShopDirectoryOriginSearch, ShopDirectoryRoutePreviewCard, ShopDirectoryListBody, ShopDirectoryContextCards, ShopDirectoryIntelligencePanel)
-  - `e7eeaac4` — cards/lists/screens (LikedShopCard, LikedShopsScreen, ShopRequestsScreen, ShopActiveJobsScreen, ShopOnboarding, ShopEstimateInboxScreen, GuidanceArrivalSection, ShopActiveJobDetailModal, EstimateRequestSheet, ShopActiveJobCard)
-- All load-bearing whites swapped to the locked palette pattern (cream rgba(247,232,194) → cool blue rgba(232,238,248) gradient + bronze rgba(140,82,22) trim + cream rgba(252,240,208,0.78) inset highlight + drop shadow). Dark branches simultaneously upgraded to the dark depth bar (gold lamp inset bevel, bronze rim, cool blue 1px structural ring, bronze atmospheric halo). Skill: `bd-design-identity`.
-
-### KI-069: Dark-mode panels lacked gold-lamp top bevel + bronze atmospheric halo + cool blue structural ring
-
-- **Impact:** Pre-Phase-A1 dark dashboard panels and sections were palette-correct but read flatter than their light counterparts because the shadow stack relied on `rgba(2,6,23,*)` black drops without a gold-lamp inset highlight on the inside top edge or a bronze atmospheric halo on the outer edge. The "navy lit by gold lamp" identity was visible but understated. Owner directive ("ESPECIALLY shadow, 3D depth, gold lighting") called for the missing layers.
-- **Status:** RESOLVED 2026-05-03 across `ed38beea` (theme.css dark dashboard tokens + panel/section variants) and `54c231fb` (mapSurfaceTheme.ts dark tone tokens + map leaf inline shadow stacks: CurrentSpeedBadge, NavigationActionRail, NavigationDeviationPrompt, MapLibrePartnerShopLayer popup; OperatingRegionsSection mode-badges spine; Coverage Command Center sticky header card emphasis). The 6-criteria dark depth bar is now binding across the dashboard + map families:
-  1. Top inset bevel: `rgba(196,144,65,0.18-0.28)` — gold lamp from above
-  2. Outer shadow: 2-layer black (close 0_8-12 + far 0_22-32) + bronze atmospheric halo `rgba(196,130,45,0.10-0.18)`
-  3. Bottom inset rim: `rgba(140,82,22,0.18-0.24)` — bronze depth seam
-  4. 1px structural ring: cool blue `rgba(96,165,250,0.14-0.22)`
-  5. Border: cool blue `rgba(96,165,250,0.20-0.30)` (warm pop tiles like `--accent-gold` / `--accent-champagne` keep warm bronze trim per LAW)
-  6. Body: navy gradient (preserved); no white >=70% opacity
-- The .bd-dashboard-section--interactive existing hover transform (`translateY(-1px)` + brighter hover-shadow var) now picks up the brightened inset bevel + halo from the upgraded section-hover-shadow token.
-
-### KI-071: HeroSection inline boxShadow forbidden-register residuals + mapSurfaceTheme.ts comment-block forbidden literals
-
-- **Impact:** Two inline `boxShadow` stacks in `src/app/components/landing/HeroSection.tsx` carried forbidden-register values that survived the KI-066c theme.css-only sweep (sweep was scoped to theme.css, did not touch component inline styles). L593 desktop hero map shell had a single trailing atmospheric halo `rgba(228,140,55,0.08)` mixed into an otherwise depth-bar-compliant 7-layer shadow stack; rewriting the stack risked regressing the locked depth grammar. L984 mobile "Double-tap for full map" pill had only a 2-layer thin shadow (`inset 0 1px 0 rgba(228,175,100,0.22), 0 2px 12px rgba(2,6,23,0.34)`) — both forbidden-register and structurally below the depth bar. Additionally, `mapSurfaceTheme.ts` L99 contained literal forbidden-register tokens inside a documentation comment, which kept tripping branch-aware grep audits as false positives.
-- **Status:** RESOLVED 2026-05-03 (this commit). Three surgical edits:
-  1. `HeroSection.tsx:593` — one-token swap `rgba(228,140,55,0.08)` → `rgba(196,130,45,0.08)`. Surrounding 7-layer stack preserved (already depth-bar compliant: cool blue ring, gold inset bevel, bronze inset rim, 2-layer black drop, cool blue grounding glow).
-  2. `HeroSection.tsx:984` — full close-and-lift to 6-layer dark depth bar: gold lamp top bevel `rgba(196,144,65,0.22)` + bronze rim `rgba(140,82,22,0.22)` + cool blue 1px ring `rgba(96,165,250,0.18)` + close black drop `0 16px 32px rgba(2,6,23,0.30)` + far black drop `0 4px 12px rgba(2,6,23,0.22)` + bronze atmospheric halo `0 0 60px rgba(196,130,45,0.12)`. Mobile hero map premium framing now matches the desktop treatment.
-  3. `mapSurfaceTheme.ts:99` — comment-block literal forbidden tokens replaced with `(legacy register, replaced by KI-066)` phrase. Audit grep no longer false-positives on documentation comments.
-- **Result:** Branch-aware grep across `src/styles/theme.css` + `src/app/components/` + `src/app/` returns ZERO forbidden-register hits (combined with KI-066d theme.css audit closure). Codebase reached 100% LAW palette compliance. Skill: `bd-design-identity`.
-
-### KI-072: Gagged shadows between dashboard panels on customer home screen
-
-- **Impact:** With the 6-criteria dark depth bar fully bound across `.bd-dashboard-panel` (gold lamp top bevel + bronze rim + cool blue ring + 2-layer black drop + bronze atmospheric halo at `0 0 60px`/`0 0 110px`), stacking adjacent panels at `gap-3.5 md:gap-5` (~14px / 20px) caused atmospheric halos and far-drop shadows from sibling panels to visually collide. Bronze halos overlapped, far-drop layers stacked into muddy bands, and the surface read as "gagged" — boxy, contiguous, and lacking the breathing room a premium glass system needs.
-- **Location:** Root cause: `src/app/components/codelayer/HomeScreen.tsx:137` (the only top-level panel-stacking grid in the customer dashboard) + `src/styles/theme.css` dark token block L2462-2474 (`--bd-dashboard-panel-shadow`) + L2480-2485 (`--bd-dashboard-section-shadow`) + light token block L2530-2535 (`--bd-dashboard-panel-shadow`).
-- **Fix direction:** Three coordinated edits in one commit — gap bump on the root stacking grid + far-drop softening on dark/light panel + section shadow tokens + asymmetric downward bronze halo bias on `.bd-dashboard-panel` only (sections sit inside panels, not as the stack; light mode stays cool-shadow-on-cream and skips the warm bias).
-- **Status:** RESOLVED 2026-05-03. Three edits:
-  1. `HomeScreen.tsx:137` — `gap-3.5 md:gap-5` → `gap-5 md:gap-7`. Mobile 20px / desktop 28px breathing room. Top-level stacking grid only — sibling grids (item-level, popovers, secondary cards) untouched.
-  2. `theme.css` dark `--bd-dashboard-panel-shadow`: far-drop softened (`0 32px 80px rgba(2,6,23,0.46)` → `0 22px 56px rgba(2,6,23,0.36)`; `0 12px 24px rgba(2,6,23,0.30)` → `0 8px 18px rgba(2,6,23,0.24)`) + appended asymmetric downward bronze halo `0 24px 60px rgba(196,130,45,0.10)` so glow biases below the panel. Symmetric atmospheric halos (`0 0 60px` / `0 0 110px`) preserved for ambient lift.
-  3. `theme.css` dark `--bd-dashboard-section-shadow`: same direction, smaller (`0 22px 56px` → `0 16px 40px`; `0 8px 18px` → `0 6px 14px`). NO asymmetric bias — sections sit inside panels, not as the stacking surface.
-  4. `theme.css` light `--bd-dashboard-panel-shadow`: cool-shadow softened (`0 26px 56px rgba(15,30,60,0.22)` → `0 18px 42px rgba(15,30,60,0.22)`; `0 56px 110px rgba(15,30,60,0.10)` → `0 36px 80px rgba(15,30,60,0.10)`). NO bias addition in light — cool-shadow-on-cream is the light mode grounding language; warm bronze bias would disturb it.
-- **Result:** Adjacent panels now read as separate floating glass plates with ambient space between them, not as stacked shingles. Asymmetric downward bronze bias on dark panels reinforces the "lamp from above" lighting convention (light hits the top, glow falls below). Skill: `bd-design-identity`.
-
-### KI-073: Dashboard atmospheric gold glow underweight in dark mode + landing page lacks gold lamp lighting entirely
-
-- **Impact:** Owner directive: "needs more atmospheric glow with premium gold in dashboard, more shadow + 3D + layering." Pre-Bucket-7 dashboard atmosphere had three gold gutter washes (D6 left at 0.18α dark, D6 right at 0.15α dark, D7 bottom at 0.13α dark) but no top corner lamps and no bronze floor wash, so the room read as cool blue with subtle warm rails — insufficient premium gold lamp lighting per owner directive. Landing page atmosphere had ZERO gold layers — just a single dark base radial. Owner directive: "bring dashboard's premium look to landing while keeping landing's eye-catching richer colors." Both surfaces needed amplified gold lamp lighting that lights the SPACE between panels rather than painting any panel itself.
-- **Location:** `src/app/components/app/DashboardAtmosphere.tsx` (existing 3 gold gutters at L94-127); `src/app/components/app/LandingPageLayout.tsx` (no gold layers, just inline base radial at L68-70).
-- **Fix direction:** Amplify (alphas + new radials), do NOT restructure. Add top-left + top-right corner lamps + bronze floor wash to dashboard. Add a parallel-but-restrained gold lamp stack (2 corners + 2 gutters + 1 bottom = 5 layers) to landing, using lower alphas so landing's richer hero gradients stay theatrical.
-- **Status:** RESOLVED 2026-05-03. Two-file commit:
-  1. `DashboardAtmosphere.tsx` — added three NEW dark-mode-prominent layers BEFORE existing gold gutters (so they sit deeper under the panel stack):
-     - **D8 top-left corner gold lamp**: `radial-gradient(ellipse 42% 32% at 8% 0%, rgba(196,144,65,0.22), transparent 60%)` dark / `0.06α` light ghost.
-     - **D9 top-right corner gold lamp**: `rgba(196,144,65,0.16) at 92% 0%` dark (asymmetric weaker than D8 — single ceiling lamp source biased upper-left), `0.04α` light.
-     - **D10 bronze floor wash**: `linear-gradient(180deg, transparent 70%, rgba(196,130,45,0.10) 100%)` dark only — light dashboard floor stays cool blue-cream per LAW.
-     - Existing D6 left / D6 right / D7 bottom dark alphas amplified +0.04 each (0.18→0.22, 0.15→0.19, 0.13→0.17). Light alphas untouched (light is "close to perfect" per owner directive).
-  2. `LandingPageLayout.tsx` — added FIVE new fixed full-screen gold layers as first children inside the wrapper div (paint between wrapper bg and page content):
-     - **L1 top-left corner lamp**: `0.18α` dark / `0.05α` light
-     - **L2 top-right corner lamp**: `0.13α` dark / `0.04α` light
-     - **L3 left gutter wash**: `0.15α` dark / `0.08α` light
-     - **L4 right gutter wash**: `0.12α` dark / `0.07α` light
-     - **L5 bottom wash**: `0.10α` dark / `0.06α` light
-     - All alphas slightly lower than dashboard equivalents because landing's hero gradients carry more decorative color; over-amplifying gold would mute the hero's eye-catching role per owner directive.
-- **Result:** Dashboard dark mode now reads as a lit room with premium ceiling-lamp asymmetric gold from upper-left + bronze floor. Landing dark mode picks up parallel premium lamp lighting while preserving its richer hero color story. Cohesion across landing + dashboard: shared gold lamp grammar, distinct surface character. Light mode: subtle ghost of the same grammar for dashboard, restrained for landing — no over-cream regression. Skill: `bd-design-identity`.
-
-### KI-074: Map widgets + hero map + map controls lacked premium glass redesign treatment
-
-- **Impact:** Owner directive: "map design gets significant redesign and gets premium treatment since it is the future on both landing page and dashboard." Pre-Bucket-1.3/5.6/5.7/5.8/5.9 map surfaces felt "punched into" their containers — flat seams between panel chrome and live map canvases, no premium ambient lighting on the map preview surface itself, hero maps lacked dual-source lighting beyond their existing single-axis bloom, MapSurfaceControls were disconnected pills rather than a unified control unit, and no curved-glass edge sheen made the maps read as "glass containing a lit map" rather than tile-rectangles. Owner wanted map elevated from "polish" to "redesign" — these gaps were the sum of that.
-- **Location:** `src/app/components/dashboard/CustomerMapWidget.tsx`, `src/app/components/dashboard/ShopMapWidget.tsx`, `src/app/components/dashboard/InsurerMapWidget.tsx`, `src/app/components/landing/HeroSection.tsx` (mobile + desktop hero map invocations), `src/app/components/maps/MapSurfaceControls.tsx`, `src/styles/theme.css` (new `.bd-map-canvas-sheen` utility).
-- **Status:** RESOLVED 2026-05-03 across 5 sub-bucket commits:
-  - **Bucket 1.3 (commit `f3cbb342`)** — inner-glass bezel ring on all three role map widgets. CustomerMapWidget gets the strongest treatment (cool blue 0.18α), Shop/Insurer slightly softer (0.16α). Cool blue ring works in both light + dark — no per-mode branching needed.
-  - **Bucket 5.6 (commit `d92698fa`)** — CustomerMapWidget top ambient gold lamp overlay. 6% lamp gold tint at the top edge of the map preview, fades to transparent at h-12 (~22% of map height). Pointer-events-none. Locks the map preview into the dashboard's "lit room" feel.
-  - **Bucket 5.7 (commit `a4153034`)** — hero map dual-source counter-glow on both mobile + desktop hero invocations. Cool blue sky catch at top-left + warm bronze lamp catch at bottom-right. Single CSS background-image with two radial sources for efficiency.
-  - **Bucket 5.8 (commit `997bbaae`)** — MapSurfaceControls premium capsule rail wrapping all controls (segmented Map/Night/Satellite + Focus/Overview/Expand). Per-tone tuning: dark navy + cool blue ring + bronze atmospheric halo; light cream-tint + bronze ring + bronze halo. backdrop-blur-md on both. flex-wrap retained for narrow viewport fallback.
-  - **Bucket 5.9 (this commit)** — `.bd-map-canvas-sheen` utility added to `theme.css`. Cream top catchlight (0.14α) + bronze bottom rim (0.16α). Inherits parent border-radius. Applied to all three role map widgets as a sibling div inside the bezel ring wrapper. Mode-agnostic — works against light + dark map tiles equally.
-- **Result:** Map surfaces now read as premium glass containing a lit map across landing + dashboard. The shared map family signature is: bezel ring (Bucket 1.3) + ambient gold lamp overlay (5.6 dashboard / 5.7 hero dual-source) + canvas edge sheen (5.9). Map controls grouped into one premium capsule rail (5.8). Cohesion across landing + dashboard + map per owner directive; distinct character preserved via per-surface alpha tuning. Premium gold expressed via lighting (lamp overlays, sky-catch, bronze rim) — never via paint on the map canvas itself. Skill: `bd-design-identity`. Sub-commits: `f3cbb342`, `d92698fa`, `a4153034`, `997bbaae`, this commit.
-
-### KI-075: Future navigation engine + map functional buildout (DEFERRED)
-
-- **Impact:** The 2026-05-03 cloud autopilot master pass closed the visual / depth-bar layer across navigation + map surfaces (KI-066/069/072/073/074). The functional layer behind those surfaces is partial: turn-by-turn routing engine not connected, voice TTS not implemented, deviation detection is stub, saved places use localStorage instead of Supabase, no real-time partner-shop availability on map markers, per-role map layer activation rules are not defined. Owner directive ("note to fully build out navigation and all other functionality in the future. Focus on design for now") explicitly defers this scope.
-- **Status:** **DEFERRED** — original plan doc archived 2026-05-04 (Phase 1.5d, Cluster C). Content preserved at [`docs/archive/PLAN_FUTURE_NAV_AND_MAP_FUNCTIONALITY_archived_2026-05-04.md`](archive/PLAN_FUTURE_NAV_AND_MAP_FUNCTIONALITY_archived_2026-05-04.md): scaffolding inventory (Section 1), provider tiers + geocoder + saved-places + per-role layers (Section 2), sequencing + load-bearing skills (Section 3), and the four trigger conditions that must ALL be true before this scope moves from PLAN to LAW (Section 4). Active map strategy lives in [`PLAN_MAP_MASTER.md`](PLAN_MAP_MASTER.md).
+- **Impact:** The 2026-05-03 cloud autopilot master pass closed the visual / depth-bar layer across navigation + map surfaces (KI-066/069/072/073/074). Originally logged as "turn-by-turn routing engine not connected, voice TTS not implemented, deviation detection is stub, saved places use localStorage instead of Supabase, no real-time partner-shop availability on map markers, per-role map layer activation rules are not defined." **Pass 53 audit (2026-05-07) corrected this inventory** — see [`docs/evidence/pass-53-2026-05-07/ENGINE_AUDIT.md`](evidence/pass-53-2026-05-07/ENGINE_AUDIT.md) for the full trace. **Actual current state:**
+  - Turn-by-turn routing engine: **WIRED** (`useNavigationRoutePreview.ts:240-298` advances `currentStepIndex` on adaptive GPS proximity; off-route auto-refetch at ~100 m).
+  - Voice TTS: **WIRED** (Web Speech API via `voiceGuidance.ts`; step cues at `useNavigationRoutePreview.ts:268-272`; deviation/reroute alerts via `useNavigationVoiceAlerts.ts`; cross-browser priming via `primeVoiceEngine`).
+  - Deviation detection: **WIRED** (`detectDeviation.ts` with GPS jitter guard; snapshot ingest in `useNavigationLifecycleEffects.ts:51-78`; ring-buffer history in `useNavigationIntelligence.ts`).
+  - Reroute lifecycle: **WIRED** (`useNavigationReroute.ts` full FSM idle→eligible→pending→completed→cooldown; auto + manual paths; UI prompt via `NavigationDeviationPrompt`; toast via `useNavigationToastBridge`).
+  - Session lifecycle + cloud sync: **WIRED** (`useNavigationSession.ts` FSM with Supabase `fetchNavigationSession` / `saveNavigationSessionToCloud`).
+  - Animation contract: **HONORED** (CSS-first via `theme.css:554-625`; `prefers-reduced-motion` reset at `theme.css:689`; zero `framer-motion` in nav surfaces).
+  - **Real outstanding gaps:** (a) `handleReviewRoute` (`useShopDirectoryNavigation.ts:405`) confirms reroute cooldown synchronously before the OSRM refetch resolves — minor timing bug, low severity. (b) Saved places persist to **localStorage only** (`useSavedNavigationLocations.ts:1-16` → `services/navigation/savedLocations`); cloud schema missing. (c) Real-time partner-shop availability not wired (no Supabase channel for shop availability). (d) Per-role map layer activation rules not defined. (e) Animation cross-reference vs LAW's 29 canonical keyframes deferred to Pass 57. (f) Architectural duplication: two off-route paths exist (silent ~100 m auto-refetch in `useNavigationRoutePreview` + threshold-gated UI prompt in `useNavigationReroute`) — implicit, no user-visible bug.
+  - Originally deferred 2026-05-04 per owner directive ("note to fully build out navigation and all other functionality in the future. Focus on design for now"). Owner reversed that defer 2026-05-07 (see Trigger assertion below).
+- **Status:** **ACTIVE** as of 2026-05-07. Originally **DEFERRED** 2026-05-04 — original plan doc archived (Phase 1.5d, Cluster C). Content preserved at [`docs/archive/PLAN_FUTURE_NAV_AND_MAP_FUNCTIONALITY_archived_2026-05-04.md`](archive/PLAN_FUTURE_NAV_AND_MAP_FUNCTIONALITY_archived_2026-05-04.md): scaffolding inventory (Section 1), provider tiers + geocoder + saved-places + per-role layers (Section 2), sequencing + load-bearing skills (Section 3), and the four trigger conditions that must ALL be true before this scope moves from PLAN to LAW (Section 4). Active map strategy lives in [`PLAN_MAP_MASTER.md`](PLAN_MAP_MASTER.md).
 - **Trigger to activate:** owner-driven greenlight + design phase declared complete + provider decision made + no conflicting LAW changes. No AI may pull items off this plan without all four conditions firing. The plan doc spells out the dependency graph so future passes don't accidentally land in the middle of nav-engine work during a design pass.
+- **Trigger assertion (2026-05-07, owner authority chain in conversation transcript):**
+  1. **Owner-driven greenlight:** ✓ Asserted by Mola via planner-AI relay 2026-05-07 ("no you do the 'state the 4 KI-075 unlock triggers' auto pilot run while builder ai does map work").
+  2. **Design phase declared complete:** ✓ Asserted. KI-066/069/072/073/074 closed the visual / depth-bar layer 2026-05-03; subsequent Pass 884-888 work tightened map chrome continuity across the seven user-visible map states; MOLANDJESUS_DESIGN_DECISIONS.md is locked apex canon.
+  3. **Provider decision made:** ✓ Asserted. Stack locked to MapLibre GL JS 5.21.1 + react-map-gl 8.1.0 (rendering) + OSRM public (routing) + Nominatim via shared Supabase edge proxy `/geocode/search` (geocoding) + Overpass (speed limits) per `PLAN_MAP_MASTER.md` Future Theme C. No commercial provider migration is approved.
+  4. **No conflicting LAW changes:** ✓ Asserted. The PLAN_MAP_MASTER hardening pause notice is doc-tier guidance, not LAW. The actual LAW docs (LAW_PROJECT_RULES, LAW_LAYERED_ARCHITECTURE, LAW_ANIMATION_AND_ATMOSPHERE, LAW_HARDENING_PLAN) do not bar KI-075 functional work. PLAN_MAP_MASTER.md hardening notice cross-references this KI in the same pass for traceability.
+- **Scope under unlock (containment-over-expansion still applies):** This KI does not authorize a single mega-pass. Each functional buildout item ships as its own surgical pass with its own LAW check. Builder may pull one KI-075 item per pass plus hardening-safe polish; multi-item passes require explicit per-pass owner approval. Provider migrations, voice library additions, and schema migrations remain bounded by `supabase-clerk-edge-function` + `supabase-storage-signed-urls` + `feedback_supabase_cli_pg17` rules.
 - **Result (this commit):** Plan doc created at `docs/PLAN_FUTURE_NAV_AND_MAP_FUNCTIONALITY.md`, indexed in `docs/README.md`, KI-075 logged with explicit DEFERRED status. Closes Bucket 9 of the cloud autopilot master pass.
 
-### KI-076: Dashboard pages scroll past content into empty atmospheric background + page-end shadow halo termination feels abrupt
+### KI-100: F-24 follow-up — full Supabase swap for `buildShopRecommendations` (P3-DEAD-CODE-MOSTLY, scope corrected)
 
-- **Impact:** Owner-flagged: "most dashboard pages scroll too far — have all pages end closer to where content ends instead of being able to scroll way past content and just only seeing dashboard background." User-visible on every customer dashboard view (Home, Bids, Account). Two-fold cause: (1) `HomeScreen.tsx:135` carried `min-h-[80vh]` which forced the screen to fill 80% of viewport even when content was shorter, creating a viewport-floor of empty atmospheric background below the last panel; (2) `pb-20 md:pb-10` on each role screen wrapper duplicated `<main>`'s `pb-24 md:pb-8` bottom-nav clearance, adding ~80-100px of empty space below the last panel before the bottom nav. Combined, users could scroll well past the last card and see only DashboardAtmosphere — reads as "broken page, more should be here." Same padding reduction also addresses the page-end halo termination — the last panel's `0 0 60-110px` bronze atmospheric halo from the 8-criteria depth bar can now render without being masked by excessive empty padding.
-- **Location:** `src/app/components/codelayer/HomeScreen.tsx:135`, `src/app/components/codelayer/BidsScreen.tsx:220`, `src/app/components/codelayer/AccountScreen.tsx:303`. Sub-step `src/app/components/codelayer/report/StepPhotos.tsx:40` carries the same `min-h-[80vh]` pattern but is part of the report-flow Step 5 — deferred to a follow-up audit since it's a sub-step inside Report flow rather than a top-level role screen.
-- **Status:** RESOLVED 2026-05-04 (Pass 1 of 2026-05-04 mobile + dark autopilot). Three coordinated edits, single commit:
-  1. `HomeScreen.tsx:135` — removed `min-h-[80vh]`, changed `pb-20 md:pb-10` → `pb-6 md:pb-8`. Customer dashboard home now sizes to actual content + 24/32px breathing space above the bottom-nav clearance handled by `<main pb-24 md:pb-8>`.
-  2. `BidsScreen.tsx:220` — `pb-20` → `pb-6 md:pb-8`. Bids list page no longer scrolls past content.
-  3. `AccountScreen.tsx:303` — `pb-20` → `pb-6 md:pb-8`. Account hub page no longer scrolls past content.
-- **Result:** Adjacent dashboard pages now end cleanly at last-panel + ~24-32px breathing space + bottom-nav clearance. The last panel's bronze atmospheric halo from the depth bar now has room to render and tapers naturally into the DashboardAtmosphere instead of getting chopped at the scroll boundary. No content cut off behind the bottom nav. Verified at `npx tsc --noEmit` clean + `npm run build` clean. Skill: `bd-design-identity`.
-- **Follow-up (deferred, low priority):** `StepPhotos.tsx:40` carries the same `min-h-[80vh]` pattern. It's a Step 5 sub-component of the report flow, not a top-level role screen. Audit + fix in a future pass if owner reports the same scroll-past behavior on Step 5 specifically. Bottom nav clearance via `<main pb-24>` already handles the safe-area concern.
-
-### KI-077: Dark dashboard panels + sections read flat compared to light mode's warm cream richness
-
-- **Impact:** Owner directive: "more premium in dark mode" + "premium gold with metallic trims and the liquid glass look." Pre-Pass-2 dark dashboard panels carried the 8-criteria depth bar (gold lamp top bevel + bronze rim + cool blue ring + 2-layer black drop + bronze atmospheric halo + edge catchlights + cool blue ring + body) but the panel BODY itself was a flat navy gradient. The DashboardAtmosphere D8/D9 corner lamps from Bucket 7 sit BEHIND the panels in the viewport, so the panels themselves still read as deep navy blocks rather than as a "lit room with warm cream richness" matching light mode's gorgeous baseline. Sibling cool-toned sections (report cards stacked vertically) felt especially flat at 375px mobile width because the existing 0.08/0.05 edge catchlights were below visibility threshold at narrow widths.
-- **Location:** `src/styles/theme.css` dark token block — `--bd-dashboard-panel-bg`, `--bd-dashboard-panel-shadow`, `--bd-dashboard-section-bg`, `--bd-dashboard-section-shadow`. Cause: the body tokens were pure linear gradients with no internal radial; the shadow stacks had top inset bevel and atmospheric halo alphas tuned for desktop visibility but not narrow mobile widths.
-- **Fix direction:** Layer an internal top-edge ceiling lamp radial INTO the body token (before the existing linear gradient) so the panel itself reads as lit-from-above. Bump top inset bevel alpha. Bump atmospheric halo alphas on sections (cool-toned cards need more lift). Bump edge catchlights on sections (narrow widths swallow low alphas). Premium gold via lighting only — never paint. No cream over-application.
-- **Status:** RESOLVED 2026-05-04 (Pass 2 of 2026-05-04 mobile + dark autopilot). Four coordinated edits, single commit:
-  1. `--bd-dashboard-panel-bg` (dark): added `radial-gradient(ellipse 70% 30% at 50% 0%, rgba(196,144,65,0.14), transparent 70%)` layer ABOVE the existing navy linear gradient. Internal ceiling lamp gives the panel body its own lit-from-above warmth without painting cream.
-  2. `--bd-dashboard-panel-shadow` (dark): top inset bevel pushed `rgba(196,144,65,0.22)` → `rgba(196,144,65,0.30)`. Gold lamp trim now matches light mode's cream lift presence in dark.
-  3. `--bd-dashboard-section-bg` (dark): added narrower internal ceiling lamp `radial-gradient(ellipse 60% 25% at 50% 0%, rgba(196,144,65,0.10), transparent 70%)` so cool-toned report cards stacked vertically still feel lit. Lower alpha than panels (0.10 vs 0.14) because sections nest inside panels.
-  4. `--bd-dashboard-section-shadow` (dark): atmospheric halos bumped (`rgba(196,130,45,0.12)` → `0.15`, `rgba(196,130,45,0.06)` → `0.08`); edge catchlights bumped (`rgba(252,240,208,0.08)` → `0.10`, `rgba(252,240,208,0.05)` → `0.07`). All bumps within hard stops (single-layer halo cap 0.22 not breached; cream catchlights well below the 0.95 LAW whitening threshold).
-- **Result:** Dark dashboard panels now read as their own lit room — internal ceiling lamp gives the panel body warmth that previously only DashboardAtmosphere provided. Cool-toned sibling sections (report cards) stay visually distinct but no longer feel dimmer than the panels containing them. The 8-criteria depth bar still binds; this commit ADDS to the body token without modifying any criterion. Light mode unaffected (only dark tokens edited). Verified `npx tsc --noEmit` clean + `npm run build` clean + branch-aware grep ZERO forbidden hits. Skill: `bd-design-identity`.
-
-### KI-078: Quick Actions tile asymmetry in dark — cool tiles read flat next to warm pop tiles
-
-- **Impact:** Owner-flagged via mobile screenshot 19. The Quick Actions row uses an intentional cool/warm/cool/warm rhythm (`--accent-blue` / `--accent-gold` / `--accent-cyan` / `--accent-champagne`) — the warm pop tiles per LAW. In light mode this asymmetry reads as "deliberate hierarchy with champagne accent." In dark mode pre-Pass-3 the cool tiles' bronze atmospheric halo was tuned at 0.10-0.12 alpha while the warm pop tiles ran at 0.20-0.26 — a 2x+ delta. Result: cool tiles read as "broken sibling" (almost invisible) rather than "deliberate hierarchy" (subdued by design). The asymmetry should preserve the warm pop tile's pop, but the cool tile shouldn't disappear next to it.
-- **Location:** `src/styles/theme.css` `.bd-dashboard-section--accent-blue` (L2863), `--accent-cyan` (L2876), `--accent-indigo` (L2889), `--accent-rose` (L2902). Warm variants `--accent-gold` (L2919), `--accent-champagne` (L2934) intentionally NOT touched (pop tile identity preserved).
-- **Fix direction:** Bump cool variants' bronze atmospheric halo alpha by 0.04 (0.10→0.14 for cyan/indigo/rose, 0.12→0.16 for blue). Stays well below warm pop tiles (0.20-0.26) so hierarchy reads, but lifts cool tiles enough to feel intentional rather than broken. No body color changes — cool tiles stay cool, warm tiles stay warm.
-- **Status:** RESOLVED 2026-05-04 (Pass 3 of 2026-05-04 mobile + dark autopilot). Single edit, four cool variant rules:
-  - `--accent-blue` atmospheric halo: `rgba(196,130,45,0.12)` → `0.16`
-  - `--accent-cyan` atmospheric halo: `rgba(196,130,45,0.10)` → `0.14`
-  - `--accent-indigo` atmospheric halo: `rgba(196,130,45,0.10)` → `0.14`
-  - `--accent-rose` atmospheric halo: `rgba(196,130,45,0.10)` → `0.14`
-  - Warm pop tiles (`--accent-gold` 0.26 + `--accent-champagne` 0.20) UNCHANGED — LAW pop tile identity preserved
-  - Color-tinted hue halos (cool blue / cyan / indigo / rose color halos) UNCHANGED at 0.10 — these provide the cool-tile hue identity, separate from the bronze atmospheric layer
-- **Result:** Cool tiles now have a subtle warm wash that lifts them out of "broken/invisible" territory while warm pop tiles still pop noticeably stronger (0.20-0.26 vs 0.14-0.16). Quick Actions row reads as deliberate cool/warm/cool/warm rhythm. No body color changes — distinct character preserved (cool tiles stay cool, warm tiles stay warm). Single-layer halo cap of 0.22 not breached. Per cohesion overlay: borrowed landing's "richer atmospheric layering" technique into dashboard atmosphere ONLY (not panel paint). Skill: `bd-design-identity`.
-
-### KI-079: Bottom nav inactive tabs read too dim in dark mode (low contrast against dark navy background)
-
-- **Impact:** Owner-flagged via mobile screenshots 18 + 20. The MobileBottomNav active tab (Dashboard) shows a clear blue underline + blue label. Inactive tabs (Report / Bids / Account) used `text-blue-100/50` — 50% alpha against the dark navy nav background. On bright phones in real daylight, this would be borderline unreadable. Hover state `text-blue-100/80` was a small bump but no background affordance feedback. Reads as accidental dim, not deliberate hierarchy.
-- **Location:** `src/app/components/dashboard/MobileBottomNav.tsx` L64-70 — inline Tailwind className on the inactive button state.
-- **Fix direction:** Replace `text-blue-100/50` → `text-slate-300` (no alpha — solid color, slate hue desaturates the blue family slightly so inactive doesn't compete with active blue identity). Hover state `text-slate-100` (brighter on hover). Add `hover:bg-blue-400/[0.06]` for a 6% cool-blue background tint on hover/touch — provides affordance feedback without painting the nav.
-- **Status:** RESOLVED 2026-05-04 (Pass 4 of 2026-05-04 mobile + dark autopilot). Single edit:
-  - Dark inactive: `text-blue-100/50 hover:text-blue-100/80` → `text-slate-300 hover:text-slate-100 hover:bg-blue-400/[0.06]`
-  - Light inactive ALSO got a small affordance bump: `text-slate-400 hover:text-blue-600` → `text-slate-400 hover:text-blue-600 hover:bg-blue-500/[0.04]` (4% blue tint on hover, still well below LAW Light-Mode whitening threshold)
-- **Result:** Inactive labels now readable at 375px on a bright phone in real daylight. Hover state provides clear affordance feedback via subtle background tint. Active tab's blue underline + blue label still wins visually (deliberate hierarchy preserved). All four tabs now equally legible. Skill: `bd-design-identity`.
-
-### KI-080: Landing page hard horizontal seams between alternating cool/warm sections in mobile dark
-
-- **Impact:** Owner-flagged via mobile dark screenshots. Landing body sections alternate cool (navy gradient body) and warm (bronze/amber atmosphere) — by design per landing's "richer colors + decorative moments" identity. In light mode the alternation reads as deliberate rhythm. In dark mode the seam BETWEEN sections reads as a hard horizontal cut: bronze starts abruptly mid-screen, CTA pills float over flat seams, stat-pill rows appear stranded between bands, eyebrow chips look like stickers on hard edges. Sections themselves are gorgeous; the TRANSITIONS are what's broken.
-- **Location:** `src/styles/theme.css` (new `.bd-landing-seam-fade` utility) + `src/app/components/app/LandingPageLayout.tsx` (insert seam-fade dividers between body sections).
-- **Fix direction (master-designer judgment, simplified from initial Codex/Cloud spec):** Instead of touching every `*Section.tsx` file with `::after` + `::before` overlays, insert a small 48px atmospheric-bridge divider BETWEEN body sections in LandingPageLayout. Each divider is a single utility-class div (`.bd-landing-seam-fade`) that renders a navy-tinted haze gradient in dark mode and COLLAPSES to zero height in light mode (no layout shift). This is the simplest implementation that delivers the atmospheric handoff without modifying section internals. Eyebrow chip glow + stat-pill row gradient bridge are deferred to a follow-up if owner reports they're still needed after this pass.
-- **Status:** RESOLVED 2026-05-04 (Pass 6 of 2026-05-04 mobile + dark autopilot). Two coordinated edits, single commit:
-  1. `theme.css` — new `.bd-landing-seam-fade` utility class. Dark mode: `height: 48px` + `linear-gradient(to bottom, rgba(8,16,32,0) 0%, rgba(8,16,32,0.18) 50%, rgba(8,16,32,0) 100%)`. Light mode: `height: 0` (zero-cost spacer — no layout shift). `pointer-events: none` so it never blocks scroll/click.
-  2. `LandingPageLayout.tsx` — inserted 8 `<div className="bd-landing-seam-fade" aria-hidden="true" />` dividers between consecutive body sections (HowItWorks ↔ Benefits ↔ WhoWeServe ↔ AboutOpportunity ↔ TrustStats ↔ OperatingRegions ↔ BusinessInquiry ↔ CTA).
-- **Result:** Dark landing now has 48px navy-tinted atmospheric handoffs between adjacent sections — bronze sections fade through navy haze before the next navy section starts (and vice versa). Hard horizontal seams replaced with soft atmospheric drift. Light mode UNAFFECTED: seam-fade divs are zero-height, no layout shift, no visible artifact. The alternating navy/bronze rhythm IS the landing character; only the SEAMS softened. Skill: `bd-design-identity`. Per cohesion overlay: borrowed DashboardAtmosphere's atmospheric layering TECHNIQUE into landing without touching panel paint.
-- **Deferred follow-ups (low priority, only if owner reports continued seam issues):** Eyebrow chip backing glow utility; stat-pill row gradient bridge background. These were lower-leverage items in the original Pass 6 spec.
-
-### KI-081: Site-wide dark mode under-deepened relative to premium gold liquid-glass design intent (dashboard panels + landing cards + page atmosphere)
-
-- **Impact:** Owner directive 2026-05-04 (multi-AI relay): "entire site needs deep dark mode work including dashboard with more premium gold and premium gold trim and atmospheric gold lighting from dashboards already premium gold liquid glass design." After Pass 2 of 2026-05-04 (74b9df0b) established the dashboard internal ceiling-lamp foundation, the panel/section trim, atmospheric halos, and DashboardAtmosphere page-level gold lamps were still leaving headroom under the 0.22 single-layer halo cap. Landing dark cool-cards (`.bd-glass-card--landing`) had bronze trim at only 0.18 alpha while warm-card siblings (`.bd-glass-card--landing-warm`) read as much richer — making the cool variants feel under-specified next to their warm siblings.
-- **Location:** `src/styles/theme.css` (dashboard panel + section tokens at L2466-L2700; landing card variants at L1484-L1560) + `src/app/components/app/DashboardAtmosphere.tsx` (page-level D6/D7/D9/D10 atmospheric gold lamps).
-- **Fix direction:** Push every dark-mode gold trim, gold ring, gold halo, gold catchlight, and atmospheric lamp toward (but not exceeding) the locked 0.22 single-layer halo cap. Light mode untouched throughout — every dark deepening guarded by `[data-theme="dark"]` selector or `isLightAppearance` ternary.
-- **Status:** RESOLVED 2026-05-04 (Pass A + Pass B of 2026-05-04 site-wide dark deepening, commits eda7913a + 913154da). Pass A pushed dashboard `--bd-dashboard-panel-*` and `--bd-dashboard-section-*` tokens (panel ceiling lamp 0.14→0.18, top inset bevel 0.30→0.38, asymmetric downward halo 0.10→0.14, edge catchlights 0.10→0.14, plus all four accent variants `--deep`/`--accent-blue`/`--accent-cyan`/`--accent-indigo` proportionally lifted). Pass B deepened landing cool-card bronze trim (rim 0.18→0.26, ring 0.13→0.18, cool ring 0.18→0.22, edge catchlights 0.10→0.14, outer halo 0.20→0.22 cap) AND DashboardAtmosphere page-level lamps (D9 right-corner 0.16→0.20, D10 floor wash 0.10→0.14, D6 right gutter 0.19→0.22 to match D6 left, D7 bottom-center 0.17→0.20). Symmetric gold rails (D6 L+R now both 0.22) achieved.
-- **Result:** Dashboard atmosphere now reads as a more fully bathed "lit room" with stronger gold ceiling lamp, deeper bronze rim trim, and balanced symmetric gold gutters. Landing cool-cards now read as same-family with their warm-card siblings instead of dimmer cousins. Light mode untouched — every test screen visually identical pre/post pass. Skill: `bd-design-identity`.
-
-### KI-082: Landing card light variants have LAW pure-white inset highlights (Light-Mode Surface Rule violation) + under-developed bronze trim relative to dark register
-
-- **Impact:** Owner directive 2026-05-04: "landing page still need deep work in light mode unlike dashboard." Investigation found three distinct LAW Light-Mode Surface Rule violations on `.bd-glass-card--landing` and `.bd-glass-card--landing-warm` (idle + hover) — pure-white insets `inset 0 1px 0 rgba(255,255,255,0.95-1.0)` which the LAW (LAW_PROJECT_RULES.md § Light-Mode Surface Rule, line 205) explicitly bans because they make the card top "read white instead of warm-cream-illuminated." Beyond LAW compliance, the bronze trim values (rim 0.14, ring 0.10) were under-specified relative to dark register, leaving landing-light cards reading flat instead of premium-gold-lit.
-- **Location:** `src/styles/theme.css` `.bd-glass-card--landing` and `.bd-glass-card--landing-warm` (idle + hover) at lines 936-1013.
-- **Fix direction:** (1) Replace pure-white insets with locked premium gold cream `rgba(252,240,208,0.92-0.96)`. (2) Migrate bronze trim from yellow-leaning `rgba(196,144,65)` and `rgba(220,180,110)` to the LOCKED bronze family `rgba(140,82,22)` per LAW palette. (3) Deepen bronze rim/ring alphas proportionally to dark register. (4) After Pass C ship, owner reported "new boarder design isn't smooth gradient at all" — Pass C-fix (8844bca0) addressed this by softening hard 1px ring alphas (which were stamping a 2-3px paint band at the border) and amplifying diffuse outer halos (which create the actual smooth gradient feel) plus adding a wider feather halo at 64-80px for soft fall-off.
-- **Status:** RESOLVED 2026-05-04 (Pass C of 2026-05-04 site-wide light deepening + Pass C-fix correcting the hard-ring-band feedback, commits 0cd9d8ba + 8844bca0).
-- **Result:** Landing cards in light mode now (a) comply with LAW Light-Mode Surface Rule (no pure white inset), (b) use locked bronze palette per LAW, (c) read as premium gold-lit edge instead of stamped 1px paint band. Body backgrounds untouched (cool ice on cool variant, warm cream on warm variant — landing identity hierarchy intact). Dark mode override still fully wins via `[data-theme="dark"]` selector. Skill: `bd-design-identity`.
-
-### KI-084: Premium liquid-glass cards read as edge-trimmed rather than lit-from-page-atmosphere (system-wide, both modes)
-
-- **Impact:** Owner directive 2026-05-04 (post Pass A-D approval): "deep dark mode work looks good so far too but i want the lighting on the cards to be more alive and atmospheric and coming more from the background to show of the gold liquid glass in dashboard and adding it in to light and dark mode for entire site with future design updates too." Translation per `mola-ai-relay-protocol`: cards currently have edge-located halos (60-110px outer halos at 0.10-0.18 alpha) that read as decorative TRIM. Owner wants the gold lighting to feel like it's bleeding around the cards FROM the page atmosphere behind them — the "lit-from-behind liquid glass" feel — making the premium gold lamp DashboardAtmosphere the visible light source visible THROUGH the cards.
-- **Location:** `src/styles/theme.css` — `--bd-dashboard-panel-shadow` + `--bd-dashboard-section-shadow` + `--bd-dashboard-section-hover-shadow` (dark + light registers); `.bd-glass-card--landing` + `.bd-glass-card--landing-warm` (idle + hover, light + dark register) at lines 936-1013 and 1508-1605.
-- **Fix direction:** Add a third FAR ambient bleed layer (140-180px blur radius at 0.04-0.12 alpha) to every premium liquid-glass surface's `box-shadow` stack. The triad (close primary halo + medium mid halo + FAR ambient bleed) creates a soft gradient envelope around each card that reads as ambient light leaking from the page atmosphere behind it. Light mode uses lower alpha (0.04-0.08) so the cool-cream canvas isn't muddied; dark mode uses higher alpha (0.07-0.12) where contrast against navy makes the ambient bleed clearly visible as gold lamp light. Each new layer respects the LAW single-layer halo cap (max ambient layer alpha is 0.12, well under 0.22).
-- **Status:** RESOLVED 2026-05-04 (Pass E of 2026-05-04 site-wide light + dark deepening, see Pass E commit). Eight surfaces touched: dashboard panel + section + section-hover (dark + light), landing-cool + landing-warm + landing-cool-hover + landing-warm-hover (dark + light).
-- **Result:** Every premium liquid-glass surface now reads as lit-from-page-atmosphere instead of edge-trimmed. Cards visibly bleed soft gold light into the surrounding atmosphere creating the "premium liquid glass" feel owner is asking for. The pattern (close + mid + far ambient triad) is now a documented system-wide convention that future surfaces (forms, sheets, dialogs) should adopt to maintain visual coherence. Skill: `bd-design-identity`. Per cohesion overlay: this is the pure expression of "gold-as-LIGHT, never paint" applied to the atmospheric register.
-- **Pattern reference (SUPERSEDED by KI-085 directional triad — see below):** Pass E used omnidirectional `0 0 X-large` far-ambient bleed at every surface. Owner feedback 2026-05-04 evening: "still look like light is stamped on" + "in light mode look like they are blushing." The omnidirectional pattern read as edge ring (stamped) and caused warm-bronze cosmetic blush in cool-cream canvas. Pattern evolved into **directional top-cast triad** in KI-085 / Pass F. Pass E far-ambient layers are removed system-wide and replaced with directional top-cast.
-
-### KI-085: Pass E omnidirectional far-ambient pattern read as edge ring/blush; needs DIRECTIONAL top-cast for true backlit-glass feel
-
-- **Impact:** Owner feedback 2026-05-04 evening (post Pass E ship): "premium glass cards still look like light is stamped on and in light mode look like they are blushing still instead of having premium gold lighting coming from behind showing off gold liquid premium cards." Diagnosis confirmed by independent Codex review: Pass E's `0 0 140-180px` far-ambient bleed is OMNIDIRECTIONAL — surrounds each card evenly, which the eye reads as decorative edge ring (stamped trim) rather than light coming FROM somewhere. In cool-cream light canvas the warm-bronze omni bleeds compound into peach/pink cosmetic blush. The true "lit-from-page-atmosphere" feel requires DIRECTIONAL light + translucent body so page lamps show through.
-- **Location:** `src/styles/theme.css` — `--bd-dashboard-panel-bg/-shadow`, `--bd-dashboard-section-bg/-shadow/-hover-shadow` (dark + light, lines 2512-2655); `.bd-glass-card--landing*` variants idle + hover (light + dark, lines 936-1605).
-- **Fix direction (synthesis of master-designer judgment + Codex diagnosis):** Two coordinated changes per surface — (1) **Body opacity drop** so page DashboardAtmosphere shows through translucent glass: dashboard panel/section dark 0.92/0.88 → 0.78/0.72 (panel) and 0.88/0.84 → 0.72/0.66 (section); light 0.94/0.86 → 0.74/0.62 (panel) and 0.94/0.84 → 0.74/0.62 (section). With existing `backdrop-filter: blur(20px) saturate(1.4) brightness(1.02)` this becomes real liquid-glass refraction. (2) **Replace omnidirectional far-ambient with directional top-cast**: `0 0 X-large` → `0 -Y px X-blur -Z spread` (negative offset-Y = light comes from above, negative spread = focused not diffuse). Light register additionally REMOVES all warm omni bleeds (the blush cause) — only directional top-cast champagne lamp remains. Light body internal radial gold lamp dropped from 0.16 → 0.05 (it was painting blush ON the body, not lighting it from above).
-- **Status:** RESOLVED 2026-05-04 (Pass F of 2026-05-04 site-wide deepening, see Pass F commit). Eight surfaces touched: dashboard panel + section + section-hover (dark + light), landing-cool + landing-warm + landing-cool-hover + landing-warm-hover (dark + light).
-- **Result:** Cards now read as backlit translucent glass plates with gold lamp light cascading down from above. Light mode blush eliminated (cool canvas reads clean and cool, gold only at top edge). Dark mode stamped feeling resolved (page navy + gold lamps visible THROUGH the translucent body, directional top-cast adds focused overhead lamp glow). Skill: `bd-design-identity`.
-- **Pattern reference (CANONICAL — supersedes KI-084 omnidirectional pattern; documented in REF_VISUAL_SYSTEM.md §4b):** Premium glass shadow stack triad — close edge halo `0 0 32-60px @ ≤ 0.18α` + mid spread `0 0 90-110px @ ≤ 0.10α` + DIRECTIONAL top-cast `0 -28 to -44px blur 70-130px spread -14 to -22px @ ≤ 0.22α` champagne-gold `rgba(196,144,65)`. Body opacity invariant: 0.62-0.78 so page atmosphere bleeds through. Light register removes warm omni bleeds entirely (blush forbidden going forward — cool canvas + directional top-cast only). Pattern is the canonical premium-glass treatment for all current and future surfaces (forms, sheets, dialogs, gold-trim text — see REF_VISUAL_SYSTEM.md §4b for the gold-trim text variant).
-
-### KI-083: Map program light surfaces have LAW pure-white violations (CoverageSearchPanel field + MapBidSheet sheet body + bid form inputs)
-
-- **Impact:** Owner directive 2026-05-04: "map program ... still need deep work in light mode unlike dashboard." Audit of map-program light surfaces found three distinct LAW Light-Mode Surface Rule violations: (1) `CoverageSearchPanel` primary search field (the bar a customer uses to find shops near them) used `border-white/85`, `bg-white/82`, pure-white inset `rgba(255,255,255,0.55)`, and `focus:bg-white`. (2) `MapBidSheet` body in light mode used `bg-white border-t border-slate-200 shadow-xl` — a fully pure-white sheet covering the bottom half of the map. (3) Three bid form inputs (amount + ETA + notes) had `focus:bg-white` light states — pure white when active. These three surfaces are exactly the customer-facing first-impressions of the map program, so the LAW violations were highest-leverage to fix.
-- **Location:** `src/app/components/landing/CoverageSearchPanel.tsx:73` (light field className); `src/app/components/maps/MapBidSheet.tsx:94` (light sheet body); `src/app/components/maps/MapBidSheet.tsx:171,214,240` (three light input focus states).
-- **Fix direction:** Replace each pure-white token with cool ice glass + cool blue trim + locked premium gold cream `rgba(252,240,208,*)` highlight per LAW. Use `bg-blue-50/85`, `border-sky-200/80`, `focus:bg-sky-50` instead of any `*-white*` token. The sheet body got a full cool ice gradient `bg-gradient-to-b from-sky-50/96 via-blue-50/94 to-slate-50/92` plus an atmospheric shadow with cream highlight inset. Dark branches untouched.
-- **Status:** RESOLVED 2026-05-04 (Pass D of 2026-05-04 site-wide light deepening, commit 81c3b05a).
-- **Result:** Map-program light surfaces now match landing card light register (Pass C-fix) and dashboard panel light register: cool ice glass body + cool blue trim + locked premium gold cream highlight as the only "warm" light source. The entire site light identity (dashboard + landing + map) now reads cohesively per LAW. Intentional exceptions preserved: `SpeedLimitBadge` keeps `bg-white` (real-world US/EU speed limit signs are white — preserving real-world signage semantic). Skill: `bd-design-identity`.
-
-### KI-086: Compare card peach blush — internal gold radial 0.22α stacking on indigo body chromatic interaction
-
-- **Impact:** Owner verification screenshots 2026-05-04 evening (post Pass F-fix): Compare card (rightmost of three Smart Map Tools buttons in dashboard light) showing visible peach-pink rim at top edge. AI Matching (cyan) and Directions (blue) reading clean. Root cause: `.bd-dashboard-section--accent-indigo` light had internal gold radial paint at 0.22α stacking over a periwinkle indigo body `rgba(214,220,246)` — chromatic interaction reads as pink rim.
-- **Location:** `src/styles/theme.css` `.bd-dashboard-section--accent-blue` (L3101), `--accent-cyan` (L3122), `--accent-indigo` (L3143) light variants — internal gold radial at 0.20-0.22α.
-- **Fix direction:** Demote internal gold radial from 0.20-0.22α → 0.05α on all three accent sub-section button surfaces (cyan/blue/indigo) for LAW canon compliance + consistency. The parent panel's directional top-cast champagne lamp already provides the gold lighting; these internal radials were stacking redundantly and producing chromatic noise on the indigo body. Body opacities preserved (these are button surfaces at 0.94/0.86, not page panels — preserving cyan/blue/indigo color identity per per-card-tier exception).
-- **Status:** RESOLVED 2026-05-04 (commit `23f4a2cd` — KI-086 followup post Pass F-fix). Single commit, three-line fix.
-- **Result:** Compare card peach blush eliminated. AI Matching + Directions reading unchanged. Color identity preserved (cyan/blue/indigo bodies + secondary cool radials retained). Pattern: when LAW canon "internal gold radial > 0.05α in light bodies = blush" applies, the demote-to-0.05 is the surgical fix; do NOT also lower bodies (preserves color identity for button-surface tier). Skill: `bd-design-identity`.
-
-### KI-087: Light-mode internal gold radial paint > 0.05α LAW canon violations on 6 premium glass surfaces (preemptive fix before owner saw blush spread)
-
-- **Impact:** Phase 0 audit (commit `cb7d412a`) for the 2026-05-05 long-run autopilot session scanned all `[data-appearance-mode="light"]` blocks for the LAW Premium Glass Body Opacity + Directional Backlight Canon (added 2026-05-04 in `b528508e`) and found 5 panel-level + 1 CSS-var premium glass surfaces with internal gold radial paint at 0.16-0.22α — the exact mechanism that caused the KI-086 Compare card peach. The same fix that worked for KI-086 was preemptively applied here BEFORE the owner had to find the blush surface-by-surface.
-- **Location:** `src/styles/theme.css` — `.bd-glass-floating` (L1947), `.bd-dashboard-panel--deep` (L2902), `.bd-dashboard-panel--accent-cyan` (L2924), `.bd-dashboard-panel--accent-indigo` (L2946), `.bd-dashboard-section--deep` (L3083), `--bd-report-panel-bg` CSS var (L2107).
-- **Fix direction:** Demote internal gold radial 0.16-0.22α → 0.05α on all 6 surfaces. Same edits also brought light body opacity from above-canon 0.94/0.86 or 0.94/0.88 → LAW canon range 0.84/0.76 (per Pass F-fix verified balance).
-- **Status:** RESOLVED 2026-05-05 (commit `8c3fdc9a` — Tier 1 task #1 + #3 of 2026-05-05 long-run autopilot). NOT touched: `.bd-dashboard-panel--accent-blue` (HERO panel, intentionally warm-dominant per LAW), `.bd-dashboard-section--accent-gold` + `--accent-champagne` (warm pop tiles), `.bd-dashboard-panel::after` + `.bd-report-section::after` (decorative pseudo-elements, not bodies).
-- **Result:** Six surfaces brought into LAW canon compliance. Same KI-086 mechanism preemptively eliminated everywhere it could surface. Pass F dark register UNTOUCHED. Hero + warm pop tile identity preserved. Pattern: audit-driven preemptive LAW canon enforcement is faster than waiting for owner to find each blush surface; when a recently-locked LAW rule is violated in N places, fix all N at once not one-at-a-time. Skill: `bd-design-identity`.
-
-### KI-088: ShopBidModal + ShopOnboardingStep4 LAW Light-Mode Surface Rule violations (KI-068 partial follow-up)
-
-- **Impact:** Phase 0 audit also found two load-bearing customer/shop-facing component inline styles painting pure white in light mode — direct LAW Light-Mode Surface Rule violation. (1) `ShopBidModal.tsx:43` (the bid submission modal — THE conversion moment for shops) used `bg-white border-slate-200/60 shadow-xl`. (2) `ShopOnboardingStep4.tsx:48,70` (two onboarding preference toggles — checkboxes for "Accept insurance claims" + "Provide free estimates") used `bg-white/60`. Both surfaces missed the KI-068 sweep because they were in deeper component tree positions than the surfaces that sweep targeted.
-- **Location:** `src/app/components/shop/ShopBidModal.tsx:43,123,155` + `src/app/components/shop/ShopOnboardingStep4.tsx:48,70`.
-- **Fix direction:** Migrate to canonical light register: cool ice glass gradient (`rgba(238,247,255,0.78)→rgba(219,234,254,0.70)`) + bronze border 0.20-0.36 + cream inset highlight `rgba(252,240,208,0.78-0.92)`. ShopBidModal additionally got the LAW Premium Glass canon (5%-α gold lamp top radial + directional top-cast champagne lamp 0.18α + backdrop-filter blur(20px) saturate(1.4) brightness(1.02) for liquid-glass refraction).
-- **Status:** RESOLVED 2026-05-05 (commit `35538907` — Tier 1 task #2 of 2026-05-05 long-run autopilot). Resolves KI-068 partially — the ShopBidModal sub-surfaces (modal body + inner field cluster + Cancel button) and the ShopOnboardingStep4 toggles. Other "low-ROI" shop-family surfaces in REF_VISUAL_SYSTEM.md §3 "Not touched" list (LikedShopCard, ShopRatingModal etc.) remain deferred until owner request or flow audit surfaces them.
-- **Result:** Shop bid modal and onboarding step 4 now read as canonical premium glass in light mode. Bid modal becomes a true premium liquid-glass sheet with gold lamp from above + cream highlight at top. No pure white anywhere on either surface. Dark register untouched. Skill: `bd-design-identity`.
-
-### KI-090: Landing cool sections lacked atmospheric gold lighting + 2 LAW pure-white violations (Pass G — bounded master-designer ship of REF_VISUAL_SYSTEM.md §4b future direction Item 1)
-
-- **Impact:** Owner directive 2026-05-04 captured in REF_VISUAL_SYSTEM.md §4b future direction subsection: "for future landing page design updates, sections still need work as well as more gold areas and lighting premium." Verified visually via 2026-05-04 evening screenshots showing cool navy "Opportunity Through Transparency" section three-card group reading as cool-blue glass without the premium gold lighting that the warm bronze "Why Choose BidOnDent?" section carries. Additionally, Phase 0 audit (commit `cb7d412a`) found two LAW Light-Mode Surface Rule violations on the same sections being touched: (1) `AboutOpportunitySection.tsx:43` light-mode section background started at `#ffffff` (pure-white LAW violation) and was a near-white cream-on-cream gradient throughout — exact regression pattern LAW prohibits; (2) `WhoWeServeSection.tsx:363` light-mode bottom transition fade target was `to-[#ffffff]` (pure-white LAW violation).
-- **Location:** `src/styles/theme.css` (new `.bd-landing-section-toplamp` utility); `src/app/components/landing/AboutOpportunitySection.tsx:43,47-49`; `src/app/components/landing/WhoWeServeSection.tsx:93-95,363`.
-- **Fix direction (synthesis of REF future-direction + LAW fixes + Codex's bounded "Item 1 only" prompt):** Three coordinated edits, single commit. (1) New utility `.bd-landing-section-toplamp` — section-LEVEL directional top-cast champagne lamp extending the LAW Premium Glass canon from cards to section backgrounds. Position absolute, top-anchored, 280px height, light 0.06α, dark 0.10α, both within LAW canon thresholds. (2) AboutOpportunitySection light section background `#ffffff → #f5f4f2` cream-on-cream regression replaced with cool blue-gray gradient `#f2f8ff → #dde9ff` matching adjacent cool sections; toplamp inserted at canonical position (above bd-bloom-atmosphere). (3) WhoWeServeSection: toplamp inserted at same canonical position; bottom transition fade target `to-[#ffffff]` → `to-[#dde9ff]` matching the new About section start gradient (cool-to-cool transition reads as continuous register).
-- **Status:** RESOLVED 2026-05-05 (commit `5d42dfc9` — Pass G of 2026-05-05 long-run autopilot, Tier 2 task #7).
-- **Result:** Cool landing sections (Who We Serve, Opportunity Through Transparency / About BidOnDent) now have section-level atmospheric gold lighting threading the LAW canon directional triad principle through landing background atmosphere. Two LAW Light-Mode Surface Rule violations resolved. Cool section identity preserved (cool stays cool — atmosphere only gets gold lighting, NOT body paint per landing identity LAW). New `.bd-landing-section-toplamp` utility is reusable for future cool-section adoption (HowItWorks, OperatingRegions, BusinessInquiry, CTA — deferred until owner verifies primitive on first 2 sections). Items 2-5 of Codex's prompt bundle (eyebrow chip backing glow, CTA pill atmospheric glow, list checkmark champagne tint, gold-tinted seam dividers) DEFERRED per master-designer "verify-before-propagate" discipline — ship just the structural primitive, owner verifies, then propagate. Skill: `bd-design-identity`. Skill: `mola-ai-relay-protocol` (extracted owner verbatim + Codex's bounded scope guidance + applied verify-before-propagate to landing canon extension).
-
-### KI-091: Pass H — 8 surfaces flagged in REF §4b "Pending canon adoption" needed LAW canon adoption + bonus atmospheric pass
-
-- **Impact:** REF_VISUAL_SYSTEM.md §4b carried a "Pending canon adoption" running list of 8 surfaces still using pre-canon palette/treatment — `MapBidSheet` body, `CoverageSearchPanel` light shell, `.bd-input` family focus state, `MobileBottomNav` light bg, `DashboardHeader` light bg, `.bd-section-eyebrow` backing glow utility, landing CTA pill atmospheric glow, list-marker champagne tint. Plus 3 mid-pass owner directives (light-mode seam-fade rendering, premium gold restoration in light cards, landing spacing + atmospheric continuation, hero-language extension across landing).
-- **Location:** Various (see commit messages in range `91147e12 → a7e1d274`).
-- **Fix direction:** Pass H — 12 commits across H1-H9 with mid-pass H1.5 / H1.6 / H1.7 corrective bundles driven by live owner directives.
-- **Status:** RESOLVED 2026-05-05 (commit range `91147e12 → a7e1d274`, Pass H final report at `docs/archive/PASS_H_2026-05-05_REPORT_archived_2026-05-04.md`). Two new utilities introduced: `.bd-landing-cta-glow` (CTA backing aura) + `.bd-landing-section-bottomwash` (cool-blue depth wash companion to `.bd-landing-section-toplamp`). `.bd-section-eyebrow` gained inherited canon champagne `text-shadow` so ~14 existing eyebrows lit up without per-call-site edits.
-- **Result:** Build clean every commit (3808.26 KiB precache stable); branch-aware forbidden grep returned ZERO every commit. Skills: `bd-design-identity`, `mola-ai-relay-protocol`.
-
-### KI-092: Pass I — 56 deferred pre-canon goldenrod values inside cool-section atmospheric mesh/radial decorations
-
-- **Impact:** Pass H deferred a sweep of 56 pre-canon goldenrod values (`rgba(210,180,130)`, `rgba(220,185,115)`, `rgba(200,170,110)`, `rgba(200,165,100)`, `amber-100`) embedded inside the multi-layer atmospheric mesh + radial decorations of 6 cool landing sections. These pre-dated the 2026-05-03 LAW Premium Gold Palette lock and were not flagged by branch-aware forbidden grep, but visually painted cool sections with off-canon pale-pastel goldenrod that read flatter than the canon-aligned warm sections. Owner explicitly cited the visual presence gap via comparison screenshots of an older landing design that "looked way better than what we have now."
-- **Location:** `HowItWorksSection.tsx` L83-92, `WhoWeServeSection.tsx` L137-142,202-205, `AboutOpportunitySection.tsx` L81-86,114-117,130, `BusinessInquirySection.tsx` L147-152, `CTASection.tsx` L44-49. `OperatingRegionsSection.tsx` confirmed zero off-canon hits (no commit needed).
-- **Fix direction:** Atomic palette swap, SAME alpha, no structural change. 5 commits, one per cool-section file with off-canon hits. All values mapped to canon champagne `rgba(196,144,65)` at the EXACT alpha each held; stop positions, gradient structures, blur, sizes UNCHANGED.
-- **Status:** RESOLVED 2026-05-05 (commit range `1afea721 → 10644ada`, 5 commits I1-I5).
-- **Result:** Cool sections now carry canon champagne atmospheric paint instead of off-canon pre-canon pale goldenrod. Visual presence parity with warm sections improved. Build clean every commit; forbidden grep ZERO. Skill: `bd-design-identity`.
-
-### KI-093: Pass J — landing heading-area spacing too generous, sections read as "gapping"
-
-- **Impact:** Owner directive 2026-05-05: "landing page still has many gapping issues with spacing in each section not being updated visually to be atmospheric and more premium." After Pass H1.7 trimmed outer section py, the INTERIOR heading areas of each section retained generous `mb-6` (eyebrow→heading) and `mb-8 md:mb-12` (heading→content) gaps. These compounded to ~80-120px of empty atmospheric ground before content in each section, making cool sections especially read as "empty" since their atmospheric paint is intentionally restrained per LAW cool-blue-dominant rule.
-- **Location:** 7 landing section components — `HowItWorksSection`, `WhoWeServeSection`, `AboutOpportunitySection`, `BusinessInquirySection`, `BenefitsSection`, `TrustStatsSection`, `CTASection`.
-- **Fix direction:** Coordinated single-commit spacing trim. Eyebrow-chip wrapper `mb-6 → mb-4` (saves 8px). Heading-area wrapper `mb-8 md:mb-12 → mb-6 md:mb-8` (saves 8-16px). AboutOpp single `mb-8 → mb-6`. TrustStats `mb-8 sm:mb-10 → mb-6 sm:mb-8`. CTA subhead `mb-8 → mb-6`. Total scroll reduction ~110-220px across landing.
-- **Status:** RESOLVED 2026-05-05 (commit `897259ab`). Pairs with Pass I canon foundation to deliver "more atmospheric and more premium" feel — atmospheric richness from canon swap + tighter rhythm from spacing trim.
-- **Result:** Layout/structure UNCHANGED (only `mb` values trimmed); typography sizes/weights UNCHANGED; mobile-first responsive structure preserved. Build clean; forbidden grep ZERO. Skills: `bd-design-identity`, `mola-ai-relay-protocol`.
-
-### KI-094: Pass K — between-section spacing on landing page (audit F-12)
-
-- **Impact:** Owner directive 2026-05-05: "fix spacing issue on landing page between sections." Audit AI F-12 (`archive/AUDIT_FULL_2026-05-04_SONNET_archived_2026-05-04.md`) independently confirmed hard section color transitions remained after Pass J (Pass J fixed within-section heading spacing only). Outgoing `pb-bottom` + `.bd-landing-seam-fade` (112px) + incoming `pt-top` summed to ~176-240px per transition × 8 transitions = ~1400-1900px of empty atmospheric ground stacked through the landing scroll. Owner-visible "gappy" reading especially between cool↔cool and cool↔warm section boundaries.
-- **Location:** 6 landing sections (HowItWorks, Benefits, WhoWeServe, AboutOpportunity, TrustStats, CTA) + `.bd-landing-seam-fade` utility in `src/styles/theme.css`. BusinessInquiry + OperatingRegions had already been asymmetrically trimmed in earlier passes and were left alone.
-- **Fix direction:** Two-axis tightening, single coordinated commit.
-  - Section `py`: `py-8 sm:py-12 md:py-16 → py-4 sm:py-8 md:py-10` (CTA also `lg:py-20 → lg:py-12`). Saves 32-48px per side per section.
-  - `.bd-landing-seam-fade` height: 112px → 72px (light + dark). Compensating alpha bumps so bridge stays visually present: light gold 0.10/0.03 → 0.13/0.04, navy linear 0.08 → 0.12; dark gold 0.16/0.05 → 0.20/0.06 (still under 0.22a single-layer halo cap), navy linear 0.32 → 0.38.
-  - Net per-transition savings ~70-130px × 8 transitions = ~560-1040px scroll reduction across landing.
-- **Status:** RESOLVED 2026-05-05 (commit `907f0cd8`).
-- **Hard stops respected:** 0.22a single-layer halo cap NOT exceeded (max new alpha 0.20). Locked Premium Gold Palette only (`rgba(196,144,65)` champagne). HeroSection UNTOUCHED. BusinessInquiry + OperatingRegions UNTOUCHED (pre-trimmed). Card grid `gap-*` UNTOUCHED (intra-card spacing). Typography sizes/weights UNTOUCHED. Build clean (3815.32 KiB precache). Branch-aware forbidden grep ZERO.
-- **Skill:** `bd-design-identity`.
-
-### KI-095: F-04 — `GET /notification-preferences` 500 in cloud prod (graceful-degradation half resolved)
-
-- **Impact:** Audit AI F-04 (P1-RUNTIME, `archive/AUDIT_FULL_2026-05-04_SONNET_archived_2026-05-04.md`): GET `/notification-preferences` returns 500 in cloud prod when the user opens Appearance Settings. Client circuit-breaker (60s) suppresses the error toast but also blocks subsequent reads/writes for a minute. Audit identified three possible causes: table missing on prod, schema mismatch, or edge function v50 runtime error.
-- **Location:** [supabase/functions/server/handlers/notification_preferences.ts](supabase/functions/server/handlers/notification_preferences.ts) + [src/app/services/supabase/notificationPreferences.ts](src/app/services/supabase/notificationPreferences.ts). Server handler review confirmed the code itself is correct — uses `.maybeSingle()` (not `.single()`) + auto-INSERT on null. So the 500 is a real DB-side error, not a missing-row bug.
-- **Fix direction (graceful-degradation half — code-side resilience):**
-  - `logPostgrestError()` helper logs full Postgres error (code + message + details + hint) server-side. Previous code logged only `sanitizeErrorMessage(error.message)`, which strips relation/RLS details — making prod logs useless for diagnosis.
-  - `isPersistenceUnavailable()` detects 42P01 (`undefined_table`), 42501 (`insufficient_privilege`/RLS), 0LP01 (`invalid_grant`) — the three Postgres codes meaning "infrastructure not available."
-  - On those specific failures, GET returns 200 with `FALLBACK_PREFERENCES` (mirrors the DEFAULT clauses in migration 20251230000001 §3.17) and `fallback: true`, instead of 500. Other errors still 500.
-  - PUT path UNCHANGED — preferences fail loudly when saving against a missing table (correct: don't mask data-layer bugs).
-  - Client `getNotificationPreferences()` reads server's `fallback` flag, tags result with `__fallback`. Circuit-breaker no longer trips on graceful 200.
-- **Status:** **OPEN** — code-side graceful-degradation RESOLVED 2026-05-05 (commit `0df5d4c9`). Root-cause investigation pending owner action: open Supabase Dashboard → Functions → `server` → Logs, trigger Appearance Settings against prod, confirm Postgres code, then either apply migration §3.17 + RLS via Dashboard SQL Editor (per `feedback_supabase_cli_pg17` memory: `db push` broken on PG17, dashboard paste is the working path) for `42P01`, OR re-apply RLS policy for `42501`/`0LP01`.
-- **Hard stops respected:** No schema change. No auth invariant change (`verify_jwt: false` preserved). No storage invariant change. PUT endpoint UNCHANGED. Build clean (3815.36 KiB precache). Branch-aware forbidden grep ZERO.
-- **Skill:** `supabase-clerk-edge-function` (no auth pattern change). Pattern candidate for future `supabase-edge-diagnostic-logging` skill once used in a second handler.
-
-### KI-096: F-16 — Clerk session persists after Log Out (afterSignOutUrl missing on ClerkProvider)
-
-- **Impact:** Audit AI F-16 (P1-RUNTIME, `archive/AUDIT_FULL_2026-05-04_SONNET_archived_2026-05-04.md`): user clicks Log Out via dashboard dropdown → app navigates to landing in apparent logged-out state → user clicks appearance toggle → authenticated state restored without re-entering credentials. Trust + security perception issue, especially on shared devices. Read-only F-16 diagnose pass identified H3 as primary cause: `<ClerkProvider>` at [src/app/App.tsx:465](src/app/App.tsx#L465) was configured with only `publishableKey` + `appearance` — no `afterSignOutUrl`. Without provider-level redirect config AND without `redirectUrl` passed to `signOut()` calls, no hard browser navigation occurs on logout. The app's React state navigation (`navigation.setShowLandingPage(true)`) renders the landing UI but in-memory state, contexts, and Clerk's internal session cache persist. On next re-render (e.g. appearance toggle), Clerk's `useUser()` re-hydrates from the still-present session token.
-- **Location:** [src/app/App.tsx:465](src/app/App.tsx#L465) — `<ClerkProvider>` config.
-- **Fix direction:** Add `afterSignOutUrl="/"` to `<ClerkProvider>`. One-line provider config change. Per `@clerk/clerk-react` v5.61.5 type definitions in `node_modules/@clerk/shared/dist/types/index.d.ts`: "Configure `afterSignOutUrl` as a global configuration, either in `<ClerkProvider/>` or in `await Clerk.load()`" — canonical Clerk v5 pattern. Provider-level config applies to every `signOut()` call regardless of whether the call site passes `redirectUrl`.
-- **Status:** RESOLVED (code) 2026-05-05 (commit `92ce7528`). Owner browser smoke test pending: log in → click Log Out from dashboard dropdown → verify hard navigation to `/` (URL bar reloads, not just SPA route change) → verify clicking around landing does not restore session.
-- **Hard stops respected:** No edge function touched, no JWT verification path touched, `verify_jwt: false` preserved, `requireClerkSession()` unchanged, no Clerk SDK version bump, no env var change, no JWT template change. Single file (App.tsx) plus this doc entry. Per `supabase-clerk-edge-function` skill (no auth verification pattern change — this is session lifecycle, not session verification).
-- **Result:** Clerk's `signOut()` now performs a hard browser navigation to `/` after clearing the session, forcing a full document reload that clears all in-memory React state and gives Clerk a clean slate to verify the now-cleared session token. Both call sites benefit: dashboard `handleLogout` (`src/app/hooks/useAppHandlers.ts:40`) gets the hard nav for free; `LandingPageHeader.tsx:313`'s explicit `redirectUrl: "/"` becomes redundant but harmless.
-
-### KI-098: F-18 — Error boundary used near-white backgrounds (LAW Light-Mode Surface Rule violation)
-
-- **Impact:** Audit AI F-18 (P4-UX, `archive/AUDIT_FULL_2026-05-04_SONNET_archived_2026-05-04.md`): the GlobalErrorBoundary recovery screen at [src/main.tsx](src/main.tsx) had three LAW Light-Mode Surface Rule violations: (1) card body gradient started at `rgba(255,255,255,0.82)`, (2) cream-highlight inset used `rgba(255,255,255,0.42)`, (3) the "Reload Page" secondary button used `bg-white` + `hover:bg-slate-50`. Plus a `border-white/30` border. Only visible on catastrophic React crashes — very low blast radius — but a canon violation nonetheless and an embarrassing surface to ship to users at the worst possible moment (when the app has crashed).
-- **Location:** [src/main.tsx](src/main.tsx) `GlobalErrorBoundary.render()` (~L48-L120).
-- **Fix direction:** Replace pure-white surfaces with canon equivalents at the same alpha character.
-  - Body gradient: `rgba(255,255,255,0.82) → rgba(241,245,249,0.64)` → cool ice canon `rgba(248,250,255,0.84) → rgba(229,238,250,0.76)` (LAW canon body opacity range 0.76-0.84).
-  - Cream highlight inset: `rgba(255,255,255,0.42)` → canon `rgba(252,240,208,0.42)`.
-  - Border: `border-white/30` → canon bronze `border-[rgba(140,82,22,0.22)]` (replaces pure-white with subtle canon bronze trim).
-  - Reload button: `bg-white` → `bg-[rgba(248,250,255,0.92)]`; `hover:bg-slate-50` → `hover:bg-[rgba(238,247,255,0.95)]`.
-  - Backdrop-filter preserved (premium glass character maintained even on catastrophic failure).
-- **Status:** RESOLVED 2026-05-05 (commit `04e33f4f`).
-- **Hard stops respected:** Outer wrapper `bg-[#eef2f7]` UNCHANGED (already canon cool blue-gray). Logo / heading / paragraph / Try Again button UNCHANGED (cool blue gradient already canon). Build clean (3816.11 KiB precache). Branch-aware forbidden grep ZERO.
-- **Skill:** `bd-design-identity`. Closes the visual-canon arc opened in Pass H (KI-091 → KI-094).
-
-### KI-099: F-24 — Demo shop data shown as real recommendations (preview-directory mitigation)
-
-- **Impact:** Audit AI F-24 (P2-DATA, soft-launch trust): the dashboard "Recommended Shops" surface (full map, AI matching, ImmersiveMapResultsDrawer, ShopDirectoryListBody, LikedShopsScreen, etc.) sources shop data exclusively from `src/app/services/intelligence/marketSeedShops.ts` (CORE_SHOPS) — fabricated names (Express Auto Body, Premium Collision Center, etc.), fabricated ratings (4.8-4.9), fabricated review counts (91-203), fabricated certifications (ASE Certified, I-CAR Gold Class, Mercedes Certified, etc.), Unsplash stock photos, fabricated completion rates (98-99%). A user can click "Request Estimate" / "Save for bids" / "Start Navigation" on shops that do not exist. Most credibility-damaging item left in the audit. Note: the LANDING coverage map (`useCoveragePartnerShops`) already does the right thing — fetches real `public_partner_shops` from Supabase + falls back to demo only on DEV/`VITE_ENABLE_MAP_DEMO_FALLBACK=true`. F-24 is specifically the dashboard-side directory.
-- **Location:** [src/app/services/intelligence/marketIntelligence.ts](src/app/services/intelligence/marketIntelligence.ts) (`getShopDirectory` + `buildShopRecommendations`); 20+ downstream consumers in `src/app/components/shop/` (ShopDirectoryListBody, ImmersiveMapResultsDrawer, LikedShopsScreen, ShopDirectoryHero, ShopDirectoryHybridStage, etc.) and `src/app/components/maps/MapLibreReportLayer.tsx`.
-- **Fix direction (chosen — short-term, soft-launch ship):** Honest preview-directory banner per audit option (c). Full Supabase swap deferred (KI-100) due to scope: 20+ consumers would need sync→async refactor, plus real shop query infrastructure isn't fully wired in dashboard surfaces yet, plus production DB likely has zero or near-zero real shops at soft launch (real-data path would yield mostly empty state which is also bad for marketplace impression).
-  - Added `SHOP_DIRECTORY_IS_PREVIEW = true` constant exported from `marketIntelligence.ts`. Single source of truth — flip to `false` (or compute from real-data resolved count) when KI-100 ships.
-  - New `PreviewDirectoryNotice` component at [src/app/components/shop/PreviewDirectoryNotice.tsx](src/app/components/shop/PreviewDirectoryNotice.tsx) — canon-aligned (cool blue body + canon bronze trim + canon cream highlight inset; no pure-white). Honest copy: "Preview directory — example shops shown while we onboard real partners. Saved bids and estimate requests will activate once shops join your area."
-  - Notice placed on `ShopDirectoryListBody.tsx` immediately above the "Recommended shops" header (the highest-traffic dashboard surface for fake shops). Conditional on `SHOP_DIRECTORY_IS_PREVIEW`.
-- **Status:** RESOLVED (short-term mitigation) 2026-05-05 (commit `7f6d55ce`). Full Supabase swap tracked separately as KI-100.
-- **Hard stops respected:** No `marketIntelligence.ts` API change (sync return signatures preserved — 20+ consumers untouched). No data layer change. No auth invariant change. No storage invariant change. Banner is pure-additive UI. Build clean (3817.71 KiB precache, +1.6 KiB for new component). Branch-aware forbidden grep ZERO.
-- **Skill:** `bd-design-identity` (notice canon-aligned).
-
-### KI-100: F-24 follow-up — full Supabase swap for `buildShopRecommendations` (P2-DATA, deferred)
-
-- **Impact:** Long-term resolution of F-24. Replace `buildShopRecommendations()` synchronous source from `marketSeedShops.ts.SHOPS` with an async query against Supabase `public_partner_shops` (or `shop_profiles`) table, plus an empty-state UI when the query returns zero rows in a user's service area.
-- **Location:** [src/app/services/intelligence/marketIntelligence.ts](src/app/services/intelligence/marketIntelligence.ts) (`getShopDirectory` + `buildShopRecommendations`); 20+ consumers across `src/app/components/shop/` + `src/app/components/maps/`.
-- **Fix direction (deferred):** Convert `buildShopRecommendations()` to async, returning a Promise. Replace `SHOPS.filter(...)` with a Supabase query against `public_partner_shops` (already exists per migration 20251230000001 §3.13 + populated via shop signup flow). Wrap the 20+ consumer call sites in async/await + loading states. Add empty-state UI ("No partner shops in your area yet — be the first to know when one signs up" + email-capture). Keep `SHOPS` only as `import.meta.env.DEV` fallback. Flip `SHOP_DIRECTORY_IS_PREVIEW` to `false` once the real-data path resolves with non-empty rows. Remove `<PreviewDirectoryNotice />` from surfaces once flag is false. Significant scope — ~20 file refactor — should be a dedicated pass with diagnose-first protocol like F-16. Pre-requisite: confirm `public_partner_shops` table exists on prod (related to KI-095 investigation pattern).
-- **Status:** **OPEN** — DEFERRED (intentional defer per autopilot scope discipline). Owner directive 2026-05-05 authorized F-24 mitigation pass; full swap requires explicit second authorization given the scope.
+- **Impact (corrected 2026-05-08, Pass 17 audit AI):** the original "20+ consumers" framing was wildly inflated. Independent grep + co-worker AI Pass 15 sweep both confirmed:
+  - `getShopDirectory`: ZERO production consumers — REMOVED Pass 17 (was thin wrapper around `SHOPS`).
+  - `buildShopRecommendations`: ZERO production consumers in `src/app/components/`. Only consumers are 4 references in `marketIntelligence.test.ts` (the function's own tests). The function reads `SHOPS` from `marketSeedShops.ts` and returns recommendations, but no React component or hook actually invokes it.
+- **Revised scope:** the F-24 follow-on is now ~3 files at most (the helpers themselves + their tests + the `SHOPS` seed file), not the 20+ files originally cited. Either:
+  1. Wire `buildShopRecommendations` into a real consumer (the test surface suggests it was intended for a shop-directory list/grid that never landed) — at which point the Supabase swap becomes meaningful.
+  2. Confirm the function is permanently abandoned and remove it alongside `SHOPS` and the test file (cascading dead-code removal — net file deletion of `marketIntelligence.ts`'s recommendation half).
+- **Original fix direction (preserved for reference, but scope-inflated):** Convert `buildShopRecommendations()` to async, returning a Promise. Replace `SHOPS.filter(...)` with a Supabase query against `public_partner_shops` (already exists per migration 20251230000001 §3.13 + populated via shop signup flow). Add empty-state UI. Flip `SHOP_DIRECTORY_IS_PREVIEW` to `false` once the real-data path resolves. Remove `<PreviewDirectoryNotice />` from surfaces once flag is false.
+- **Status:** **OPEN — DOWNGRADED P2-DATA → P3-DEAD-CODE-MOSTLY 2026-05-08 (Pass 17 audit AI).** The Supabase-swap work is contingent on first deciding whether `buildShopRecommendations` has a future. If yes (path 1), it becomes a 3-5 file refactor (not 20+). If no (path 2), it becomes dead-code removal of ~80 LoC. Either path is a single-pass janitor task. Owner directive 2026-05-05 authorization stands; explicit second authorization no longer required for the corrected scope.
+- **Pass 17 cleanup landed:** `getShopDirectory()` removed (3 lines), `nyMetroTestHubSeed.ts` stubbed (229 lines → 22-line dead-code stub awaiting host-side `rm`).
 - **Skill:** `supabase-clerk-edge-function` (any new shop-fetch handler will follow this pattern).
-
-### KI-104: Pass L — visible "darker stripe" border at landing section transitions (Pass K residual)
-
-- **Impact:** Owner directive 2026-05-05 (re-authorized autopilot block): even after Pass K (KI-094) trimmed seam-fade height + bumped alphas to address F-12, a visible darker horizontal stripe persisted at landing section transitions, especially in dark mode. Owner reading this as a "border line." Light mode less visible but still subtly present.
-- **Location:** [src/styles/theme.css](src/styles/theme.css) `.bd-landing-seam-fade` utility (~L3793-L3856).
-- **Diagnose findings:** Two compounding root causes (hypothesis #2 + #4 from owner brief, plus a self-inflicted darkening layer):
-  - **Hypothesis #4 confirmed** — `.bd-landing-seam-fade` is a SIBLING block element BETWEEN sections in [src/app/components/app/LandingPageLayout.tsx:160,172,176,180,184,191,195](src/app/components/app/LandingPageLayout.tsx#L160). It does NOT overlap into adjacent sections. Its gradient renders in empty layout space rather than bridging across the section boundary.
-  - **Hypothesis #2 confirmed** — adjacent section background gradients have mismatched endpoint colors. Worst case in dark mode: HowItWorks ends `#081e38` → Benefits starts warm-bronze (cool→warm DRAMATIC); Benefits→WhoWeServe (warm→cool); AboutOpp→TrustStats (cool→warm); TrustStats→OperatingRegions (warm→cool). Cool↔cool transitions less visible; warm↔cool transitions are where the "border" reads strongest.
-  - **Self-inflicted darkening layer** — the seam-fade had TWO gradient layers: gold radial (the actual bridge — works) AND a navy linear `rgba(8,16,32,0.38)` at center in dark / `rgba(15,30,60,0.12)` light. The navy linear's color (`#081020`) is DARKER than every section bg in dark mode. So the seam-fade was visibly DARKENING the boundary area below adjacent section colors, creating the "darker stripe = border" perception.
-  - **Hypothesis #1 ruled out** — no explicit `border-t/-b/-y` Tailwind classes on section wrappers. Verified clean across 8 section components.
-- **Fix direction:** Two-part structural fix in single coherent change.
-  - (a) **Negative-margin overlap** — added `margin-top: -36px; margin-bottom: -36px;` to `.bd-landing-seam-fade`. Seam now overlaps adjacent sections by 36px each side. Turns it from a between-band into a true bridge: gold radial center sits exactly at the section boundary, soft-lighting ACROSS rather than DARKENING BETWEEN.
-  - (b) **Drop the navy linear layer entirely** (light + dark register). The gold radial alone IS the bridge; navy darkening was an additive misfire. Gold radial alphas UNCHANGED from Pass K (0.13/0.04 light, 0.20/0.06 dark) — still well under 0.22a cap.
-- **Status:** RESOLVED 2026-05-05 (commit `6b96c22b`).
-- **Visual continuation:** Pass M (commit `e5937a27`) bumped this same primitive's light center alpha 0.13→0.18 / mid 0.04→0.06 in response to owner zoomed-out screenshot review. Pass N (commit `e5437355`) and Pass O (commit `c17a6c4c`) extended the alpha-lift pattern to `.bd-landing-section-toplamp` (light 0.13→0.18) and `.bd-landing-section-bottomwash` (light 0.10→0.14) — the M/N/O trilogy together completes the light-mode landing-atmosphere richness pass. All within Locked Premium Gold Palette + 0.22a halo cap. Dark mode untouched in all three.
-- **Hard stops respected:** 0.22a cap NOT exceeded (alphas unchanged). HeroSection UNTOUCHED. Pass K spacing UNTOUCHED (`py-4 sm:py-8 md:py-10` preserved). Locked Premium Gold Palette only. No new utilities. `pointer-events: none` preserved (no click interception). `position: relative; z-index: 1;` preserved (renders above sections in stacking context). Build clean (3817.64 KiB precache stable). Branch-aware forbidden grep ZERO.
-- **Skill:** `bd-design-identity`. Pre-existing IDE diagnostics at theme.css `:root` (L852) + `[data-appearance-mode="light"]` (L1833 + L2586 + L2714) UNCHANGED — these are intentional mode-override blocks misclassified as duplicate selectors by the IDE linter (per §1.2 diagnose finding in commit 4c154c66 — audit B2 false positive). Not caused by any landing-pass edit.
-
-### KI-105: F-15 — Landing hero demo map renders too pale in light mode
-
-- **Impact:** Audit AI F-15 (P4-UX, cosmetic): the landing hero demo map (mobile + desktop variants) used `#eef4fb` base tile + `#cbd5e1`/`#dde6f0` road strokes in light mode. Tile vs stroke luminance delta was ~32 — too small to give the map a confident, premium reading. Dark-mode equivalent has ~40 luminance delta with rich navy `#0d1d3a` + slate-700 `#334155` strokes; light mode trailed in visual impact.
-- **Location:** [src/app/components/landing/HeroSection.tsx](src/app/components/landing/HeroSection.tsx) — 14 occurrences across mobile (L585-712) + desktop (L840-910) hero map layers.
-- **Fix direction:** Single-axis palette saturation shift, dark mode UNCHANGED.
-  - Tile base: `#eef4fb` → `#dbe7f5` (slightly deeper cool blue, still light/airy — 6 occurrences)
-  - Primary roads: `#cbd5e1` → `#94a3b8` (slate-400, more visible — 6 occurrences)
-  - Secondary roads: `#dde6f0` → `#a8b8cb` (between slate-300 and slate-400 — 4 occurrences)
-  - New light luminance delta: ~68 (primary) / ~46 (secondary) — matches or exceeds dark-mode contrast ratio.
-- **Status:** RESOLVED 2026-05-05 (commit `91835cf9`).
-- **Hard stops respected:** Cool blue identity preserved (no warm encroachment). LAW Light-Mode Surface Rule respected (no pure-white). No structural change to map layers (route lines, pin pulse, gold flow, contour grid all UNCHANGED). Dark-mode tile + stroke colors UNCHANGED (`#0d1d3a`, `#334155`, `#293449` preserved). Build clean (3817.64 KiB precache stable). Branch-aware forbidden grep ZERO.
-- **Skill:** `bd-design-identity`.
 
 ### KI-106: SpeedLimitBadge solid `bg-white` — semantic real-world signage exception (P7-DOCS-ONLY)
 
@@ -790,13 +243,18 @@
 - **Skill:** `bd-design-identity` (semantic exception class).
 - **Audit context:** 2026-05-05 fresh-eyes scan also confirmed: ZERO off-canon goldenrod values in landing/shop/dashboard component paint (only HowItWorksSection.tsx:88 has them inside a doc-comment about prior Pass I swap, not actual paint). ZERO fire-and-forget signOut/Promise patterns post-KI-097. ZERO storage hydration gaps — `vehicles.image_url`, `profiles.profile_image_url`, `damage_reports.photo_urls` all properly hydrate via `hydrateSignedStorageUrl(s)` in their respective handlers.
 
-### KI-101: F-01 — "Toyoto" misspelled vehicle make persisted in DB (P6-SPELL — owner action)
+### KI-101: F-01 — "Toyoto" misspelled vehicle make persisted in DB (RESOLVED 2026-05-07)
 
-- **Impact:** Audit AI F-01 (P6-SPELL): the 2021 Toyota Camry vehicle record was saved with the make field as "Toyoto" (misspelled). Propagates to every display of this vehicle/report — dashboard "Your Reports" h3 (`2021 Toyoto Camry`), Account tab Vehicles list, Report creation flow Step 1 vehicle selector, Make field pre-fill. Visible typo on production-facing content. Make input placeholder correctly shows "Toyota" — so the field hint is correct but there's no enforcement.
-- **Location:** `vehicles` table row for the affected user. Code-side: vehicle entry form has placeholder hint but no validation/autocorrect.
-- **Fix direction:** **Owner action:** UPDATE the `vehicles` table row to correct "Toyoto" → "Toyota" via Supabase Dashboard SQL Editor (single UPDATE statement). **Code improvement (deferred, optional):** add make validation/autocorrection against a canonical makes list in the vehicle entry form. Non-trivial — would touch the report wizard's vehicle step + account vehicle entry — not appropriate for autopilot ship without explicit go-ahead. Bigger value would be a future `vehicles` migration adding a CHECK constraint or normalized-makes lookup table.
-- **Status:** **OPEN** — owner DB action pending. Code improvement deferred.
-- **Skill:** None — pure data hygiene + future schema decision.
+- **Impact (historical):** The 2021 Toyota Camry vehicle record was saved with `make="Toyoto"`. Propagated to `vehicles` table → Account Vehicles list + Report Step 1 picker, AND `damage_reports.vehicle_make` (denormalized at submit time). Two surfaces, two DB rows.
+- **Resolution (2026-05-07):** External audit AI applied the fix directly via Supabase MCP under owner-granted "fix authority" for safe data corrections. Two SQL UPDATEs against project `wmdcnjgtsppftrofaqqa`:
+  ```sql
+  UPDATE public.vehicles SET make='Toyota' WHERE id='c7260d31-31a4-4dbc-9657-616abc4f4a34';
+  UPDATE public.damage_reports SET vehicle_make='Toyota' WHERE vehicle_id='c7260d31-31a4-4dbc-9657-616abc4f4a34';
+  ```
+  **Planner-AI verified independently 2026-05-07** via Supabase MCP `execute_sql`: `SELECT make FROM vehicles WHERE id='c7260d31...'` now returns `make: "Toyota"`. Audit AI also visually confirmed "2021 Toyota Camry" renders on mobile Report Step 1.
+- **Code improvement (deferred):** Add canonical-makes validation in vehicle entry form. Non-trivial — touches report wizard Step 1 + account vehicle entry. Tracked separately if needed.
+- **Status:** **RESOLVED 2026-05-07** — both DB rows fixed; verified independently by planner. Move to archive on next docs hygiene pass.
+- **Skill:** None — pure data hygiene; safe-fix authority precedent for audit AI.
 
 ### KI-102: F-03 — Cat photo as damage report thumbnail (P2-DATA — owner action)
 
@@ -816,14 +274,6 @@
   - (c) Owner provides preferred replacement email; code change ships immediately against that.
 - **Status:** **OPEN** — owner decision pending.
 - **Skill:** None — owner business decision.
-
-### KI-097: F-16 follow-up — `LandingPageHeader.tsx:313` fire-and-forget signOut (P7-TECHDEBT)
-
-- **Impact:** During F-16 diagnose (KI-096), a secondary code-quality issue surfaced at [src/app/components/landing/LandingPageHeader.tsx](src/app/components/landing/LandingPageHeader.tsx): `signOut({ redirectUrl: "/" })` was invoked fire-and-forget (no `await`, no `void` annotation). After F-16 fix added provider-level `afterSignOutUrl`, the explicit `redirectUrl` was redundant and the unawaited promise was a code-quality smell — but logout worked correctly post-F-16, so this was non-urgent.
-- **Location:** [src/app/components/landing/LandingPageHeader.tsx](src/app/components/landing/LandingPageHeader.tsx) — `onClick` handler in mobile menu Sign Out button.
-- **Fix direction:** Convert click handler to `async` and `await signOut()`. Drop the redundant `{ redirectUrl: "/" }` since provider-level config (KI-096) now handles it.
-- **Status:** RESOLVED 2026-05-05 (commit `296f6521`). Click handler now `async` + `await signOut()`. Comment in the code points back at KI-097 + KI-096 for institutional memory.
-- **Skill note:** P7-TECHDEBT cleanup picked up in autopilot sustained pass after F-24 mitigation completed — small enough to ship as its own commit without violating "one bug, one commit" discipline.
 
 ### KI-089: Dead storage adapter direct-upload path (architectural observation — no fix needed)
 
@@ -870,36 +320,6 @@
     - **Type-only imports** — InsurerPartnerShopCard, ImmersiveMapResultsDrawer, ShopDirectoryListBody import `type { ShopMapListing }`. Type imports don't count as runtime architectural drift; left as-is.
   - **Future-phase resolution paths (none committed):** Either (a) relocate `zipToCoordinates` / `haversineMiles` / `getRoleCollectionActionLabels` etc. to a pure-utility module (`utils/geo`, `hooks/utils/`) so direct L2 imports are no longer L4 violations, OR (b) refactor each per-list-item caller to pre-compute via top-level `useMemo` + array-indexed lookup inside the `.map()`. Owner-named only.
 - **Status:** **OPEN — P3 grandfathered with reduced surface area.** Phase 8 closure is partial-by-architecture; the 4 shipped hooks cover the single-call surfaces cleanly. Cross-ref [`archive/OPS_PHASE_8_SCOPE_CONTRACT_2026-05-05_archived_2026-05-06.md`](archive/OPS_PHASE_8_SCOPE_CONTRACT_2026-05-05_archived_2026-05-06.md) §1 hooks 1-4 + close footer for full scope refinement audit trail.
-
-### KI-109: `useOperatingRegionsCoverage.ts` exceeds L3 hard limit (P3, RESOLVED)
-
-- **Impact:** [`src/app/hooks/useOperatingRegionsCoverage.ts`](../src/app/hooks/useOperatingRegionsCoverage.ts) was at 512 LOC. Per [`LAW_LAYERED_ARCHITECTURE.md`](LAW_LAYERED_ARCHITECTURE.md) the L3 hard limit is 500. Was the only L3 file in the map system over the hard limit.
-- **Resolution (2026-05-05, commit `d8c99055`):** Extracted 6 pure derivation functions into a sibling helper module [`useOperatingRegionsCoverageHelpers.ts`](../src/app/hooks/useOperatingRegionsCoverageHelpers.ts) (155 LOC). Main hook reduced to **468 LOC (32 under hard limit)**. Helpers extracted:
-  - `resolveZipSearchTarget(lookup, normalizedZip)`
-  - `resolveZipMapTarget(lookup, normalizedZip)`
-  - `selectFallbackSearchTarget(activeOriginMode, ...)`
-  - `selectMapFocusTarget(listSearchTarget, ...)`
-  - `resolveIsOutsideServiceRegion(listSearchTarget, ...)`
-  - `computeNearbyShops(listSearchTarget, mapPartnerShops, radiusMiles)`
-- **Architectural choice rationale:** Original audit ([`archive/OPS_PHASE_8_SCOPE_CONTRACT_2026-05-05_archived_2026-05-06.md`](archive/OPS_PHASE_8_SCOPE_CONTRACT_2026-05-05_archived_2026-05-06.md) §1 Deliverable 6) proposed a `useCoverageOriginResolution` sub-hook. Read-only re-audit during execution found origin-resolution handlers tightly coupled to parent state (navigation, centerOnTarget, setGeoMessage, manualSearchTarget) — sub-hook would require passing 5-7 callbacks back, more awkward than helper. Pure-function extraction was cleaner: useMemo wrappers stay in the main hook (preserving React reactivity), bodies become 1-line calls to helpers.
-- **Verification:** `npm run build` green; refactor neutrality verified by static diff (every helper is a 1:1 extraction of original useMemo body; comments preserved including the Phase 2 honesty note for `resolveIsOutsideServiceRegion`).
-- **Status:** **RESOLVED 2026-05-05** (Phase 8 close commit `d8c99055`).
-
-### KI-110: `services/intelligence/shopMapExperience` direct-import coupling (P5, RESOLVED-WITH-RESIDUAL)
-
-- **Impact:** `services/intelligence/shopMapExperience.ts` exposed business logic (role-aware shop ranking, role collection title/labels, default map center) consumed directly by 6+ L2 surfaces. Higher coupling than the rest of the L2→L4 pattern in KI-108 because this module has _behavior_ (role-scoped ranking) that L2 cannot test or swap without touching production callers.
-- **Resolution (2026-05-05, commits `8fa136d7` + `9846ef46`):** Authored [`useShopMapListings`](../src/app/hooks/useShopMapListings.ts) L3 hook wrapping `buildShopMapListings`. Migrated 3 substantive-use callers:
-  - [`InsurerPartnerShopsScreen`](../src/app/components/insurer/InsurerPartnerShopsScreen.tsx) (insurer-side partner directory)
-  - [`LikedShopsScreen`](../src/app/components/shop/LikedShopsScreen.tsx) (customer-side saved shops)
-  - [`CompetitorAnalysisScreen`](../src/app/components/reports/CompetitorAnalysisScreen.tsx) (shop-side competitor analysis)
-- **Scope refinement vs original KI:** Original KI named 7 callers and proposed wrapping all behind a "kitchen sink" hook (`useShopMapListings(role)` returning `{ listings, defaultMapCenter, collectionTitle, getActionLabels }`). Caller inventory during Phase 8 execution revealed the kitchen-sink shape matches no actual caller — each of the 7 uses exactly one of: `buildShopMapListings` (3 callers, single-call, fit hook), `getRoleCollectionActionLabels` (2 callers, inside `.map()` loops, hooks-in-loops violation), `getRoleCollectionTitle` (1 caller, trivial pure function — direct import fine), `getDefaultMapCenter` (1 caller, constant getter — direct import fine), `toggleRoleCollectionShopId` (1 caller, pure data manipulation — direct import fine). The Y1 narrowed shape `(args) => ShopMapListing[]` covers the 3 substantive-use callers cleanly; the other 4 keep direct imports under the same selectivity policy as KI-108.
-- **Documented residual (folded into KI-108):**
-  - ImmersiveMapResultsDrawer + ShopDirectoryListBody — `getRoleCollectionActionLabels` inside `.map()` (hooks-in-loops)
-  - ShopDirectorySearchPanel — `getRoleCollectionTitle` (trivial)
-  - ShopDirectoryHybridMapSection — `getDefaultMapCenter` (constant getter)
-  - InsurerPartnerShopCard — `toggleRoleCollectionShopId` (pure data manipulation)
-- **Verification:** `npm run build` green on both commits; refactor neutrality verified by static diff (only function-call-name substitution at 3 sites; args identity-stable; return value chained through identical `.map()`/`.filter()` calls).
-- **Status:** **RESOLVED-WITH-RESIDUAL 2026-05-05.** The leverage hook ships and closes the 3 substantive-use callers. The 4 smaller-utility surfaces remain with direct L4 imports per KI-108's documented selectivity policy. Future-phase resolution would relocate the small utilities to a pure-utility module — owner-named only.
 
 ### KI-111: `command-center/` and `navigation/` subtrees growing toward sub-folder discipline threshold (P6)
 
@@ -955,181 +375,1076 @@
 - **Removal trigger:** Post-launch aesthetic pass OR Phase 8.5 ambient/idle motion work, whichever comes first. Sub-fixes may activate independently.
 - **Next review:** Post-launch retrospective OR Phase 8.5 kickoff.
 - **Why parked here, not in OPS audit only:** The OPS pre-execution audit is a point-in-time snapshot; the KI ledger is the durable home for parked aesthetic gaps. Future agents reading `REF_KNOWN_ISSUES.md` will surface these candidates without re-reading audit docs. Phase 6.5 close commit cross-refs the original scope; Phase 7.5 close commit cross-refs the extended scope (F2 + F3).
-- **Status:** **OPEN — P7-TECHDEBT.** Phase 6.5 closed via Path B (deferred-aesthetic note, original scope). Phase 7.5 closed via Path Y (docs-only, F2 + F3 scope extension — dashboard surfaces). Phase 7.6 / KI-113 close (2026-05-05, commits `b1fea150` → `bb20f554`) cleared the reduced-motion contract gating — any future sub-fix activation on motion/react surfaces now mechanically inherits root `<MotionConfig reducedMotion="user">` (`src/main.tsx`) + per-file `useReducedMotion()` pattern (45 files); CSS keyframe activations (original landing gold-lamp + F4 / F5 / F6) must still author their own `@media (prefers-reduced-motion: reduce)` block per [`LAW_ANIMATION_AND_ATMOSPHERE.md`](LAW_ANIMATION_AND_ATMOSPHERE.md) §3. Phase 8.5 closed via Path Y (docs-only, F4 + F5 + F6 scope extension — map ambient surfaces: route preview draw-on, pin pulse on canvas, liquid sheen extension to map frames; Phase 8.5 audit F3 camera idle drift maps to existing KI-112 F2 — no duplicate). Sub-fixes (original landing scope + F2 / F3 / F4 / F5 / F6) remain owner-taste-deferred to post-launch aesthetic pass. This KI is the parked record for the full atmosphere/idle/enter-motion gap family across landing + dashboard + map.
+- **Status:** **PARTIALLY RESOLVED — P7-TECHDEBT.** Phase 6.5 closed via Path B (deferred-aesthetic note, original scope). Phase 7.5 closed via Path Y (docs-only, F2 + F3 scope extension — dashboard surfaces). Phase 7.6 / KI-113 close (2026-05-05, commits `b1fea150` → `bb20f554`) cleared the reduced-motion contract gating — any future sub-fix activation on motion/react surfaces now mechanically inherits root `<MotionConfig reducedMotion="user">` (`src/main.tsx`) + per-file `useReducedMotion()` pattern (45 files); CSS keyframe activations (original landing gold-lamp + F4 / F5 / F6) must still author their own `@media (prefers-reduced-motion: reduce)` block per [`LAW_ANIMATION_AND_ATMOSPHERE.md`](LAW_ANIMATION_AND_ATMOSPHERE.md) §3. Phase 8.5 originally closed via Path Y (docs-only, F4 + F5 + F6 scope extension — map ambient surfaces: route preview draw-on, pin pulse on canvas, liquid sheen extension to map frames; Phase 8.5 audit F3 camera idle drift maps to existing KI-112 F2 — no duplicate). **F4 + F5 RESOLVED 2026-05-07** via Passes 90 (`3ba6c855`) + 91 (`8a3349dd`) under owner per-session "real map program" directive: route polyline now animates via MapLibre `line-trim-offset` (1100ms ease-out cubic, modern equivalent of the planned `bdRouteShimmer`/`dashMove` dasharray approach) and selected shop pin glow now breathes via imperative `setPaintProperty` rAF on `circle-opacity` (modern equivalent of the planned `bdPinPulse` canvas activation). Both honor OS-level `prefers-reduced-motion: reduce` via `window.matchMedia` JS check; LAW §3 contract preserved at the OS layer. **F6 RESOLVED 2026-05-07** via Pass 100: `bd-liquid-gold-flow` extended to both [`MapLibreShopDirectoryMapPane.tsx`](../src/app/components/shop/MapLibreShopDirectoryMapPane.tsx) (z-[205], opacity 0.18 dark / 0.10 light) and [`MapLibreServiceCoverageMap.tsx`](../src/app/components/maps/MapLibreServiceCoverageMap.tsx) (z-[249], same opacity, tone-aware via `resolveMapSurfaceTone`). Inherits the existing `@media (prefers-reduced-motion: reduce)` guard authored on `bd-liquid-gold-flow` in `theme.css` §4564 — LAW §3 contract preserved. Remaining sub-fixes (original landing scope + F2 + F3) remain owner-taste-deferred to post-launch aesthetic pass. This KI is the parked record for the full atmosphere/idle/enter-motion gap family across landing + dashboard + map.
 
-### KI-113: prefers-reduced-motion contract not honored across motion/react surfaces (P3)
+### KI-114: navigation_saved_places migration scaffolded but not applied (P5-DOC, owner action)
 
-- **Impact:** [`LAW_ANIMATION_AND_ATMOSPHERE.md`](LAW_ANIMATION_AND_ATMOSPHERE.md) §5 (as amended 2026-05-04 in commit `63ef6b6b`) requires every `motion/react` component to honor `prefers-reduced-motion: reduce` via `useReducedMotion()` (or equivalent) — components must short-circuit to a static / instant-state render when the user preference is set. Phase 7.5 audit + Sonnet runtime verification (2026-05-05, owner-supervised) + builder bounded sweep (X+ Step 2A, 2026-05-05) jointly confirmed the contract is honored on **0/49** motion/react component-level transitions. Users who set `prefers-reduced-motion: reduce` in OS or browser settings will still see explicit-duration tween animations across the application — bid card hovers, sheet overlays, route transitions, account menus, login flows, onboarding screens, insurer/shop screens, dashboard router, etc.
-- **Severity:** P3 — accessibility-canon coverage gap. Not P0 (no production breakage; reduced-motion users still see content, just animated). Not P1 (no user-visible feature break). Not P2 (charter-vs-reality drift was already resolved in commit `63ef6b6b`; this is now a code-vs-LAW conformance gap, the narrower P3 class). The contract language is mandatory ("MUST be honored"), so this is a real coverage gap, not a stylistic preference.
-- **Audit-stat correction (relative to original Phase 7.5 audit):** The original audit reported "1/49 compliant" because [`ReportScreen.tsx`](../src/app/components/codelayer/ReportScreen.tsx) L200 uses `window.matchMedia("(prefers-reduced-motion: reduce)")`. Sweep revealed that gate applies to `scrollIntoView` behavior (smooth vs auto), NOT to the `motion.div` step transition at L290. Actual compliance ratio on motion/react component-level transition behavior: **0/49**.
-- **Root cause (Sonnet runtime verification, 2026-05-05, owner-supervised):**
-  - Surface 1 — `BidCardArticle` hover, explicit `transition={{ duration: 0.2 }}` (tween): **FAIL** under emulated `prefers-reduced-motion: reduce` — animates over 200ms.
-  - Surface 2 — `MobileBottomNav` whileTap, `type: "spring"` default: **PASS** — instant snap, no spring animation.
-  - Surface 3 — `DashboardRouter` route transition (substituted for sheet open due to navigation accessibility), explicit `transition={{ duration: 0.2 }}` (tween): **FAIL** (inferred — same explicit-duration pattern as Surface 1).
-  - Recovery: PASS — normal motion returned when emulation disabled.
-  - **Mechanism:** `MotionConfig reducedMotion="user"` in motion/react v12 (the framer-motion rebrand) makes **spring** animations instant — when no explicit `duration` is set on a transition, MotionConfig can override it. It does **NOT** override animations with explicit `transition={{ duration: N }}` props — the component-level transition takes precedence over the `MotionConfig` context value. Spring/whileTap surfaces would benefit from a global `MotionConfig` wrap; explicit-duration surfaces require per-component `useReducedMotion()` to honor the preference.
-- **Scope (bucket A — explicit-duration tweens, definite fail under reduce, 32 files):**
-  - [`auth/ClerkAccountTypeSelector.tsx`](../src/app/components/auth/ClerkAccountTypeSelector.tsx) (L66, L88)
-  - [`auth/LoginLoginView.tsx`](../src/app/components/auth/LoginLoginView.tsx) (L107)
-  - [`auth/LoginMainView.tsx`](../src/app/components/auth/LoginMainView.tsx) (L31, L54, L77)
-  - [`auth/LoginSignupView.tsx`](../src/app/components/auth/LoginSignupView.tsx) (L141)
-  - [`codelayer/AccountScreen.tsx`](../src/app/components/codelayer/AccountScreen.tsx) (L343)
-  - [`codelayer/BidCardArticle.tsx`](../src/app/components/codelayer/BidCardArticle.tsx) (L73, L169)
-  - [`codelayer/BidsEmptyState.tsx`](../src/app/components/codelayer/BidsEmptyState.tsx) (L24, L58)
-  - [`codelayer/BidsGeographyMap.tsx`](../src/app/components/codelayer/BidsGeographyMap.tsx) (L28)
-  - [`codelayer/BidsScreen.tsx`](../src/app/components/codelayer/BidsScreen.tsx) (L234, L354)
-  - [`codelayer/BidsSummaryHeader.tsx`](../src/app/components/codelayer/BidsSummaryHeader.tsx) (L45)
-  - [`codelayer/ReportScreen.tsx`](../src/app/components/codelayer/ReportScreen.tsx) (L290)
-  - [`codelayer/account/AccountHeader.tsx`](../src/app/components/codelayer/account/AccountHeader.tsx) (L38)
-  - [`codelayer/account/AccountInfoCard.tsx`](../src/app/components/codelayer/account/AccountInfoCard.tsx) (L90)
-  - [`codelayer/account/AccountMenu.tsx`](../src/app/components/codelayer/account/AccountMenu.tsx) (L243)
-  - [`codelayer/report/StepComplete.tsx`](../src/app/components/codelayer/report/StepComplete.tsx) (L162)
-  - [`demo/DemoAccountSwitcher.tsx`](../src/app/components/demo/DemoAccountSwitcher.tsx) (L42 variant, L100, L213)
-  - [`insurer/InsurerClaimsScreen.tsx`](../src/app/components/insurer/InsurerClaimsScreen.tsx) (L274)
-  - [`insurer/InsurerOnboarding.tsx`](../src/app/components/insurer/InsurerOnboarding.tsx) (L284, L349, L445)
-  - [`insurer/InsurerPartnerShopsScreen.tsx`](../src/app/components/insurer/InsurerPartnerShopsScreen.tsx) (L335)
-  - [`reports/CompetitorAnalysisScreen.tsx`](../src/app/components/reports/CompetitorAnalysisScreen.tsx) (L309)
-  - [`reports/MissingReportState.tsx`](../src/app/components/reports/MissingReportState.tsx) (L26, L43)
-  - [`reports/ReportsListScreen.tsx`](../src/app/components/reports/ReportsListScreen.tsx) (L154)
-  - [`shop/LikedShopsScreen.tsx`](../src/app/components/shop/LikedShopsScreen.tsx) (L172)
-  - [`shop/ShopActiveJobsScreen.tsx`](../src/app/components/shop/ShopActiveJobsScreen.tsx) (L316)
-  - [`shop/ShopEstimateInboxScreen.tsx`](../src/app/components/shop/ShopEstimateInboxScreen.tsx) (L217)
-  - [`shop/ShopOnboardingStep1.tsx`](../src/app/components/shop/ShopOnboardingStep1.tsx) (L169)
-  - [`shop/ShopOnboardingStep2.tsx`](../src/app/components/shop/ShopOnboardingStep2.tsx) (L80)
-  - [`shop/ShopOnboardingStep3.tsx`](../src/app/components/shop/ShopOnboardingStep3.tsx) (L156)
-  - [`shop/ShopOnboardingStep4.tsx`](../src/app/components/shop/ShopOnboardingStep4.tsx) (L114)
-  - [`shop/ShopRequestsScreen.tsx`](../src/app/components/shop/ShopRequestsScreen.tsx) (L265)
-  - [`routers/DashboardRouter.tsx`](../src/app/routers/DashboardRouter.tsx) (L34 variant)
-  - [`routers/DashboardSecondaryViews.tsx`](../src/app/routers/DashboardSecondaryViews.tsx) (L41 variant)
-- **Scope (bucket B — mixed overlay+spring, partial fail, 2 files):**
-  - [`codelayer/AcceptedBidConfirmationSheet.tsx`](../src/app/components/codelayer/AcceptedBidConfirmationSheet.tsx) (L59 explicit-duration overlay; L69 spring sheet — overlay fails, sheet covered)
-  - [`shop/ShopDetailSheet.tsx`](../src/app/components/shop/ShopDetailSheet.tsx) (L85 explicit-duration overlay; L98 spring sheet — same pattern)
-- **Scope (buckets D + E — runtime classification deferred, 11 files):** Files using delay-only `transition` overrides (no `duration` override) or no `transition` prop at all. Behavior under reduce depends on motion/react default-transition resolution (spring vs tween) per prop type — no runtime test on these surfaces. Pre-fix audit needed.
-  - **Bucket D (delay-only override, 7 files):** [`admin/AdminDashboard.tsx`](../src/app/components/admin/AdminDashboard.tsx), [`admin/AdminInfoPanel.tsx`](../src/app/components/admin/AdminInfoPanel.tsx), [`admin/AdminIntakeOperationsPanel.tsx`](../src/app/components/admin/AdminIntakeOperationsPanel.tsx), [`admin/AdminManagementPanel.tsx`](../src/app/components/admin/AdminManagementPanel.tsx), [`admin/LinkedTestAccounts.tsx`](../src/app/components/admin/LinkedTestAccounts.tsx), [`admin/QuickActions.tsx`](../src/app/components/admin/QuickActions.tsx), [`admin/SwitchBackPanel.tsx`](../src/app/components/admin/SwitchBackPanel.tsx)
-  - **Bucket E (no transition prop, 4 files):** [`admin/AdminHeader.tsx`](../src/app/components/admin/AdminHeader.tsx), [`admin/NewAccountForm.tsx`](../src/app/components/admin/NewAccountForm.tsx), [`auth/LoginModal.tsx`](../src/app/components/auth/LoginModal.tsx), [`devtools/StorageDebugPanel.tsx`](../src/app/components/devtools/StorageDebugPanel.tsx)
-- **Scope (bucket C — already covered by future MotionConfig wrap, 4 files; informational):** [`codelayer/account/AccountAdminOverlay.tsx`](../src/app/components/codelayer/account/AccountAdminOverlay.tsx), [`dashboard/MobileBottomNav.tsx`](../src/app/components/dashboard/MobileBottomNav.tsx) (verified PASS via Sonnet S2), [`shop/ImmersiveMapResultsDrawer.tsx`](../src/app/components/shop/ImmersiveMapResultsDrawer.tsx), [`shop/PhotoGuide.tsx`](../src/app/components/shop/PhotoGuide.tsx). These four use pure spring transitions and would resolve correctly under a global `<MotionConfig reducedMotion="user">` wrap.
-- **Fix direction (deferred to future phase):** Two-layer architectural fix.
-  - **Layer 1 — `MotionConfig` wrap at app root.** Wrap [`src/main.tsx`](../src/main.tsx) `<App />` (inside `<GlobalErrorBoundary>`, outside `<ClerkProvider>`) with `<MotionConfig reducedMotion="user">` from `motion/react`. Floors all spring/whileTap surfaces (bucket C verified PASS via Sonnet S2). Handles new code by default.
-  - **Layer 2 — Per-file `useReducedMotion()` for explicit-duration surfaces (buckets A + B, 34 files).** Pattern per file: `const reduce = useReducedMotion();` plus `transition={reduce ? { duration: 0 } : { duration: N, ... }}` on every explicit-duration `transition` prop. Pre-step audit needed for buckets D + E (11 files) before classifying as fix-required vs no-op.
-  - File-by-file build verification recommended (not all-at-once) — 34+ files is mechanical but each needs runtime check. Sonnet (or equivalent browser-capable AI) re-verifies a representative sample after the sweep.
-- **Removal trigger:** Future phase that closes the reduced-motion sweep (per `LAW_HARDENING_PLAN.md` Phase 7.5 close session entry, this is parked as deferred work, not Phase 7.5 close territory). Likely candidate phases: Phase 7.6 (if owner opens a dedicated reduced-motion close phase) or rolls into Phase 8 / 8.5.
-- **Next review:** When the future phase relay is opened, re-run the sweep classifier across the bucket A list (32 files) to catch any new explicit-duration code that landed between 2026-05-05 and the fix phase.
-- **Evidence:**
-  - [`archive/OPS_PHASE_7_5_PRE_EXECUTION_AUDIT_2026-05-04_archived_2026-05-06.md`](archive/OPS_PHASE_7_5_PRE_EXECUTION_AUDIT_2026-05-04_archived_2026-05-06.md) §2 (compliance verification) + close-footer (Sonnet verdict + sweep + scope-valve outcome)
-  - [`LAW_ANIMATION_AND_ATMOSPHERE.md`](LAW_ANIMATION_AND_ATMOSPHERE.md) §5 (the contract this KI documents conformance against; amended 2026-05-04 in commit `63ef6b6b`)
-  - [`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md) Phase 7.5 close session entry (the gate that explicitly defers the fix)
-- **Why parked here, not in OPS audit only:** The OPS pre-execution audit is a point-in-time snapshot; the KI ledger is the durable scope contract. Future agents reading `REF_KNOWN_ISSUES.md` will surface this 32+ file scope without re-reading audit docs. The full file list with line numbers is the scope-contract input for the future fix phase relay.
-- **Status:** **RESOLVED 2026-05-05. Phase 7.6 (KI-113 close).** Two-layer fix shipped: (1) `MotionConfig reducedMotion="user"` wrap at `src/main.tsx` (Commit 1, SHA `b1fea150`) — covers spring/gesture surfaces by default. (2) Per-file `useReducedMotion()` migration across all 45 files in buckets A + B + D + E — explicit-duration transitions gated via `reduceMotion ? 0 : <original>` (Commits 2–8, SHAs `b07f7dd3` → `1d55f035` → `9eaee53e` → `f53ab7da` → `77205da5` → `982dbae4` → `099b3742`). Auditor pass confirmed: 45 files with `useReducedMotion`, 62 wrapped sites, 0 missed plain durations, spring transitions in Bucket B unchanged, original numeric values preserved verbatim in non-reduce branch. Build green (`✓ 2920 modules`). Branch `BidOnDent-Horizon-Beta`; owner pushes.
+> **Added 2026-05-07 — Pass 58 close.** Pass 58 shipped scaffolding for cloud-synced navigation saved places (home/work/saved/recent) without applying the migration, because the local Supabase CLI db push is broken under PG17 (see repo memory `supabase-cli-pg17-notes.md`). Owner applies via Supabase Studio.
 
-### KI-114: Sub-44 touch-target sweep across compact / state-conditional CTAs (P3-UX)
+- **Impact:** Until owner applies `supabase/migrations/20260507000001_create_navigation_saved_places.sql` against prod, every GET to `/navigation-saved-places` returns `42P01 undefined_table` → handler degrades to `{ places: [], fallback: true }` (HTTP 200), client circuit-breaker (60s backoff) kicks in, and `useSavedNavigationLocations` runs on its localStorage mirror only. Cross-device sync of pinned places does not activate. No user-visible breakage; same behavior as pre-Pass-58.
+- **Severity:** P5-DOC / owner-action. Not blocking. Not a code defect. Self-healing once migration applied + edge function restarted.
+- **Location:**
+  - Migration: [`supabase/migrations/20260507000001_create_navigation_saved_places.sql`](../supabase/migrations/20260507000001_create_navigation_saved_places.sql)
+  - Handler: [`supabase/functions/server/handlers/navigation_saved_places.ts`](../supabase/functions/server/handlers/navigation_saved_places.ts)
+  - Client service: [`src/app/services/supabase/navigationSavedPlaces.ts`](../src/app/services/supabase/navigationSavedPlaces.ts)
+  - Hook: [`src/app/hooks/useSavedNavigationLocations.ts`](../src/app/hooks/useSavedNavigationLocations.ts)
+- **Apply steps:**
+  1. Open Supabase Studio → SQL editor → paste migration body → run.
+  2. Restart `server` edge function (Studio → Edge Functions → server → Restart, or redeploy).
+  3. Verify with: `curl -H "Authorization: Bearer <clerk_jwt>" https://<project>.supabase.co/functions/v1/server/navigation-saved-places` → expect `{"places":[],"success":true}`.
+- **Removal trigger:** Owner applies migration + verifies edge response no longer carries `fallback:true`. Move to RESOLVED archive when confirmed.
+- **Status:** **OPEN — P5-DOC.** Awaiting owner apply.
 
-- **Impact:** [`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md) "Mobile-First Enforcement" requires interactive hit areas ≥ 44×44px on mobile. A multi-pass audit (Passes 3 → 6, 2026-05-05) running both the OPS §9.2 runtime touch-target script and a §9.6 source-truth grep enumerated 24 sub-44 interactive buttons across landing, dashboard, map, navigation, and shop-directory surfaces. Several were destructive or primary entry-point CTAs (End Route, Open Full Map, View Detail), where sub-44 hit area is a real touch-precision risk. The desktop exception (mouse precision) explicitly does NOT apply to mobile primary surfaces.
-- **Severity:** P3-UX — accessibility-canon coverage gap. Not P0 (no production breakage). Not P1 (buttons remain functional). Not P2 (no data integrity risk). LAW language is mandatory ("minimum 44x44px"), so this is real coverage, not stylistic preference.
-- **Audit method (Passes 3 → 6):**
-  - Pass 3 (V-009..V-015): runtime §9.2 touch-target Playwright script @ 1637×1067 — surfaced 7 default-state mobile-relevant CTAs.
-  - Pass 4 (V-016): runtime §9.2 sweep on `ShopDirectoryMapPopup` Close button (22×22, severe miss).
-  - Pass 5 (V-017..V-019): dedicated landing signed-out audit, runtime §9.2 — surfaced 4 landing CTAs (one shared className constant covered 2 buttons).
-  - Pass 6 (V-020..V-024): pivoted to OPS §9.6 source-grep when Electron viewport-spoofing proved unreachable (`setViewportSize`, CDP `Emulation.setDeviceMetricsOverride`, screen-orientation override all ignored — viewport stayed at 1637 in every attempt). Source-grep caught 7 state-conditional CTAs that runtime sweeps could not reach (error states, route-active states, popup-open states).
-- **Resolution sites (V-009..V-024 → 24 buttons across 13 files):**
-  - **Pass 3 (V-009..V-015, commit `08fe13a6` → `7a30b21a`):** 7 buttons across 7 files (mobile touch-target Sonnet pass; reuses existing `bd-*` patterns).
-  - **Pass 4 (V-016, commit `8f166632`):** [`shop/ShopDirectoryMapPopup.tsx`](../src/app/components/shop/ShopDirectoryMapPopup.tsx) Close button 22→44; same commit added compact `min-h-[44px]` enforcement on co-located actions.
-  - **Pass 5 (V-017..V-019, commit `49468992`):**
-    - [`landing/CoverageSearchPanel.tsx`](../src/app/components/landing/CoverageSearchPanel.tsx) "Find Shops" submit `min-h-[40px]` → `min-h-[44px]`.
-    - [`landing/CoverageSearchPanel.tsx`](../src/app/components/landing/CoverageSearchPanel.tsx) `actionButtonClassName` shared const `!min-h-[42px]` → `!min-h-[44px]` (covers My Location + Center Map in one edit).
-    - [`landing/OperatingRegionsSection.tsx`](../src/app/components/landing/OperatingRegionsSection.tsx) "Open Full Map" added `min-h-[44px]` (was 35.2 px — biggest landing miss).
-  - **Pass 6 (V-020..V-024, commit `238d7257`):**
-    - [`landing/CoverageBrowseMapOverlays.tsx`](../src/app/components/landing/CoverageBrowseMapOverlays.tsx) "Start Route" 40 → 44.
-    - [`landing/CoverageSearchPanel.tsx`](../src/app/components/landing/CoverageSearchPanel.tsx) "Clear" address `!min-h-[38px]` → `!min-h-[44px]`.
-    - [`landing/CoverageNearestShops.tsx`](../src/app/components/landing/CoverageNearestShops.tsx) "Retry" shops 40 → 44.
-    - [`maps/navigation/NavigationSummarySheet.tsx`](../src/app/components/maps/navigation/NavigationSummarySheet.tsx) action-row triplet (Share ETA / Export / **End Route — destructive**) 42 → 44 (3 buttons in one edit).
-    - [`maps/ReportLayerPopup.tsx`](../src/app/components/maps/ReportLayerPopup.tsx) "View Detail" 40 → 44.
-- **Deferred candidates (informational, NOT a fix-required list):** Source-grep on `(?<![a-z])h-(7|8|9|10)(?![0-9])` returned ~199 raw matches workspace-wide. Triage shows the vast majority are **decorative `<div>` icon containers** (avatar circles, status badges, step dots) and not interactive elements. A handful of remaining `<button>` candidates exist in: [`shop/ShopDirectoryGuidanceCard.tsx`](../src/app/components/shop/ShopDirectoryGuidanceCard.tsx) (`min-h-[42px]`, 4 sites — guidance-card flow buttons), [`shop/ShopDirectoryMapPaneOverlays.tsx`](../src/app/components/shop/ShopDirectoryMapPaneOverlays.tsx) (`min-h-[34px]` / `min-h-[36px]` — inside scrollable shop carousels, lower-impact), [`shop/ShopDirectorySearchPanel.tsx`](../src/app/components/shop/ShopDirectorySearchPanel.tsx) (`min-h-[32px]` / `min-h-[38px]` — compact filter chips). Containment doctrine: defer until owner reports a real touch-precision miss on these surfaces — broad sweeps risk regressions on density-tuned UI.
-- **Audit-script methodology (now canonical in OPS prompt):**
-  - **Runtime §9.2** ([`OPS_BUILDER_VISUAL_AUDIT_PROMPT.md`](OPS_BUILDER_VISUAL_AUDIT_PROMPT.md) §9.2) — for default-state CTAs visible at the audit viewport.
-  - **Source-grep §9.6** (NEW, added in this commit) — for state-conditional CTAs hidden behind triggers runtime can't easily reach (error states, popup states, route-active states), AND as the documented fallback when Electron viewport spoofing is unreachable.
-  - Pass 6 commit `238d7257` documented the Electron viewport lock as a permanent OPS protocol gap; future agents should default to source-grep when the lock applies.
-- **Why parked here as KI:** Three commits (`8f166632`, `49468992`, `238d7257`) all referenced "KI-114 partial closure" without a corresponding KI ledger entry — this entry resolves that ledger drift and serves as the durable home for any future state-conditional touch-target finding.
-- **Status:** **RESOLVED 2026-05-05** for the in-scope sweep (V-009..V-024 across 13 files). Deferred candidates above are informational, not a fix-required list. Re-open if owner reports a real touch-precision miss on a deferred candidate, OR if a new audit pass (post-launch) surfaces additional sub-44 interactive elements not covered above.
+### KI-115: shop_availability migration scaffolded but not applied (P5-DOC, owner action)
 
-### KI-115: Icon-only buttons missing accessible name (P3-A11Y)
+> **Added 2026-05-07 — Pass 59 close.** Pass 59 shipped scaffolding for real-time partner-shop availability (extends `shop_profiles` with `is_available`, `available_until`, `availability_updated_at`, `availability_note` columns + adds `shop_profiles` to the `supabase_realtime` publication) without applying the migration. Local Supabase CLI db push is broken under PG17 (see repo memory `supabase-cli-pg17-notes.md`). Owner applies via Supabase Studio. Mirrors KI-114 exactly.
 
-- **Impact:** Buttons containing only an icon (no text content, no `aria-label`, no `aria-labelledby`, no `title`) are announced by screen readers as bare "button" with no purpose. WCAG 2.1 SC 4.1.2 (Name, Role, Value) requires every interactive control to have a programmatically-determinable accessible name. Lighthouse / axe-core flag these as critical findings. Affected surfaces include auth modal close + password toggle (entry-point a11y), back navigation across reports / insurer / shop screens, modal close buttons across maps + shop sheets, and settings / turn-list / voice-controls bottom-sheet closers.
-- **Severity:** P3-A11Y — accessibility-canon coverage gap. Functional buttons remain operable for sighted users; this is a screen-reader / assistive-tech blocker.
-- **Audit method (Pass 7, 2026-05-05):**
-  - Runtime OPS §9.5 sweep on `/dashboard` at host viewport — 0 findings on that surface (Dashboard already labeled).
-  - Source-truth Node script walking every `.tsx` in `src/app`, finding `<button>` elements with no aria-label / aria-labelledby / title AND no text content (after stripping JSX expressions and tags) AND containing an icon child (`<X/>`, `<ArrowLeft/>`, `<Eye/EyeOff/>`, `<Camera/>`, `<svg>`, etc.).
-  - Filter to canonical icon-only end-pattern: `<(X|ArrowLeft|Eye|EyeOff|Camera) .../></button>`.
-  - 48 raw findings → 22 confirmed icon-only after triage (26 false positives — buttons with text via `{label}` / `{action.title}` / literal "Submit" / "Save" / etc.).
-- **Resolution sites (V-025..V-046, 22 buttons across 22 files):**
-  - **Auth (3):** [`auth/LoginLoginView.tsx:69`](../src/app/components/auth/LoginLoginView.tsx) (password toggle, dynamic), [`auth/LoginSignupView.tsx:103`](../src/app/components/auth/LoginSignupView.tsx) (password toggle, dynamic), [`auth/LoginModal.tsx:115`](../src/app/components/auth/LoginModal.tsx) (close).
-  - **App shell (1):** [`app/DashboardHeader.tsx:294`](../src/app/components/app/DashboardHeader.tsx) (close header search).
-  - **Codelayer / account (2):** [`codelayer/account/EditProfileModal.tsx:143`](../src/app/components/codelayer/account/EditProfileModal.tsx) (change profile photo), [`codelayer/account/ServiceAreaEditorModal.tsx:175`](../src/app/components/codelayer/account/ServiceAreaEditorModal.tsx) (close).
-  - **Devtools (1):** [`devtools/StorageInspector.tsx:130`](../src/app/components/devtools/StorageInspector.tsx) (close).
-  - **Insurer (3):** [`insurer/InsuranceCompaniesScreen.tsx:51`](../src/app/components/insurer/InsuranceCompaniesScreen.tsx), [`insurer/InsurerConnectionScreen.tsx:130`](../src/app/components/insurer/InsurerConnectionScreen.tsx), [`insurer/InsurerNewClaimScreen.tsx:100`](../src/app/components/insurer/InsurerNewClaimScreen.tsx) (back).
-  - **Maps (4):** [`maps/MapBidSheet.tsx:111`](../src/app/components/maps/MapBidSheet.tsx) (close bid sheet), [`maps/navigation/NavigationSettingsSheet.tsx:132`](../src/app/components/maps/navigation/NavigationSettingsSheet.tsx) (close settings), [`maps/navigation/NavigationTurnListSheet.tsx:47`](../src/app/components/maps/navigation/NavigationTurnListSheet.tsx) (close turn list), [`maps/navigation/NavigationVoiceControlsSheet.tsx:75`](../src/app/components/maps/navigation/NavigationVoiceControlsSheet.tsx) (close voice controls).
-  - **Reports (4):** [`reports/CompetitorAnalysisScreen.tsx:201`](../src/app/components/reports/CompetitorAnalysisScreen.tsx), [`reports/ReportDetailScreen.tsx:117`](../src/app/components/reports/ReportDetailScreen.tsx), [`reports/ReportsListScreen.tsx:105`](../src/app/components/reports/ReportsListScreen.tsx) (back), [`reports/PhotoGalleryLightbox.tsx:30`](../src/app/components/reports/PhotoGalleryLightbox.tsx) (close gallery).
-  - **Shop (4):** [`shop/EstimateRequestSheet.tsx:77`](../src/app/components/shop/EstimateRequestSheet.tsx) (close estimate request), [`shop/LikedShopsScreen.tsx:122`](../src/app/components/shop/LikedShopsScreen.tsx) (back), [`shop/ShopActiveJobDetailModal.tsx:47`](../src/app/components/shop/ShopActiveJobDetailModal.tsx) (close job details), [`shop/ShopRatingModal.tsx:93`](../src/app/components/shop/ShopRatingModal.tsx) (close rating).
-- **Dynamic-label note (V-025, V-026):** Password-toggle buttons swap meaning every press; static label would be incorrect for screen readers. Implementation uses `aria-label={showPassword ? "Hide password" : "Show password"}` matching the visible Eye ↔ EyeOff icon swap.
-- **Deferred candidates (informational, NOT a fix-required list):** A handful of ambiguous buttons in [`shop/ShopDirectoryHero.tsx`](../src/app/components/shop/ShopDirectoryHero.tsx), [`shop/ShopDirectoryOriginSearch.tsx`](../src/app/components/shop/ShopDirectoryOriginSearch.tsx), [`shop/ImmersiveOriginPicker.tsx:89`](../src/app/components/shop/ImmersiveOriginPicker.tsx) use complex conditional content (`{selectedOrigin ? <X/> : <Plus/>}` mixed with label text). Some states render text, others render icon-only. Containment doctrine: defer until owner reports a real screen-reader miss; broad heuristic edits risk wrong labels on visible-text states.
-- **Audit-script methodology (now canonical):** OPS §9.5 (runtime) + the source-truth Node walker (Pass 7 introduced) cover the icon-only space. Future a11y sweeps should pair both: runtime catches default-state visible buttons, source-walker catches state-conditional and icon-only-by-construction buttons.
-- **Status:** **RESOLVED 2026-05-05** for the in-scope canonical icon-only sweep (V-025..V-046 across 22 files). Build green (`✓ built in 3.76s`), 0 diagnostics across all touched files. Re-open if a future audit surfaces new icon-only buttons or if owner reports a screen-reader miss on a deferred ambiguous candidate.
+- **Impact:** Until owner applies `supabase/migrations/20260507000002_add_shop_availability_columns.sql` against prod, every PUT to `/shop-availability` returns `42703 undefined_column` → handler degrades to `{ success: true, fallback: true }` (HTTP 200), client circuit-breaker (60s backoff) kicks in, and `useShopAvailability` viewer-mode realtime channel never receives events (because `shop_profiles` is not yet in `supabase_realtime`). No user-visible breakage this Pass — there is no UI consumer yet (Pass 62 scope). Owner may apply at any time without coordinating with code.
+- **Severity:** P5-DOC / owner-action. Not blocking. Not a code defect. Self-healing once migration applied + edge function restarted.
+- **Location:**
+  - Migration: [`supabase/migrations/20260507000002_add_shop_availability_columns.sql`](../supabase/migrations/20260507000002_add_shop_availability_columns.sql)
+  - Handler: [`supabase/functions/server/handlers/shop_availability.ts`](../supabase/functions/server/handlers/shop_availability.ts)
+  - Client service: [`src/app/services/supabase/shopAvailability.ts`](../src/app/services/supabase/shopAvailability.ts)
+  - Hook: [`src/app/hooks/useShopAvailability.ts`](../src/app/hooks/useShopAvailability.ts)
+- **Apply steps:**
+  1. Open Supabase Studio → SQL editor → paste migration body → run. Confirm `RAISE NOTICE 'added public.shop_profiles to supabase_realtime publication'` (or "already in") fires.
+  2. Restart `server` edge function (Studio → Edge Functions → server → Restart, or redeploy).
+  3. Verify with: `curl -H "Authorization: Bearer <clerk_jwt>" -X PUT -H "Content-Type: application/json" -d '{"isAvailable": true}' https://<project>.supabase.co/functions/v1/server/shop-availability` → expect `{"availability":{"isAvailable":true,...},"success":true}` (NOT `fallback:true`).
+  4. Verify GET works: `curl https://<project>.supabase.co/functions/v1/server/shop-availability/<shop_uuid>` → expect `{"availability":{"isAvailable":true,...},"success":true}`.
+- **Removal trigger:** Owner applies migration + verifies edge response no longer carries `fallback:true` + a smoke realtime subscription (Studio → Database → Replication → supabase_realtime publication → confirm shop_profiles listed). Move to RESOLVED archive when confirmed.
+- **Pass 62 dependency:** Marker UI integration (color-coded availability dots, dashboard toggle) requires this migration to be applied first. Pass 62 should not ship UI consuming the realtime data while KI-115 is OPEN.
+- **Status:** **OPEN — P5-DOC.** Awaiting owner apply.
 
-### KI-116: Coverage Dialog forbidden-color sweep — negative result + §9.7 promotion (P5-AUDIT-LEDGER)
+### KI-116: Navigation engine mounts on passive surfaces — umbrella P0 cluster (P0-RUNTIME)
 
-- **Impact:** Audit-ledger continuity. The CoverageMapDialog is a high-density multi-tab modal (Search / Explore / Saved / Shops) reachable from `landing/OperatingRegionsSection.tsx` "Open Full Map". It had not been swept under the locked Premium Gold Palette ([`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md) § Premium Gold Palette: locked baseline `196,144,65` / `196,130,45` / `140,82,22` / `252,238–240,204–208`; forbidden previous-gen `220,165,90` / `254,248,220` / `160,95,25` / `220,140,50`). Without an explicit ledger entry, a future agent could re-audit the same surface without finding the prior negative-result record.
-- **Severity:** P5-AUDIT-LEDGER — non-blocking. No user-visible bug. Documents that the surface was audited and is clean.
-- **Audit method (Pass 8, 2026-05-05):**
-  - Runtime: navigated `/landing` → clicked "Open Full Map" → cycled all 4 tabs (Search / Explore / Saved / Shops) → ran OPS §9.1 forbidden-color sweep scoped to `[role="dialog"] *` on each tab. Aggregate 599 elements scanned.
-  - Source: grepped all 12 `src/app/components/landing/Coverage*.{ts,tsx}` files for the four forbidden RGB literals.
-- **Findings:** **0 white panels, 0 forbidden-gold hits across all 5 sweeps (initial + 4 tabs). 0 source-grep hits across all 12 files.** Negative result confirmed at both layers.
-- **Resolution sites:** None — no fixes required. The Coverage Dialog is fully aligned with the locked Premium Gold Palette as of HEAD `63be2820`.
-- **Bundled in same pass — OPS §9.7 promotion:** The Pass 7 ad-hoc Node walker for icon-only buttons (`/tmp/aria_audit.cjs`) was promoted into [`OPS_BUILDER_VISUAL_AUDIT_PROMPT.md`](OPS_BUILDER_VISUAL_AUDIT_PROMPT.md) as canonical §9.7. This closes the KI-115 "promote tooling" follow-up using the same convention as KI-114 §9.6 promotion.
-- **Why this still matters:** Negative-result audits are publishable. (a) They close the surface as audited under the current locked palette. (b) They contain the warm-gold regression vector to surfaces the LAW already enumerates. (c) They prevent a future agent from re-auditing the same surface in 2 weeks because no record existed. This is the audit-ledger continuity rule.
-- **Status:** **RESOLVED 2026-05-05** as a negative-result audit. Re-open only if a future palette change introduces new forbidden RGB ranges, or if the Coverage Dialog gains new component children that have not been swept.
+> **Added 2026-05-07 — external audit AI deep audit.** Single root cause produces six distinct user-visible symptoms. Audit AI captured the smoking gun via `localStorage` inspection: `coverageCurrentLocation` GPS reading was `(33.95, -84.09)` (Suwanee, GA) while an active nav session in localStorage had destination `(40.93, -73.90)` (Yonkers, NY). Haversine = 743 mi, matches the on-screen "737.2 mi off route" banner. **The session was in `status: "planning"` with `activatedAt: null`** — the deviation engine should not have been evaluating at all.
 
-### KI-117: Star-amber semantic exception — `#fbbf24` / `#fef3c7` map ratings + place-pin signal (P7-DOCS-ONLY, RESOLVED-AS-INTENTIONAL)
+- **Impact (six symptoms, one cause):**
+  1. "You're off route — 737.2 mi from the planned route" banner persists at idle on dashboard inline coverage map AND in fullscreen map.
+  2. Auto-reroute "Finding a new route…" toast fires from passive (non-navigation) surfaces.
+  3. "Stopped detected" toast fires from passive surfaces.
+  4. Notification counter increments without user action (audit AI observed 3 → 9+ → 17 → 23 → 9+ from idle clicking).
+  5. `useNavigationGpsTracking.ts:197` emits "Speed limit lookup failed" errors continuously while user is on the dashboard (Overpass calls firing for the user's idle GPS location).
+  6. Carto basemap 503 storm: ~50 % of tile requests fail; tile coords span Yonkers → Rockies → Pacific Northwest because the dashboard inline map's `fitBounds` envelopes ALL demo shops cross-country. Tile prefetch follows the cross-US bbox.
+- **Location:** [`src/app/hooks/useNavigationGpsTracking.ts`](../src/app/hooks/useNavigationGpsTracking.ts) is consumed from [`src/app/hooks/useShopDirectoryNavigation.ts:78`](../src/app/hooks/useShopDirectoryNavigation.ts#L78) and [`src/app/hooks/useCoverageNavigationExperience.ts:113`](../src/app/hooks/useCoverageNavigationExperience.ts#L113). Both reachable from the dashboard inline coverage panel via Pass 49's lazy-mount path. The `detectDeviation` math at [`src/app/features/navigation/detectDeviation.ts:145-167`](../src/app/features/navigation/detectDeviation.ts#L145) is correct — `OFF_ROUTE_THRESHOLD_MILES = 0.3` triggers when distance > 0.3 mi, which 743 mi satisfies. Bug is mount scope, not algorithm.
+- **Fix direction (audit AI's R1 — single highest-leverage fix):** Gate the deviation engine on `session.status === 'active'` AND on a navigation surface (NOT dashboard / NOT bids / NOT inline coverage). One change collapses all six symptoms.
+  - Confirm `useNavigationGpsTracking` is only mounted on actual nav screens (Smart Shop Map active flow, fullscreen turn-by-turn).
+  - For dashboard inline coverage panel: verify it does NOT mount the GPS tracking + deviation pipeline. If it currently does, gate with a `mode: "passive" | "navigation"` prop or similar.
+  - For `useNavigationIntelligence.evaluate(snapshot)`: short-circuit when `session.status !== "active"`.
+- **Severity:** **P0-RUNTIME.** Ships catastrophic first-impression user experience: phantom warnings, runaway notifications, persistent error toasts. Not shippable in current state.
+- **Prerequisite for downstream passes:** Pass 61 (test coverage) cannot proceed until this is fixed — tests would otherwise encode the buggy mount scope as expected behavior. Pass 63 (KI-053 perf descriptor memoization) is wasted work while the tile storm is driven by cross-US fitBounds, not descriptor instability.
+- **Status:** **RESOLVED 2026-05-07 — Pass 61 + Pass 61b.** Pass 61 gated `intelligence.evaluate(snapshot)` on `navSession.session.status === "active"` at the single call site in [`src/app/hooks/useNavigationLifecycleEffects.ts`](../src/app/hooks/useNavigationLifecycleEffects.ts). The deviation engine now no-ops on every passive surface (dashboard inline coverage, shop directory browse, etc.) regardless of mount scope. Symptoms 1–4 (737mi banner, "Finding new route" toast, "Stopped detected" toast, notification counter inflation) collapsed. **Pass 61b** added an `isActiveNavigation` arg to [`src/app/hooks/useCoverageNavigationExperience.ts`](../src/app/hooks/useCoverageNavigationExperience.ts) (defaults `true` for back-compat) and gates `speedLimitMonitorEnabled` on it. [`src/app/components/dashboard/DashboardCoveragePanel.tsx`](../src/app/components/dashboard/DashboardCoveragePanel.tsx) now passes `isActiveNavigation: false`; [`src/app/hooks/useShopDirectoryNavigation.ts`](../src/app/hooks/useShopDirectoryNavigation.ts) ANDs `speedLimitMonitorEnabled` with `navSession.session.status === "active"`. Symptom 5 (continuous "Speed limit lookup failed" Overpass spam) collapsed. Symptom 6 (Carto 503 tile storm from cross-US `fitBounds`) is a separate root cause (KI-053 family / dashboard inline map bbox) and remains tracked there. Builds clean 3.29s + 3.47s.
 
-- **Impact:** Aggregate ledger entry covering all live uses of star-amber `#fbbf24` (lucide `Star` fill + MapLibre paint expressions) and `#fef3c7` (cream-amber gradient stop) across the codebase. Star-amber is a long-standing real-world UI convention for shop/place ratings (5-star widgets, Google-Maps-style place pins, recommended-shop signal). It overlaps the Premium Gold Palette warm range numerically but is **semantic signage**, not arbitrary surface paint — same exception class as [KI-106](#ki-106-speedlimitbadge-solid-bg-white--semantic-real-world-signage-exception-p7-docs-only) (SpeedLimitBadge `bg-white`).
-- **Severity:** P7-DOCS-ONLY. No user-visible bug, no LAW violation. This entry exists so a future palette-conformance sweep does not re-flag star-amber as a regression toward the forbidden warm-gold range (`220,165,90` / `254,248,220` / `160,95,25` / `220,140,50` per [`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md) § Premium Gold Palette).
-- **Sites (8 files):**
-  - [src/app/components/maps/navigation/NavigationBrowseDiscoveryPanel.tsx:128](../src/app/components/maps/navigation/NavigationBrowseDiscoveryPanel.tsx#L128) — `linear-gradient(180deg,#fef3c7,#fff7ed)` selected-pill background.
-  - [src/app/components/maps/MapLibrePartnerShopLayer.tsx:80,97](../src/app/components/maps/MapLibrePartnerShopLayer.tsx) — partner-shop pin paint expressions (`#fbbf24` ring, `#fef3c7` cream stop).
-  - [src/app/components/maps/MapLibreDiscoveryPlaceLayer.tsx:20](../src/app/components/maps/MapLibreDiscoveryPlaceLayer.tsx#L20) — discovery place-pin `{ stroke: "#f59e0b", fill: "#fbbf24" }` (Google-Maps convention).
-  - [src/app/components/shop/LikedShopCard.tsx:62](../src/app/components/shop/LikedShopCard.tsx#L62) — `<Star fill="#fbbf24" />` rating glyph.
-  - [src/app/components/shop/ShopDirectoryMapLayers.tsx:188](../src/app/components/shop/ShopDirectoryMapLayers.tsx#L188) — directory pin star fill.
-  - [src/app/components/shop/ShopDirectoryResultCard.tsx:135](../src/app/components/shop/ShopDirectoryResultCard.tsx#L135) — result-card rating star.
-  - [src/app/components/shop/ShopDirectoryExpandedView.tsx:100](../src/app/components/shop/ShopDirectoryExpandedView.tsx#L100) — expanded-view rating star.
-  - [src/app/components/dashboard/MapLibreDashboardMapPreview.tsx:220](../src/app/components/dashboard/MapLibreDashboardMapPreview.tsx#L220) — dashboard map preview pin stroke.
-- **Why this is exempt from the locked palette:** The Premium Gold Palette governs **canon surface paint** (panels, cards, badges, headlines — the lit-from-above metallic glass identity). Star-amber is **semantic signage** with cross-platform user expectation: rating stars, recommended pins, "highlight this place" signal. Swapping it to `196,144,65` would (a) collapse the visual contract that distinguishes "rating signal" from "premium surface trim" and (b) break recognition for users who read star-amber as "rating/recommendation" via every other map app they have used.
-- **Resolution sites:** None — no code changes required. Star-amber stays as-is on these 8 surfaces.
-- **Status:** **RESOLVED-AS-INTENTIONAL 2026-05-05.** Same exception class as KI-106 (real-world signage convention). Re-open only if (a) a future design pass deliberately retires star-amber rating UI in favor of a different rating glyph, or (b) star-amber leaks out of rating/place-pin contexts into surface paint where the locked palette governs.
-- **Skill:** `bd-design-identity` (semantic exception class, second instance after KI-106).
+### KI-117: Stale `bidondent_nav_session_*` keys persist across reload AND across sign-out (P1-RUNTIME, expanded)
 
-### KI-118: Dashboard route preview shows impossible mileage (P2-DATA)
+> **Added 2026-05-07 — external audit AI deep audit. Expanded 2026-05-07 — sign-out walkthrough revealed the bug is broader than reload-only.** Original observation: nav session from a prior browsing context still resident in `localStorage` after a fresh page load. Session state: `status: "planning"`, `activatedAt: null`, destination set, no recent user action.
+>
+> **Sign-out walkthrough expansion:** **3 stale planning sessions persist after Sign Out + reload.** Sign-out clears Clerk auth (cookies dropped 7 → 4, Clerk session cleared) but leaves all `bidondent_nav_session_user_*` entries untouched in localStorage. A different user signing into the same browser inherits the prior user's planning state. Companion privacy concern KI-133 (`bidondent_user:<email>` key name embedding).
 
-- **Impact:** On the dashboard "Find Shops" inline map (`ShopDirectoryRoutePreviewCard`), the floating ROUTE card displays inconsistent and physically impossible distance values for in-frame destinations. Owner reference (Pass 12 Phase 1 audit, 2026-05-06) shows two route alternatives chipped as `1005m / 853.4 mi` and `1035m / 876.8 mi`, with a `LIVE ROUTE` strip reading `My Locatio...  737.2 mi · 1264 min` for a destination clearly visible inside the same NY-area map viewport. 737.2 mi / 1264 min (≈21 h) is impossible for an in-frame route; the meters/miles paired chips suggest two formatting paths producing two different unit interpretations of the same underlying route value.
-- **Suspected root cause:** Double unit conversion. A route distance value (likely already in miles from one helper) is being passed through a `metersToMiles` formatter elsewhere, or vice versa. Most likely in `ShopDirectoryRoutePreviewCard.tsx` distance formatting helpers, or in the upstream `useShopDirectoryRoute*` hook that computes `distanceMiles` / `distanceMeters` for the card.
-- **Surface:** [src/app/components/shop/ShopDirectoryRoutePreviewCard.tsx](../src/app/components/shop/ShopDirectoryRoutePreviewCard.tsx) — visible symptoms.
-- **Severity:** P2-DATA. User-visible numerical wrongness on the primary dashboard map surface. Not a launch blocker (the map is still navigable and Start Navigation still hands off to the routing provider) but breaks user trust in the route preview card.
-- **Status:** RESOLVED 2026-05-06 (Pass 13). Sonnet's "double unit conversion" theory was incorrect — the formatters (`formatDistance`, `computeETA`, `haversineDistanceMiles` in `src/app/features/navigation/computeNavigationMetrics.ts`) are clean. The actual root cause was `DEFAULT_COORDINATE_ANCHOR` in [`src/app/services/intelligence/directoryAdapterUtils.ts:29`](../src/app/services/intelligence/directoryAdapterUtils.ts#L29) being set to **Dallas, TX** (32.7767, -96.797). Any shop whose `(city, state)` did not match the locked NY metro `CITY_COORDINATE_DIRECTORY` (16 entries) fell back to Dallas + ±0.09°/±0.12° hash jitter. Result: route distances of 700–1500 mi for shops the user perceived as "in-frame" on a NY metro map view. Fix moves the anchor to **White Plains, NY** (41.0534, -73.7629) — the geographic center of the locked NY metro launch region per LAW_PROJECT_RULES.md. The matching test in [`directoryAdapterUtils.test.ts`](../src/app/services/intelligence/directoryAdapterUtils.test.ts) was updated to assert the new bounds.
-- **Discovery:** Pass 12 Phase 1 map coherence audit ([docs/map_coherence_audit_sonnet_2026-05-06.md](map_coherence_audit_sonnet_2026-05-06.md) HSF-1).
-- **Validation:** typecheck PASS, build PASS, vitest 5/5 PASS on `directoryAdapterUtils.test.ts`.
+- **Impact (now broader):** Even with KI-116's mount-scope fix in place, stale sessions in localStorage:
+  1. Persist across reload (original) — phantom 737mi banner driver.
+  2. Persist across **sign-out + reload** (new) — next user inherits prior user's planning state.
+  3. Cross-account leak on shared devices: real privacy implication.
+- **Fix direction (expanded):**
+  1. On **dashboard mount**: clear `bidondent_nav_session_*` keys when `status === "planning"` AND (`activatedAt === null` OR `updatedAt` older than X minutes).
+  2. On **sign-out flow**: explicitly delete every `bidondent_nav_session_*`, `bidondent_user:*`, `coverageCurrentLocation`, and any other user-scoped key before redirecting to landing.
+  3. Consider switching planning sessions to `sessionStorage` so they evaporate when the tab closes.
+- **Severity:** **P1-RUNTIME (expanded).** Now covers reload persistence AND sign-out cleanup gap. Single companion fix to KI-116, same pass.
+- **Status:** **RESOLVED 2026-05-07 — Pass 61.** New util [`src/app/utils/clearStaleNavSessions.ts`](../src/app/utils/clearStaleNavSessions.ts) exports `clearStalePlanningNavSessions()` (sweeps `bidondent_nav_session_*` keys with `status: "planning"` AND no `activatedAt` OR `updatedAt` >30min old) and `clearAllUserScopedSessionKeys()` (nukes `bidondent_nav_session_*`, `bidondent_nav_active_session_*`, `bidondent_user:*`, `coverageCurrentLocation`, pending-write queue, cloud-unavailable marker). Stale sweep wired on App mount in [`src/app/App.tsx`](../src/app/App.tsx). Full purge wired on sign-out in [`src/app/hooks/useAppHandlers.ts`](../src/app/hooks/useAppHandlers.ts) `handleLogout` (both success + error paths so cleanup runs even when Clerk sign-out throws). Cross-account leak on shared devices (privacy concern) is closed.
 
-### KI-119: Phase C MapTileSegmentedControl extraction declined (P7-TECHDEBT)
+### KI-118: ESC key does not close map UI panels (Voice Controls, Navigation Settings) (P2-A11Y)
 
-- **Brief:** 2026-05-06 full-autopilot Phase C proposed extracting a shared `MapTileSegmentedControl` from `MapSurfaceControls.tsx` (segmented Map/Night/Satellite pill) and adopting it in a second consumer.
-- **On inspection:** Only ONE segmented-pill consumer exists (`MapSurfaceControls.tsx`). The shop-directory map (`ImmersiveMapTopBar.tsx` cycle button at L126–141) deliberately uses a single-icon CYCLE affordance optimized for the compact immersive top bar — not a 3-button pill. Replacing it with a segmented pill would materially change the affordance and break the compact top-bar layout. Sidebar mode label (`CoverageCommandCenterSidebar.tsx` L41) is read-only text, not a control.
-- **Decision:** Skip extraction. Extracting a 1-consumer component is anti-pattern. Unifying the two affordances is a taste call requiring owner approval, not a sanctioned narrow extraction.
-- **Status:** WONTFIX (intentional design separation between segmented-pill and cycle-button affordances).
-- **Severity:** P7-TECHDEBT (no user impact).
+> **Added 2026-05-07 — external audit AI deep audit.** Audit AI clicked into Voice Controls panel, then pressed ESC — panel persisted. Same on Navigation Settings panel.
 
-### KI-120: Phase E MapRoutePreviewCard extraction declined (P7-TECHDEBT)
+- **Impact:** Standard escape-closes-modal pattern broken. Keyboard-only users cannot dismiss these panels without clicking the X. Screen reader users may also be stuck. Direct WCAG 2.1 §2.1.2 (keyboard trap) concern.
+- **Location:** [`src/app/components/maps/navigation/NavigationVoiceControlsSheet.tsx`](../src/app/components/maps/navigation/NavigationVoiceControlsSheet.tsx) (no `onKeyDown` / `useEffect` listener for `Escape`). Same pattern likely in [`src/app/components/maps/navigation/NavigationSettingsSheet.tsx`](../src/app/components/maps/navigation/NavigationSettingsSheet.tsx).
+- **Fix direction:** Add `useEffect` listener for `keydown` → `event.key === "Escape"` → call `onClose()`. Standard React pattern, ~10 LOC per file. Should also focus-trap within the panel while open (focus does not currently move into panel).
+- **Severity:** **P2-A11Y.** Real keyboard accessibility blocker. Small, mechanical fix.
+- **Status:** **RESOLVED 2026-05-07 — Pass 63.** New shared hook [`src/app/hooks/useEscapeKey.ts`](../src/app/hooks/useEscapeKey.ts) (`useEscapeKey(enabled, onEscape)`). Wired into [`NavigationVoiceControlsSheet.tsx`](../src/app/components/maps/navigation/NavigationVoiceControlsSheet.tsx) and [`NavigationSettingsSheet.tsx`](../src/app/components/maps/navigation/NavigationSettingsSheet.tsx). Listener auto-detaches when `open` flips false. Focus-trap improvement deferred. KI-147 (fullscreen ESC exit) tracked separately — same hook, different mount site, will close in a follow-up pass.
 
-- **Brief:** 2026-05-06 full-autopilot Phase E proposed extracting a shared `MapRoutePreviewCard` from `ShopDirectoryRoutePreviewCard.tsx` and adopting it in `CoverageBrowseExperience` to collapse an apparent "RECENT ROUTE / YOUR ROUTE" 2-card stack into a single floating card.
-- **On inspection:** The "RECENT ROUTE / YOUR ROUTE" pattern in `CoverageBrowseExperience` is NOT two floating map overlays of the same shape. It is two distinct sidebar metric panels with separate roles:
-  - `CoverageCommandCenterSidebar.tsx` L196 — "Recent Route" history strip (sidebar)
-  - `PlannerRoutePreview.tsx` L274 — "Your route" plan strip (sidebar, planner experience)
-- `ShopDirectoryRoutePreviewCard` is a floating map overlay (single active route preview) on the dashboard — different surface, different chrome (`bd-glass-card--map` floating), different role (live navigation preview vs. sidebar history/plan).
-- **Decision:** Skip extraction. Replacing the sidebar metric panels with a single floating map overlay would (a) move persistent metrics into a transient overlay obscuring map content, (b) lose the history-vs-plan distinction, (c) conflict with the existing sidebar role.
-- **Status:** WONTFIX (intentional surface separation between floating map overlays and sidebar metric panels).
-- **Severity:** P7-TECHDEBT (no user impact).
+### KI-122: Fullscreen map in-canvas "Light" tile mode renders pure white empty canvas (P2-VISUAL)
+
+> **Added 2026-05-07 — external audit AI deep audit.** Numbering jump 118 → 122 to avoid collision with archived KI-119 / KI-120 / KI-121 (in `archive/RESOLVED_KIS_2026-05-07.md`). The fullscreen map has an in-canvas tile-mode toggle distinct from the app-level theme toggle. The toggle cycles Night → Satellite → Light. The Light position fails to load any tile source.
+
+- **Impact:** User toggles to Light tile mode in fullscreen → map becomes a blank white canvas with no basemap, no markers, no route. Recovery is to cycle toggle again or reload. Light-mode preference reads as "broken light rendering" to any user who toggles in this order.
+- **Location:** Fullscreen map's tile-mode segmented control — likely a CARTO Positron tile-source URL not registered or a misconfigured style. NOT the app-level light theme (which works correctly per audit AI: "Light mode is excellent on dashboard").
+- **Fix direction:** Ensure the "Light" mode binds to a working CARTO Positron style (or equivalent free tile source). Verify CSP allowlist permits `cartocdn.com/light_all/`.
+- **Severity:** **P2-VISUAL.** Limited blast radius (only fires when user toggles a non-default control), but the blank-white state is alarming.
+- **Status:** **RESOLVED-NOT-REPRODUCIBLE — Pass 84 (2026-05-07).** Source-walk confirms the tile-mode toggle has only THREE positions: `roadmap | night | satellite` (per [`MapTileMode`](../src/app/components/maps/serviceCoverageMapTypes.ts) type). There is NO "Light" position in the cycle — the segmented control in [`MapSurfaceControls.tsx`](../src/app/components/maps/MapSurfaceControls.tsx) renders exactly three buttons (Map / Night / Satellite). The audit AI hallucinated a fourth "Light" position, likely confusing the in-canvas tile toggle with the app-level theme switch (which IS light/dark and works correctly per the same audit). All three actual tile modes wire to working CARTO sources: roadmap → CARTO Voyager rastertiles, night → CARTO dark_all, satellite → Esri World Imagery (verified in [`mapLibreStyles.ts`](../src/app/components/maps/mapLibreStyles.ts) and [`ShopDirectoryImmersiveMap.tsx`](../src/app/components/shop/ShopDirectoryImmersiveMap.tsx)). If the owner observes a true blank-canvas at runtime in any of the three real modes, file a fresh KI with a screenshot — this one is closed as non-reproducible.
+
+### KI-123: Notification badge cap visual ("8+", "9+") desyncs from ARIA raw count (P3-A11Y)
+
+> **Added 2026-05-07 — external audit AI deep audit.** Notification bell visually shows capped values like "8+" / "9+" but `aria-label` exposes raw counts ("17 unread", "23 unread"). Screen reader announces a different number than the visual badge.
+
+- **Impact:** Sighted + screen reader users hear different counts. Lower priority than KI-116 / KI-117 which are inflating the count in the first place.
+- **Fix direction:** Either cap the ARIA count to match visual ("more than 8 unread") or remove the visual cap. Match visual + ARIA semantics.
+- **Severity:** **P3-A11Y.** Cosmetic-tier accessibility issue.
+- **Status:** **RESOLVED — Pass 80 (2026-05-07).** [`DashboardHeader.tsx`](../src/app/components/app/DashboardHeader.tsx) bell `aria-label` now matches the visual cap: when `unreadCount > 9`, screen readers hear "Open notifications, more than 9 unread" (mirrors the visual "9+"); otherwise the exact count is announced. Sighted + screen reader users hear the same semantic. The other notification badge surfaces ([`dashboard/DashboardHeader.tsx`](../src/app/components/dashboard/DashboardHeader.tsx) red dot + [`ProfileDropdown.tsx`](../src/app/components/dashboard/ProfileDropdown.tsx) inline pill) render the raw count without a visual cap, so they already match — no change needed.
+
+### KI-124: Polish bundle from external audit (P2-COPY + P3-VISUAL)
+
+> **Added 2026-05-07 — external audit AI deep audit.** Bundled to keep the KI list manageable; each item is small (<10 LOC) and independent.
+
+- **Sub-items:**
+  1. **"1 offers" pluralization** — Bid Comparison header should read "1 offer" when count is 1. P2-COPY.
+  2. **"2014 Mazda Mazda6"** — vehicle string concatenates make + model where model already contains the make. Likely `${make} ${model}` rendering when `model = "Mazda6"`. Detect + dedup. P2-COPY/DATA.
+  3. **"Smoke Test Checklist" visible to end users on Account tab** — should be dev-only. Gate behind `import.meta.env.DEV`. P2-UX.
+  4. **"Save immediately" copy contradicts "Save Appearance" button** in Appearance Settings modal — pick one model. If saves are immediate, drop the button (or rename "Done"). P2-COPY.
+  5. **Voice persona stored value `british-smooth` displays as "Google UK English Female"** — mapping inconsistency between persona key and display label. Display label should derive from persona key consistently across surfaces. P3-DATA.
+  6. **"Browse all shops & AI matching" gradient bleeds past container's rounded corner** — single CSS `overflow: hidden` or `clip-path` fix on the wrapper. P3-VISUAL.
+  7. **Right action bar in fullscreen map: 4 unlabeled icon buttons** — adds first-time-user discoverability gap. ARIA labels exist but no visible text. Add subtle text labels under each icon (e.g., "Turns" / "Voice" / "Settings" / "Center"). P3-UX.
+  8. **Tile-mode toggle has no visible mode label** — only the icon swaps. Add a small text label ("Night" / "Satellite" / "Light"). P3-UX.
+  9. **Off-route status pill (top-right) AND centered banner show simultaneously** — pick one location. Recommend the corner pill; the centered banner covers the road network the user is trying to read. P3-UX.
+  10. **Missing "Cancel navigation" / "End session" affordance in fullscreen UI** — no way to clear planning state from the fullscreen UI. Add a clear-route control. P2-UX.
+- **Severity:** Mix of P2-COPY / P2-UX / P3. None are launch-blocking.
+- **Status:** **PARTIAL — Pass 64 + Pass 67 + Pass 72 + Pass 73 (2026-05-07).** Items #1, #2, #3, #4, #5, #6, #7, #8 RESOLVED. (#7) [`NavigationActionRail.tsx`](../src/app/components/maps/navigation/NavigationActionRail.tsx) now renders small uppercase labels under each icon button (Turns / Voice / Settings / Center) — first-time-user discoverability gap closed. Buttons switched to `flex-col` with `min-h-[44px]` `min-w-[44px]` so touch targets remain compliant (KI-136 contract preserved). (#8) Tile-mode toggle in [`MapSurfaceControls.tsx`](../src/app/components/maps/MapSurfaceControls.tsx) now shows the mode label (Map / Night / Satellite) on **all viewports** (was `hidden sm:inline`); also gained `aria-pressed` + descriptive `aria-label` for screen readers. Items #9, #10 still **OPEN** (need DOM + design decisions).
+
+### KI-125: Report flow Step 1 vehicle picker — placeholder text matches saved vehicle but input `value` is empty (P1-DATA/UX)
+
+> **Added 2026-05-07 — external audit AI Report flow walkthrough.** When the user lands on Report Step 1 with a saved vehicle, the input fields render with placeholder text that LOOKS LIKE pre-filled data ("Toyota", "Camry", "2021"), but the actual `value` attribute is `""` (empty). Audit AI confirmed via DOM inspection.
+
+- **Impact:** User sees what looks like pre-filled vehicle data and clicks "Continue" assuming the form is complete. Form submission fails or sends empty values. Confusing data integrity bug. Two distinct hypotheses for root cause:
+  1. The "Use" button on a saved-vehicle card is supposed to fill the inputs but isn't firing the controlled-component updater. Saved-vehicle data is rendered as placeholder hint only.
+  2. The placeholder text is templated from saved-vehicle data deliberately, but the form expects user to confirm by typing — a dark-pattern UX even if it works downstream.
+- **Location:** Report flow Step 1 vehicle entry component(s). Pre-existing report entry path. Audit AI's exact words: "fields show `value: ""` but placeholders match user's saved vehicle. So the visual is misleading — Toyota/Camry/2021 LOOK filled but aren't."
+- **Fix direction:** Verify the "Use" CTA on saved-vehicle cards: does it actually copy the saved vehicle data into the controlled inputs? If not, fix the click handler to call `setValue` for make/model/year. Alternative: use distinct placeholder text ("e.g. Toyota") rather than echoing the saved vehicle, so users don't read placeholder as filled.
+- **Severity:** **P1-DATA/UX.** Real user-facing risk of submitting empty form. Test coverage gap — Pass 61 should include a regression test for "saved-vehicle Use button populates form values."
+- **Status:** **RESOLVED 2026-05-07 — Pass 65.** Source-walk confirmed the "Use" button on saved-vehicle cards is correctly wired: `onClick → onVehicleChange({ make, model, year: String(savedVehicle.year), vin })` flows through `ReportScreen` → `form.setVehicle` → useState update → controlled inputs re-render with new values. The audit AI's "value: """ observation was a coincidence — the hardcoded placeholders ("Toyota", "Camry", "2021") happened to match their saved vehicle. To prevent future confusion, placeholders are now prefixed with "e.g. " ("e.g. Toyota", "e.g. Camry", "e.g. 2021"), making it visually unambiguous that the field is empty until the user picks a saved vehicle or types.
+
+### KI-126: Report flow wizard — empty-state layout overflow on ALL form steps before inputs are populated (P1-LAYOUT, RE-SCOPED)
+
+> **Added 2026-05-07 — external audit AI Report flow walkthrough. Re-scoped 2026-05-07 third pass — confirmed systemic across wizard steps, NOT step-specific.** Original observation was Step 3 only; deep audit found Step 4 (Photos) shows the SAME empty-state clipping ("nage photos" missing "Da", "ridence" missing "Ev", "one clear photo" missing "Take", "ighting and close-up" missing "L"). Step 2 only renders cleanly because its "form" is a 6-button picker with the buttons pre-populated. Conclusion: **the empty-state overflow rule fires on every wizard step whose form panel has no input content**. One layout fix repairs every step.
+
+- **Impact:** First-paint Steps 3 + 4 (and presumably Step 5 if it has a form panel) render with heading + labels clipped at left edge. Step 3 fixes itself once ZIP is entered; Step 4 likely fixes itself when first photo is added. Reads as half-broken on every wizard arrival until user starts typing/uploading.
+- **Location:** Wizard form-card left-edge positioning rule. Empty-state-conditional. Audit AI's hypothesis: a `transform: translateX(-N)` rule keyed off `:not(:has(input:not(:placeholder-shown)))` or similar miscalibrated content-conditional positioning. Single shared CSS rule, single shared fix.
+- **Fix direction:** Identify the rule via DevTools Elements panel — open Step 3 with empty form, inspect the heading element, walk up to the clipping ancestor, capture the computed transform/positioning. Then test if the same selector matches Step 4. Single-rule fix expected to repair all wizard steps. **PROMOTED to P1** based on Step-4-also-affected confirmation — every Report flow user hits this on every wizard step until inputs are filled.
+- **Severity:** **P1-LAYOUT** (was P2; promoted on third-pass evidence). Affects core conversion funnel.
+- **Status:** **OPEN — NEEDS-DOM-EVIDENCE — Pass 88 (2026-05-07).** Source-walk eliminates the audit AI's hypothesized root cause: a repo-wide grep across `src/**/*.{ts,tsx,css}` for `:has(input`, `placeholder-shown`, `fadeInLeft`, `animate-fade-in-left`, `translate-x-`, and Framer Motion `initial={{ x:` returned **zero matches** in any wizard step or wizard wrapper. The only motion on `<motion.div>` in [`ReportScreen.tsx`](../src/app/components/codelayer/ReportScreen.tsx) lines 286-294 is `initial={{ opacity: 0, y: 8 }} → animate={{ opacity: 1, y: 0 }}` (Y-axis only, 220ms, gated by `reduceMotion`). `bd-report-shell` declares `overflow: hidden` ([`theme.css`](../src/styles/theme.css) line 2554) so any decorative pseudo-element bleed is contained. There is no empty-state-conditional positioning rule anywhere in the codebase. Two remaining hypotheses, both require live DOM inspection to confirm or reject: (a) the `scrollIntoView({ inline: "nearest" })` on step transition ([`ReportScreen.tsx`](../src/app/components/codelayer/ReportScreen.tsx) line 211) is horizontally shifting the page when an interior element exceeds the viewport width — would manifest as identical clipping on every wizard arrival, fix via `inline: "center"` or removing the inline argument; (b) the audit AI's screenshot captured a transient mid-Y-translate frame and the "left clipping" was a visual artifact of the partial fade-in, not a real layout bug. Next builder pass: open Steps 3+4 in a customer-role browser session (current shop-role TestShop session cannot reach the wizard), inspect the heading element's computed-style + ancestor chain, and report findings before any CSS edit. Do **not** ship a speculative CSS fix against a hypothesis the source-walk has eliminated.
+
+### KI-127: "Off route" toast overlaps user avatar in dashboard header (P2-LAYOUT)
+
+> **Added 2026-05-07 — external audit AI dashboard scroll walkthrough.** The persistent off-route toast (driven by KI-116) overlaps the user avatar / notification bell area in the header at certain viewport widths.
+
+- **Impact:** Two layout concerns combined:
+  1. Toast z-index sits on top of header chrome → user can't click their avatar / notification bell
+  2. Visual hierarchy collision — two attention-seeking elements in the same screen region
+- **Note:** This bug becomes invisible once KI-116 is fixed (toast won't render on dashboard at all). But if KI-116 is fixed by gating the toast at the wrong boundary (e.g., still allowing toast on dashboard but only when active), the layout collision remains a real issue. Builder validates after KI-116 fix that any persistent toast in this region either:
+  - Re-anchors to a different position (bottom of viewport with safe-area inset, or below the header)
+  - Is dismissable (unlike the current persistent banner)
+- **Location:** Toast z-index / position styles + header layout. Visible at the viewport audit AI was at (likely 1280×900 desktop after previous resize attempts).
+- **Severity:** **P2-LAYOUT.** Will likely become moot when KI-116 ships; track as a follow-up validation after that fix lands.
+- **Status:** **RESOLVED-DEPENDENT 2026-05-07 — Pass 61.** With KI-116 RESOLVED, the off-route toast no longer fires on the dashboard at all (eval is gated on active nav session, which never exists on the dashboard surface). The header overlap symptom cannot reproduce. If a future regression re-introduces toasts in the header region, re-open with explicit z-index/anchor work — the underlying chrome layout itself was not touched in this pass.\*\*
+
+### KI-128: Report flow Step 3 → Step 4 — "Skip for now" returns to Step 3 instead of advancing (P1-UX)
+
+> **Added 2026-05-07 — external audit AI Report flow walkthrough.** Clicking Continue on Step 3 (Location) opens a "Photo Tips" onboarding modal. The modal has two CTAs: "Got it — start taking photos" and "Skip for now". **Got it correctly advances to Step 4. Skip for now CLOSES the modal but leaves the user on Step 3.** Clicking Continue then re-opens the same modal. The flow is effectively stuck unless the user clicks Got it.
+
+- **Impact:** Users who tap Skip for now expecting to bypass the tips screen instead end up in a modal-loop that reads as broken. Real risk of users abandoning the report mid-flow. Audit AI's exact words: "the dismiss behavior is weird: 'Skip for now' closes the modal but leaves you on Step 3, not Step 4. Continue then re-opens the modal."
+- **Location:** The Photo Tips modal component + its Skip handler. Likely the Skip handler only calls `onClose()` without also advancing the wizard step. Got it handler likely calls `onClose()` + `goToNextStep()`.
+- **Fix direction:** Skip for now should call BOTH `onClose()` AND `goToNextStep()` so the user lands on Step 4 with photos empty. Got it should also advance to Step 4 (with photo picker open by default). Two-line fix. Test the back button from Step 4 — should return to Step 3, not the modal.
+- **Severity:** **P1-UX.** Real flow blocker for users who tap Skip. Affects the core conversion funnel (report submission).
+- **Status:** **RESOLVED 2026-05-07 — Pass 62.** Added distinct `onSkip` prop to [`PhotoGuide.tsx`](../src/app/components/shop/PhotoGuide.tsx) (defaults to `onClose` for back-compat). [`ReportScreen.tsx`](../src/app/components/codelayer/ReportScreen.tsx) passes a Skip handler that closes the modal AND calls `form.nextStep()` AND sets `hasSeenGuideThisSession(true)` so it does not re-open on next Continue tap. Backdrop tap and corner X still call the original `onClose` (true cancel). `hasSeenPhotoGuide` persistence flag is intentionally NOT set on Skip — user skipped, did not acknowledge.
+
+### KI-129: Report flow Step 1 — required-field visual asterisks but `required: false` on HTML inputs (P2-DATA/A11Y)
+
+> **Added 2026-05-07 — external audit AI Report flow walkthrough.** Make / Model / Year fields render with red asterisk in the label visual styling, but the underlying HTML inputs have `required: false`. The form does not block submit on empty fields.
+
+- **Impact:** Visual asterisks signal required-ness to users; HTML attribute determines actual validation. The two disagree. A user could complete Step 1 with empty Make/Model/Year and submit (assuming KI-125's "Use" button issue is also bypassed). Browser-native form validation cannot fire because the inputs aren't marked required. Compounds with KI-125 (placeholder/value mismatch) — both contribute to "Step 1 looks complete, but isn't."
+- **Location:** Report flow Step 1 vehicle form. Likely a CSS class adds the visual asterisk indicator without a corresponding `required` attribute on the input.
+- **Fix direction:** Pick one truth. Either: (a) add `required` to the HTML inputs (browser-native validation kicks in), or (b) remove the visual asterisks if the form is genuinely optional. Recommend (a) — Make/Model/Year are conceptually required for any report. Verify the validation message styling matches the bd-design system, not browser defaults.
+- **Severity:** **P2-DATA/A11Y.** Real validation gap. Screen readers may also announce inconsistent semantics.
+- **Status:** **RESOLVED 2026-05-07 — Pass 66.** Added `required` attribute to make/model/year inputs in [`StepVehicleInfo.tsx`](../src/app/components/codelayer/report/StepVehicleInfo.tsx) — closes the screen-reader semantic gap (browsers expose `required` as `aria-required="true"`). Continue button was already correctly gated via `canContinue`. Defensive guard added at the top of `handleVehicleContinue` in [`useReportForm.ts`](../src/app/components/codelayer/useReportForm.ts) so the wizard refuses to advance even if a future caller bypasses the disabled-button gate. Audit AI's "user could submit empty" claim was technically false (button was disabled), but the a11y semantics are now correct.
+
+### KI-130: No service worker registered — app has no offline support (P3-INFRA)
+
+> **Added 2026-05-07 — external audit AI offline check.** `navigator.serviceWorker.controller === null`. The app has no SW registration, no Cache Storage entries.
+
+- **Impact:** When network drops mid-session (e.g., user driving toward a shop, signal degrades), the app shows broken-loading state instead of a designed offline screen or cached app shell. For a navigation-adjacent product, offline tile cache + cached app shell would be a real differentiator.
+- **Location:** No SW file in build output. PWA manifest may also be missing — verify in DevTools Application panel.
+- **Fix direction:** Long-term: Workbox-generated SW with network-first caching for app shell, stale-while-revalidate for Carto tiles, network-only for API. Short-term: even a minimal "you're offline" route would beat the current broken state. Consider Vite PWA plugin for the scaffolding.
+- **Severity:** **P3-INFRA.** Not launch-blocking on desktop. Would be moderate priority for a mobile PWA push.
+- **Status:** **RESOLVED — Pass 79 (2026-05-07).** Source verification (KI-150 Pass 76 + this pass) confirms `vite-plugin-pwa` is wired in [`vite.config.ts`](../vite.config.ts) lines 13-62 with `registerType: "autoUpdate"`, manifest, and Workbox runtime caching for Supabase API (NetworkFirst, 50 entries, 5min TTL) + map tiles (CacheFirst, 500 entries, 7-day TTL). Build output also confirms — last build emitted `dist/sw.js` + `dist/workbox-354287e6.js` with 64 precached entries (3.8 MiB). The audit AI's `navigator.serviceWorker.controller === null` was Vite-dev-server behavior; production builds register the SW automatically. Closed at source.
+
+### KI-131: Landing headline carousel auto-rotates without prefers-reduced-motion pause or manual control (P2-A11Y)
+
+> **Added 2026-05-07 — external audit AI landing audit.** The hero headline carousel auto-rotates through 3 taglines every few seconds. There is no manual pause control, no manual skip, and no prefers-reduced-motion gate.
+
+- **Impact:** Vestibular-sensitive users get continuous motion in the hero. Users mid-read get the tagline yanked from under them. Direct WCAG 2.2.2 Pause, Stop, Hide concern.
+- **Location:** Landing hero headline carousel component.
+- **Fix direction:** (a) Pause auto-rotation when `prefers-reduced-motion: reduce`. (b) Add a small pause/play affordance (a button next to the dot indicators). (c) Pause on hover/focus. Common library patterns from Embla/Swiper handle (a) + (c) natively.
+- **Severity:** **P2-A11Y.** WCAG 2.2.2 violation. Polished landing pages in 2026 universally handle this; BidOnDent is currently not.
+- **Status:** **RESOLVED — Pass 79 (2026-05-07).** Verified [`HeroSection.tsx`](../src/app/components/landing/HeroSection.tsx) lines 73-78 already gate the auto-rotation interval on `prefersReducedMotion.current` (set from `window.matchMedia("(prefers-reduced-motion: reduce)").matches` on mount). Added a `userPaused` state flag — when the user clicks any carousel dot, the flag flips true and the `useEffect` cleanup tears down the interval. Dot button labels now read "Show tagline N of 3 (pauses auto-rotation)" with `aria-pressed` for screen readers. WCAG 2.2.2 Pause/Stop/Hide satisfied: (a) reduced-motion users never see auto-rotation; (b) all users get manual skip + implicit pause-on-interaction.
+
+### KI-132: SPA history grows unboundedly — `history.length` reached 21 in one audit session (P3-ROUTING)
+
+> **Added 2026-05-07 — external audit AI navigation audit.** Each tab change inside the SPA pushes a new `history` entry. After a normal audit session on one tab, `historyLength` grew to 21. Browser back from `Dashboard → Find Shops → Bids` does not predictably return to the home dashboard.
+
+- **Impact:** Browser back behavior is unpredictable for users navigating with the back button. Compounds with KI-011 (state-driven routing prevents URL sharing/bookmarking) — that KI is already P2 in the active list. KI-132 is the practical user-facing symptom of KI-011.
+- **Location:** `useNavigation.ts` — calls `history.pushState` for tab changes inside the SPA. Each push is a new history entry, but they share URL `/`. Browser back unwinds them but the user's mental model expects "back = previous page", not "back = previous tab".
+- **Fix direction:** Tied to KI-011 fix — migrate to React Router or TanStack Router so URL becomes source of truth for tab state. Until then: avoid `history.pushState` for tab-internal navigation; use `replaceState` so back button maps to "exit the app", not "previous tab".
+- **Severity:** **P3-ROUTING.** Tied to KI-011's broader fix. Not isolated.
+- **Status:** **MITIGATED — Pass 201 (2026-05-09).** [`useNavigation.ts:124-176`](../src/app/hooks/useNavigation.ts#L124) now distinguishes real navigation depth changes (`viewMode` or `selectedReportId` change → `pushState`) from peer-tab swaps within the same `viewMode` (`currentTab` change only → `replaceState`). `history.length` no longer grows from tab swaps, and the back button maps to "exit the app" from any dashboard tab — matching user mental model. Underlying KI-011 (URL-as-source-of-truth) still open; this is the practical-symptom mitigation, not the structural fix.
+
+### KI-133: localStorage key embeds user email in key name — `bidondent_user:<email>` (P3-PRIVACY)
+
+> **Added 2026-05-07 — external audit AI sign-out walkthrough.** Audit AI ran `Object.keys(localStorage)` and observed a key shaped like `bidondent_user:molalign5@gmail.com`. The user's email address is embedded in the key NAME, not just the value. Persists after sign-out (KI-117 territory).
+
+- **Impact:** Anyone with browser debugger access (devtools, shared computer, malicious extension) can scan key names without parsing values and learn the prior user's email. Privacy hardening concern. Lower priority than KI-117's stale-session leak but same general class of post-sign-out residue.
+- **Location:** Whatever code writes `bidondent_user:<id>` keys. Likely in the auth/session bridge.
+- **Fix direction:** Use a fixed key name (`bidondent_user`) and store the user identifier in the value (JSON). OR: scope to `sessionStorage` so the key dies when the tab closes. OR: hash/UUID the user ID in the key name.
+- **Severity:** **P3-PRIVACY.** Low-blast-radius privacy concern. Lower than KI-117 cleanup but companion fix.
+- **Status:** **OPEN — P3-PRIVACY.**
+
+### KI-134: Clerk silent re-auth after Sign Out — `__clerk_db_jwt` cookie persists, auto-restores session on next load (P1-SECURITY)
+
+> **Added 2026-05-07 — external audit AI third pass.** After Sign Out + reload, audit AI clicked the Login link and was returned to the dashboard immediately without entering credentials. Investigation confirmed: a lingering `__clerk_db_jwt` cookie was being used by Clerk to silently re-authenticate. The Sign Out flow drops 7 → 4 cookies (3 Clerk session cookies cleared) but `__clerk_db_jwt` survives. **This means Sign Out is not a true session destroy.** Anyone with browser access after a "signed out" state can resume the prior user's session by reloading.
+
+- **Impact:** Real security concern on shared devices. The user's expectation of "Sign Out" is "the next person to use this browser cannot get to my account." Current behavior fails that expectation. Combined with KI-117 (stale localStorage) + KI-133 (email-in-key-name), the post-sign-out residue is substantial.
+- **Open question for owner:** Is this **intended** Clerk behavior (long-lived refresh token for "stay signed in" UX) that just isn't being labeled as such? If so, the fix is renaming "Sign Out" to "Switch Accounts" or surfacing a "Forget this device" affordance. If it's NOT intended, the fix is calling Clerk's `signOut({ session: true, application: true })` (or whichever Clerk API destroys the device-level token) on the Sign Out flow.
+- **Location:** Clerk integration, sign-out handler. Likely calls `clerk.signOut()` with default options that preserve the device JWT for "remember me" UX.
+- **Fix direction:** Two paths depending on owner intent:
+  1. **Full destroy:** call `clerk.signOut({ sessionId: ..., redirectUrl: '/' })` plus explicit cookie clear for `__clerk_db_jwt` + `__client_uat`. Forces re-auth on next visit.
+  2. **Honest naming:** rename "Sign Out" to "Switch Accounts" + add "Forget this device" link that does the full destroy. Acknowledges the long-lived-session UX.
+- **Severity:** **P1-SECURITY.** Owner decides between full-destroy and honest-naming.
+- **Status:** **OPEN — P1-SECURITY.** Pairs with KI-117 + KI-133 in the post-sign-out cleanup cluster.
+
+### KI-135: No skip-link for keyboard-only users — first Tab goes to logo, not "Skip to main content" (P2-A11Y)
+
+> **Added 2026-05-07 — external audit AI keyboard tab order audit.** From a fresh load, pressing Tab focuses the BidOnDent logo button. There is no `<a href="#main">Skip to main content</a>` skip-link affordance. Screen reader and keyboard-only users must traverse every sidebar nav item, header bell, and avatar menu before reaching content.
+
+- **Impact:** WCAG 2.4.1 Bypass Blocks — users need a way to skip repeated content. Currently they don't. Compounds with KI-118 (ESC handlers missing) — the keyboard accessibility story has gaps.
+- **Location:** App shell layout — likely `src/app/App.tsx` or the dashboard layout root. The skip-link should be the first focusable element on the page, visually hidden until focused.
+- **Fix direction:** Add `<a href="#main-content" class="bd-skip-link">Skip to main content</a>` as the first child of `<body>` (or app root). CSS: hidden via `clip: rect(0 0 0 0)` until `:focus`, then renders as a top-left pinned glass pill matching the bd-\* identity. Add `id="main-content"` to the appropriate landmark (likely `<main>`).
+- **Severity:** **P2-A11Y.** WCAG 2.4.1 violation. Low-effort fix, ~20 LOC + matching style.
+- **Status:** **RESOLVED 2026-05-07 — Pass 68.** Skip-link added as the first child of [`DashboardLayout.tsx`](../src/app/components/app/DashboardLayout.tsx) (`<a href="#main-content" class="bd-skip-link">Skip to main content</a>`) with matching `id="main-content"` + `tabIndex={-1}` on the `<main>` element so the focus actually lands. New `.bd-skip-link` style appended to [`src/styles/theme.css`](../src/styles/theme.css) — visually hidden via `clip: rect(0 0 0 0)` until `:focus`/`:focus-visible`, then renders as a top-left pinned glass pill matching the bd-\* identity (dark + light variants, light variant uses the locked premium gold trim).
+
+### KI-136: Search input + BidOnDent logo button below 44pt touch-target threshold (P2-UX)
+
+> **Added 2026-05-07 — external audit AI touch-target audit.** Audit AI measured every tabbable element on Dashboard. Two elements fall below the WCAG 2.5.5 / Apple HIG 44×44 minimum:
+>
+> - Search reports input: 260×34 (height short by 10pt)
+> - BidOnDent logo button: 148×40 (height short by 4pt)
+>
+> Both will still be sub-44 at 375 mobile viewport because the heights are typography-driven, not viewport-conditional.
+
+- **Impact:** Fingertip mis-tap risk on mobile. The 9 other elements that flagged in the audit (notification bell, View on map, Delete report, etc.) are exactly 44×44 — they pass. These two are the real misses.
+- **Location:**
+  - Search input — likely `src/app/components/dashboard/SearchReportsInput.tsx` or similar. Input height is set by font-size + padding; needs `min-height: 44px` or matching padding.
+  - Logo button — likely the header logo. Wrapping link/button needs taller hit area.
+- **Fix direction:** Add `min-height: 44px` to both elements, or increase vertical padding to satisfy. Ensure the visual design doesn't break when height grows. Logo can keep visual size of 40px but expand the click area via `padding-block: 2px 2px` and `display: inline-flex; align-items: center`.
+- **Severity:** **P2-UX.** Real mobile usability hit. Trivial CSS fix.
+- **Status:** **RESOLVED 2026-05-07 — Pass 69.** Search wrapper in [`DashboardHeader.tsx`](../src/app/components/app/DashboardHeader.tsx) now has `min-h-[44px]` (was 34px from `py-2` typography). Sidebar logo button in [`DashboardSidebar.tsx`](../src/app/components/app/DashboardSidebar.tsx) now has `min-h-[44px]` (was 40px). The mobile DashboardHeader logo button already had `min-h-[44px]` from a prior pass — no change. Visual layout preserved (button content stays vertically centered; only the click area grew).
+
+### KI-137: Sign Out and Delete Account share the SESSION section — mis-tap risk (P2-UX)
+
+> **Added 2026-05-07 — external audit AI Account tab walkthrough.** The Account → Settings section labeled "SESSION" contains both Sign Out (everyday action) and Delete Account (destructive action) as immediate neighbors. Audit AI's exact words: "putting them next to each other invites mis-tap."
+
+- **Impact:** Real risk. Sign Out is a common action; Delete Account is permanent. Adjacency is dangerous UX.
+- **Fix direction:**
+  - Move Sign Out to the bottom-left sidebar pill area (one-click, like every other product). Already there in some products' designs.
+  - Keep Delete Account in a separate "Danger Zone" section deeper in Settings, with explicit confirmation (type your email, then click).
+  - Visual: Delete Account always uses destructive-tone (red trim), Sign Out uses neutral-tone.
+- **Severity:** **P2-UX.** Standard SaaS Account-page pattern violation.
+- **Status:** **RESOLVED 2026-05-07 — Pass 70.** [`AccountMenu.tsx`](../src/app/components/codelayer/account/AccountMenu.tsx) now splits the two actions across distinct sections: "Session" (Sign Out only) and "Danger Zone" (Delete Account only). Danger Zone is visually separated by `mt-4 border border-rose-500/30`, eyebrow uses `text-rose-400`, and the right-side label reads "Irreversible". Delete Account still routes through [`DeleteAccountModal`](../src/app/components/codelayer/account/DeleteAccountModal.tsx) for the confirmation step. Sidebar one-click Sign Out (the deeper redesign) deferred — current split removes the mis-tap risk without re-architecting the Account screen.
+
+### KI-138: Notification preferences endpoint returns 500 + UI stuck on infinite loading — `notification_preferences` table missing in production (P1-RUNTIME)
+
+> **Added 2026-05-07 — external audit AI pass 4 + pass 4 extended.** Discovered via DevTools Network capture during Appearance Settings modal → Notifications section. Endpoint `https://wmdcnjgtsppftrofaqqa.supabase.co/functions/v1/server/notification-preferences` returns HTTP 500. UI shows "Loading preferences…" with spinner indefinitely (>8s waited). No error toast, no retry, no fallback to defaults.
+
+> **ROOT CAUSE (Supabase MCP audit pass 4 extended):** The `notification_preferences` table **does not exist in production**. The edge handler at `supabase/functions/server/handlers/notification_preferences.ts` queries `from('notification_preferences').select('*').eq('clerk_user_id', ...)`. Postgres returns `42P01 undefined_table`. Handler catches and returns 500. **KI-095's graceful-degradation pattern is not catching it** — the UI infinite-loading state never falls back to defaults. Two bugs in one: server schema gap + client error-handling gap.
+>
+> **Planner verified independently 2026-05-07** via `execute_sql` on `information_schema.tables`: zero rows for `notification%` patterns in `public` schema (only `public.website_preferences` exists, which is a different table for a different concern).
+
+- **Impact:** User cannot adjust notification preferences via Appearance Settings. Modal renders three working sections (Privacy / Appearance / Language) and one silently-dead section (Notifications). Erodes trust on every visit to Account → Appearance Settings.
+- **Fix direction (TWO required, in this order):**
+  1. **Owner-action: write + apply notification_preferences migration.** Schema needs at minimum: `clerk_user_id text PRIMARY KEY`, plus boolean preference fields matching the UI (`email_enabled`, `email_bid_updates`, `email_report_updates`, `email_nearby_reports`, `email_estimate_updates`, `sms_enabled`), `created_at timestamptz DEFAULT now()`, `updated_at timestamptz DEFAULT now()`. Plus RLS policies matching `website_preferences` patterns. Apply via Supabase Studio per `feedback_supabase_cli_pg17`.
+  2. **Code-side: fix client error-handling.** Wrap the load handler in try/catch. On failure, render checkboxes with default-on values + small banner "Couldn't load preferences. Using defaults — try again?" + Retry button. Defensive UX even if backend works correctly.
+- **Severity:** **P1-RUNTIME.** User-blocking on the Notification Preferences UX. Real backend gap + real client gap.
+- **Backend status (2026-05-07 pass 8):** **SCHEMA RESOLVED.** Audit AI applied `apply_migration` via Supabase MCP creating `public.notification_preferences` byte-for-byte from `FALLBACK_PREFERENCES` const (18 cols: `id` text PK with `gen_random_uuid()::text` default, `clerk_user_id` text NOT NULL UNIQUE, 14 boolean preference columns matching the UI, `created_at`/`updated_at` timestamptz). RLS pattern modeled identically on `website_preferences` (`USING(false) WITH CHECK(false)` — server-mediated, edge function service-role bypass only). `set_updated_at` BEFORE UPDATE trigger using `public.handle_updated_at()`. Verification via `information_schema`: table ✓, 18 cols ✓, 2 indexes (PK + UNIQUE auto-index) ✓, RLS enabled ✓, 1 policy ✓, 1 trigger ✓. Initial redundant explicit index on `clerk_user_id` dropped post-create to prevent KI-145-style duplication.
+- **Status:** **OPEN — P1-OPS.** Backend gap CLOSED. Client gap CLOSED via Pass 83 (2026-05-07): [`useNotificationPreferences.ts`](../src/app/hooks/useNotificationPreferences.ts) now exposes `isUsingDefaults` + `loadError` + `reload`; [`SettingsModal.tsx`](../src/app/components/codelayer/account/SettingsModal.tsx) renders an amber "Couldn't load saved preferences. Editing local defaults — changes won't persist until reconnected." banner with a Retry button when the initial GET failed. The hook already gracefully fell back to defaults (no infinite spinner), but the user now SEES the degraded state instead of silently editing local-only state. Remaining work: (1) owner deploys edge function v51 per KI-146 (one CLI command — handler at HEAD has graceful-fallback logic and will now find the table created by the Pass 8 migration).
+
+### KI-139: prefers-reduced-motion CSS coverage gap — 40 keyframes vs 23 reduce-motion guards (P2-A11Y)
+
+> **Added 2026-05-07 — external audit AI pass 4 CSS audit.** Counted: 40 `@keyframes` definitions in stylesheets loaded on Dashboard. 23 selectors inside `@media (prefers-reduced-motion: reduce)` blocks. **Coverage gap of up to 17 keyframes.** Pass 56 added missing reduce-guards but addition of new keyframes since (likely Pass 49-59 navigation/coverage work) may have outpaced the contract.
+
+- **Impact:** Vestibular-sensitive users may still experience animation under `prefers-reduced-motion: reduce`. Direct LAW_ANIMATION_AND_ATMOSPHERE §3 violation if confirmed.
+- **Approach (audit AI's recommendation):** ~50-LOC Node script that:
+  1. Greps `@keyframes <name>` patterns out of `src/styles/*.css`.
+  2. Greps `@media (prefers-reduced-motion: reduce)` blocks and the `animation-name` / `animation-duration: 0s` overrides within them.
+  3. For each keyframe, verifies a guard exists.
+  4. Mismatches → CI failure.
+     Add to lint workflow.
+- **Severity:** **P2-A11Y.** Verifies LAW §3 contract holds against drift.
+- **Status:** **RESOLVED 2026-05-07 — Pass 71.** Added [`scripts/audit-reduced-motion.mjs`](../scripts/audit-reduced-motion.mjs) and `npm run audit:reduced-motion`. Script does a real coverage analysis (not a flat regex count): for every `@keyframes` it identifies the consumer selectors via `animation` / `animation-name` references, then verifies each consumer is also targeted inside a `@media (prefers-reduced-motion: reduce)` block by an animation-disabling rule (or covered by a wildcard reduce rule). Audit AI's "23 vs 40" count was a flat grep — actual coverage today is **34/34 keyframes guarded** (script reports `exit=0`). Script blocks future drift; can be wired into CI.
+
+### KI-140: Mobile Smart Shop Map legend overlay too dense — 5 dots + 6 pills + checkbox + eye icon obscure the map (P2-UX)
+
+> **Added 2026-05-07 — external audit AI pass 5 mobile audit.** At 555×922 viewport, the Smart Shop Map renders a legend overlay containing: 5 category dots (Origin/Selected/Top pick/Reports/Saved/Routes), Routes checkbox, eye-icon toggle, and a 6-pill horizontal status filter row (ALL/PENDING/APPROVED/IN REPAIR/RESOLVED/DONE). The "DONE" pill is visibly clipped at viewport edge. The overlay obscures the actual map.
+
+- **Impact:** Map-first product where the map itself is partially obscured by chrome. Status pills overflow horizontally without visible scrollbar indicator. Adds cognitive load on a small screen.
+- **Fix direction:**
+  1. Collapse legend to a single pill "Legend (5)" that expands a sheet on tap, mirroring the Apple Maps pattern.
+  2. Add scroll-indicator dots/arrows to the status pill row OR convert to a horizontal-scroll segmented control with momentum.
+  3. Bonus: the legend overlay should auto-hide after 3s of no interaction, re-show on tap.
+- **Severity:** **P2-UX.** Mobile usability hit on a primary surface.
+- **Status:** **RESOLVED — Pass 78 (2026-05-07).** [`MapPaneLegendPanel.tsx`](../src/app/components/shop/MapPaneLegendPanel.tsx) now collapses to a single tap-to-expand "Legend" pill (rounded-full, layers icon + chevron) when `density === "compact"` (mobile fullscreen map call sites). Default state is collapsed; users opt in to the full panel + status filter row by tapping. Expanded state gains an inline collapse button (chevron-up) for symmetry. Non-compact (desktop / wider panes) keeps the original always-on layout so power users do not lose density. Map surface is now visible by default on mobile.
+
+### KI-141: Mobile header drops page title — users lose orientation between tabs (P3-UX)
+
+> **Added 2026-05-07 — external audit AI pass 5 mobile audit.** At mobile viewport, the header chrome shows BidOnDent logo (left) + bell + avatar (right). The desktop "Dashboard" / "Bids" / "Account" page title label is removed at mobile. Audit AI: "users lose context of which page they're on."
+
+- **Impact:** Bottom nav shows the active tab via top-edge accent, but the header is silent on context. Users mid-tab may briefly second-guess where they are.
+- **Fix direction:** Add small page-title label below logo OR next to avatar at mobile. Either:
+  - Static label tied to active tab.
+  - Breadcrumb pattern for nested views (e.g., Dashboard › Bids).
+- **Severity:** **P3-UX.** Lower priority than KI-140 but a real polish gap.
+- **Status:** **RESOLVED — Pass 75 (2026-05-07).** Mobile header now shows the active tab label as a small `font-semibold` span between the logo button and the right-side actions (logo · "Bids" · bell · avatar). Desktop continues to render the larger `<h2>` per [`DashboardHeader.tsx`](../src/app/components/app/DashboardHeader.tsx); the new mobile span is the `md:hidden` twin and stays `truncate` so it never wraps the header.
+
+### KI-142: Mobile Quick Actions row becomes 2-up grid — 3 of 4 actions require scroll to discover (P3-UX)
+
+> **Added 2026-05-07 — external audit AI pass 5 mobile audit.** Dashboard Quick Actions card row is 4-across at desktop, 2-up grid at mobile. With 4 cards total, mobile users see only 2 above the fold; remaining 2 require vertical scroll to reach.
+
+- **Impact:** Discovery gap. New users may never realize "Find Shops" and "Connect Insurance" exist.
+- **Fix direction:** Convert to horizontal-scroll carousel at mobile with momentum + scroll indicator. Pattern matches App Store / Apple Music. All 4 cards visible by swipe; first 1.5 cards always above the fold as visual hint.
+- **Severity:** **P3-UX.** Discovery polish.
+- **Status:** **RESOLVED — Pass 77 (2026-05-07) — VERIFIED ALREADY HORIZONTAL-SCROLL.** Source read of [`HomeScreenSections.tsx`](../src/app/components/codelayer/HomeScreenSections.tsx) lines ~190-260 confirms the Quick Actions row is **already** a horizontal-scroll snap carousel on mobile: `flex gap-2 overflow-x-auto px-1 pb-1 snap-x snap-mandatory scrollbar-hide` with `w-[min(15rem,72vw)] shrink-0 snap-start` per tile + a right-edge gold-fade affordance hinting at more content. The grid only kicks in at `sm:grid sm:grid-cols-2 md:grid-cols-4`. Audit AI's "2-up grid at mobile" observation was a misread (likely viewport above the `sm` breakpoint at the moment of capture). No code change required.
+
+### KI-143: Mobile Bids tab shows "Offline · last known" pill — verify intent (P3-VERIFY)
+
+> **Added 2026-05-07 — external audit AI pass 5 mobile audit.** At mobile viewport on Bids tab, audit AI observed an "Offline · last known" pill in the Bid Comparison header. Pill not visible at desktop. Audit AI flags as "either intentional mobile-only feature or a real connectivity issue surfacing."
+
+- **Impact:** Unclear. If intentional offline indicator that's mobile-only by design, low concern (could even be a feature worth promoting to desktop). If an unintended surfacing of stale data, real concern.
+- **Fix direction:** Builder verifies in source code whether pill is conditionally rendered on mobile-only OR on offline-state-only. If mobile-only by design, document; if state-only, investigate why it triggered during audit AI's session (was the audit AI offline? or is the pill firing a false positive?).
+- **Severity:** **P3-VERIFY.** Investigation pass; severity adjusts after finding.
+- **Status:** **RESOLVED — Pass 76 (2026-05-07) — VERIFIED INTENTIONAL, NOT MOBILE-ONLY.** Source read of [`BidsSummaryHeader.tsx`](../src/app/components/codelayer/BidsSummaryHeader.tsx) lines 16-56 confirms the pill is rendered by `getLiveStatusChip(status, isLight)` which switches on `connectionStatus`:
+  - `"connected"` → emerald "Live" pill.
+  - `"error"` → amber "Reconnecting…" pill.
+  - `"disconnected"` → slate "Offline · last known" pill.
+  - `"idle"` → hidden (seed/demo report or no active subscription).
+
+  There is no mobile-only branch — the pill renders identically on every viewport whenever the realtime channel reports disconnected. Audit AI's session was either offline or the realtime channel was genuinely disconnected at the moment of capture. Behavior is correct and intentional. No code change required.
+
+### KI-144: Supabase advisor lint cluster — 13 security + 198 performance lints (P3-INFRA, batched)
+
+> **Added 2026-05-07 — external audit AI pass 4 extended Supabase MCP audit.** Captured production advisor lints. Quantified, with concrete remediations.
+
+- **Security lints (13):**
+  - INFO × 4: RLS-enabled-no-policy on `estimate_requests`, `job_assignments`, `kv_store_85e96b22`, `kv_store_9f243523`. Currently locked (deny-by-default). If admin-only intentional, OK; otherwise needs policies.
+  - WARN × 4: `function_search_path_mutable` on `requesting_clerk_user_id`, `safe_auth_uid`, `handle_updated_at`, `update_updated_at_column`. Real security risk — set `SET search_path = public` on each function.
+  - WARN × 4: `rls_policy_always_true` (overly permissive). Three intentional public-form INSERT funnels (`shop_interest_submissions`, `insurer_interest_submissions`, `platform_activity_events`); one suspicious (`kv_store_baa15238` ALL with USING + WITH CHECK true bypasses RLS entirely).
+  - WARN × 1: `auth_leaked_password_protection` disabled — Supabase Auth's HaveIBeenPwned check is OFF. Trivial enable in Studio.
+- **Performance lints (198):**
+  - WARN × 102: `multiple_permissive_policies` — many tables have multiple RLS policies for same action+role. Slow at scale.
+  - INFO × 69: `unused_index` — drop never-used indexes.
+  - WARN × 21: `auth_rls_initplan` — RLS policies re-evaluating `auth.uid()` per row. Standard fix: wrap in `(SELECT auth.uid())`.
+  - INFO × 3: `unindexed_foreign_keys`.
+  - WARN × 2: `duplicate_index` — `kv_store_85e96b22` has 4 IDENTICAL indexes; drop 3.
+  - INFO × 1: `auth_db_connections_absolute` — Auth server connection-config style.
+- **Highest-leverage fixes (planner-recommended order):**
+  1. Drop 3 of 4 duplicate `kv_store_85e96b22` indexes (zero-risk perf win).
+  2. Enable HaveIBeenPwned in Studio (zero-risk security win).
+  3. Set `search_path` on 4 functions (write migration).
+  4. Audit `kv_store_baa15238` always-true policy (intentional or bug?).
+  5. Wrap `auth.uid()` calls in `(SELECT auth.uid())` across 21 RLS policies.
+- **Severity:** **P3-INFRA, batched.** None launch-blocking. Drop-3-duplicate-indexes is the cleanest SQL win — safe for audit-AI fix-authority.
+- **Status:** **OPEN — P3-INFRA, batched.** Owner-action surface for the security wins; builder-AI write migration for `search_path` fix.
+
+### KI-145: Drop 3 duplicate indexes on `kv_store_85e96b22` (RESOLVED 2026-05-07)
+
+> **Added 2026-05-07 — external audit AI pass 6 safe-fix.** Resolved same-day under owner-granted fix-authority for safe SQL data corrections / cleanup. Splits from KI-144 batch as the cleanest-leverage win that's worth its own RESOLVED record for the audit trail.
+
+- **Impact:** `public.kv_store_85e96b22` had 4 byte-identical btree indexes on `(key text_pattern_ops)` + a PK index using a different operator class. Wasted disk + write amplification on every kv-store mutation.
+- **Resolution (2026-05-07):** External audit AI verified all 4 `kv_store_85e96b22_key_idx*` indexes were byte-identical via `pg_indexes` query, then dropped 3 redundant via Supabase MCP:
+  ```sql
+  DROP INDEX IF EXISTS public.kv_store_85e96b22_key_idx1;
+  DROP INDEX IF EXISTS public.kv_store_85e96b22_key_idx2;
+  DROP INDEX IF EXISTS public.kv_store_85e96b22_key_idx3;
+  ```
+- **Verification:** Planner-AI confirmed independently 2026-05-07 via `execute_sql` against `pg_indexes`: table now has exactly 2 indexes (`kv_store_85e96b22_pkey` + `kv_store_85e96b22_key_idx`). Five → two indexes, zero behavior change, pure perf cleanup.
+- **Status:** **RESOLVED 2026-05-07.** Move to RESOLVED archive on next docs hygiene pass.
+- **Skill:** None — pure DB cleanup; safe-fix authority precedent extended.
+
+### KI-146: KI-138 graceful-degrade fix code already written but not deployed (P1-OPS, owner-action)
+
+> **Added 2026-05-07 — external audit AI pass 6 GitHub source read.** Audit AI inspected `supabase/functions/server/handlers/notification_preferences.ts` at HEAD via signed-in GitHub browser tab. Discovered the KI-138 graceful-degrade fix is **already committed in the source repo** at commit `0df5d4c` ("fix(notifications): F-04 — graceful fallback + diagnostic logging"). The handler has `FALLBACK_PREFERENCES` const (16 columns) + `isPersistenceUnavailable(error)` checking Postgres codes 42P01/42501/0LP01 + HTTP 200 fallback response on schema-missing errors.
+
+- **Impact:** Production server function is at v50 (per audit AI Supabase MCP). The fix is at HEAD on main but not deployed. This means **one `supabase functions deploy server` command would fix the KI-138 UI infinite-loading symptom immediately, even before the migration lands**. Schema-side fix is still required for full resolution but UX fix is one command away.
+- **Captured FALLBACK_PREFERENCES schema (16 columns)** — informs the migration owner needs to write:
+  - `id text DEFAULT ''` (UUID-shaped in real rows; consider `text PRIMARY KEY DEFAULT gen_random_uuid()::text` per `feedback_supabase_cli_pg17`)
+  - `clerk_user_id text NOT NULL` (with UNIQUE constraint or PK if id is generated)
+  - `in_app_bid_updates boolean DEFAULT true`
+  - `in_app_report_updates boolean DEFAULT true`
+  - `in_app_nearby_reports boolean DEFAULT true`
+  - `in_app_estimate_updates boolean DEFAULT true`
+  - `email_bid_updates boolean DEFAULT true`
+  - `email_report_updates boolean DEFAULT true`
+  - `email_nearby_reports boolean DEFAULT true`
+  - `email_estimate_updates boolean DEFAULT true`
+  - `sms_bid_updates boolean DEFAULT false`
+  - `sms_report_updates boolean DEFAULT false`
+  - `email_enabled boolean DEFAULT true` (master toggle)
+  - `sms_enabled boolean DEFAULT false` (master toggle)
+  - `share_data_with_shops boolean DEFAULT true` (privacy)
+  - `show_profile_to_insurers boolean DEFAULT false` (privacy)
+  - Plus implicit `created_at timestamptz DEFAULT now()`, `updated_at timestamptz DEFAULT now()`
+- **Code comment lineage:** handler line 14 references "Mirrors the DEFAULT clauses in migration 20251230000001_full_schema.sql §3.17" — section either was never added to the migration file or was added but never applied to prod.
+- **Owner action sequence (in order):**
+  1. `supabase functions deploy server --project-ref wmdcnjgtsppftrofaqqa` — deploys v51 with graceful-degrade. UI UX fixes immediately.
+  2. Write fresh migration `supabase/migrations/<TS>_create_notification_preferences.sql` with the 16-column schema above + RLS policies matching `website_preferences` patterns.
+  3. Apply migration via Supabase Studio per `feedback_supabase_cli_pg17`.
+  4. Verify: `curl -H "Authorization: Bearer <jwt>" https://<project>.supabase.co/functions/v1/server/notification-preferences` returns `{preferences:{...},success:true}` (NOT `fallback:true`).
+- **Status:** **OPEN — P1-OPS.** Owner-action: deploy edge function v51 + write/apply migration. Splits from KI-138 because the deploy is one-command and unblocks UX without the schema work.
+
+### KI-147: Fullscreen map mode itself does not exit on ESC (P2-A11Y, KI-118 cluster expansion)
+
+> **Added 2026-05-07 — external audit AI pass 6 Smart Shop Map fullscreen test.** Audit AI tapped 4-corner expand button at mobile, entered fullscreen map mode. Verified: bottom nav remains accessible (✓), legend overlay auto-declutters (✓), back-arrow exits fullscreen (✓). **ESC key does NOT exit fullscreen.** Same KI-118 sheet-pattern issue extended to the fullscreen-map overlay surface.
+
+- **Impact:** Keyboard-only users have only the back-arrow as exit. Standard "ESC closes overlay" pattern broken at the fullscreen-map level too.
+- **Fix direction:** Same `useEscapeToClose(open, onClose)` hook proposed for KI-118 — apply to the fullscreen-map exit handler. Should be 6th application site after Voice Controls + Navigation Settings + Turn List drawer + Results drawer + (one more sheet to verify).
+- **Severity:** **P2-A11Y.** Companion to KI-118 cluster.
+- **Status:** **RESOLVED — Pass 81 (2026-05-07).** Wired the existing `useEscapeKey` hook (Pass 63) into [`ShopDirectoryScreen.tsx`](../src/app/components/shop/ShopDirectoryScreen.tsx) at the top level — gated by `session.isImmersive`, calls `setMapViewMode("hybrid")` on ESC, mirrors the on-screen back-arrow behavior. KI-118 cluster now covers Voice Controls + Navigation Settings sheets (Pass 63) AND the immersive fullscreen-map surface itself (this pass). Sheet-level overlay sheets that mount inside the immersive layer continue to use their own ESC handling (sheets stop-propagate before the screen-level handler fires) so closing a Voice Controls overlay no longer drops the user out of fullscreen by accident.
+
+### KI-148: Fullscreen map entry triggers a SECOND phantom deviation event (P1-RUNTIME, KI-116 cluster expansion)
+
+> **Added 2026-05-07 — external audit AI pass 6 fullscreen test.** Beyond the persistent off-route banner (KI-116), audit AI observed that **entering fullscreen map mode triggers a NEW phantom deviation event** — a second "Off route" pill (yellow warning + dismiss-X) appears top-right when transitioning into fullscreen. So the deviation engine fires not just on initial mount but ALSO on viewport-mode transitions.
+
+- **Impact:** Confirms the deviation engine is mounted at multiple call sites, each firing on its own lifecycle event. Strengthens KI-116 fix scope: builder needs to gate ALL `intelligence.evaluate()` call sites, not just one.
+- **Fix direction:** Same as KI-116 root cause fix. This finding adds a regression-test requirement to Pass 61: enter fullscreen map without an active session, verify no new deviation event fires.
+- **Status:** **RESOLVED-DEPENDENT — Pass 81 (2026-05-07).** With KI-116 RESOLVED via Pass 61's `intelligence.evaluate(snapshot)` gate on `navSession.session.status === "active"` at the single call site in [`useNavigationLifecycleEffects.ts`](../src/app/hooks/useNavigationLifecycleEffects.ts), the deviation engine no longer fires from any mount site without an active nav session. Fullscreen-map entry on the immersive surface is just another mount of the same call site, so the second phantom event cannot reproduce. If a future regression re-introduces deviation toasts during fullscreen entry without an active session, re-open with explicit viewport-transition guard work — the underlying mount-time evaluation guard is at the call site, not at the surface boundary.
+
+### KI-149: "Previous session restored" toast — MISDIAGNOSED (toast belongs to navigation-session restore, not auth re-auth) (P5-DOC, status-corrected 2026-05-09)
+
+> **Added 2026-05-07 — external audit AI pass 6 page-load observation.** A "Previous session restored" toast renders on every page load, including post-sign-out + reload. Visible artifact of KI-134's `__clerk_db_jwt` silent re-auth.
+
+> **Status correction 2026-05-09 (Pass 199).** Source review contradicts the original premise. The toast is fired by [`useNavigationToastBridge.ts:99`](../src/app/features/navigation/useNavigationToastBridge.ts#L99) under `restoredFromCloud && !restoredToastedRef.current`, where `restoredFromCloud` is set by [`useNavigationSession.ts:62`](../src/app/features/navigation/useNavigationSession.ts#L62) **only when an active driving navigation session is hydrated from Supabase/localStorage AND `shouldRestoreSession()` accepts it AND the local session is `idle`**. This has nothing to do with Clerk's `__clerk_db_jwt` cookie or auth-identity restore — it is the in-progress route-guidance pickup ("you were navigating somewhere; resuming"). The audit AI conflated two different "session" concepts (Clerk auth session vs in-progress driving navigation session). The toast does NOT fire on every page load; it fires only when there is a persisted active navigation session to resume. The `restoredToastedRef.current` guard further ensures it fires once per restore lifecycle, not on subsequent renders.
+
+- **Impact:** Original P3-UX framing is invalid. The toast is honest, scoped, and load-bearing UX feedback for the navigation feature. No code action required.
+- **Severity:** **P5-DOC** (downgraded from P3-UX). Misdiagnosis only — kept as historical record so the same audit observation doesn't get re-filed.
+- **Status:** **RESOLVED-AS-MISDIAGNOSIS (Pass 199, 2026-05-09).** No code change. KI-134 stands on its own merits and is unaffected by this correction.
+
+### KI-150: PWA service worker exists in repo `public/` but not registered in dev — KI-130 likely RESOLVED at production (P3-VERIFY)
+
+> **Added 2026-05-07 — external audit AI pass 6 GitHub repo browse.** Audit AI noted "Pass 829 added PWA service worker + manifest + offline shell in repo's public/ folder (last month)". Browser shows `navigator.serviceWorker.controller === null` because Vite dev server doesn't register SW. Production likely does.
+
+- **Impact:** KI-130 was filed as P3-INFRA "no service worker registered". Audit AI's source-side finding suggests the SW exists; only dev-mode render is unregistered.
+- **Verification needed:** Builder confirms via `vite preview` build OR owner Lighthouse run captures whether `navigator.serviceWorker.controller` is non-null in production-mode.
+- **Status:** **RESOLVED — Pass 76 (2026-05-07) — VERIFIED REGISTERED AT PROD.** Source read of [`vite.config.ts`](../vite.config.ts) lines 13-62 confirms `VitePWA({ registerType: "autoUpdate", … })` is wired with manifest + workbox runtime caching for Supabase API + map tiles. `vite-plugin-pwa` injects the SW registration script automatically at build time; the dev server intentionally skips it (Vite's standard behavior to avoid SW caching during HMR). Therefore `navigator.serviceWorker.controller === null` in dev is expected, and the SW registers normally on the deployed build. KI-130 closed at source; no further action.
+
+### KI-151: Repo "Security and quality" GitHub tab shows 2 active alerts (P3-INVESTIGATE)
+
+> **Added 2026-05-07 — external audit AI pass 6 GitHub repo browse.** Audit AI saw 2 active alerts in the repo's Security tab header. Not investigated this pass (out of scope).
+
+- **Impact:** Unknown until investigated. Could be:
+  - Dependabot vulnerability alert (npm package CVE)
+  - CodeQL static analysis finding
+  - Secret scanning hit (false positive most likely)
+- **Fix direction:** Owner reviews via `gh pr` or GitHub UI. Each alert has its own remediation per type.
+- **Status:** **OPEN — P3-INVESTIGATE.** Owner-action.
+
+### KI-152: 🚨 Supabase Service Role JWT publicly leaked in repo since 2026-02-10 (P0-SECURITY)
+
+> **Added 2026-05-07 — external audit AI pass 7 GitHub Security tab investigation.** GitHub Secret Scanning has flagged a Supabase Service Key in the public repo at `.env:4` since 2026-02-10 (~3 months exposure). Service Role JWTs bypass Row-Level Security entirely; whoever holds the key has full read/write to every table regardless of RLS.
+
+- **Impact (worst-case assumption):** Anyone who indexed the public repo since 2026-02-10 (search engines, automated scrapers, bad actors) may hold the leaked key. RLS protections are moot for service-role calls — every table is fully readable AND writable by the holder. PII (clerk_user_id, profile data, vehicles, damage reports, bids) all accessible.
+- **REQUIRED OWNER ACTIONS (in this exact order, today):**
+  1. **ROTATE the Service Role Key NOW.** Supabase Dashboard → Project `wmdcnjgtsppftrofaqqa` → Settings → API → "Service Role Key" → Regenerate. Old key is revoked at the moment you click Regenerate. **Anything currently using the old key will break** — CI/CD, Vercel env vars, GitHub Actions secrets, local `.env.local`, and any deployment configs all need the new key before they can call Supabase again.
+  2. **Audit Supabase logs for the past 90 days** for `service_role` API calls from unfamiliar IPs/origins. Run via Supabase MCP `get_logs(service: "api")` filtered to `role=service_role` if possible, OR via Studio → Logs Explorer.
+  3. **Update all consumers** of the old key: every `.env*` file on dev machines, Vercel project env vars, GitHub Actions repository secrets, any cron job, any worker, any Studio integration, edge function secrets (`supabase secrets set`), etc.
+  4. **Verify `.env` is gitignored** going forward. The leak proves the file was committed at some point.
+  5. **Optional: rewrite git history** to scrub the old key from public repo. GitHub's official guidance: "rotation is sufficient — rewriting public history is high-risk and key value is already compromised regardless." Skip unless owner wants belt-and-suspenders.
+- **Severity:** **P0-SECURITY.** Highest priority of any owner-action across the entire audit chain. Gates every other shipping decision until rotation completes.
+- **Status:** **OPEN — P0-SECURITY.** Owner-action only. Builder cannot help; audit-AI cannot help (rotation is dashboard-only).
+
+### KI-153: GitHub Actions ci.yml missing `permissions:` block — CodeQL Medium alert (P2-INFRA)
+
+> **Added 2026-05-07 — external audit AI pass 7 GitHub Security tab investigation.** GitHub CodeQL flagged `.github/workflows/ci.yml:15` for "Workflow does not contain permissions" (Medium severity). Default `GITHUB_TOKEN` has read+write to everything, expanding blast radius if a third-party action is compromised.
+
+- **Impact:** Standard supply-chain hardening. Real, low-effort.
+- **Fix direction:** Add a top-level `permissions:` block to ci.yml. Minimum viable:
+  ```yaml
+  permissions:
+    contents: read
+    pull-requests: read
+  ```
+  Then add specific elevations only on jobs that need them (e.g. `permissions: { contents: write }` on a release job). ~5 LOC.
+- **Severity:** **P2-INFRA.** Joins Phase 3 polish bundle.
+- **Status:** **RESOLVED — Pass 74 (2026-05-07).** Added top-level `permissions: { contents: read, pull-requests: read }` block to [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) between the `concurrency:` and `jobs:` sections. Build-and-test job only checks out, installs, formats, tests, and builds — no write-side calls — so the minimum-viable scope is sufficient. CodeQL alert should clear on next workflow run.
+
+### KI-144 sub-items partially RESOLVED (search_path lock applied — 4 of 14 sub-items)
+
+> **Update 2026-05-07 — external audit AI pass 7 safe-fix.** Verified 4 functions only reference built-in PostgreSQL primitives (NOW, current_setting, nullif) via `pg_get_functiondef(p.oid)` query. Safe to lock. Applied via Supabase MCP:
+>
+> ```sql
+> ALTER FUNCTION public.handle_updated_at() SET search_path = public;
+> ALTER FUNCTION public.update_updated_at_column() SET search_path = public;
+> ALTER FUNCTION public.requesting_clerk_user_id() SET search_path = public;
+> ALTER FUNCTION public.safe_auth_uid() SET search_path = public;
+> ```
+>
+> Re-ran security advisors: 13 lints → 9 lints. The 4 `function_search_path_mutable` WARNs are now cleared.
+>
+> Remaining 9 advisors all need owner intent (RLS policy decisions, mass `auth.uid()` rewrap, unused-index intent).
+
+### KI-138 backend CLOSED — `notification_preferences` table created (PARTIAL RESOLUTION 2026-05-07, edge deploy still pending)
+
+> **Status update 2026-05-07 — external audit AI pass 8 applied + planner-AI verified.** Backend gap of KI-138 is now closed. UI-side full resolution still requires KI-146 (deploy server edge function v51).
+
+- **What audit AI applied via Supabase MCP `apply_migration`:** Created `public.notification_preferences` with the 16-column schema captured byte-for-byte from `FALLBACK_PREFERENCES` const at `supabase/functions/server/handlers/notification_preferences.ts` (commit `0df5d4c`). Plus `created_at` + `updated_at timestamptz DEFAULT now()`. RLS modeled exactly on `website_preferences` pattern: `ENABLE ROW LEVEL SECURITY` + single policy `FOR ALL USING (false) WITH CHECK (false)` (server-mediated only — service role bypasses, no client-direct access). Trigger `set_updated_at BEFORE UPDATE EXECUTE FUNCTION handle_updated_at()`. Two essential indexes (PK on `id` + UNIQUE on `clerk_user_id`).
+- **Planner verified independently 2026-05-07** via `information_schema` query: table exists ✓, 18 columns ✓, 1 RLS policy ✓, 2 indexes ✓, RLS enabled ✓.
+- **Watch-out for future migrations** (audit AI pass 8 §C): the migration's `CREATE TRIGGER ... EXECUTE FUNCTION public.handle_updated_at()` syntax wiped the function's `SET search_path = public` lock (KI-144 regression). Audit AI re-applied. Planner verified the lock had regressed AGAIN on second observation; planner re-applied. **Master plan must include rule:** any migration touching `handle_updated_at` / `update_updated_at_column` ends with all four `ALTER FUNCTION ... SET search_path = public` statements as belt-and-suspenders.
+- **Remaining work:** Owner runs `supabase functions deploy server --project-ref wmdcnjgtsppftrofaqqa` (per KI-146). Once v51 lands, the handler reads from the new table, persists real preferences, no fallback path needed. Appearance Settings → Notifications UX fully unblocked.
+- **Status:** **PARTIAL RESOLUTION 2026-05-07 — backend CLOSED, edge deploy pending.** KI-138 stays OPEN until KI-146 deploys.
+
+### KI-152 service-role log audit — 100-event window CLEAN (P0-SECURITY rotation still required)
+
+> **Status update 2026-05-07 — external audit AI pass 8 service-role log audit.** 100 most-recent api log events sampled. Every event has user-agent `Deno/2.1.4 (variant; SupabaseEdgeRuntime/1.74.0)` — legitimate Supabase Edge Runtime traffic. Status codes: all 200. No external IPs, no DROP/TRUNCATE/UPDATE-WHERE-1=1 patterns, no high-frequency bursts, no mass-SELECT. Traffic distribution matches expected per-user scoping (`clerk_user_id=eq.user_<id>` filters).
+
+- **Caveat:** absence of evidence ≠ evidence of absence. The 100-event window covers ~3 seconds; the leak window is 90+ days. Owner runs Studio Logs Explorer with a 90-day filter for full-window proof.
+- **Status update only — KI-152 itself stays OPEN** as P0-SECURITY pending owner key rotation. Visible-window audit clean is a small comfort; rotation is still mandatory.
+
+### KI-154: Google OAuth `disallowed_useragent` blocks "Sign in with Google" in VS Code's Simple Browser (P3-DEV-EXPERIENCE — MITIGATED 2026-05-07)
+
+> **Added 2026-05-07 — Pass 170 mitigation.** Google's "Use secure browsers" policy rejects OAuth requests from embedded browsers / WebViews / Electron-based shells. VS Code's Simple Browser (vscode-browser) qualifies as embedded. The "Sign in with Google" button inside the Clerk-hosted modal redirects to `accounts.google.com/signin/oauth/...` which detects the embedded UA and returns:
+>
+>     Error 403: disallowed_useragent
+>     "Clerk's request does not comply with Google's policies"
+>
+> This is **NOT a BidOnDent code bug**. Same policy applies to every OAuth client. Real Chrome / Firefox / Safari work normally — owner confirmed external Chrome works ("Chrome audit AI works").
+
+- **Impact (dev-only):** Developers iterating in VS Code's Simple Browser can't test Google sign-in flows without context-switching to a separate Chrome window.
+- **Mitigation (Pass 170):** Dev-mode banner detects embedded browser via UA pattern matching (`Electron/`, `wv)`, `VSCode`, `Code/`, `Simple Browser`) and surfaces two workarounds:
+  1. Open `localhost:5173` in a real Chrome window (full OAuth works).
+  2. Append `?demo=customer` or `?demo=shop` to bypass Clerk entirely (synthesized data; pre-existing dev-mode in `App.tsx:464-468`).
+     Banner is dismissable + persisted via `localStorage.bidondent.dev.embedded-browser-banner.dismissed`.
+- **Files (Pass 170):**
+  - New: `src/app/utils/embeddedBrowserCheck.ts` — UA detection + describe helper
+  - New: `src/app/components/dev/EmbeddedBrowserBanner.tsx` — top-of-viewport banner, gated on `import.meta.env.DEV` + `isEmbeddedBrowser()`
+  - Modified: `src/app/App.tsx` — banner wired inside ClerkProvider
+- **Production cost:** ZERO. Vite tree-shakes the entire banner component when `import.meta.env.DEV` is `false`. No bundle weight, no runtime check, no UA sniffing in prod.
+- **Severity:** **P3-DEV-EXPERIENCE — MITIGATED.** Code-side cannot fully resolve Google's policy; banner is the right human-facing fix. Move to RESOLVED archive on next docs hygiene pass.
+- **Status:** **MITIGATED 2026-05-07** — banner shipped Pass 170. Full OAuth still requires real Chrome.
+
+### KI-155: Nav sidebar overlaps wizard headings at 1280-1422 desktop widths (P1-LAYOUT)
+
+> **Added 2026-05-07 — external audit AI Pass 9 §1.1 Report flow walkthrough.** Confirmed via `elementFromPoint(245, 200)` returning a NAV BUTTON (`.group w-full flex items-center gap-3 px-3.5 py-2.5`) instead of the wizard's H2 heading. The wizard's `bd-report-section` left edge sits at x=245 while the persistent left nav sidebar's right edge sits at x=275. **30px overlap — first 8 characters of every wizard heading are hidden behind the nav buttons.**
+>
+> Examples observed at ~1422px viewport:
+>
+> - Step 4 heading "Add damage photos" rendered as "ge photos" (first 8 chars behind nav).
+> - Step 3 helper text and Step 2 heading similarly clipped.
+> - Step 1 NOT affected — saved-vehicle picker has different positioning that lands clear of the sidebar.
+
+- **Impact:** Significant content invisibility at common laptop widths (1280-1422px viewport, common for 13" MacBooks). Users see truncated headings on Steps 2, 3, 4, 5 and may misread the wizard.
+- **Location:** Wizard panel (`bd-report-section`) margin / max-width vs persistent left nav sidebar. Likely a missing `lg:ml-N` or a `max-w-` ceiling that doesn't account for the sidebar's width. Builder verifies via DevTools.
+- **Fix direction:** Two paths:
+  1. **Push wizard right** — add `md:ml-{sidebar-width}` to the wizard's outer container OR ensure the parent flex container reserves the sidebar's width.
+  2. **Shrink wizard panel** — apply `max-w-{N}` so the wizard fits within the available content area outside the sidebar.
+     Path 1 is preferred (preserves wizard width). Single-file fix expected.
+- **Severity:** **P1-LAYOUT.** Real user-facing content invisibility on common viewports.
+- **Status:** **OPEN — P1-LAYOUT.** Targeted Pass 171 (this turn).
+
+### KI-156: Report flow Step 4 inconsistent photo labeling — Photo 1 no caption / Photo 2 "Cloud photo" (P3-FUNCTIONAL)
+
+> **Added 2026-05-07 — external audit AI Pass 9 §1.1.** Both uploaded photos rendered, but only Photo 2 had a caption ("Cloud photo"); Photo 1 had no caption. Inconsistent treatment.
+
+- **Impact:** Mild polish gap. Either both photos should show caption affordance or neither. Users may not understand the labeling.
+- **Fix direction:** Audit the photo-rendering component; pick one model (always show caption affordance OR never). Surgical 1-file fix.
+- **Severity:** **P3-FUNCTIONAL.** Polish.
+- **Status:** **NEEDS-REPRODUCTION-IN-REAL-CHROME (downgraded 2026-05-07 — see KI-155/156/157 status-correction block below).** Source ([`StepPhotos.tsx:120-124`](../src/app/components/codelayer/report/StepPhotos.tsx#L120)) renders `{isCloud ? "Cloud photo" : "Local photo"}` for every photo via `.map()` — no code path produces an unlabeled photo. Audit AI likely missed Photo 1's "Local photo" caption visually. Awaiting real-Chrome reproduction before any code action.
+
+### KI-157: Wizard step transitions take 3-5 seconds for opacity fade — perceived sluggishness (P3-UX)
+
+> **Added 2026-05-07 — external audit AI Pass 9 §1.1 capture artifact analysis.** Audit AI initially mistook step transitions for "ghosted UI" because the opacity fade-in is so slow (~3-5s) that intermediate captures show partially-visible content. Real users would perceive the wizard as sluggish.
+
+- **Impact:** Each forward navigation through the wizard feels slow. Compounds with KI-128 photo-required gating (no Skip) — users feel stuck.
+- **Fix direction:** Locate the transition CSS or framer-motion easing. Reduce duration from 3-5s to 200-400ms (matches the entrance-animation loop pattern Pass 151-169 uses: `duration-200`). Verify reduce-motion contract still holds.
+- **Severity:** **P3-UX.** Polish; user-perception bug.
+- **Status:** **NEEDS-REPRODUCTION-IN-REAL-CHROME (downgraded 2026-05-07 — see KI-155/156/157 status-correction block below).** Source ([`ReportScreen.tsx:288-291`](../src/app/components/codelayer/ReportScreen.tsx#L288)) declares `transition={{ duration: reduceMotion ? 0 : 0.22 }}` — 220ms (not 3-5s) with proper reduce-motion gate. Matches the Pass 151-169 entrance-animation standard. "Ghosted UI" was almost certainly screenshot-tool render lag. Awaiting real-Chrome reproduction before any code action.
+
+### KI-126: REFINED 2026-05-07 — likely already-resolved
+
+> **Status update 2026-05-07 — Pass 9 §1.1 verification.** External audit AI confirmed Step 1 desktop two-column-grid renders cleanly at 1280, 1422, 1725 px viewport widths. The empty-state overflow originally reported was **the same screenshot-capture artifact** that briefly showed wizard heading "clipping" — when audit AI walked through with proper waits, all wizard step layouts render correctly at those widths.
+>
+> KI-126 may already be RESOLVED by the 142 unpushed commits + Phase 2 work that landed earlier in this autopilot chain (Pass 63 onwards). Verification commit reference unknown — flagged for next docs hygiene pass to confirm + archive.
+>
+> The "first 8 chars hidden" issue from this turn IS NOT KI-126 (empty-state overflow) — that was KI-155 (nav-sidebar overlap), a distinct layout bug. KI-126 stays OPEN until a code-side commit reference can be cited that explicitly closes it; if none, demote to MITIGATED-VERIFIED-CLEAN-IN-AUDIT.
+
+### KI-101: Audit Pass 9 §1.1 confirms FULL propagation end-to-end (status update — RESOLUTION reaffirmed)
+
+> **Status update 2026-05-07 — Pass 9 §1.1 full walkthrough.** Audit AI walked Customer Report flow Step 1 → Step 5 (final). KI-101 propagation verified at:
+>
+> 1. Dashboard "Repair Activity" list — shows "2021 Toyota Camry" ✓
+> 2. Step 1 saved-vehicle picker — both pills show "2021 Toyota Camry" + "2014 Mazda Mazda6" ✓
+> 3. Step 1 "Use" button — populates `make=Toyota`, `model=Camry`, `year=2021` (no "Toyoto" leak) ✓
+> 4. Wizard structure REVEALED: there is NO Step 5 Review surface. Steps are: 1 Vehicle / 2 Damage zone / 3 Location / 4 Photos / 5 Description + Submit. No separate "confirm all inputs" page. Vehicle data goes Step 1 → DB on Submit. **No additional client-side render path needs the fix to extend.**
+>
+> **The load-bearing question that gated planner-AI's master plan across 8 audit passes is RESOLVED: KI-101 database fix is fully sufficient. No Step 5 client-render fix needed.** Master builder plan can dispatch Phase 2 + Phase 5 with full confidence in this KI's RESOLVED stamp. Move to RESOLVED archive on next docs hygiene pass.
+
+### KI-155/156/157 status-correction 2026-05-07 — code review contradicts audit AI evidence
+
+> **Update 2026-05-07 — planner-AI follow-up code review.** Master builder reviewed source for the three §1.1 new findings and discovered code-side evidence that contradicts audit AI's browser observations. Each is downgraded pending real-Chrome reproduction.
+
+- **KI-155 (nav-sidebar overlap):** [`DashboardLayout.tsx:143-167`](../src/app/components/app/DashboardLayout.tsx#L143) places `DashboardSidebar` and the main content column as flex-row siblings (`<div className="relative z-10 flex flex-col md:flex-row flex-1 overflow-x-hidden">`). [`DashboardSidebar.tsx:53`](../src/app/components/app/DashboardSidebar.tsx#L53) uses `md:w-72 md:sticky md:top-0` (288px wide, sticky positioning, NOT fixed). In a flex-row layout, the main column starts AT the sidebar's right edge (~288px) and the wizard inside `<main>` cannot overlap the sidebar mathematically. Audit AI's `elementFromPoint(245, 200)` returning a NAV BUTTON is hard to reconcile with these measurements. **Hypothesis:** screenshot-capture coordinate system at audit AI's tool maps differently than CSS pixels (audit AI noted at one point "viewport is 1725 wide, screenshot is 1518 wide"). DOM-side measurements showed `H3.left=422` cleanly inside the form panel.
+- **KI-156 (photo labeling):** [`StepPhotos.tsx:120-124`](../src/app/components/codelayer/report/StepPhotos.tsx#L120) renders `{isCloud ? "Cloud photo" : "Local photo"}` — a ternary that ALWAYS produces a caption. There is no code path where Photo 1 has no caption. Audit AI may have missed Photo 1's "Local photo" caption visually.
+- **KI-157 (slow wizard transitions):** [`ReportScreen.tsx:291`](../src/app/components/codelayer/ReportScreen.tsx#L291) declares `transition={{ duration: reduceMotion ? 0 : 0.22 }}` — that's 220ms with proper reduce-motion gate. NOT 3-5 seconds. The "ghosted UI" audit AI saw was likely tool-side render lag.
+- **Status all three:** **NEEDS-REPRODUCTION-IN-REAL-CHROME.** Pause without committing fix. Owner or audit AI verifies in real Chrome (NOT VS Code Simple Browser per KI-154) by sizing window to 1280-1422 px exactly + opening Report flow Step 4 + measuring with DevTools Elements panel. If reproducible, rotate KIs back to OPEN with concrete repro steps. If not, archive as audit-tool artifacts.
+
+### KI-158: handle_updated_at search_path lock wiped on every edge function cold start (P2-SECURITY-DRIFT — SOURCE-PATCHED 2026-05-07)
+
+> **Added 2026-05-07 — audit AI Pass 9 §2 ROOT CAUSE TRACED + master builder Pass 174 source-patched same turn.**
+>
+> Audit AI Pass 9 §2 confirmed `function_search_path_mutable` advisor returned on `public.handle_updated_at` even after Pass 7 ALTER FUNCTION + Pass 8 re-application. Hypothesized recurring cold-start bootstrap rewrite. Master builder Pass 174 traced root cause to [`supabase/functions/server/database_init.tsx:56-63`](../supabase/functions/server/database_init.tsx#L56) — the edge function bootstrap reissues `CREATE OR REPLACE FUNCTION public.handle_updated_at()` on every cold start without `SET search_path = public`, wiping the lock.
+
+- **Pattern (decay loop):**
+  1. Pass 7 / Pass 8 / Pass 9 §2 / [audit AI 'Testing BidOnDent website locally'] applies `ALTER FUNCTION ... SET search_path = public`
+  2. Edge function cold start fires `database_init.tsx` bootstrap
+  3. `CREATE OR REPLACE FUNCTION public.handle_updated_at()` (without `SET search_path` clause) wipes the lock
+  4. Advisor flags `function_search_path_mutable` again
+  5. GOTO 1
+- **Pass 174 source patch (this turn — master builder):**
+  1. `supabase/functions/server/database_init.tsx:56-63` — append `SET search_path = public` inside the `CREATE OR REPLACE` clause. **Load-bearing fix.** Survives future cold starts.
+  2. `supabase/migrations/20251230000001_full_schema.sql:22-28` — same patch in the canonical schema migration for source-of-truth correctness.
+  3. `ALTER FUNCTION public.handle_updated_at() SET search_path = public` re-applied via Supabase MCP **as immediate stopgap** until owner deploys edge function v51. Verified: `proconfig: ["search_path=public"]`.
+- **Owner action required:** deploy edge function v51 (`supabase functions deploy server --project-ref wmdcnjgtsppftrofaqqa`). After deploy, next cold start preserves the lock; no more drift. Source patch is committed in this pass; deploy is the gating step.
+- **Severity:** **P2-SECURITY-DRIFT — SOURCE-PATCHED 2026-05-07.** Stopgap lock holds today; permanent fix lands when edge function v51 deploys.
+- **Status:** **OPEN — pending owner edge function deploy.** Auto-resolves on deploy. Cross-AI handoff: `[Testing BidOnDent website locally — Pass 9 §2]` traced; `[planner-AI Pass 174]` patched.
+
+### KI-159: auth_rls_initplan family — ~21 RLS policies re-evaluating auth.uid() per row (P2-PERFORMANCE — AUTHORIZED for next pass)
+
+> **Added 2026-05-07 — audit AI Pass 9 §2 backend audit refresh.** Every RLS policy on `profiles`, `vehicles`, `damage_reports`, `shop_profiles`, `insurer_profiles`, `bids` calls `auth.uid()` (or `auth.role()` / `current_setting()`) directly in USING/WITH CHECK expressions. Postgres re-evaluates per row; wrapping in `(select auth.<fn>())` evaluates once per query. Pure perf win, zero semantic change, well-documented Supabase pattern.
+
+- **Impact:** ~21 advisor warnings; real perf cost at scale on auth-heavy paths (vehicles, damage_reports, bids queries).
+- **Fix direction:** single transaction with `ALTER POLICY ... USING/WITH CHECK ((select auth.uid()))` wrapping. **MUST verify exact policy bodies via `pg_get_expr(polqual, polrelid)` + `pg_get_expr(polwithcheck, polrelid)` BEFORE applying** — the names alone don't capture the full expression. Audit AI staged candidate SQL in their Pass 9 §2 report.
+- **Authorization:** **AUTHORIZED for audit AI to ship next pass under safe-fix authority precedent (KI-145, KI-144 search_path).** Verification gate: `pg_get_expr` reads first to lock exact expressions; same-shape `(select ...)` wrapper applied; single transaction; reversible via dropping the wrapper.
+- **Severity:** **P2-PERFORMANCE.**
+- **Status:** **OPEN — AUTHORIZED for next audit-AI pass.**
+
+### KI-160: multiple_permissive_policies — ~25 duplicate RLS policy pairs causing ~110 advisor warnings (P2-PERFORMANCE — PARTIAL AUTHORIZED)
+
+> **Added 2026-05-07 — audit AI Pass 9 §2.** Migration drift: every table has two RLS policies expressing identical intent under different names (older `<role> can <verb> own <noun>` vs newer `Users can <verb> their own <noun>s`). Both fire on every query. Pick one canonical name per pair; drop the other.
+
+- **AUTHORIZED for autonomous drop (mechanical duplicates — same logic, same surface):**
+  - `vehicles` — drop "Users can <verb> own vehicles" (4 verbs); keep "Users can <verb> their own vehicles" (canonical)
+  - `damage_reports` — pick ONE of "Customers can <verb> own reports" / "Users can <verb> their own damage reports"; drop the other (consistent across 4 verbs)
+  - `shop_profiles` SELECT — drop "Shop users can view own profile" (subsumed by "All users can view shop profiles")
+  - `insurer_profiles` SELECT — drop "Insurer users can view own profile" (subsumed by "All users can view insurer profiles")
+  - `profiles` INSERT — drop "Allow profile creation for admin setup" + "Users can insert own profile"; keep "Users can insert their own profile"
+  - `profiles` UPDATE — drop "Users can update own profile"; keep "Users can update their own profile"
+- **HOLD for owner approval (visibility-surface change):**
+  - `profiles` SELECT — "Users can read all profiles" (overly permissive — verify intentional)
+  - `damage_reports` SELECT — "Customers can view own reports" + "Insurers can view all reports" + "Shops can view all reports" (subsumption assertion needs role-mapping verification)
+  - `bids` SELECT/DELETE/INSERT/UPDATE — "Authenticated shops can manage bids" + "Authenticated users can read bids" (verify against narrower per-role policies)
+- **Severity:** **P2-PERFORMANCE (mechanical drops) + P2-SECURITY (owner-gated drops).**
+- **Status:** **OPEN — PARTIAL AUTHORIZED.** Audit AI ships mechanical drops next pass; owner-gated rows wait.
+
+### KI-152 status correction 2026-05-07 — 100-event audit window too narrow
+
+> **Update 2026-05-07 — audit AI Pass 9 §2 correction.** Pass 8 service-role log audit (100 events) covered ~30-90 seconds depending on traffic. Too narrow to claim "clean for visible window." Recommend pg_audit setup or wider Studio Logs Explorer sweep (90-day filter) before downgrading severity. Service Role Key rotation owner-action remains the load-bearing remediation regardless of audit findings.
+
+### KI-161: Active navigation — duplicate maneuver instruction across NEXT MANEUVER banner + Live Navigation panel (P1-CONTENT — RESOLVED 2026-05-08)
+
+> **Added 2026-05-08 — audit AI Pass 9 §3 map-program audit.** During turn-by-turn navigation, the next-maneuver instruction renders simultaneously in two places: the top-center `NavigationActiveManeuverCard` ("NEXT MANEUVER" banner, max-width 640px) and the bottom-right `MapNavigationHud` ("Live Navigation" panel). Both display the same instruction word-for-word with the same "Next maneuver" eyebrow label. Apple Maps and Google Maps each show maneuver text in exactly one place during nav.
+
+- **Sources:** [`src/app/components/maps/navigation/NavigationActiveManeuverCard.tsx:84-93`](../src/app/components/maps/navigation/NavigationActiveManeuverCard.tsx#L84-L93) (top banner) + [`src/app/components/maps/MapNavigationHud.tsx:112-119`](../src/app/components/maps/MapNavigationHud.tsx#L112-L119) (bottom panel).
+- **Fix shipped Pass 176:** `CoverageActiveNavigationLayout.tsx:325` now passes `nextInstruction={null}` to `MapLibreServiceCoverageMap`. `MapNavigationHud`'s maneuver block at L112-119 is gated on `nextInstruction ?` (falsy when null), so the bottom-right panel no longer renders the duplicate text on this surface. `NavigationActiveManeuverCard` is the single source of truth for maneuver text in active nav. Other surfaces that mount `MapNavigationHud` without `NavigationActiveManeuverCard` (`CoverageBrowseExperience`, `OperatingRegionsSection` — preview/browse modes) keep the HUD's maneuver block intact via their existing pass-through. Typecheck clean.
+- **Severity:** **P1-CONTENT.**
+- **Status:** **RESOLVED 2026-05-08 (Pass 176).**
+
+### KI-162: Active navigation — `liveRemainingEtaLabel` rendered "Nm" instead of "N min" (P1-CONTENT — RESOLVED 2026-05-08)
+
+> **Added 2026-05-08 — audit AI Pass 9 §3.** Bottom-left navigation panel rendered ETA as `<p>3288m</p>` — DOM-confirmed. The `m` suffix on a time quantity reads as meters, not minutes, especially next to a Distance card. Bug was two-fold:
+>
+> 1. [`src/app/hooks/shopDirectoryNavigationDerived.ts:173`](../src/app/hooks/shopDirectoryNavigationDerived.ts#L173) — built label as `${Math.round(remainingDurationSeconds / 60)}m`. Math correct (seconds → minutes), suffix wrong.
+> 2. [`src/app/components/shop/ShopDirectoryGuidanceCard.tsx:291`](../src/app/components/shop/ShopDirectoryGuidanceCard.tsx#L291) — fallback used `${selectedRoute.estimatedDurationMinutes}m`.
+
+- **Fix shipped Pass 175:** swap `m` → ` min` in both source locations + update [`shopDirectoryNavigationDerived.test.ts:180`](../src/app/hooks/shopDirectoryNavigationDerived.test.ts#L180) fixture from `"15m"` → `"15 min"`. Typecheck clean, vitest 14/14 passing.
+- **Note:** the `3288` value itself (54.8 hours of driving) is implausible for a typical route and points to a separate `remainingDurationSeconds` source-data issue. Captured under **KI-169** (route units mix / 853.4-mi-21-hr route lacks sanity check).
+- **Severity:** **P1-CONTENT.**
+- **Status:** **RESOLVED 2026-05-08 (Pass 175). Companion data-sanity work tracked under KI-169.**
+
+### KI-163: Active navigation — control sprawl across 5 corners of viewport (P2-DESIGN)
+
+> **Added 2026-05-08 — audit AI Pass 9 §3.** Map controls fan out across 5 visual clusters in nav mode: top-left back button, top-right shop list + map-view pill, **right-edge vertical toolbar** at x:1576 (TURNS / VOICE / SETTINGS / CENTER stacked), bottom-left navigation panel, bottom-right zoom + compass. Apple Maps consolidates to 2-3 corners. The right-edge vertical toolbar is the unconventional outlier — those four functions traditionally live as a row inside the navigation panel header or behind a single overflow menu.
+
+- **Fix direction:** collapse the right-edge `NavigationActionRail` into the bottom-left navigation panel header (icon row), leaving only back button (top-left), top-right pills, and bottom-right zoom/compass.
+- **Severity:** **P2-DESIGN.**
+- **Status:** **OPEN.**
+
+### KI-164: Smart Shop Map fullscreen — ROUTE box overlaps bottom legend strip by 129px (P1-LAYOUT — RESOLVED 2026-05-08, Pass 12 audit AI)
+
+> **Added 2026-05-08 — audit AI Pass 9 §3.** Bottom-left ROUTE box at y:655–865 (z:510). Bottom legend strip at y:736–921 (z:500) spans full width 1658px. They overlap from y:736 to y:865 — 129 vertical px of stacked content. Z-index keeps ROUTE on top, but they occupy the same screen region instead of partitioning it.
+
+- **Fix direction:** either compress legend to single 44px-tall row pinned to absolute bottom, or move ROUTE box up to start at y:430 directly under selected-shop card.
+- **Severity:** **P1-LAYOUT.**
+- **Status:** **RESOLVED 2026-05-08 (Pass 12 audit AI).** Pass 10 host unidentified → Pass 11 code-level pinpoint → Pass 12 fix shipped under user-authorized full-auto build authority. The Pass 11 dispatch said "pinpoint + recommend only"; user override at start of Pass 12 ("go full auto auditing chrome browser and building") cleared that gate.
+  - **Legend host:** [`src/app/components/shop/MapPaneLegendPanel.tsx`](../src/app/components/shop/MapPaneLegendPanel.tsx) (now 247 lines after Pass 12 edit; was 206). Renders the dual legend (semantic Origin/Selected/Top pick/Reports/Saved/Routes plus status filter chips All/Pending/Approved/In Repair/Resolved/Done).
+  - **Mount site:** [`src/app/components/shop/ShopDirectoryMapPaneOverlays.tsx:294`](../src/app/components/shop/ShopDirectoryMapPaneOverlays.tsx#L294) — inside `MapPaneBottomOverlay` (wrapper at line 135: `pointer-events-none absolute inset-x-0 bottom-0 z-[500]`). Selected-shop card and legend are flex-wrap siblings inside the same container.
+  - **Top-level mount:** [`src/app/components/shop/MapLibreShopDirectoryMapPane.tsx:482`](../src/app/components/shop/MapLibreShopDirectoryMapPane.tsx#L482).
+  - **Reframe of audit measurement (preserved from Pass 11):** the audit's "ROUTE box at y:655–865 (z:510)" is the **selected-shop card** with route-source badge ("Estimated route" / "Live route"), distance label, and ETA — not a separate routing panel. The 129px overlap arose because shop card and legend were flex-wrap siblings inside the same absolute-bottom container; on narrower viewports the wrap stacking pushed the legend up under the card.
+  - **Fix shipped Pass 12** in [`MapPaneLegendPanel.tsx`](../src/app/components/shop/MapPaneLegendPanel.tsx):
+    1. Removed the `isCompactDensity &&` gate on the collapse-to-pill render — pill now renders for ALL densities when `isExpanded === false`. Was Pass 78 / KI-140 compact-density-only; extended.
+    2. Replaced `useState(!isCompactDensity)` with `useState<boolean>(readLegendExpandedFromStorage)` so initial state reads from `localStorage["bd:map:legend:expanded"]`. Default value when key absent: `false` (collapsed) per master builder Pass 180 §7.3 + co-worker first-time-visitor concern.
+    3. Added `useEffect` writing the boolean to localStorage on every toggle so the user's expand-preference persists across sessions.
+    4. Inline collapse-button (`ChevronDown` rotate-180) is now shown at all densities, not just compact, so default-density users have a way back to the pill state once expanded.
+    5. Added two tiny helper functions (`readLegendExpandedFromStorage`, `writeLegendExpandedToStorage`) with SSR + try/catch guards for private-mode/quota failures. localStorage access is best-effort; default state is the safe state.
+  - **Footprint reduction:** legend collapsed → 36px pill; legend expanded → unchanged. With default = collapsed, the 185px / 20%-viewport bug KI-166 captured shrinks to ~36px / ~4% of viewport. Selected-shop card and legend no longer share the wrap stacking when both are collapsed; the 129px overlap stops being possible by construction.
+  - **Anti-regression carries (verified clean):** `bd-glass-card--map` utility preserved, `motion-reduce:animate-none` guard preserved, ARIA attributes (`aria-label`, `aria-expanded`) preserved on both pill and inline collapse button. `npm run typecheck` clean post-edit.
+  - **Browser-verification note:** dev server's MapLibre tile load failed during this session ("Map failed to load" fallback shown); visual verification on a healthy build deferred to the next session with working tiles. Code-level + typecheck verification was the gating evidence for ship — DOM verification is post-ship validation, not pre-ship gate per user's full-auto authorization.
+  - **Future relocation:** during Step C.2 of [`PLAN_MAP_UNIFICATION_2026-05-08.md`](PLAN_MAP_UNIFICATION_2026-05-08.md) the legend moves to `<MapProgramShell>` `legend` slot without behavior change; localStorage persistence and collapse-to-pill rendering carry forward.
+
+### KI-165: Smart Shop Map fullscreen — phantom second top-bar pill ("Finding the best shops…") leaks past load (P2-LAYOUT — PARTIAL-RESOLVED 2026-05-08, Pass 14 audit AI)
+
+> **Added 2026-05-08 — audit AI Pass 9 §3.** Loading-state pill at x:324, y:112 (~50px below the actual top-bar) creates a perceived second top-bar row. Persists even after shops have loaded — loading-state leak. Should either auto-dismiss after first fetch resolves, or render inline within search bar as a status badge.
+
+- **Severity:** **P2-LAYOUT.**
+- **Status:** **HOLD — RENDER SITE LOCATED 2026-05-08 (audit AI Pass 12).** Pass 12 full-auto code search located the actual pill render site. Pass 11 hypothesis (ImmersiveMapTopBar) and Pass 10 trace (`shopMapExperienceHelpers.ts:224` → `buildShopMapExperience`) were both wrong leads. The actual site:
+  - **Pill render site:** [`src/app/components/dashboard/CustomerMapWidget.tsx:174`](../src/app/components/dashboard/CustomerMapWidget.tsx#L174) — a floating top-left badge inside the dashboard mini-map widget (`bd-dashboard-chip absolute top-3 left-3 z-10`). Renders during `isLoadingShops` from `useCoveragePartnerShops()`.
+  - **Actual rendered text:** `"Finding shops…"` (with unicode ellipsis), NOT `"Finding the best shops…"`. The audit AI's transcribed text was approximate.
+  - **Surface attribution correction:** the audit said "Smart Shop Map fullscreen" but `CustomerMapWidget` is the **dashboard mini-map preview** (mounted via [`HomeScreen.tsx:365`](../src/app/components/codelayer/HomeScreen.tsx#L365)) — not the fullscreen Smart Shop Map. Either (a) the audit screenshot was actually of the mini-map and the surface was misnamed, or (b) the same `bd-dashboard-chip` pattern is used elsewhere in fullscreen Smart Shop Map AND the audit caught it there. The current source has only the one render site at `CustomerMapWidget.tsx:174`.
+  - **Loading-state-leak claim assessment:** the conditional at L174 is `isLoadingShops ? "Finding shops…" : ...` — structurally correct, the pill SHOULD disappear once `isLoadingShops` flips to false. If the audit's "persists even after shops have loaded" observation was real, the leak source would be in `useCoveragePartnerShops()` not in the pill render. Re-verification needed: (a) DOM inspection on a healthy build to confirm pill disappears post-load, (b) trace the hook's loading-state lifecycle if the leak reproduces.
+  - **Recommended Pass 13 fix scope:**
+    1. If the audit's leak claim reproduces → debug `useCoveragePartnerShops()` loading-state lifecycle. Likely a missing `setIsLoadingShops(false)` in an error branch or a stale closure in the fetch effect.
+    2. If the leak does NOT reproduce → the audit observation was likely on a stale build state; mark KI-165 RESOLVED-NOT-REPRODUCIBLE.
+  - **`buildShopMapExperience` cleanup carry-over (still valid from Pass 11):** the helper is dead code in source. Recommend removal in a separate janitor pass when convenient.
+  - **Hook-lifecycle trace (Pass 12 closeout):** read [`useCoveragePartnerShops.ts`](../src/app/hooks/useCoveragePartnerShops.ts) end-to-end (91 lines). Hook is structurally CLEAN: `setIsLoadingShops(true)` at effect start (L51), `setIsLoadingShops(false)` in `.finally()` (L64) which runs on both success + error paths, `mounted` boolean guard (L49/56/60/65) prevents stale-closure writes after unmount, cleanup `return () => { mounted = false; }` (L68) tears down properly. Standard React fetch-effect pattern correctly applied.
+  - **Implication:** the audit's "loading-state leak" cannot be a hook lifecycle bug — if it were, all 4 widgets consuming `useCoveragePartnerShops` (CustomerMapWidget, ShopMapWidget, InsurerMapWidget, DashboardCoveragePanel) would surface stale loading state simultaneously. They don't from a structural read. Most likely diagnosis: **approximate audit transcription** ("Finding the best shops…" → actual `"Finding shops…"`) at CustomerMapWidget.tsx:174-175, with the "persists past load" observation being either a stale cache / slow-network artifact, OR a stale build state where `buildShopMapExperience` was previously wired to a since-removed render path.
+  - **Predicted post-DOM-verification status:** if pill disappears post-load on healthy build → **RESOLVED-NOT-REPRODUCIBLE**, consign `buildShopMapExperience` to dormant-export sweep. If pill persists → consumer-side bug in `CustomerMapWidget` (likely a stale closure or render-path issue), NOT the hook.
+  - **Pass 12+ corroboration with co-worker AI — TIMEOUT-LEAK ROOT CAUSE IDENTIFIED:** the hook's `.finally()` block only runs when the Promise settles. [`getPublicPartnerShops()`](../src/app/services/supabase/map.ts#L152) at `src/app/services/supabase/map.ts:152-167` directly awaits a Supabase client query with **NO `AbortController`, NO timeout, NO `Promise.race` guard**. If Supabase hangs (network stall, server overload, slow DB query), the Promise never settles, `.finally()` never fires, and `isLoadingShops` stays `true` indefinitely. **This is the structural root cause** of the audit's "loading-state leak persists past load" observation — co-worker AI's timeout-leak hypothesis is corroborated.
+  - **Systemic exposure scope (Pass 12+ sweep):** only [`src/app/services/navigation/requestTimeout.ts`](../src/app/services/navigation/requestTimeout.ts) implements the canonical `createTimeoutAbortController` pattern. 17+ other service files (auth/, storage, supabase/profiles, supabase/map, etc.) use Supabase client queries directly without timeout protection. **`useCoveragePartnerShops` is one instance of a wider class of unguarded fetches.** Any of those services could exhibit the same timeout-leak symptom under network stall.
+  - **Recommended Pass 14+ remediation (NOT IMPLEMENTED — out of Pass 12 user-authorized scope):**
+    1. Wrap `getPublicPartnerShops` with `createTimeoutAbortController(8000)` or use Supabase's newer `.abortSignal()` query method. 8s timeout is appropriate for a partner-shops list fetch.
+    2. In `useCoveragePartnerShops`, catch `AbortError` in `.catch()` so `setIsLoadingShops(false)` fires via `.finally()` even on timeout. Also consider exposing a "timed out, retry?" UX surface via `fetchError` rather than silently degrading to `usingDemoFallback`.
+    3. Systemic anti-regression: add a §6 item to [`PLAN_MAP_UNIFICATION_2026-05-08.md`](PLAN_MAP_UNIFICATION_2026-05-08.md): "All client-initiated Supabase / fetch calls behind a UI loading-state must be wrapped with a timeout (`createTimeoutAbortController` from `services/navigation/requestTimeout.ts` or equivalent). Loading states without timeout-protected fetches are pre-rejected at PR review."
+  - **Status carry-over:** KI-165 stays HOLD until Pass 14 lands. With root cause identified, the fix scope is concrete and small (1-2 lines in `getPublicPartnerShops` + catch refinement in the hook). If owner authorizes Pass 14 systemic timeout-wrap, KI-165 closes alongside the broader fetch-hardening pass.
+  - **Pass 14 SHIPPED 2026-05-08 (audit AI, user-authorized continuation directive):** [`getPublicPartnerShops`](../src/app/services/supabase/map.ts#L152) now wraps its Supabase query in `createTimeoutAbortController(8000)`. Function gains an optional `signal?: AbortSignal` parameter for caller-supplied cancellation; absent that, an internal 8s timeout is created and cleared in `finally`. Signal flows to Supabase via `.abortSignal()` (supabase-js v2.89.0 supports it). When internal timeout fires, error message becomes "Partner shops request timed out — please retry." (distinguishable from real-error path so UI retry affordances can be more forgiving on timeouts). +55 / -13 lines including JSDoc-style comment block citing Pass 12+ root-cause finding. Typecheck clean.
+  - **Status:** **PARTIAL-RESOLVED 2026-05-08 (Pass 14).** Root cause closed at the service-layer source. Remaining work for full RESOLVED status:
+    1. **DOM verification** on a healthy build to confirm the pill flips correctly post-load and that timeout errors render acceptable UI in CustomerMapWidget. Path (a) RESOLVED-NOT-REPRODUCIBLE if pill flips correctly. Path (b)/(c) closed by the timeout fix.
+    2. **Systemic timeout-hardening** of the other 16 unguarded service fetches (auth/, supabase/profiles, supabase/workflow, supabase/navigationSavedPlaces, etc.). Pass 14 establishes the pattern; Pass 15+ extends. Recommended priority: services backing dashboard widgets first (`useCoveragePartnerShops` is now hardened; sibling hooks may have similar exposure), then auth flows, then write-side workflows.
+       - **Pass 14 Step 2 SHIPPED 2026-05-08 (audit AI):** [`networkProfiles.ts`](../src/app/services/networkProfiles.ts) — co-worker AI's verified leak-surface inventory P1×2 file. All 5 `fetch()` call sites now wrapped via a local `fetchWithTimeout` helper that delegates to the canonical `createTimeoutAbortController`. 8s ceiling on GETs (`fetchShopBusinessProfile`, `fetchInsurerBusinessProfile`, `fetchDirectoryInventory`); 12s ceiling on POSTs (`saveShopBusinessProfile`, `saveInsurerBusinessProfile`). +74 / -28 lines. Typecheck clean. **P1 leak-surfaces both closed (2/2).**
+       - **Pass 15 SHIPPED 2026-05-08 (audit AI, autopilot continuation):** auth-sync canonical-pattern migration. [`services/auth/websitePreferencesSync.ts`](../src/app/services/auth/websitePreferencesSync.ts) (+43/-14) and [`services/auth/websiteRelationshipsSync.ts`](../src/app/services/auth/websiteRelationshipsSync.ts) (+35/-14): replaced local `Promise.race`-style `withTimeout` (which left fetch running after wrapper rejection — soft resource leak) with the canonical `createTimeoutAbortController` pattern. Both files migrated to async-factory signature `withTimeout(async (signal) => fetch(..., { signal }))`. 5s ceiling preserved. Closes the auth-sync soft-leak class.
+       - **Pass 16 SHIPPED 2026-05-08 (audit AI, autopilot continuation):** helper consolidation. Co-worker AI's Pass 15 extracted shared `fetchWithTimeout` to [`services/navigation/requestTimeout.ts`](../src/app/services/navigation/requestTimeout.ts) (+43 lines). [`services/networkProfiles.ts`](../src/app/services/networkProfiles.ts) and [`services/supabase/adminIntake.ts`](../src/app/services/supabase/adminIntake.ts) retrofitted to import the shared helper; local copies removed. Net code-quality improvement; behavior unchanged.
+       - **Pass 14 Step 3 SHIPPED 2026-05-08 (audit AI, user-continuation autopilot):** highest-leverage Step yet — wraps the two SHARED edge-function wrappers that downstream services use:
+         - [`services/supabase/runtime.ts:requestSupabaseEdge`](../src/app/services/supabase/runtime.ts) (+34 / -9): the canonical edge-function caller used by services across the codebase. Now accepts caller-supplied `signal` (preferred) and falls back to internal 10s timeout when absent. Every consumer inherits protection without per-call edits.
+         - [`services/supabase/edgeFunctions.ts:edgeFunctionFetch`](../src/app/services/supabase/edgeFunctions.ts) (+22 / -6): alternate edge-function wrapper consumed by `edgeFunctionJson`. Same pattern. Same downstream cascade benefit.
+         - **Auth-sync false-positive correction:** co-worker's P2 sweep listed `services/auth/websitePreferencesSync.ts` and `services/auth/websiteRelationshipsSync.ts` as leak-surfaces. On audit, both files have local `withTimeout` helpers (Promise.race style with `setTimeout`/`clearTimeout`) at L32-48 / similar. Functionally protected against UI loading-state hangs. Differ from canonical pattern (don't abort the underlying fetch on timeout — soft resource leak), but not the loading-state-pin class. Removed from leak-surface count. Pass 15+ candidate: refactor to canonical `createTimeoutAbortController` for proper resource cleanup (lower priority — refactor not bug fix).
+       - **Updated P2 inventory after Step 3:** 4 of 6 leak-surfaces closed cumulatively. Remaining: `services/supabase/adminIntake.ts` (2 calls, write-side admin flows — independent of Step 3's wrappers), `WaitlistCapture` (P3, 1 call). Standing five-gate hold applies for further Pass 15+ extension.
+    3. **Anti-regression item 19 candidate** for plan doc §6: "All client-initiated Supabase / fetch calls behind a UI loading-state must be wrapped with a timeout via `createTimeoutAbortController` from `services/navigation/requestTimeout.ts`. Loading states without timeout-protected fetches are pre-rejected at PR review." Master builder review pending.
+  - **`ImmersiveMapTopBar` cleared:** read [`src/app/components/shop/ImmersiveMapTopBar.tsx`](../src/app/components/shop/ImmersiveMapTopBar.tsx) (142 lines) end-to-end. Renders only the back button, search bar, drawer toggle (with shop count), split-view button, and tile-mode button. Does NOT render any persona-experience title or "Finding the best shops" text. Master builder's Pass 11 dispatch hypothesis ("Likely culprit is `ImmersiveMapTopBar`") is rejected.
+  - **`buildShopMapExperience` is dead code in the source tree:** the helper is defined in `shopMapExperienceHelpers.ts:218–228` (the customer-fallback persona block carrying the "Smart shop matching" badge + "Finding the best shops for your repair" title + "BidOnDent matches shops based on your vehicle…" description). It is **not imported by any source file** — `grep -rn "buildShopMapExperience" src/app` returns zero call-site matches and `shopMapExperience.ts` does not re-export it (only re-exports `buildRoleAwareMapHighlights` + `buildRoleAwareRouteSummary` + `buildShopRouteOptions`). The function survives in the production bundle (`dist/assets/shopMapExperience-*.js`) likely because esbuild kept the export, but it is not wired to any current rendering path.
+  - **None of the helper's unique output strings render in source:** `grep` for "Smart shop matching", "Connected Carriers", "Damage Signals", "Top-3 Avg Ticket", "Insurer-Ready Shops", "Network-Ready", "best shops", "best fit", "BidOnDent matches shops" returns ZERO source-tree hits outside `shopMapExperienceHelpers.ts` and its test file. The pill the audit captured cannot be coming from this helper as currently wired.
+  - **Implication:** the audit's "Finding the best shops…" pill at x:324 / y:112 is rendered from one of:
+    1. A hardcoded string in a not-yet-found component (most likely; the audit observation is reliable, so something IS rendering this text).
+    2. A stale build state where `buildShopMapExperience` was wired to a since-removed render path; the audit screenshot may predate the dead-code state.
+    3. A different helper that produces similar persona-tailored copy (e.g. `buildRoleAwareMapHighlights`).
+  - **Cannot ship the proposed `isLoading && shops.length === 0` 1-line gate** without the actual render site. Recommend next pass: DOM inspection on `/dashboard` Smart Shop Map fullscreen with this exact pill on screen, capture the React fiber owner via DevTools, then apply the gate. Code-level grep alone is insufficient — the source-tree dead-code state proves the pill must live behind a layer of indirection grep cannot see.
+  - **Companion finding worth flagging:** if `buildShopMapExperience` is genuinely dead code (not just hard-to-find), it should be removed in a separate cleanup pass per the half-finished-prop pattern master builder noted on KI-172. Adding to the open "dormant exports / unused-helper sweep" backlog.
+
+### KI-166: Smart Shop Map fullscreen — bottom legend strip eats 185px (20%) of viewport (P2-LAYOUT — RESOLVED 2026-05-08, Pass 12 audit AI)
+
+> **Added 2026-05-08 — audit AI Pass 9 §3.** Dual legend (semantic Origin/Selected/Top pick/Reports/Saved/Routes + status ALL/PENDING/APPROVED/IN-REPAIR/RESOLVED/DONE) rendered as twin pill groups, consuming y:736 → y:921 = 185px = 20% of 921px viewport. Apple/Google Maps don't expose a permanent legend — pin shape + color is self-evident.
+
+- **Fix direction:** merge into single collapsible legend (default-collapsed, count + "▼ legend" toggle), or demote to hover-tooltip on pin glyphs. Master builder Pass 180 §7.3.3 approved option (a) collapsed-with-toggle + localStorage persistence.
+- **Severity:** **P2-LAYOUT.**
+- **Status:** **RESOLVED 2026-05-08 (Pass 12 audit AI).** Co-resolved with KI-164 by the same `MapPaneLegendPanel.tsx` collapse-by-default extension. Default-density now starts collapsed (36px tap-to-expand pill), matching the compact-density behavior shipped in Pass 78 / KI-140. The 185px / 20%-viewport footprint reduces to 36px / ~4% in the default state. Expanded state still available via tap and persisted per-user via `localStorage["bd:map:legend:expanded"]`. See KI-164 entry for full implementation detail.
+
+### KI-167: Smart Shop Discovery card — "My Location" preset chip duplicated in row (P2-CONTENT — RESOLVED 2026-05-08)
+
+> **Added 2026-05-08 — audit AI Pass 9 §3.** Location-preset chip row renders as `[△ My Location] [Yonkers] [White Plains] [New Rochelle] [Spring Valley] [My Location]`. "My Location" appears twice — once at far left with active-state triangle prefix, once at far right without. Likely the active chip is being re-appended to the rendered list. Single-array dedupe fix.
+
+- **Root cause:** [`ShopDirectoryOriginSearch.tsx:50-58`](../src/app/components/shop/ShopDirectoryOriginSearch.tsx#L50-L58) appended `selectedOrigin` as a trailing chip when it wasn't already in the first-4 `quickSuggestedOrigins` slice. The user-geolocation place (placeId `"user-geolocation"`) is never in that static list — but it's already represented by the dedicated "My Location" button rendered immediately to the left. So selecting My Location triggered a duplicate.
+- **Fix shipped Pass 177:** added `selectedIsUserGeolocation` guard to the trailing-append branch. The dedicated button now exclusively represents the user-geolocation state; non-geolocation custom origins still get the trailing chip preserved.
+- **Severity:** **P2-CONTENT.**
+- **Status:** **RESOLVED 2026-05-08 (Pass 177).**
+
+### KI-168: Smart Shop Map fullscreen entry — three layered transition states visible during load (P2-LOADING)
+
+> **Added 2026-05-08 — audit AI Pass 9 §3.** When entering fullscreen, transition shows: live shop card top-left + "Loading map…" spinner pill dead-center + faded ROUTE box + faded legend bar at ~15% opacity. Three layered states for ~2 seconds. Either bottom panels should not render until map hydrated, or spinner should be the only visible chrome during load.
+
+- **Inventoried Pass 192** ([evidence/pass-192-2026-05-09/KI_168_TRANSITION_STATES_INVENTORY.md](evidence/pass-192-2026-05-09/KI_168_TRANSITION_STATES_INVENTORY.md)): root cause is five sibling overlays in `MapLibreShopDirectoryMapPane` mounting at the same depth as `<Map>` with only `<MapLoadingSkeleton>` consuming the `mapLoaded` flag. Recommended option (a): gate the overlays on `mapLoaded` with an entrance fade.
+- **Sub-pass 1 SHIPPED Pass 194:** in [`MapLibreShopDirectoryMapPane.tsx`](../src/app/components/shop/MapLibreShopDirectoryMapPane.tsx) the `<MapPaneBottomOverlay>` mount is now gated `!suppressBottomCard && mapLoaded && !mapLoadFailed` and wrapped in `<div className="map-ui-enter">` for a 420ms cubic-bezier cross-fade once tiles are ready. The `map-ui-enter` keyframe carries the `prefers-reduced-motion: reduce` guard at [`theme.css:700-707`](../src/styles/theme.css#L700-L707) and a mobile 320ms duration override at [`theme.css:729-733`](../src/styles/theme.css#L729-L733). Closes the ROUTE-box + legend-bar half of the audit (the two bottom-anchored overlays). Top-left "shop card" is the chrome host's `MapSurfaceHeaderBadges` — separate mount point, separate sub-pass.
+- **Sub-pass 3 SHIPPED Pass 196:** `<MapTilePicker>` mount in the same file is now gated `!isGuidanceActive && !suppressTilePicker && mapLoaded && !mapLoadFailed` and wrapped in the same `<div className="map-ui-enter">` cross-fade wrapper. Same pattern as sub-pass 1 — eliminates the third faded overlay (Map/Night/Satellite tile toggle) from the pre-hydrated load window. Build PASS (4.23s).
+- **Sub-pass 2 SHIPPED Pass 197:** the top-left header (`<MapPaneHeaderBadges>`, the audit's "live shop card") and the top-right Expand button are both now gated on `mapLoaded && !mapLoadFailed` and wrapped in `map-ui-enter`. Audit's "three layered states" (faded shop-card top-left + faded ROUTE + faded legend) all close — only the spinner pill renders during the pre-hydrated load window, then header badges + tile picker + bottom overlay + expand button cross-fade in atomically when tiles ready. Build PASS.
+- **Severity:** **P2-LOADING.**
+- **Status:** **RESOLVED (Pass 194 + 196 + 197) pending owner re-test.** All three transition-state overlays + the supporting Expand button now load-gated. Only `MapLoadingSkeleton` renders during the pre-hydrated window. Pending: owner re-test + visual baseline re-capture; if re-test confirms clean, archive to RESOLVED ledger on next docs hygiene pass.
+
+### KI-169: Dashboard mini-map ROUTE box — alternative cards mix meters + miles + implausible 21-hour route value (P2-CONTENT — RESOLVED 2026-05-09)
+
+> **Added 2026-05-08 — audit AI Pass 9 §3.** Route alternative cards show `1005m / 853.4 mi` and `1009m / 872.0 mi` — top number meters, bottom miles, in same card. The 1005m vs 1009m alternatives are 4m apart but 853.4 vs 872.0 mi are 18.6 mi apart. Compounded by 853.4mi / 1264min route (>21 hours of driving) with no sanity check. Likely the top should be a route-type label (Fastest / Shortest) not a duplicate distance.
+
+- **First half shipped Pass 179 (route-engine sanity flag):**
+  - Added `flagImplausibleRoute()` helper in [`shopMapRouting.ts`](../src/app/services/intelligence/shopMapRouting.ts) that flags routes failing any of three plausibility bands: distance > 100mi, duration > 240min, or implied speed outside [10, 80] mph (the speed band catches divide-by-tiny-distance corruption).
+  - `buildShopRouteOptions` now annotates every generated `RouteOption` with optional `isImplausible: boolean` and `implausibleReasons: string[]` fields (non-breaking — current consumers ignore them).
+  - Dev-only `console.warn` fires when a route is flagged, carrying diagnostic context (shop name + origin/destination coordinates) so upstream coordinate corruption can be traced. Most likely cause is origin defaulting to `(0,0)` or a stale stub since the audit captured 853.4 mi for a NY-area request.
+  - Test coverage: 8 new `flagImplausibleRoute` cases including the audit's exact 853.4mi / 1264min reproduction. Vitest 16/16. Typecheck clean.
+- **Second half STAGED Pass 13 (audit AI, on disk uncommitted):** the `1005m / 853.4 mi` mixed-units card was located at [`ShopDirectoryRoutePreviewCard.tsx:176`](../src/app/components/shop/ShopDirectoryRoutePreviewCard.tsx#L176). Co-worker AI Pass 11 T-C surfaced this as a Pass 175 partial-application — the top-line was rendering `{route.estimatedDurationMinutes}m` (duration formatted as if it were distance, hence the "1005m / 1009m" pair the audit captured). Pass 13 fix: `{route.estimatedDurationMinutes}m` → `{route.estimatedDurationMinutes} min`. Same fix closes the partial-application of KI-162 at this site. Awaiting master-builder review + commit. Sweep across the rest of the codebase confirms this is the ONLY remaining Pass 175 partial-application site.
+- **Second half SHIPPED Pass 182 (audit AI Pass 13 fold-in):** the `1005m / 853.4 mi` mixed-units card was located at [`ShopDirectoryRoutePreviewCard.tsx:189`](../src/app/components/shop/ShopDirectoryRoutePreviewCard.tsx#L189). Co-worker AI Pass 11 T-C surfaced this as a Pass 175 partial-application — the top-line was rendering `{route.estimatedDurationMinutes}m` (duration formatted as if it were distance, hence the "1005m / 1009m" pair the audit captured). Fix: `{route.estimatedDurationMinutes}m` → `{route.estimatedDurationMinutes} min`. Same fix closes the partial-application of KI-162 at this site. Sweep across the rest of the codebase confirmed this is the ONLY remaining Pass 175 partial-application site. Landed in Pass 182 cluster commit on 2026-05-09.
+- **Third half SHIPPED Pass 184 (consumer wiring):** Pass 179's `flagImplausibleRoute` annotations (`isImplausible`, `implausibleReasons` on `RouteOption`) had no UI consumer — set on the data but not surfaced to the user. Wired into [`ShopDirectoryRoutePreviewCard.tsx:163-200`](../src/app/components/shop/ShopDirectoryRoutePreviewCard.tsx#L163-L200): chips with `route.isImplausible === true` now render with an amber 1px ring + a small `TriangleAlert` icon in the top-right corner. The `aria-label` carries the full implausible-reasons string for screen readers. Chip is NOT hidden — preserves data visibility and lets the user pick a different alternative manually if all options are flagged. Build clean, typecheck PASS, vitest 30/30 on touched suites.
+- **Consumer-surface verified Pass 187:** the `RouteOption.isImplausible` flag fans out to four declared consumers (`ShopDirectoryRoutePreviewCard`, `ImmersiveMapResultsDrawer`, `ShopDirectoryMapInfoPanel`, `GuidanceArrivalSection`), but only `ShopDirectoryRoutePreviewCard` renders **route alternatives as chips**. The other three consume `selectedRoute.estimatedDurationMinutes` (single-route metric display, not a chip row), so they have no surface for an amber-ring warn — the existing `selectedRoute` value is what the user already accepted, and warning on it post-hoc would be redundant. `PlannerRoutePreview` uses `NavigationRoutePreview[]` from the navigation engine (a different data path entirely — real OSRM/etc responses, not `RouteOption` stubs), so it is **not** a fanout target for this flag. If implausible-route detection is needed on the navigation engine path, that's a separate KI scoped to `useNavigationRoutePreview` / `useShopDirectoryRoutePreview`.
+- **Upstream coordinate fix — pending:** with the dev-warn now in place AND the chip warn-icon now visible, the next 853-mi route trigger in development will both fire `console.warn` AND render an amber-ringed chip — which together pinpoint when/where the coordinate corruption happens. Hold for owner reproduction or an audit AI DevTools session.
+- **Severity:** **P2-CONTENT (data-sanity).**
+- **Status:** **RESOLVED 2026-05-09 (Passes 179 + 182 + 184).** Upstream coordinate-corruption tracing is captured by the dev-warn + amber-ring chip; not blocking on this KI. If the warn fires repeatedly in production logs (Sentry), open a follow-up KI scoped to the coordinate-source bug specifically.
+
+### KI-170: Landing Coverage Dialog vs Dashboard Smart Shop Map fullscreen — 100% divergent design language (P1-PARITY)
+
+> **Added 2026-05-08 — audit AI Pass 9 §3.** Both surfaces share the MapLibre engine but otherwise share zero visual identity: different mounts (modal vs full-page), different top chrome (close-X vs Back/Search/Search-this-area/15/Split/Map-toggle), different left panels (COVERAGE COMMAND CENTER tabs vs selected-shop+ROUTE), different right toolbars (4 unlabeled icons vs 4 labeled in nav), different legend density (none vs dual), different search affordances (single ZIP vs ZIP+chips+SmartMatch), different tile toggles (none vs Map/Night/Satellite), different routing surfaces (none vs full route box). Same product, two unrelated UIs.
+
+- **Fix direction:** new `<MapProgramShell>` abstraction with composable slots — top-bar + map area + bottom-right utilities always present; left/right panels + status pill + legend mounted by host context. Four hosts: `<DashboardSmartShopMap>`, `<LandingCoverageDialog>`, `<NavigationActiveMode>`, `<DashboardMiniMap>`. Tracked separately under [`PLAN_MAP_UNIFICATION_2026-05-08.md`](PLAN_MAP_UNIFICATION_2026-05-08.md) — **AUTHORED 2026-05-08 (audit AI Pass 10).** 9-pass migration roadmap from extracted top-bar (Step A) through dashboard-fullscreen (Step C) → landing-dialog (Step D) → operating-regions / mini (Step E) → shop-directory-immersive (Step F). Gated on master-builder review against `LAW_LAYERED_ARCHITECTURE.md`.
+- **Severity:** **P1-PARITY.**
+- **Status:** **OPEN — multi-pass refactor (plan doc shipped 2026-05-08; implementation gated on master-builder review).**
+
+### KI-171: Landing page — three different "map" presentations stacked vertically on one scroll (P2-CONSISTENCY)
+
+> **Added 2026-05-08 — audit AI Pass 9 §3.** Public landing page contains three distinct map representations: (1) Hero stylized SVG illustration with floating "Sample quote" + "Estimated ETA" chips and "DOUBLE-TAP FOR FULL MAP" affordance; (2) Inline Coverage MapLibre with minimal chrome (just zoom + small badge); (3) Coverage Command Center dialog with rich left panel (Search/Explore/Saved/Shops tabs + persona switcher). Combined with dashboard mini-map + Smart Shop Map fullscreen on signed-in side = 5+ distinct map UIs. Three visual languages on a single scroll on the landing page alone.
+
+- **Fix direction:** subsumed by **KI-170 unification plan**.
+- **Severity:** **P2-CONSISTENCY.**
+- **Status:** **OPEN — paired with KI-170.**
+
+### KI-172: Landing Coverage Dialog — map shows 6 rated shop pins but Shops tab says "0 partner shops" (P1-DATA — RESOLVED 2026-05-08)
+
+> **Added 2026-05-08 — audit AI Pass 9 §3.** Coverage Dialog renders 6 shop pins with rating labels (4.6, 4.7, 4.8, 4.9). The "🛍 Shops" tab shows "Service area is expanding — No partner shops within 20 miles yet." Explore tab shows "0 shops / 15 places". Map ↔ list contradiction. Dashboard fullscreen at least carries a banner ("Showing example shop locations. Verified partner shops will appear once your account is connected."); landing version omits that disclaimer.
+
+- **Root cause:** the `usingDemoFallback` prop was already plumbed through `CoverageBrowseExperience` → `CoverageBrowseSidebarContent` (used to drive sidebar copy), but no banner consumer existed in the dialog body. Banner rendering only existed on the dashboard side at [`ShopDirectoryHybridStage.tsx:124-132`](../src/app/components/shop/ShopDirectoryHybridStage.tsx#L124-L132) and [`ShopDirectoryScreen.tsx:327-336`](../src/app/components/shop/ShopDirectoryScreen.tsx#L327-L336). Map ↔ list contradiction was preserved because demo data continued to populate map pins while the sidebar count read live data.
+- **Fix shipped Pass 10 (audit AI):** added a top-center overlay banner inside [`CoverageBrowseExperience.tsx`](../src/app/components/landing/CoverageBrowseExperience.tsx) (single-file, 27-line additive change) using the canonical `bd-notice--warn` utility, `AlertTriangle` icon, and `motion-reduce:animate-none` guard. Banner is `usingDemoFallback`-gated; positioned at `inset-x-4 top-4 z-[600]` (below desktop sidebar at z-[610], above map chrome). Verbatim copy match with the dashboard source. Typecheck passes clean. Will relocate to `<MapProgramShell>` `statusPill` slot during Step D of [`PLAN_MAP_UNIFICATION_2026-05-08.md`](PLAN_MAP_UNIFICATION_2026-05-08.md) without visual change.
+- **Fix direction (alternates not pursued):** (b) hide example/preview pins on landing when no real partners in radius — would require coverage-data refactor and risks empty map for new users; (c) include preview pins in count with "(preview)" annotation — would require sidebar-content rewrite and double-translates the same trust signal already captured by the banner.
+- **Severity:** **P1-DATA.**
+- **Status:** **RESOLVED 2026-05-08 (audit AI Pass 10).**
+
+### KI-177: shadcn/ui primitive boilerplate — 47 of 53 files dormant (~4,178 LoC dead) (P3-TECH-DEBT)
+
+> **Added 2026-05-08 — Pass 25b cowork-A dormant-exports sweep; numbers refined Pass 27 cowork-A re-audit.** `src/app/components/ui/` ships **4,771 total LoC across 53 files** (initial Pass 25b estimate of 4,707 LoC across ~36 files was undercounted — actual file count is 53, including supporting `sidebar-*` splits and `use-mobile.ts`). Closed-graph audit via `grep -rh "from .*\\.+/ui/" src/ | grep -oE "ui/[^\"']+" | sort -u` shows only **6 files** have any consumers from outside `src/app/components/ui/`: `NotificationToast.tsx`, `utils.ts` (the `cn` helper, widely consumed), `alert-dialog.tsx`, `dialog.tsx`, `drawer.tsx`, `sheet.tsx`. The other **47 files** (accordion, alert, aspect-ratio, avatar, badge, breadcrumb, button, calendar, card, carousel, chart, checkbox, collapsible, command, context-menu, dropdown-menu, form, hover-card, input, input-otp, label, menubar, navigation-menu, pagination, popover, progress, radio-group, resizable, scroll-area, select, separator, sidebar + sidebar-context + sidebar-constants + sidebar-primitives + sidebar-variants, skeleton, slider, sonner, switch, table, tabs, textarea, toggle, toggle-group, tooltip, use-mobile) are dormant. Standard shadcn boilerplate added at scaffolding time but never wired into the BidOnDent UI — which uses custom `bd-*` primitives in `src/styles/theme.css` instead.
+
+- **Closed-graph proof (re-verified Pass 27):** the 6 alive files import only from `@radix-ui/react-*` packages externally — they do **not** transitively pull in any of the 47 dormant ui/ files. Removing the 47 dormant files would not break compilation. Verified by reading each alive file's import list.
+- **Verified dormant LoC:** **4,178 lines** (53 files total minus the 6 alive files).
+- **Fix direction:** future janitor pass (post-launch, P3 priority) — delete the 47 dormant primitive files and their associated radix-ui peer deps from `package.json` (verify no other consumers first via grep). Estimated impact: ~4,178 LoC removed, several MB of `node_modules` reclaimed, faster `tsc --noEmit` and faster bundler cold-start. Zero behavior change.
+- **Why it stayed:** shadcn-style scaffolding installs a large default set of primitives; BidOnDent diverged early to a custom `bd-*` design system but the unused primitives were never pruned. No regression risk has surfaced because the dormant files don't participate in any compile or runtime graph.
+- **Evidence:** [`docs/evidence/pass-11-2026-05-08/PASS_25B_SHADCN_UI_DORMANT.md`](evidence/pass-11-2026-05-08/PASS_25B_SHADCN_UI_DORMANT.md) + Pass 27 re-audit re-verifying the closed graph.
+- **Severity:** **P3-TECH-DEBT** (no user-visible impact, no compilation risk, deferrable to post-launch).
+- **Status:** **OPEN — janitor pass deferred until after Soft Launch Hardening completes; closed-graph proof re-verified 2026-05-08 Pass 27 cowork-A.**
+
+### KI-178: hooks/utils dormant exports — `photoUtils.ts` partially dead (4/5), `useUserDataHelpers` 6/10 dead, `useCountUp` dead — RESOLVED 2026-05-08 (−224 LoC shipped) (P3-TECH-DEBT)
+
+> **Added 2026-05-08 — Pass 25 cowork-A dormant-exports sweep. Audit-AI verification correction + Pass 25 ship 2026-05-08.**
+>
+> **Cowork-A's original Pass 25 claims (partially overstated):**
+>
+> 1. ~~`src/app/utils/photoUtils.ts` (154 lines) — entire file has zero consumers.~~ **OVERSTATED.**
+> 2. ~~`src/app/hooks/useUserDataHelpers.ts` — 5 of 6 exports dormant.~~ **OVERSTATED on the denominator.**
+> 3. `src/app/hooks/useScrollAnimation.ts` / `useCountUp` — zero consumers. **CONFIRMED.**
+>
+> **Audit AI's independent verification (corrects record):**
+>
+> 1. **`src/app/utils/photoUtils.ts`** — `compressImage` export has **6 consumers** (`imageCompression.ts`, `AccountScreen.tsx`, `reportPhotoUpload.ts`, `profileImageUpload.ts`, etc.). Only **4 of 5 exports** were dead. File retained, dead exports removed.
+> 2. **`src/app/hooks/useUserDataHelpers.ts`** — actual export count was **10**, not 6. **6 of 10** exports were dead (not 5 of 6). Live exports retained.
+> 3. **`useCountUp`** — confirmed 0 consumers. Removed.
+>
+> **What shipped (Pass 25 audit AI):** −224 LoC of verified dead code removed across 3 files. Typecheck PASS exit 0.
+
+- **Methodology lesson:** cowork-A's Pass 25/25b grep methodology used path patterns that did not catch all consumer permutations (specifically: variable export names imported individually rather than via star-import or named-with-alias). Audit AI's independent verification used a more conservative consumer-count approach per export, surfacing 4 missed live consumers. Future dormant-export sweeps should use audit AI's methodology: enumerate exports by name, then `grep -rln "<exportName>" src/ --include="*.ts" --include="*.tsx" | grep -v "<file-itself>"` for each export.
+- **Final ship:** −224 LoC removed. Net dead-code reduction confirmed; no false-positive deletions thanks to audit AI's verification step.
+- **Evidence:** [`docs/evidence/pass-11-2026-05-08/PASS_25_HOOKS_UTILS_DORMANT_SWEEP.md`](evidence/pass-11-2026-05-08/PASS_25_HOOKS_UTILS_DORMANT_SWEEP.md) (cowork-A original sweep) + [`docs/evidence/pass-11-2026-05-08/DORMANT_EXPORTS_SWEEP.md`](evidence/pass-11-2026-05-08/DORMANT_EXPORTS_SWEEP.md) (cowork-A) + audit AI's Pass 25 ship commit (uncommitted on disk pending host-side `rm -f .git/*.lock`).
+- **Severity:** **P3-TECH-DEBT** (no user-visible impact, no compilation risk).
+- **Status:** **RESOLVED 2026-05-08 (audit AI Pass 25 — −224 LoC shipped, typecheck PASS).** KI-177 (shadcn ui/) remains open as separate consolidated post-launch janitor target.
+
+### KI-179: Navigation engine route alternatives lack `isImplausible` instrumentation (P3-TECH-DEBT)
+
+> **Filed 2026-05-09 — audit AI Pass 187 review fold-in.** KI-169's third-half wiring (Pass 184) put an amber-ring warn on `RouteOption.isImplausible` chips in `ShopDirectoryRoutePreviewCard`. KI-169's consumer-surface footnote noted that `PlannerRoutePreview` consumes `NavigationRoutePreview[]` from the navigation engine (real OSRM/etc responses), NOT `RouteOption[]` — different data path with no equivalent sanity flag. This KI is the destination that footnote points at.
+
+- **Scope:** the navigation engine path (`src/app/services/navigation/routeEngine.ts` → `useNavigationRoutePreview` → `useCoverageNavigationExperience`) emits `NavigationRoutePreview` objects with `distanceMeters` + `durationSeconds`. None of those structures carry an `isImplausible` flag. If the engine ever returns an absurd route (e.g. an OSRM provider error producing inflated distances), no UI surface warns the user.
+- **Fix direction:** mirror Pass 179's pattern — a `flagImplausibleNavigationRoute()` sanity helper at the engine boundary, with the same plausibility bands (distance > 100mi, duration > 240min, implied speed outside [10, 80] mph). Annotate `NavigationRoutePreview` with optional `isImplausible` + `implausibleReasons` fields, opt-in. Surface in `PlannerRoutePreview` chip row with the same amber-ring + `TriangleAlert` pattern as Pass 184.
+- **Why P3 not P1:** this is theoretical instrumentation — no field reproduction yet on the navigation engine path. The Pass 179 / 184 work was reactive to the audit AI's captured 853mi case, but that case was on the dashboard mini-map (`RouteOption` stub data), not the navigation engine. Until a Sentry log or audit reproduces an implausible navigation-engine route, this is preventive instrumentation.
+- **Evidence cross-link:** [KI-169 third-half consumer-surface footnote](#ki-169-dashboard-mini-map-route-box--alternative-cards-mix-meters--miles--implausible-21-hour-route-value-p2-content--resolved-2026-05-09).
+- **Severity:** **P3-TECH-DEBT.**
+- **Status:** **RESOLVED 2026-05-09 — Pass 203.** Mirror of Pass 179/184 shipped against the navigation engine path:
+  - [`flagImplausibleNavigationRoute()`](../src/app/services/navigation/routeEngine.ts) helper added with the same plausibility bands (>100mi, >240min, implied speed outside [10, 80] mph).
+  - [`NavigationRoutePreview`](../src/app/types/navigation.ts) extended with optional `isImplausible` + `implausibleReasons` fields (non-breaking — absence means "not flagged").
+  - [`toRoutePreview()`](../src/app/services/navigation/routeEngine.ts) annotates every OSRM route with the flag at the engine boundary; dev-only `console.warn` carries diagnostic context for upstream tracing.
+  - [`PlannerRoutePreview.tsx`](../src/app/components/maps/command-center/PlannerRoutePreview.tsx) chip row consumes the flag with the same amber-ring + `TriangleAlert` pattern as Pass 184. Chips are NOT hidden; the user can still pick a different alternative manually if all options are flagged.
+  - 8 new vitest cases including the audit's exact 853.4mi / 1264min reproduction. Suite 597/597 PASS.
+
+### KI-180: Engine 2 imperative `flyTo` bypasses `prefers-reduced-motion` contract (P2-LAW-CONFORMANCE)
+
+> **Filed 2026-05-09 — Pass 229 Block C registration.** Surfaced by [`REF_MAP_UX_COHESION_AUDIT_2026-05-09.md`](REF_MAP_UX_COHESION_AUDIT_2026-05-09.md) §5.
+
+- `MapLibreShopDirectoryViewportManager` issues `map.flyTo()` calls with explicit duration arguments. None consult the `prefers-reduced-motion: reduce` matchMedia query before issuing the animated transition.
+- LAW conformance gap against [`LAW_ANIMATION_AND_ATMOSPHERE.md`](LAW_ANIMATION_AND_ATMOSPHERE.md).
+- **Fix:** addressed in [`PLAN_MAP_CONVERGENCE_SEQUENCE_2026-05-09.md`](PLAN_MAP_CONVERGENCE_SEQUENCE_2026-05-09.md) Phase 2 pass 237 (declarative camera controllers consult reduced-motion before applying).
+- **Severity:** **P2-LAW-CONFORMANCE.**
+- **Status:** OPEN. Resolution gated on LAW_MAP_RENDERER_CONTRACT ratification + Phase 2 authorization.
+
+### KI-181: Engine 3 auto-fit silently overrides caller-supplied viewport (P2-HIDDEN-AUTHORITY)
+
+> **Filed 2026-05-09 — Pass 229 Block C registration.** Surfaced by [`REF_DASHBOARD_PREVIEW_DUPLICATION_2026-05-09.md`](REF_DASHBOARD_PREVIEW_DUPLICATION_2026-05-09.md) §4.
+
+- `MapLibreDashboardMapPreview` auto-fits to the shop bbox whenever ≥2 shop pins exist, ignoring the `center` and `zoom` props the caller supplies. Of the 6 callers, 4 are silently overridden today.
+- No test coverage; no caller-side documentation.
+- **Fix:** addressed in [`PLAN_MAP_CONVERGENCE_SEQUENCE_2026-05-09.md`](PLAN_MAP_CONVERGENCE_SEQUENCE_2026-05-09.md) Phase 1 pass 234 (explicit `autoFit` prop with `'always' | 'when-no-caller-bounds' | 'never'` modes).
+- **Severity:** **P2-HIDDEN-AUTHORITY.**
+- **Status:** PARTIAL — surface caller-visible at 13/14 production sites. Pass 241 (`18cc8497`) added the `autoFit` prop + `callerBoundsExplicit` companion to `MapLibreDashboardMapPreview` with `"always" | "when-no-caller-bounds" | "never"` modes; Pass 242 (`75fb243c`) explicitized 5 sites; Pass 243 swept the remaining 8 and locked the contract via the new CI invariant `engine3CallSiteAutoFitContract.test.ts`. `ShopMapWidget.tsx` (1/14) remains owner-dirty and is tracked as an explicit allowlist exclusion. Default behavior preserved at every site (sub-pass B doctrine: explicitization without semantic movement). Full RESOLUTION requires sub-pass C — promote ReportDetail to `"when-no-caller-bounds"` + `callerBoundsExplicit` (the actual hazard site) — which changes visible UX and is gated on owner authorization with screenshot review. See [`REF_ENGINE_3_CAMERA_AUTHORITY_2026-05-09.md`](REF_ENGINE_3_CAMERA_AUTHORITY_2026-05-09.md) §12.
+
+### KI-182: "Navigation" denotes two structurally different runtimes (P1-MENTAL-MODEL)
+
+> **Filed 2026-05-09 — Pass 229 Block C registration.** Surfaced by [`REF_NAVIGATION_AUTHORITY_2026-05-09.md`](REF_NAVIGATION_AUTHORITY_2026-05-09.md) §1+§5 and [`REF_MAP_UX_COHESION_AUDIT_2026-05-09.md`](REF_MAP_UX_COHESION_AUDIT_2026-05-09.md) §4.
+
+- `useCoverageNavigationExperience` (Host A, 3 nav hooks) and `useShopDirectoryNavigation` (Host B, 8 nav hooks) deliver different navigation runtimes despite both presenting as "navigation" to users.
+- Coverage navigation: silent (no voice), no toast, no wake-lock, route LOST on reload, no reroute gating.
+- Shop directory navigation: voice + toast + wake-lock + cloud session restore + gated reroute.
+- Highest-impact behavioral inconsistency surfaced by the Block C audit set.
+- **Fix:** addressed in [`PLAN_MAP_CONVERGENCE_SEQUENCE_2026-05-09.md`](PLAN_MAP_CONVERGENCE_SEQUENCE_2026-05-09.md) Phase 3. Two branches mapped (Branch A: coverage grows into Host B; Branch B: coverage downgrades to Tier B preview-only). Owner decides at LAW contract §7.1.
+- **Severity:** **P1-MENTAL-MODEL.**
+- **Status:** OPEN. Resolution gated on LAW ratification + Phase 3 owner branch decision.
+
+### KI-183: "navigation session" string denotes two unrelated concepts with similar storage keys (P2-NAMING-COLLISION)
+
+> **Filed 2026-05-09 — Pass 229 Block C registration.** Surfaced by [`REF_NAVIGATION_AUTHORITY_2026-05-09.md`](REF_NAVIGATION_AUTHORITY_2026-05-09.md) §2.2 and [`REF_SYSTEM_STATE.md`](REF_SYSTEM_STATE.md) §5.5.4 (already flagged there).
+
+- The reducer-managed in-app session (`useNavigationSession` hook + `navigationSessionCloudService`, per-user `bidondent_nav_*` keys) and the legacy external-handoff payload (`navigationSession.ts` service, global `bidondent_navigation_session` key) share the "navigation session" name. Different lifetimes, different cleanup, similar prefixed keys.
+- Risk: AI agent or developer modifies one thinking it is the other.
+- **Fix:** reconcile during Phase 3 Branch A pass 243a, OR rename one of the two concepts in a separate authorized pass.
+- **Severity:** **P2-NAMING-COLLISION.**
+- **Status:** OPEN.
+
+### KI-184: Engine 1 `MapEngineCanvas` lacks `onLoad`/`onError` failure-surface handlers (P2-LIFECYCLE-GAP)
+
+> **Filed 2026-05-09 — Pass 229 Block C registration.** Surfaced by [`REF_MAP_RENDERER_INVENTORY_2026-05-09.md`](REF_MAP_RENDERER_INVENTORY_2026-05-09.md) §4.
+
+- The canonical Tier A engine has no `onLoad` or `onError` handlers wired. Engine 2 has both; Engine 3 has neither but is preview-only.
+- Future LAW_MAP_RENDERER_CONTRACT §3 makes both handlers a non-negotiable obligation for ALL tiers.
+- **Fix:** addressed in [`PLAN_MAP_CONVERGENCE_SEQUENCE_2026-05-09.md`](PLAN_MAP_CONVERGENCE_SEQUENCE_2026-05-09.md) Phase 1 pass 232/233 wave (extended to Engine 1 in a follow-up pass; needs sequencing decision).
+- **Severity:** **P2-LIFECYCLE-GAP.**
+- **Status:** OPEN. Resolution gated on LAW ratification + Phase 1 authorization.
+
+### KI-185: Pitch caps inconsistent and undiscoverable across the three map engines (P3-COHESION)
+
+> **Filed 2026-05-09 — Pass 229 Block C registration.** Surfaced by [`REF_MAP_UX_COHESION_AUDIT_2026-05-09.md`](REF_MAP_UX_COHESION_AUDIT_2026-05-09.md) §2+§7.
+
+- Engine 1: free pitch (no cap).
+- Engine 2: `maxPitch=65` only when `tileMode==='satellite'` OR `navigationMode==='guidance'`; else `maxPitch=0`.
+- Engine 3: gestures suppressed entirely (no pitch possible).
+- A user pitching freely on coverage and then trying to pitch on shop dir browse mode hits the cap with no UI feedback.
+- **Fix:** LAW contract §7.2 open question — owner decides whether to unify across surfaces or declare per-surface intent with discoverable affordance.
+- **Severity:** **P3-COHESION.**
+- **Status:** OPEN.
+
+### KI-186: GPS dual-instantiation risk if both navigation hosts mount simultaneously (P3-LATENT)
+
+> **Filed 2026-05-09 — Pass 229 Block C registration.** Surfaced by [`REF_NAVIGATION_AUTHORITY_2026-05-09.md`](REF_NAVIGATION_AUTHORITY_2026-05-09.md) §2.4.
+
+- Both Host A and Host B independently instantiate `useNavigationGpsTracking`. If both hosts ever mount in the same tree, two `watchPosition` subscriptions are issued. Browser may de-duplicate, but no hook-level guarantee.
+- Not currently triggered (the two surfaces are routed separately).
+- **Fix:** considered in Phase 3 (whichever branch); explicit GPS singleton pattern may be required.
+- **Severity:** **P3-LATENT.**
+- **Status:** OPEN.
+
+### KI-187: Zero engine mount/unmount + failure-surface test coverage (P1-TEST-COVERAGE)
+
+> **Filed 2026-05-09 — Pass 229 Block C registration.** Surfaced by [`REF_MAP_TEST_COVERAGE_GAPS_2026-05-09.md`](REF_MAP_TEST_COVERAGE_GAPS_2026-05-09.md) §2.1.
+
+- 0 of 3 engines have mount/unmount + `onLoad`/`onError` test coverage. Engine 1 has render-only coverage. Engines 2 and 3 have ZERO test coverage.
+- Convergence cannot ship safely without this coverage.
+- **Fix:** [`REF_MAP_TEST_COVERAGE_GAPS_2026-05-09.md`](REF_MAP_TEST_COVERAGE_GAPS_2026-05-09.md) §3 specifies required additions per phase. Pass 228 §5 recommends test-only additions in parallel with LAW ratification.
+- **Severity:** **P1-TEST-COVERAGE.**
+- **Status:** OPEN. May be addressed independently of LAW ratification (test-only changes are safe-for-autopilot).
+
+### KI-188: Zero orchestration-host test coverage (P1-TEST-COVERAGE)
+
+> **Filed 2026-05-09 — Pass 229 Block C registration.** Surfaced by [`REF_MAP_TEST_COVERAGE_GAPS_2026-05-09.md`](REF_MAP_TEST_COVERAGE_GAPS_2026-05-09.md) §2.2.
+
+- 0 of 2 orchestration hosts (`useCoverageNavigationExperience`, `useShopDirectoryNavigation`) have any unit or integration test coverage.
+- SINGLE BIGGEST GAP per Pass 228 §6.
+- **Fix:** [`REF_MAP_TEST_COVERAGE_GAPS_2026-05-09.md`](REF_MAP_TEST_COVERAGE_GAPS_2026-05-09.md) §3.3 specifies Host B parity test as Phase 3 prerequisite.
+- **Severity:** **P1-TEST-COVERAGE.**
+- **Status:** OPEN. May be addressed independently of LAW ratification.
+
+### KI-189: Zero map-bearing surface test coverage (P2-TEST-COVERAGE)
+
+> **Filed 2026-05-09 — Pass 229 Block C registration.** Surfaced by [`REF_MAP_TEST_COVERAGE_GAPS_2026-05-09.md`](REF_MAP_TEST_COVERAGE_GAPS_2026-05-09.md) §2.3.
+
+- 0 of 8 map-bearing surfaces (coverage map, shop directory map, 3 dashboard widgets, ReportsListScreen, ReportDetailScreen, CompetitorAnalysisScreen) have surface-level tests.
+- **Fix:** [`REF_MAP_TEST_COVERAGE_GAPS_2026-05-09.md`](REF_MAP_TEST_COVERAGE_GAPS_2026-05-09.md) §3 specifies required surface tests per phase, starting with `ReportDetailScreen` in Phase 1.
+- **Severity:** **P2-TEST-COVERAGE.**
+- **Status:** OPEN.
+
+### KI-190: `maplibreResizePatch` pre-mount import not enforced by CI (P2-INVARIANT-NOT-ENFORCED)
+
+> **Filed 2026-05-09 — Pass 229 Block C registration.** Surfaced by [`REF_MAP_TEST_COVERAGE_GAPS_2026-05-09.md`](REF_MAP_TEST_COVERAGE_GAPS_2026-05-09.md) §2.4.
+
+- The patch is a non-negotiable invariant (Pass 192 fix; LAW contract §3.1) but no CI test asserts it is imported before any map mount. Removal would silently regress to blank-canvas.
+- **Fix:** add a unit test that asserts the patch's side-effect is observable before any maplibre-gl module is touched. Can ship as a test-only pass independent of LAW ratification.
+- **Severity:** **P2-INVARIANT-NOT-ENFORCED.**
+- **Status:** OPEN.
+
+### KI-191: `prefers-reduced-motion` contract not enforced by CI (P2-INVARIANT-NOT-ENFORCED — RESOLVED 2026-05-09)
+
+> **Filed 2026-05-09 — Pass 229 Block C registration.** Surfaced by [`REF_MAP_TEST_COVERAGE_GAPS_2026-05-09.md`](REF_MAP_TEST_COVERAGE_GAPS_2026-05-09.md) §2.4.
+> **Resolved 2026-05-09 — Pass 238.** Promoted via [`src/app/__tests__/reducedMotionContract.test.ts`](../src/app/__tests__/reducedMotionContract.test.ts).
+
+- `scripts/audit-reduced-motion.mjs` exists but is a one-off audit script, not a CI-enforced test. LAW_ANIMATION_AND_ATMOSPHERE conformance can regress silently.
+- **Fix shipped (Pass 238):** Vitest test `Reduced-motion contract — Pass 238 CI promotion` (a) spawns the existing CSS audit script and asserts exit 0 (CSS-keyframe half), and (b) walks `src/app/**/*.tsx` and asserts every `animate-in` / `animate-out` Tailwind utility has a `motion-reduce:` partner within the same className window (JSX half). Vendored shadcn/ui primitives are excluded as a characterized gap — see KI-193.
+- **Severity:** **P2-INVARIANT-NOT-ENFORCED.**
+- **Status:** RESOLVED 2026-05-09 (Pass 238).
+
+### KI-194: Engine 2 tile-mode authority is split across three competing sources (P3-IMPLICIT-AUTHORITY)
+
+> **Filed 2026-05-09 — Pass 239 hidden-authority evidence inventory.** Surfaced by [`REF_HIDDEN_AUTHORITY_EVIDENCE_2026-05-09.md`](REF_HIDDEN_AUTHORITY_EVIDENCE_2026-05-09.md) §2.2 + §4.1.
+
+- `useMapPaneState.ts` resolves the effective `tileMode` from three competing sources without a single caller-visible authority prop: (1) caller `mapTheme` prop, (2) internal `prefers-color-scheme: dark` media-query listener (when `mapTheme === "auto"`), (3) sibling `externalTileMode` prop (when non-null, overrides both above).
+- Caller has no single prop to declare "I own the tile-mode authority outright."
+- **Fix:** additive `tileModeAuthority` prop with explicit precedence semantics (mirrors Pass 237's `autoFit` design for Engine 3). Out of Phase 2 scope per owner authorization.
+- **Severity:** **P3-IMPLICIT-AUTHORITY.**
+- **Status:** OPEN.
+
+### KI-195: Engine 2 guidance-mode silently auto-clears popups (P3-IMPLICIT-STATE-MUTATION)
+
+> **Filed 2026-05-09 — Pass 239 hidden-authority evidence inventory.** Surfaced by [`REF_HIDDEN_AUTHORITY_EVIDENCE_2026-05-09.md`](REF_HIDDEN_AUTHORITY_EVIDENCE_2026-05-09.md) §2.2 + §4.2.
+
+- When `navigationMode === "guidance"`, an internal effect in `useMapPaneState.ts` (lines 240-244) calls `setShopPopup(null)` + `setSavedPlacePopup(null)` + `setRoutePopup(null)`. The caller's prior selection is discarded without any caller-visible signal.
+- Caller has no opt-out for sticky overlays into guidance mode.
+- **Fix:** surface a `clearOverlaysOnMode` prop (default `true` to preserve current behavior; opt-out for callers that want sticky overlays). Out of Phase 2 scope per owner authorization.
+- **Severity:** **P3-IMPLICIT-STATE-MUTATION.**
+- **Status:** OPEN.
+
+### KI-196: Engine 3 `reportPins = []` default param creates fresh array ref each render (P3-LATENT-RERENDER-LOOP)
+
+> **Filed 2026-05-09 — Pass 241 Engine 3 sub-pass A debugging.** Surfaced when new motion tests omitted `reportPins={[]}` and the test worker hit a JS heap OOM from an infinite render loop.
+
+- `MapLibreDashboardMapPreview` declares `reportPins = []` as a default param. JavaScript evaluates default-param expressions on every call, so each render produces a NEW empty array reference when the caller omits the prop.
+- The new ref propagates through the `allPoints` useMemo (deps `[shops, reportPins]`) → `fittedView` useMemo (deps `[shops, allPoints]`) → `effectiveFittedView` useMemo (Pass 241; deps `[autoFit, callerBoundsExplicit, fittedView]`) → `useEffect` (deps `[center, zoom, effectiveFittedView]`) → `setViewState` → re-render → infinite loop.
+- **Currently masked in production** because every observed call site (verified during Pass 242 + Pass 243 audits — see [`REF_ENGINE_3_CAMERA_AUTHORITY_2026-05-09.md`](REF_ENGINE_3_CAMERA_AUTHORITY_2026-05-09.md) §12.2) passes `reportPins={[...]}` or `reportPins={[]}` explicitly. The hazard is one new omission away from a runtime crash.
+- **Fix:** hoist `[]` to a module-scope `EMPTY_PINS` constant and change the default param to `reportPins = EMPTY_PINS` (additive; behavior-preserving; closes the hazard at the source). Optional CI invariant: assert every call site passes `reportPins` explicitly.
+- **Severity:** **P3-LATENT-RERENDER-LOOP.**
+- **Status:** OPEN. Deferred from Pass 241 (out of sub-pass A scope) and Pass 243 (out of sub-pass B scope). Owner authorization required for the additive defensive fix.
+
+### KI-193: shadcn/ui primitives lack `motion-reduce:` opt-out on Radix data-state transitions (P2-LAW-CONFORMANCE)
+
+> **Filed 2026-05-09 — Pass 238 characterized exclusion from the JSX reduce-motion audit.** Surfaced by the JSX half of the [`reducedMotionContract.test.ts`](../src/app/__tests__/reducedMotionContract.test.ts) audit.
+
+- 12 vendored shadcn primitives in `src/app/components/ui/` use `data-[state=open]:animate-in` / `data-[state=closed]:animate-out` (and matching `fade-*` / `zoom-*` / `slide-*` Tailwind utilities) without a `motion-reduce:animate-none` partner: `alert-dialog`, `context-menu`, `dialog`, `drawer`, `dropdown-menu`, `hover-card`, `menubar`, `navigation-menu`, `popover`, `select`, `sheet`, `tooltip`.
+- Each open/close transition therefore animates even when the user has `prefers-reduced-motion: reduce`. LAW_ANIMATION_AND_ATMOSPHERE §3 violation.
+- **Fix:** single sweep that adds `motion-reduce:animate-none` (and equivalent `motion-reduce:fade-in-0` etc. neutralizers as needed) to each primitive's animation utility chain. Then remove the `src/app/components/ui` exclusion from `EXCLUDED_DIRS` in [`reducedMotionContract.test.ts`](../src/app/__tests__/reducedMotionContract.test.ts) so the audit covers the primitives going forward.
+- **Severity:** **P2-LAW-CONFORMANCE.**
+- **Status:** OPEN. Out of Phase 2 scope (operational behavior change across vendored surface).
+
+### KI-192: PLAN_MAP_UNIFICATION §1.6 caller count is wrong (4 → 6) (P3-DOC-DRIFT)
+
+> **Filed 2026-05-09 — Pass 229 Block C registration.** Surfaced by [`REF_DASHBOARD_PREVIEW_DUPLICATION_2026-05-09.md`](REF_DASHBOARD_PREVIEW_DUPLICATION_2026-05-09.md) §5.
+
+- Pass 217 added §1.6 listing 4 callers of `MapLibreDashboardMapPreview`; Pass 225 grep found 6 (CustomerMapWidget + ShopMapWidget were missed because they live in `dashboard/` not `reports/`).
+- §1.6 also frames the situation as a "duplicate to converge" — Pass 225 §2 reframed it: the 6 callers are call sites of one well-fit component, not duplicates. The convergence question is between Engine 3 and Engines 1/2, not among Engine 3's callers.
+- **Fix:** update §1.6 of [`PLAN_MAP_UNIFICATION_2026-05-08.md`](PLAN_MAP_UNIFICATION_2026-05-08.md) — DEFERRED while that file is owner-dirty. Will ship in a follow-up pass once the file stabilizes.
+- **Severity:** **P3-DOC-DRIFT.**
+- **Status:** OPEN.
+
+### KI-197: Engine 2 12s `mapLoadFailed` timeout fired prematurely on slower mount paths (P2-PREMATURE-FAILURE-UI — RESOLVED 2026-05-09)
+
+> **Filed 2026-05-09 — Pass 267, owner-reported.** Owner provided a screenshot showing the customer dashboard's `MapLibreShopDirectoryMapPane` rendering the "Map failed to load" overlay over a partially-loaded map (CARTO tiles visible, 15-shop cluster pin visible, popup visible). Safari had also issued a memory-pressure reload prior. Landing-page mount of the same engine worked smoothly.
+
+- The `useMapPaneState` hook ran a 12-second `setTimeout` that flipped `mapLoadFailed=true` if the maplibre `load` event hadn't fired by then. Under slower mount paths — customer dashboard via `ShopDirectoryHybridStage` mounting alongside sidebar + header + widget cohort, especially after Safari memory-pressure reload — tiles often rendered before the `load` event fired, producing the user-visible "failure overlay over working map" inconsistency.
+- The 12s ceiling was a 2026-05-08-era best-guess for slow-load fallback; it was the slow-load path, not the hard-failure path. The hard-failure path is `handleMapLoadError` (the maplibre `onError` callback). The two were conflated.
+- **Fix (Pass 267):**
+  - Bumped slow-load timeout 12s → 25s in [`useMapPaneState.ts`](../src/app/components/shop/useMapPaneState.ts) (covers the observed dashboard mount path).
+  - Added a self-heal path: `onIdle={handleMapLoad}` next to `onLoad={handleMapLoad}` on the `<Map>` component in [`MapLibreShopDirectoryMapPane.tsx`](../src/app/components/shop/MapLibreShopDirectoryMapPane.tsx). MapLibre's `idle` event fires when the style is fully loaded and the map has rendered an idle frame — even if `load` was missed/delayed for any reason, the first `idle` clears `mapLoadFailed` and sets `mapLoaded=true`. The setters are no-ops for subsequent idle fires (state already settled).
+  - Test additions in [`useMapPaneState.test.tsx`](../src/app/components/shop/useMapPaneState.test.tsx): pin the 25s ceiling, lock 12s as a regression-prevention threshold, and verify late-load self-heal clears a previously-set `mapLoadFailed`.
+- **Note:** this fix addresses the *symptom* (premature failure UI). The deeper question — "dashboard map mount is slower than landing because more components compete for browser CPU/memory at mount time" — is structural and is what the **PMS lane** addresses (eliminating per-route engine reinit reduces concurrent mount cost). PMS Phase 2+ remains gated; KI-197 fix is the safe interim.
+- **Severity:** **P2-PREMATURE-FAILURE-UI.**
+- **Status:** **RESOLVED 2026-05-09 (Pass 267).**

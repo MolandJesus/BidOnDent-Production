@@ -162,7 +162,7 @@ export function MapEmptyState({ isDark, shopCount }: { isDark: boolean; shopCoun
   return (
     <div className="pointer-events-none absolute inset-x-0 bottom-14 z-[450] flex justify-center px-3 sm:bottom-20">
       <div
-        className={`map-liquid-panel pointer-events-auto max-w-[320px] rounded-[1.35rem] border px-4 py-3 text-center shadow-[0_18px_40px_rgba(15,23,42,0.14)] backdrop-blur-2xl ${
+        className={`map-liquid-panel pointer-events-auto max-w-[320px] rounded-[1.35rem] border px-4 py-3 text-center shadow-[0_18px_40px_rgba(15,23,42,0.14)] backdrop-blur-2xl animate-in fade-in slide-in-from-bottom-2 duration-400 motion-reduce:animate-none ${
           isDark
             ? "border-blue-300/20 bg-[linear-gradient(180deg,rgba(15,23,42,0.84),rgba(15,23,42,0.76))] text-white"
             : "border-slate-200/78 bg-[linear-gradient(180deg,rgba(248,250,252,0.84),rgba(226,232,240,0.76))] text-slate-700"
@@ -192,7 +192,7 @@ export function GeoErrorToast({
 }) {
   if (!geoError) return null;
   return (
-    <div className="pointer-events-none absolute right-3 top-14 z-[550] sm:top-16">
+    <div className="pointer-events-none absolute right-3 top-14 z-[550] sm:top-16 animate-in fade-in slide-in-from-top-2 duration-300 motion-reduce:animate-none">
       <div
         className={`pointer-events-auto rounded-xl border px-3 py-2 shadow-lg backdrop-blur-2xl ${
           isDark

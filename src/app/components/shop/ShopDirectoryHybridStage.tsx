@@ -11,7 +11,7 @@ import type { WebsiteIdentity } from "../../services/auth/websiteIdentity";
 import type { MarketUserType } from "../../services/intelligence/marketIntelligence";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 import type { DamageReport } from "../../types";
-import { cn } from "../ui/utils";
+import { cn } from "@/platform-core/cn";
 
 import type { useShopDirectorySession } from "../../hooks/useShopDirectorySession";
 import type { useShopDirectoryNavigation } from "../../hooks/useShopDirectoryNavigation";
@@ -121,7 +121,7 @@ export default function ShopDirectoryHybridStage({
       />
 
       {session.usingDemoFallback && (
-        <div className="mx-4 flex items-center gap-2 rounded-lg border px-3 py-2 text-xs bd-notice--warn">
+        <div className="mx-4 flex items-center gap-2 rounded-lg border px-3 py-2 text-xs bd-notice--warn animate-in fade-in slide-in-from-top-2 duration-300 motion-reduce:animate-none">
           <AlertTriangle className="h-3.5 w-3.5 flex-shrink-0" />
           <span>
             Showing example shop locations. Verified partner shops will appear once your account is
@@ -132,7 +132,7 @@ export default function ShopDirectoryHybridStage({
 
       {!session.usingDemoFallback && session.coverageFetchError && (
         <div
-          className={`mx-4 flex items-center gap-2 rounded-lg border px-3 py-2 text-xs ${
+          className={`mx-4 flex items-center gap-2 rounded-lg border px-3 py-2 text-xs animate-in fade-in slide-in-from-top-2 duration-300 motion-reduce:animate-none ${
             isLight
               ? "border-rose-300/60 bg-rose-50 text-rose-700"
               : "border-rose-400/30 bg-rose-400/10 text-rose-200"

@@ -26,7 +26,7 @@ import NavigationErrorBoundary from "../maps/NavigationErrorBoundary";
 import NavigationBrowseDiscoveryPanel from "../maps/navigation/NavigationBrowseDiscoveryPanel";
 import NavigationSavedPlacesPanel from "../maps/navigation/NavigationSavedPlacesPanel";
 import CoverageNearestShops from "./CoverageNearestShops";
-import { cn } from "../ui/utils";
+import { cn } from "@/platform-core/cn";
 
 type SidebarView = "search" | "explore" | "saved" | "shops";
 

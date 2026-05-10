@@ -309,7 +309,7 @@ export default function ReportScreen({
           </div>
 
           {form.showSaveIndicator && (
-            <div className="mt-3 flex justify-center md:mt-4">
+            <div className="mt-3 flex justify-center md:mt-4 animate-in fade-in slide-in-from-bottom-1 duration-200 motion-reduce:animate-none">
               <ReportAutoSaveIndicator />
             </div>
           )}
@@ -320,6 +320,17 @@ export default function ReportScreen({
       {showPhotoGuide && (
         <PhotoGuide
           onClose={() => setShowPhotoGuide(false)}
+          onSkip={() => {
+            // Pass 62 (2026-05-07) — KI-128: "Skip for now" must advance the
+            // wizard to Step 4. Previously Skip and the X-close shared one
+            // handler that only dismissed the modal, trapping the user in a
+            // re-open loop on the next Continue tap. We do NOT call
+            // onPhotoGuideComplete here so the persistent `hasSeenPhotoGuide`
+            // flag stays false — user skipped, not acknowledged.
+            setShowPhotoGuide(false);
+            setHasSeenGuideThisSession(true);
+            form.nextStep();
+          }}
           onComplete={() => {
             setShowPhotoGuide(false);
             setHasSeenGuideThisSession(true);

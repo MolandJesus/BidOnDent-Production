@@ -1,15 +1,32 @@
+---
+status: DEFERRED
+authority: PLAN
+scope: map-master-vision
+canonical_source_of_truth: PLAN_MAP_MASTER.md
+supersedes: []
+superseded_by: null
+safe_for_autopilot: false
+requires_owner_approval: true
+last_topology_audit: 2026-05-09
+runtime_impact_if_misunderstood: medium
+ai_summary: Strategic map vision (paused during hardening); blue system, atmosphere, day/night planning.
+last_updated: 2026-05-09
+---
+
 # BidOnDent Map Master Plan
 
-> ### ⚡ HARDENING PHASE NOTICE (2026-04-14)
+> ### ⚡ HARDENING PHASE NOTICE (2026-04-14, AMENDED 2026-05-07)
 >
 > This document remains the **strategic vision** for the map program. It is **not** current execution law.
 >
 > During the Soft Launch Hardening phase, the binding execution doc is [`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md). **Feature-level map work is paused** — no new map features, no aspirational atmosphere work, no provider migrations. The strategic vision in this doc stays intact for post-launch reactivation; it just does not drive the day-to-day queue while hardening is active.
 >
 > Exception: any map change that is required to close a Launch Scope Guardrail or support a Hardening Plan phase item is allowed under the Hardening Plan's scope, not this doc's.
+>
+> **2026-05-07 amendment — KI-075 unlocked:** Owner asserted all four KI-075 trigger conditions on 2026-05-07 via planner-AI authority chain. Functional buildout scope (turn-by-turn engine, voice TTS, deviation detection, saved-places persistence, real-time marker availability, per-role layer rules) is now ACTIVE and may proceed under the containment-over-expansion rule (one functional item per pass plus hardening-safe polish). See [`REF_KNOWN_ISSUES.md` KI-075](REF_KNOWN_ISSUES.md#ki-075-future-navigation-engine--map-functional-buildout-active--unlocked-2026-05-07) for trigger assertions and per-pass scope ceiling. Provider stack stays locked (MapLibre + OSRM + Nominatim-via-edge + Overpass).
 
 **Last updated:** April 17, 2026 (Hardening phase active — strategic vision retained, submitted address search commit hardening documented)
-**Status:** Strategic vision (paused during hardening)
+**Status:** DEFERRED — strategic vision (paused during hardening)
 
 > Implementation notes archived to `docs/archive/MAP_MASTER_PLAN_IMPL_NOTES.md`. Per-pass delivery notes belong in the Map Tracker.
 
@@ -70,6 +87,7 @@ This plan should be read alongside:
 - `docs/PLAN_PRODUCT_BRAIN.md` — STUB (2026-05-04). Original archived at `docs/archive/PLAN_PRODUCT_BRAIN_archived_2026-05-04.md`. Canonical homes for new work: `LAW_PROJECT_RULES.md` (product architecture, role model), `MOLANDJESUS_DESIGN_DECISIONS.md` (design system direction — apex, locked).
 - `docs/archive/BIDONDENT_MAP_TRACKER_2026-03-21_archived_2026-05-02.md` — granular delivery history and active risks
 - `docs/PHASE_2_PLATFORM_RECOMMENDATION_2026-03-20.md` — architecture truth table and module plan
+- [`docs/PLAN_MAP_UNIFICATION_2026-05-08.md`](PLAN_MAP_UNIFICATION_2026-05-08.md) — **NEW (2026-05-08, audit AI Pass 10).** `<MapProgramShell>` slot-contract proposal that retires KI-170 / KI-171 / KI-172 by unifying the 5 divergent map surfaces. 9-pass migration roadmap; gated on master-builder review against `LAW_LAYERED_ARCHITECTURE.md`.
 
 Any map decision should cross-check all four docs to avoid contradictions.
 

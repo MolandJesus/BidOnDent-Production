@@ -1,4 +1,4 @@
-import { cn } from "../ui/utils";
+import { cn } from "@/platform-core/cn";
 
 type ShopDirectoryHybridHeaderProps = {
   isLight: boolean;

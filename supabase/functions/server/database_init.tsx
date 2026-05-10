@@ -51,7 +51,15 @@ export async function initializeDatabaseTables() {
     client = new Client(DB_URL);
     await client.connect();
 
-    // Ensure handle_updated_at() exists (idempotent, harmless)
+    // Ensure handle_updated_at() exists (idempotent, harmless).
+    // Pass 174 (2026-05-07) — KI-158 root-cause fix. The CREATE OR REPLACE
+    // above used to omit SET search_path = public. Audit AI Pass 9 §2
+    // confirmed every cold start wiped the search_path lock that Pass 7 +
+    // Pass 8 kept re-applying via ALTER FUNCTION. Pattern was: lock
+    // applied → cold start → CREATE OR REPLACE reissues without lock →
+    // function_search_path_mutable advisor returns. Adding SET search_path
+    // INSIDE the CREATE OR REPLACE makes the lock survive future cold
+    // starts. Companion fix in migrations/20251230000001_full_schema.sql.
     await client.queryArray(`
       CREATE OR REPLACE FUNCTION public.handle_updated_at()
       RETURNS TRIGGER AS $$
@@ -59,7 +67,8 @@ export async function initializeDatabaseTables() {
         NEW.updated_at = NOW();
         RETURN NEW;
       END;
-      $$ LANGUAGE plpgsql;
+      $$ LANGUAGE plpgsql
+      SET search_path = public;
     `);
 
     // Verify required tables exist

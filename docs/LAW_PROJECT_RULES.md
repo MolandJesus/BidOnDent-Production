@@ -1,8 +1,23 @@
+---
+status: CANONICAL
+authority: LAW
+scope: project-rules
+canonical_source_of_truth: LAW_PROJECT_RULES.md
+supersedes: []
+superseded_by: null
+safe_for_autopilot: false
+requires_owner_approval: true
+last_topology_audit: 2026-05-09
+runtime_impact_if_misunderstood: critical
+ai_summary: Six Laws, role hierarchy, storage and auth invariants, doc metadata schema, co-update rules.
+last_updated: 2026-05-09
+---
+
 # BidOnDent — Project Rules (LAW)
 
 **Authority level:** LAW — governs all work. Cannot be violated without explicit per-session override from the project owner.
 
-**Last updated:** 2026-05-04
+**Last updated:** 2026-05-09 (Pass 215 — added 12-field Doc Metadata Header Schema; Pass 216 — applied schema to this doc)
 
 ---
 
@@ -143,6 +158,61 @@ Anything else — restructuring proposals, AI-driven cleanup, "thin owner-decisi
 
 ---
 
+## Doc Metadata Header Schema (added 2026-05-09 — non-negotiable)
+
+Every LAW / REF / PLAN doc ≥100 lines MUST carry a YAML frontmatter block at the very top of the file. The schema is **locked at exactly 12 fields**. No additions, removals, or renames without LAW-level amendment.
+
+**Purpose:** machine-readable doc routing, drift detection, AI warmup compression, and authority disambiguation. Humans can read the prose; AIs scan the header.
+
+**The 12 locked fields:**
+
+```yaml
+---
+status: CANONICAL
+authority: REFERENCE
+scope: system-state
+canonical_source_of_truth: REF_SYSTEM_STATE.md
+supersedes: []
+superseded_by: null
+safe_for_autopilot: true
+requires_owner_approval: false
+last_topology_audit: 2026-05-09
+runtime_impact_if_misunderstood: low
+ai_summary: Canonical runtime topology and subsystem authority map.
+last_updated: 2026-05-09
+---
+```
+
+**Field definitions and allowed values:**
+
+| Field                             | Type                | Allowed values / format                                                                       |
+| --------------------------------- | ------------------- | --------------------------------------------------------------------------------------------- |
+| `status`                          | enum                | `CANONICAL` \| `ACTIVE` \| `SUPERSEDED` \| `ARCHIVED` \| `DEFERRED` \| `HISTORICAL`           |
+| `authority`                       | enum                | `LAW` \| `REFERENCE` \| `PLAN` \| `OPS`                                                       |
+| `scope`                           | slug                | short lowercase-hyphenated topic owned by this doc (e.g. `system-state`, `map-unification`)   |
+| `canonical_source_of_truth`       | path or self        | path to the doc that wins on this concept; self-reference if THIS doc is canonical            |
+| `supersedes`                      | list of paths       | docs this one replaces (move replaced docs to `docs/archive/` per LAW co-update rule)         |
+| `superseded_by`                   | path or `null`      | path to the newer doc, or `null` if still current                                             |
+| `safe_for_autopilot`              | bool                | `true` if AI may edit additively without owner gate; `false` for LAW + apex canon docs        |
+| `requires_owner_approval`         | bool                | `true` if every edit requires explicit owner authorization in-session                         |
+| `last_topology_audit`             | ISO date            | `YYYY-MM-DD` of the most recent convergence/drift check against this doc                      |
+| `runtime_impact_if_misunderstood` | enum                | `low` \| `medium` \| `high` \| `critical` — drives AI caution level                           |
+| `ai_summary`                      | string ≤120 chars   | one-sentence operational summary for AI warmup; not marketing prose                           |
+| `last_updated`                    | ISO date            | `YYYY-MM-DD` of the most recent content edit                                                  |
+
+**Schema rules:**
+
+1. **Exactly 12 fields, in the order shown above.** No optional fields, no extensions.
+2. Headers are mandatory on docs ≥100 lines in `docs/LAW_*`, `docs/REF_*`, `docs/PLAN_*`. Optional but recommended on `docs/OPS_*`.
+3. The frontmatter block must be the first content in the file. The `# Title` heading follows immediately after the closing `---`.
+4. `safe_for_autopilot: false` MUST be set for: every `LAW_*` doc, `MOLANDJESUS_DESIGN_DECISIONS.md`, and any doc whose `runtime_impact_if_misunderstood` is `high` or `critical`.
+5. Existing prose metadata lines (`**Authority level:**`, `**Last updated:**`, `**Status:**`) may remain below the frontmatter for human readability but the YAML is the source of truth on conflict.
+6. Schema changes require a LAW edit. AI agents may NOT add new fields autonomously even when "it would be useful."
+
+**Why this exists:** as of Pass 213's convergence audit, the repo crossed the threshold where implicit doc authority is no longer sufficient. The header collapses authority, drift, autopilot safety, and runtime risk into 12 grep-able lines so future AI sessions can warm up in one read instead of twenty.
+
+---
+
 ## Co-Update Rules
 
 | Trigger                              | Must update together                                                                                  |
@@ -158,6 +228,7 @@ Anything else — restructuring proposals, AI-driven cleanup, "thin owner-decisi
 | Edge function deploy                 | Verify `verify_jwt: false` is preserved (see `SUPABASE_SETUP_GUIDE.md` §17). Never use `--verify-jwt` |
 | New reusable AI pattern surfaced     | Add as a skill in `~/.claude/skills/` and reference from `AGENTS.md` / `CLAUDE.md`                    |
 | Document superseded                  | Move old doc to `docs/archive/` with date suffix                                                      |
+| New LAW/REF/PLAN doc ≥100 lines      | Apply the 12-field metadata header schema (see above) before commit                                   |
 
 ---
 

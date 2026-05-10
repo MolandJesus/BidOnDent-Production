@@ -48,7 +48,20 @@ export function useNavigationLifecycleEffects({
   lastArrivalToastSessionIdRef,
 }: UseNavigationLifecycleEffectsParams) {
   // ── Intelligence evaluation snapshot ──
+  // Pass 61 (2026-05-07) — KI-116 root-cause fix. The deviation engine must
+  // ONLY evaluate when there is a truly active navigation session. Previously
+  // the effect ran for every snapshot change regardless of session state,
+  // which produced phantom "737mi off route" banners on the dashboard inline
+  // coverage map: a stale `status: "planning"` session with destination set
+  // (Yonkers, NY) was being compared against the user's idle GPS position
+  // (Suwanee, GA) — haversine 743mi → off-route event → toast → notification
+  // counter increment → speed-limit Overpass spam. Six P0 symptoms collapsed.
+  // Companion fix: KI-117 stale-localStorage sweep on app mount.
   useEffect(() => {
+    if (navSession.session.status !== "active") {
+      return;
+    }
+
     const livePosition = shopMapUserCoords
       ? {
           latitude: shopMapUserCoords.latitude,
@@ -73,6 +86,7 @@ export function useNavigationLifecycleEffects({
 
     intelligence.evaluate(snapshot);
   }, [
+    navSession.session.status,
     session.selectedRoute?.id,
     session.selectedRoute?.estimatedDurationMinutes,
     shopGuidancePreview.routePreview?.fetchedAt,

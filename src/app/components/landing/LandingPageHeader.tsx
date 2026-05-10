@@ -40,7 +40,11 @@ export default function LandingPageHeader({
       setIsScrolled(window.scrollY > 50);
     };
 
-    window.addEventListener("scroll", handleScroll);
+    // Pass 86 (2026-05-07) — KI-053 F.3 passive-listeners audit. The header
+    // scroll listener never calls `preventDefault`, so marking it passive
+    // lets the browser scroll without waiting for this handler — reduces
+    // main-thread contention with MapLibre on the landing surface.
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -250,7 +254,7 @@ export default function LandingPageHeader({
                     id="landing-user-profile-menu"
                     role="menu"
                     aria-label="User profile menu"
-                    className={`absolute right-0 mt-2 w-56 rounded-xl border backdrop-blur-xl shadow-lg z-50 overflow-hidden ${isLightAppearance ? "bg-[rgba(255,251,245,0.92)] border-[rgba(200,180,150,0.22)] shadow-black/10" : "bg-[#0c1929]/95 border-blue-400/20 shadow-black/30"}`}
+                    className={`absolute right-0 mt-2 w-56 rounded-xl border backdrop-blur-xl shadow-lg z-50 overflow-hidden animate-in fade-in slide-in-from-top-1 zoom-in-95 duration-200 motion-reduce:animate-none ${isLightAppearance ? "bg-[rgba(255,251,245,0.92)] border-[rgba(200,180,150,0.22)] shadow-black/10" : "bg-[#0c1929]/95 border-blue-400/20 shadow-black/30"}`}
                   >
                     <div
                       className={`px-3 py-2.5 border-b ${isLightAppearance ? "border-[rgba(200,180,150,0.22)]" : "border-blue-400/15"}`}

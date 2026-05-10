@@ -7,7 +7,7 @@
  * derived route metrics (remaining duration/distance, following step, route geometry).
  */
 import { useEffect, useMemo, useState } from "react";
-import { cn } from "../ui/utils";
+import { cn } from "@/platform-core/cn";
 import type { CoverageNavigationExperience } from "../../hooks/useCoverageNavigationExperience";
 import type { NavigationProvider } from "../../services/navigation/externalNavigation";
 import { shareNavigationEta } from "../../services/navigation/shareEta";
@@ -173,8 +173,8 @@ export default function CoverageActiveNavigationLayout({
       <div className="relative">
         {/* Transition overlay — brief "entering navigation" feedback */}
         {navigationTransition ? (
-          <div className="pointer-events-none absolute inset-0 z-[580] flex items-center justify-center rounded-[2rem]">
-            <div className="animate-pulse rounded-full border border-white/20 bg-slate-950/60 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-2xl">
+          <div className="pointer-events-none absolute inset-0 z-[580] flex items-center justify-center rounded-[2rem] animate-in fade-in duration-200 motion-reduce:animate-none">
+            <div className="animate-pulse motion-reduce:animate-none rounded-full border border-white/20 bg-slate-950/60 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-2xl">
               Starting navigation...
             </div>
           </div>
@@ -182,7 +182,7 @@ export default function CoverageActiveNavigationLayout({
 
         {/* Arrival overlay — celebrates reaching the destination */}
         {arrivalTransition ? (
-          <div className="pointer-events-none absolute inset-0 z-[580] flex flex-col items-center justify-center gap-3 rounded-[2rem]">
+          <div className="pointer-events-none absolute inset-0 z-[580] flex flex-col items-center justify-center gap-3 rounded-[2rem] animate-in fade-in zoom-in-95 duration-300 motion-reduce:animate-none">
             <div
               className={cn(
                 "rounded-[1.35rem] border px-6 py-4 text-center backdrop-blur-3xl",
@@ -225,13 +225,13 @@ export default function CoverageActiveNavigationLayout({
         {navigation.isLoadingRoute && !navigationTransition ? (
           <div
             className={cn(
-              "absolute left-1/2 top-[4rem] z-[575] -translate-x-1/2 flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium backdrop-blur-2xl transition-all sm:top-[4.5rem]",
+              "absolute left-1/2 top-[4rem] z-[575] -translate-x-1/2 flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium backdrop-blur-2xl transition-all sm:top-[4.5rem] animate-in fade-in slide-in-from-top-1 duration-200 motion-reduce:animate-none",
               tone === "light"
                 ? "border-blue-200/80 bg-blue-50/90 text-blue-800"
                 : "border-blue-400/25 bg-blue-500/15 text-blue-200"
             )}
           >
-            <span className="inline-block h-2 w-2 animate-spin rounded-full border-2 border-current border-t-transparent" />
+            <span className="inline-block h-2 w-2 animate-spin motion-reduce:animate-none rounded-full border-2 border-current border-t-transparent" />
             Rerouting...
           </div>
         ) : null}
@@ -240,7 +240,7 @@ export default function CoverageActiveNavigationLayout({
         {navigation.gpsStatus !== "active" ? (
           <div
             className={cn(
-              "absolute left-1/2 top-[5.5rem] z-[575] -translate-x-1/2 flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium backdrop-blur-2xl transition-all sm:top-[6rem]",
+              "absolute left-1/2 top-[5.5rem] z-[575] -translate-x-1/2 flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium backdrop-blur-2xl transition-all sm:top-[6rem] animate-in fade-in slide-in-from-top-1 duration-200 motion-reduce:animate-none",
               navigation.gpsStatus === "denied"
                 ? tone === "light"
                   ? "border-rose-200/80 bg-rose-50/90 text-rose-800"
@@ -256,7 +256,7 @@ export default function CoverageActiveNavigationLayout({
           >
             <span
               className={cn(
-                "inline-block h-2 w-2 rounded-full animate-pulse",
+                "inline-block h-2 w-2 rounded-full animate-pulse motion-reduce:animate-none",
                 navigation.gpsStatus === "denied"
                   ? "bg-rose-500 animate-none"
                   : navigation.gpsStatus === "acquiring"
@@ -322,7 +322,7 @@ export default function CoverageActiveNavigationLayout({
           postedSpeedLimitConfidence={navigation.speedLimitSnapshot?.confidence ?? null}
           speedLimitMatchDistanceMeters={navigation.speedLimitSnapshot?.matchDistanceMeters ?? null}
           nearestRoadName={navigation.speedLimitSnapshot?.roadName ?? null}
-          nextInstruction={navigation.nextStep?.instruction ?? null}
+          nextInstruction={null}
           voiceMode={navigation.settings.voiceMode}
           onTileModeChange={onTileModeChange}
           onCenterActive={onCenterActive}

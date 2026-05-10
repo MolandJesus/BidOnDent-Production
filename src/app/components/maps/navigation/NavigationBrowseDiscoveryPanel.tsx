@@ -8,7 +8,7 @@ import {
   Sparkles,
   Wrench,
 } from "lucide-react";
-import { cn } from "../../ui/utils";
+import { cn } from "@/platform-core/cn";
 import { formatApproximateDriveWindow } from "../mapRoutePresentation";
 import { getMapSurfaceTheme } from "../mapSurfaceTheme";
 import type {
@@ -69,7 +69,7 @@ function roleSummary(role: NavigationDiscoveryRole) {
     return "Competitive shops, suppliers, and market support nearby.";
   }
 
-  return "Real repair, rental, and fuel places around the active search area.";
+  return "Repair, rental, and fuel spots near your search area.";
 }
 
 export default function NavigationBrowseDiscoveryPanel({
@@ -181,7 +181,7 @@ export default function NavigationBrowseDiscoveryPanel({
 
       <div className={cn("space-y-2.5 p-3", theme.panelClassName)}>
         <div className="flex items-center justify-between gap-2">
-          <div className={theme.metricLabelClassName}>Experience lens</div>
+          <div className={theme.metricLabelClassName}>Viewing as</div>
           {defaultDiscoveryRole && defaultDiscoveryRole === discoveryRole ? (
             <span className={theme.softBadgeClassName}>Synced to {defaultDiscoveryRole}</span>
           ) : null}
@@ -227,11 +227,10 @@ export default function NavigationBrowseDiscoveryPanel({
               </div>
               <div>
                 <div className={cn("text-sm font-semibold", theme.titleClassName)}>
-                  Partner shops appear after search focus is set
+                  Partner shops appear after you start a search
                 </div>
                 <div className={cn("mt-1 text-xs leading-5", theme.secondaryTextClassName)}>
-                  Start with a ZIP, address, or live GPS origin, then this area becomes a curated
-                  set of BidOnDent partner options.
+                  Start with a ZIP, address, or your current location to see partner shops nearby.
                 </div>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <span className={theme.softBadgeClassName}>ZIP or address</span>
@@ -301,7 +300,7 @@ export default function NavigationBrowseDiscoveryPanel({
           className={cn("mb-3 flex items-center gap-2 text-sm font-semibold", theme.titleClassName)}
         >
           <Globe className="h-4 w-4" />
-          Real nearby places
+          Nearby places
         </div>
         <NavigationDiscoveryPlacesList
           tone={tone}

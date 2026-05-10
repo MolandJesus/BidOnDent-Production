@@ -68,7 +68,7 @@ export default function ImmersiveOriginPicker({
 
   return (
     <div
-      className={`pointer-events-auto absolute inset-x-0 bottom-0 z-[540] rounded-t-2xl border-t px-4 pb-[max(env(safe-area-inset-bottom,0.75rem),0.75rem)] pt-3 ${panelBg}`}
+      className={`pointer-events-auto absolute inset-x-0 bottom-0 z-[540] rounded-t-2xl border-t px-4 pb-[max(env(safe-area-inset-bottom,0.75rem),0.75rem)] pt-3 animate-in fade-in slide-in-from-bottom-4 duration-300 motion-reduce:animate-none ${panelBg}`}
     >
       {/* Drag handle */}
       <div className="mb-3 flex justify-center sm:hidden">
@@ -100,7 +100,9 @@ export default function ImmersiveOriginPicker({
             onClick={onUseMyLocation}
             type="button"
           >
-            <Navigation2 className={`h-3.5 w-3.5 ${isLocating ? "animate-pulse" : ""}`} />
+            <Navigation2
+              className={`h-3.5 w-3.5 ${isLocating ? "animate-pulse motion-reduce:animate-none" : ""}`}
+            />
             {isLocating ? "Locating..." : locationError ? "Ask Again" : "My Location"}
           </button>
         )}

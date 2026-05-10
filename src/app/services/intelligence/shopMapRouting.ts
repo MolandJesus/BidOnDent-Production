@@ -83,6 +83,42 @@ export function formatDistanceLabel(distanceMiles: number) {
   return `${distanceMiles.toFixed(1)} mi`;
 }
 
+/**
+ * Pass 179 (2026-05-08) KI-169 — sanity-check route output against
+ * plausibility bands for a local body-shop use case. BidOnDent customers
+ * picking a shop in their metro area should never see >100mi or >4hr
+ * routes. Audit AI Pass 9 §3 captured a 853.4mi / 1264min route for a
+ * NY-area request — symptom of upstream coordinate corruption (origin
+ * defaulting to (0,0) or a distant stub). This helper does NOT suppress
+ * the bug; it surfaces a structured flag + reasons so consumers can
+ * render "—" / hide alternates AND a dev-only console.warn can carry
+ * diagnostic context for upstream tracing.
+ *
+ * Bands (chosen conservatively to catch the audit's 853mi case):
+ *   - distance > 100 mi
+ *   - duration > 240 min (4 hours)
+ *   - implied speed outside [10, 80] mph (catches divide-by-tiny-distance bugs)
+ */
+export function flagImplausibleRoute(input: {
+  distanceMiles: number;
+  durationMinutes: number;
+}): { isImplausible: boolean; reasons: string[] } {
+  const reasons: string[] = [];
+  if (input.distanceMiles > 100) {
+    reasons.push(`distance ${input.distanceMiles.toFixed(1)}mi exceeds 100mi band`);
+  }
+  if (input.durationMinutes > 240) {
+    reasons.push(`duration ${input.durationMinutes}min exceeds 240min band`);
+  }
+  if (input.distanceMiles > 0.1 && input.durationMinutes > 0) {
+    const impliedMph = input.distanceMiles / (input.durationMinutes / 60);
+    if (impliedMph < 10 || impliedMph > 80) {
+      reasons.push(`implied speed ${impliedMph.toFixed(1)}mph outside [10,80] band`);
+    }
+  }
+  return { isImplausible: reasons.length > 0, reasons };
+}
+
 function interpolatePoint(
   origin: Coordinates,
   destination: Coordinates,
@@ -183,6 +219,18 @@ export function buildShopRouteOptions({
     const estimatedDurationMinutes = roundDuration(
       (routeDistanceMiles / variant.speedMph) * 60 + variant.bufferMinutes
     );
+    const sanityFlag = flagImplausibleRoute({
+      distanceMiles: routeDistanceMiles,
+      durationMinutes: estimatedDurationMinutes,
+    });
+
+    if (sanityFlag.isImplausible && import.meta.env.DEV) {
+      console.warn(
+        `[KI-169] implausible route for shop "${shop.name}": ${sanityFlag.reasons.join("; ")} ` +
+          `| origin=(${origin.latitude.toFixed(4)},${origin.longitude.toFixed(4)}) ` +
+          `dest=(${destination.latitude.toFixed(4)},${destination.longitude.toFixed(4)})`
+      );
+    }
 
     return {
       id: variant.id,
@@ -206,6 +254,8 @@ export function buildShopRouteOptions({
         durationMinutes: estimatedDurationMinutes,
         totalDistanceLabel: formatDistanceLabel(routeDistanceMiles),
       }),
+      isImplausible: sanityFlag.isImplausible,
+      implausibleReasons: sanityFlag.isImplausible ? sanityFlag.reasons : undefined,
     } satisfies RouteOption;
   });
 }

@@ -9,6 +9,7 @@ import DashboardMapPreview from "../dashboard/MapLibreDashboardMapPreview";
 import type { ReportPin } from "../dashboard/MapLibreDashboardMapPreview";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 import type { DamageReport } from "../../types";
+import { formatVehicleLabel } from "../../utils/formatVehicleLabel";
 
 type ReportsListScreenProps = {
   reports: DamageReport[];
@@ -61,7 +62,11 @@ export default function ReportsListScreen({
       .map((report) => {
         const vehicleData = report?.vehicle || report?.vehicleInfo || {};
         const label =
-          [vehicleData.year, vehicleData.make, vehicleData.model].filter(Boolean).join(" ") ||
+          formatVehicleLabel({
+            year: vehicleData.year,
+            make: vehicleData.make,
+            model: vehicleData.model,
+          }) ||
           report?.damageArea ||
           "Damage report";
         const lat = report?.latitude;
@@ -147,7 +152,25 @@ export default function ReportsListScreen({
         </div>
       </div>
 
-      {/* Reports Overview Map */}
+      {/*
+       * Reports Overview Map — Tier B aggregator preview surface (Pass 233).
+       *
+       * Convergence metadata (per Block D execution doctrine):
+       *  1. Runtime paths touched     : P3 (preview-surface exploration). Pin tap → preview→preview drill (onSelectReport).
+       *  2. Runtime classes touched   : Preview only.
+       *  3. Tier semantics touched    : Tier B preview (panel-embedded aggregator).
+       *  4. Motion classes touched    : none. The framer-motion section entry is the existing surface motion (Class A acknowledgement, reduceMotion-aware), preserved verbatim.
+       *  5. Shell hierarchy impact    : Panel-first archetype preserved (231c §6). No hybrid.
+       *  6. Authority semantics       : unchanged. No imperative camera, no persistence, no operational state.
+       *  7. Reduced-motion inheritance: unchanged. The motion.section already honors reduceMotion.
+       *  8. Hidden-authority risk     : zero. No new callbacks introduced.
+       *  9. Continuity guarantees     : unaffected.
+       * 10. Rollback semantics        : revert this hunk; behavior reverts to anonymous panel.
+       *
+       * Expand-target ambiguity (231b §5 says "→ full reports map"):
+       *  No full reports map surface exists yet. Tap-to-expand affordance is intentionally NOT added in this pass per owner directive
+       *  ("halt only the affected branch of work, not the entire execution stream"). data-expand-target marks the resolution as DEFERRED so future work can target it precisely. Pin tap → individual report detail remains the only escalation today.
+       */}
       {!reportsLoading && filteredReports.length > 0 && (
         <div className="px-4 pt-4">
           <motion.section
@@ -155,6 +178,9 @@ export default function ReportsListScreen({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: reduceMotion ? 0 : 0.25, delay: 0.06 }}
             className="bd-dashboard-panel bd-dashboard-panel--accent-cyan overflow-hidden"
+            data-runtime-class="preview"
+            data-tier-semantic="B"
+            data-expand-target="DEFERRED:full-reports-map-not-yet-implemented"
           >
             <div className="p-3">
               <div className="flex items-center justify-between gap-3">
@@ -190,6 +216,11 @@ export default function ReportsListScreen({
                         onSelectReport(pin.id);
                       }
                     }}
+                    /* Pass 242 (KI-181 sub-pass B audit): autoFit="always".
+                       Multi-report overview legitimately benefits from
+                       framing the entire pin set; this is a true fit-driven
+                       surface. Explicitization preserves current behavior. */
+                    autoFit="always"
                   />
                 </div>
                 <div className="flex flex-wrap items-center gap-2 p-3">

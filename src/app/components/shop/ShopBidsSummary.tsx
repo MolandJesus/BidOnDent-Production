@@ -67,7 +67,7 @@ export default function ShopBidsSummary({
 
   return (
     <section
-      className={`bd-glass-card overflow-hidden${isLight ? " bd-light-surface" : ""}`}
+      className={`bd-glass-card overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-400 motion-reduce:animate-none${isLight ? " bd-light-surface" : ""}`}
       style={
         isLight
           ? {

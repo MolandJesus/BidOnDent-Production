@@ -10,6 +10,15 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+# Pass 74 (2026-05-07) — KI-153: explicit least-privilege token scope.
+# CodeQL flagged the workflow for relying on the default GITHUB_TOKEN which
+# carries read+write across all permission categories. CI here only needs to
+# read repo contents and pull-request metadata (for the BidOnDent-Horizon-Beta
+# branch context); it never writes back, comments, or releases.
+permissions:
+  contents: read
+  pull-requests: read
+
 jobs:
   build-and-test:
     name: Build & Test

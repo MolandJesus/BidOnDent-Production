@@ -1,0 +1,52 @@
+{
+  "capturedAt": "2026-05-07T12:13:02.164Z",
+  "url": "http://localhost:5173/",
+  "pass": 49,
+  "note": "Two scenarios per viewport. (A) noscroll: user never scrolls to map; map stays unmounted — this is the lazy-mount win surface. (B) scrolled: scroll to map, mount fires, then same pan/zoom/hover script as Pass 48 — apples-to-apples with Pass 48 landing trace.",
+  "viewports": [
+    {
+      "viewport": "1280",
+      "consoleErrors": [
+        "A:Failed to load resource: the server responded with a status of 401 ()",
+        "B:Failed to load resource: the server responded with a status of 401 ()"
+      ],
+      "consoleErrorCount": 2,
+      "surfaces": [
+        {
+          "scenario": "noscroll",
+          "tracePath": "docs/evidence/pass-49-2026-05-07/trace-landing-1280-after-noscroll.json",
+          "bytes": 28669164,
+          "mapMounted": false
+        },
+        {
+          "scenario": "scrolled",
+          "tracePath": "docs/evidence/pass-49-2026-05-07/trace-landing-1280-after-scrolled.json",
+          "bytes": 41687809,
+          "canvasFound": true
+        }
+      ]
+    },
+    {
+      "viewport": "375",
+      "consoleErrors": [
+        "A:Failed to load resource: the server responded with a status of 401 ()",
+        "B:Failed to load resource: the server responded with a status of 401 ()"
+      ],
+      "consoleErrorCount": 2,
+      "surfaces": [
+        {
+          "scenario": "noscroll",
+          "tracePath": "docs/evidence/pass-49-2026-05-07/trace-landing-375-after-noscroll.json",
+          "bytes": 14765709,
+          "mapMounted": false
+        },
+        {
+          "scenario": "scrolled",
+          "tracePath": "docs/evidence/pass-49-2026-05-07/trace-landing-375-after-scrolled.json",
+          "bytes": 27267003,
+          "canvasFound": false
+        }
+      ]
+    }
+  ]
+}

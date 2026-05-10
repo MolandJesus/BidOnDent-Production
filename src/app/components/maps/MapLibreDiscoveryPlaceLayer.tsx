@@ -131,7 +131,7 @@ export default function MapLibreDiscoveryPlaceLayer({
           anchor="bottom"
           offset={12}
         >
-          <div className="text-sm">
+          <div className="text-sm animate-in fade-in zoom-in-95 duration-200 motion-reduce:animate-none">
             <div className="font-semibold">{popupPlace.label}</div>
             <div>{popupPlace.subtitle}</div>
             <div>{popupPlace.distanceMiles.toFixed(1)} miles away</div>

@@ -2,7 +2,7 @@
 
 **Authority level:** OPS — operational lessons, used by future AI agents (especially Mola's Coder) when designing relay prompts or autopilot specs.
 **Last updated:** 2026-05-05
-**Status:** Active
+**Status:** ACTIVE
 **Worked example:** KI-113 / Phase 7.6 reduced-motion migration relay (v1 → v4 evolution, May 2026).
 **Companion doc:** [`REF_AI_COLLABORATION_PROTOCOL.md`](REF_AI_COLLABORATION_PROTOCOL.md) — multi-AI source separation rules.
 

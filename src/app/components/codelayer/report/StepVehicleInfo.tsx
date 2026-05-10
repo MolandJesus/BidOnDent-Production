@@ -186,12 +186,13 @@ export default function StepVehicleInfo({
                   id="make"
                   name="make"
                   type="text"
+                  required
                   value={vehicle.make}
                   onChange={(e) => onVehicleChange({ ...vehicle, make: e.target.value })}
                   className={`bd-report-input w-full rounded-2xl px-4 py-3 outline-none ${
                     isLightAppearance ? "text-slate-800" : "text-slate-100"
                   }`}
-                  placeholder="Toyota"
+                  placeholder="e.g. Toyota"
                 />
               </div>
 
@@ -208,12 +209,13 @@ export default function StepVehicleInfo({
                   id="model"
                   name="model"
                   type="text"
+                  required
                   value={vehicle.model}
                   onChange={(e) => onVehicleChange({ ...vehicle, model: e.target.value })}
                   className={`bd-report-input w-full rounded-2xl px-4 py-3 outline-none ${
                     isLightAppearance ? "text-slate-800" : "text-slate-100"
                   }`}
-                  placeholder="Camry"
+                  placeholder="e.g. Camry"
                 />
               </div>
 
@@ -230,12 +232,13 @@ export default function StepVehicleInfo({
                   id="year"
                   name="year"
                   type="text"
+                  required
                   value={vehicle.year}
                   onChange={(e) => onVehicleChange({ ...vehicle, year: e.target.value })}
                   className={`bd-report-input w-full rounded-2xl px-4 py-3 outline-none ${
                     isLightAppearance ? "text-slate-800" : "text-slate-100"
                   }`}
-                  placeholder="2021"
+                  placeholder="e.g. 2021"
                   inputMode="numeric"
                   maxLength={4}
                 />

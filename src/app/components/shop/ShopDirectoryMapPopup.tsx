@@ -160,9 +160,11 @@ export default function ShopDirectoryMapPopup({
       onClose={onClose}
       maxWidth={compact ? "264px" : "320px"}
     >
-      <div className={compact ? "space-y-1.5" : "space-y-2"}>
+      <div
+        className={`${compact ? "space-y-1.5" : "space-y-2"} animate-in fade-in zoom-in-95 duration-200 motion-reduce:animate-none`}
+      >
         <div className="flex items-start justify-between gap-2">
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <p className={`truncate ${compact ? "text-sm" : ""} font-semibold ${popupTitle}`}>
               {shopPopup.shop.name}
             </p>

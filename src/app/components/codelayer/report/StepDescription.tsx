@@ -97,7 +97,7 @@ export default function StepDescription({
 
       {submitError && (
         <div
-          className={`mb-4 p-3 rounded-xl border flex items-start gap-2.5 ${
+          className={`mb-4 p-3 rounded-xl border flex items-start gap-2.5 animate-in fade-in slide-in-from-top-1 duration-200 motion-reduce:animate-none ${
             isLightAppearance
               ? "border-rose-200 bg-rose-50 text-rose-700"
               : "border-rose-400/30 bg-rose-500/10 text-rose-200"
@@ -130,7 +130,7 @@ export default function StepDescription({
         >
           {isSubmitting ? (
             <>
-              <Loader2 className="w-4 h-4 animate-spin" />
+              <Loader2 className="w-4 h-4 animate-spin motion-reduce:animate-none" />
               Submitting…
             </>
           ) : (

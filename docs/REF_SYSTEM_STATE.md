@@ -1,8 +1,25 @@
+---
+status: CANONICAL
+authority: REFERENCE
+scope: system-state
+canonical_source_of_truth: REF_SYSTEM_STATE.md
+supersedes: []
+superseded_by: null
+safe_for_autopilot: true
+requires_owner_approval: false
+last_topology_audit: 2026-05-09
+runtime_impact_if_misunderstood: high
+ai_summary: Current architecture truth — auth, state, role reality, map stack, edge fn deploy state, storage invariants.
+last_updated: 2026-05-09
+---
+
 # BidOnDent — System State (REFERENCE)
 
 **Authority level:** REFERENCE — describes the current system as it actually works. Not a vision doc. Not a roadmap.
 
-**Last updated:** 2026-05-06 (closing-out — Pass 12-41 polish arc complete on `main` at `f46dfad8`. Pass 12 map chrome unification + Pass 13/13b/13c KI-118 mileage data integrity (anchor Dallas TX → White Plains NY + 9 NY metro cities + 3 region aliases) + Pass 13d-13h/24/27/28/33 LAW pure-white-inset slip story closed repo-wide (canonical `inset 0 1px 0 rgba(255,255,255,0.5+)` in `src/`: zero hits) + Pass 14/19 KI-012 bid realtime trust signal + Pass 15/16a/16b/17/17b living-lava atmosphere ledger locked with period-spread invariant (28+36 / 32+44 / 24+38) + Pass 18 atmosphere coherence audit + Pass 20 cspell domain-words sweep (138 added) + Pass 21/26/31/32/34 Prettier housekeeping + Pass 29 forward-looking plan doc + Pass 30/33b/41 doc co-updates + Pass 37-40 doc-hygiene cluster. Earlier this date: Phase 7.6/8 close — KI-113 RESOLVED, KI-109/110 RESOLVED, KI-108 partial closure. Pre-execution-audit pattern was 8-for-8 across Phases 4 / 6 / 6.5 / 7 / 7.5 / 8 / 8.5 / KI-113. Phase OPS audit docs archived 2026-05-06 to `docs/archive/`. Visual system pointer to `REF_VISUAL_SYSTEM.md`; gold-lamp identity + mobile map-first doctrine locked.)
+**Last updated:** 2026-05-07 (autopilot chain Pass 49–58 on `BidOnDent-Horizon-Beta`. Pass 49 navigation surface lazy-mount + Pass 50/51/52 navigation polish + Pass 53 deep navigation engine audit (KI-075 description corrected) + Pass 54 reroute confirm-timing fix (`useShopDirectoryNavigation` defers `confirmReroute()` until OSRM refresh delivers a fresh `routePreview.fetchedAt`) + Pass 55 REF_KNOWN_ISSUES.md split (1163 LOC → 341 active + 828 archived) + Pass 56 LAW §3 reduce-motion contract repaired (animations.css 24 keyframes / 27 utility classes + theme.css `.animate-slide-in-right` toast — zero guards before, full coverage now) + Pass 57 dual off-route paths consolidation (silent ~100m auto-refetch in `useNavigationRoutePreview` now stands down via `suppressOffRouteRefetch` whenever `useNavigationReroute` is `pending`/`cooldown`) + Pass 58 saved places Supabase scaffolding (write-only — KI-114 tracks unapplied migration). 15+ unpushed commits queued on Horizon-Beta; owner pushes manually. Earlier on `main` at `f46dfad8`: Pass 12-41 polish arc complete — see prior baseline below.)
+
+**Prior baseline (2026-05-06, `main` at `f46dfad8`):** Pass 12 map chrome unification + Pass 13/13b/13c KI-118 mileage data integrity + Pass 13d-13h/24/27/28/33 LAW pure-white-inset slip story closed repo-wide + Pass 14/19 KI-012 bid realtime trust signal + Pass 15-17b living-lava atmosphere ledger locked + Pass 18 atmosphere coherence audit + Pass 20 cspell domain-words sweep + Pass 21/26/31/32/34 Prettier housekeeping + Pass 29/30/33b/41 doc co-updates + Pass 37-40 doc-hygiene cluster. Phase 7.6/8 close — KI-113 RESOLVED, KI-109/110 RESOLVED, KI-108 partial closure. Pre-execution-audit pattern was 8-for-8 across Phases 4 / 6 / 6.5 / 7 / 7.5 / 8 / 8.5 / KI-113. Visual system pointer to `REF_VISUAL_SYSTEM.md`; gold-lamp identity + mobile map-first doctrine locked.
 
 **Build:** 0 TS errors, 569/569 tests passing, ~3.5s
 
@@ -13,6 +30,17 @@
 **Compute:** Production project on **Micro** tier as of 2026-05-02 (was Medium — downgraded after invoice review). See [`SUPABASE_SETUP_GUIDE.md`](SUPABASE_SETUP_GUIDE.md) §1.
 
 **Org footprint:** 3 projects on the Pro org. `wmdcnjgtsppftrofaqqa` (production), `lhhdqycnhweaxqviwdqt` (MolandJesus-Staging — Phase 5 hardening, kept running), `yjbugpzarlyidgxbljjn` (bidondent-leads — empty Prisma DB, candidate for deletion). Pause is unavailable on Pro projects; deletion is the only way to drop compute cost on idle ones.
+
+---
+
+## §0. AI Operational Onboarding
+
+> Adopted from the [`REF_CONVERGENCE_TOPOLOGY_2026-05-09.md`](REF_CONVERGENCE_TOPOLOGY_2026-05-09.md) §0 pattern (Pass 213). Propagated here Pass 214 per owner authorization.
+
+- **What this doc controls:** the current architecture truth — auth flow, state ownership, role reality, map stack, edge function deploy state, storage invariants, and known runtime bottlenecks. Use it to answer "how does the system actually work right now?" before assuming behavior from older PLAN docs or pre-hardening commit history.
+- **When to trust it:** the "Last updated" line names the most recent pass. Verify against code if a citation looks stale — the repo moves. If code disagrees, fix this doc in the same pass per LAW co-update rule.
+- **What supersedes it:** [`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md), [`LAW_LAYERED_ARCHITECTURE.md`](LAW_LAYERED_ARCHITECTURE.md), [`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md), [`LAW_ANIMATION_AND_ATMOSPHERE.md`](LAW_ANIMATION_AND_ATMOSPHERE.md), [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md). Within the REF tier: this doc wins on system-state truth; [`REF_KNOWN_ISSUES.md`](REF_KNOWN_ISSUES.md) wins on bug status; [`REF_CONVERGENCE_TOPOLOGY_2026-05-09.md`](REF_CONVERGENCE_TOPOLOGY_2026-05-09.md) wins on duplication / convergence inventory.
+- **What this doc must NOT be used for:** authorizing future direction (PLAN tier owns that), justifying new features pre-launch (hardening law forbids it), or explaining why something is the way it is at the philosophical level (LAW tier owns that).
 
 ---
 
@@ -225,7 +253,7 @@ Persisted media URLs in `damage_reports.photo_urls` (text[]), `*.profile_image_u
 
 ### Database
 
-**Primary tables:** profiles, vehicles, damage_reports, bids, job_assignments, shop_profiles, insurer_profiles, website_preferences, website_relationships, navigation_sessions, shop_interest_submissions, insurer_interest_submissions, platform_activity_events, notification_preferences, shop_service_areas, estimate_requests.
+**Primary tables:** profiles, vehicles, damage_reports, bids, job_assignments, shop_profiles, insurer_profiles, website_preferences, website_relationships, navigation_sessions, navigation_saved_places (Pass 58 — migration scaffolded but unapplied; see KI-114), shop_interest_submissions, insurer_interest_submissions, platform_activity_events, notification_preferences, shop_service_areas, estimate_requests.
 
 **Schema source of truth:** `supabase/migrations/20251230000001_full_schema.sql` (frozen). New changes go in new timestamped migration files.
 
@@ -250,6 +278,80 @@ Persisted media URLs in `damage_reports.photo_urls` (text[]), `*.profile_image_u
 
 ---
 
+## 5.5 Client-Side State Authority Matrix
+
+Canonical inventory of `localStorage` / `sessionStorage` keys. Promoted into
+REF_SYSTEM_STATE during Pass 221 from
+[`REF_CONVERGENCE_TOPOLOGY_2026-05-09.md`](REF_CONVERGENCE_TOPOLOGY_2026-05-09.md)
+§4 because client-side persistence is durable system truth, not a one-time
+audit artifact. The original topology doc retains a pointer back to this
+section.
+
+All keys are **single-tenant per-key** with no central registry. Adding a new
+key requires reading every existing service file to confirm no prefix
+collision. The `bidondent_nav_*` cluster has dedicated cleanup tooling
+([`clearStaleNavSessions`](../src/app/utils/clearStaleNavSessions.ts), Pass
+212 test-locked); other clusters do not.
+
+### 5.5.1 Navigation cluster
+
+| Key                                         | Owner                                                                                                         | Scope    | Cleanup                                                           |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------- |
+| `bidondent_navigation_state`                | [`useNavigation.ts`](../src/app/hooks/useNavigation.ts) line 5                                                | global   | `clearAllUserScopedSessionKeys` does **not** touch this — REVIEW. |
+| `bidondent_navigation_session`              | [`services/navigation/navigationSession.ts`](../src/app/services/navigation/navigationSession.ts) line 4      | global   | not in `clearStaleNavSessions` sweep                              |
+| `bidondent_navigation_preferences`          | [`navigationPreferences.ts`](../src/app/services/navigation/navigationPreferences.ts) line 4                  | global   | retained across logout                                            |
+| `bidondent_navigation_discovery_role`       | [`discoveryPreferences.ts`](../src/app/services/navigation/discoveryPreferences.ts) line 4                    | global   | retained                                                          |
+| `bidondent_navigation_parked_car`           | [`parkedCarLocation.ts`](../src/app/services/navigation/parkedCarLocation.ts) line 4                          | global   | retained                                                          |
+| `bidondent_navigation_saved_locations`      | [`savedLocations.ts`](../src/app/services/navigation/savedLocations.ts) line 8                                | global   | retained                                                          |
+| `bidondent_nav_session_*` (per-user)        | [`navigationSessionCloudService.ts`](../src/app/services/navigation/navigationSessionCloudService.ts) line 8  | per-user | `clearStalePlanningNavSessions` (Pass 61 / KI-117)                |
+| `bidondent_nav_active_session_*` (per-user) | [`navigationSessionCloudService.ts`](../src/app/services/navigation/navigationSessionCloudService.ts) line 9  | per-user | `clearAllUserScopedSessionKeys`                                   |
+| `bidondent_nav_pending_writes`              | [`navigationSessionCloudService.ts`](../src/app/services/navigation/navigationSessionCloudService.ts) line 11 | global   | `clearAllUserScopedSessionKeys`                                   |
+| `bidondent_nav_cloud_unavailable`           | [`navigationSessionCloudService.ts`](../src/app/services/navigation/navigationSessionCloudService.ts) line 12 | global   | `clearAllUserScopedSessionKeys`                                   |
+
+### 5.5.2 Identity / website cluster
+
+| Key                                   | Owner                                                                       | Scope    | Cleanup            |
+| ------------------------------------- | --------------------------------------------------------------------------- | -------- | ------------------ |
+| `bidondent_website_session:<userKey>` | [`websiteIdentity.ts`](../src/app/services/auth/websiteIdentity.ts) line 55 | per-user | replace on sign-in |
+| `bidondent_website_memory:<userKey>`  | [`websiteIdentity.ts`](../src/app/services/auth/websiteIdentity.ts) line 56 | per-user | replace on sign-in |
+| `bidondent_user_last_active`          | [`constants/index.ts`](../src/app/constants/index.ts) line 61               | global   | not swept          |
+
+### 5.5.3 Coverage / map cluster
+
+| Key                        | Owner                                                                                | Scope  | Cleanup   |
+| -------------------------- | ------------------------------------------------------------------------------------ | ------ | --------- |
+| `bidondent_coverage_state` | [`landing/coverageState.ts`](../src/app/components/landing/coverageState.ts) line 12 | global | not swept |
+
+### 5.5.4 Authority observations
+
+- **No central registry.** Each module owns its prefix in isolation.
+- **Cleanup discipline is uneven.** The `bidondent_nav_*` cluster has a
+  test-locked sweep function. The website cluster overwrites in-place. The
+  remaining global keys (`navigation_state`, `coverage_state`,
+  `user_last_active`, all `navigation_*` preferences) persist across sign-out
+  with no documented retention policy.
+- **Prefix collision risk:** `bidondent_navigation_state` (UI viewMode/tab
+  state, owned by `hooks/useNavigation.ts`) and `bidondent_navigation_session`
+  (in-progress nav session, owned by `services/navigation/navigationSession.ts`)
+  share a confusingly similar prefix but have different lifetimes and owners.
+  Neither is touched by `clearAllUserScopedSessionKeys` on sign-out. **Status:**
+  DEFERRED — not a known active bug; flagged for the next sign-out hygiene
+  pass.
+- **Supabase boundary is clean.** Per
+  [`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md) load-bearing facts #2 and #4,
+  there is no observable client-side persistence of Supabase data beyond what
+  React Query / hook state holds. **No convergence work needed on the
+  Supabase side.**
+
+When adding a new persisted key:
+
+1. Add the row to the appropriate sub-cluster table above in the same pass.
+2. State the cleanup policy explicitly (sweep function name, or "retained").
+3. If it's user-scoped, prefer the `bidondent_nav_*` per-user pattern with
+   `clearStaleNavSessions` integration over inventing a new cluster.
+
+---
+
 ## 6. Map Stack
 
 ### Active and Foundational
@@ -266,14 +368,18 @@ Persisted media URLs in `damage_reports.photo_urls` (text[]), `*.profile_image_u
 | shop_service_areas table + CRUD                      | Shop service area polygons                                       | Active, CRUD works                                                      |
 | Tile caching (service worker, 7-day TTL)             | Performance                                                      | Active                                                                  |
 
-### Built but Frozen
+### Navigation System (Active — Pass 49+ unfreeze)
 
-| Component                                           | Purpose                       | Status                            |
-| --------------------------------------------------- | ----------------------------- | --------------------------------- |
-| OSRM routing integration                            | Turn-by-turn directions       | Built, not needed for marketplace |
-| Web Speech API voice navigation                     | British voice guidance        | Built, frozen                     |
-| navigation_sessions table + API                     | Real-time navigation tracking | Built, frozen                     |
-| useNavigationLaunch / useNavigationLifecycleEffects | Navigation state management   | Built, frozen                     |
+> **Status correction (2026-05-07, Pass 60):** the navigation system was previously listed as "Built but Frozen" through Pass 41. Pass 49 lazy-mount + Pass 50-58 work re-activated it as a first-class product surface for the shop-directory flow. The table below tracks current status per component.
+
+| Component                                           | Purpose                                                  | Status                                                                                                                                         |
+| --------------------------------------------------- | -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| OSRM routing integration                            | Turn-by-turn directions                                  | **Active** — wired into shop directory navigation; off-route detection consolidated via `suppressOffRouteRefetch` (Pass 57).                   |
+| Web Speech API voice navigation                     | British voice guidance                                   | **Active** — wired into navigation engine; consumed by `useNavigationVoiceAlerts` + `useNavigationRoutePreview`.                               |
+| navigation_sessions table + API                     | Real-time navigation tracking                            | **Active** — cloud-sync of in-flight nav sessions.                                                                                             |
+| navigation_saved_places table + API                 | Cloud-sync of pinned home/work/saved/recent places       | **Pass 58 scaffolding shipped**, owner-apply pending (KI-114). Hook degrades to localStorage-only until applied.                               |
+| useNavigationLaunch / useNavigationLifecycleEffects | Navigation state management                              | **Active** — lazy-mounted via Pass 49 architecture decision; orchestrated by `useShopDirectoryNavigation` + `useCoverageNavigationExperience`. |
+| useNavigationReroute                                | Manual reroute lifecycle (eligible → pending → cooldown) | **Active** — Pass 54 confirm-timing fix + Pass 57 silent-path suppression.                                                                     |
 
 **Map tile sources:** CARTO Voyager (light), CARTO Dark All (night), Esri Satellite.
 

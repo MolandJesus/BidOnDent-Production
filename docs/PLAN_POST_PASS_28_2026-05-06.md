@@ -1,9 +1,24 @@
+---
+status: DEFERRED
+authority: PLAN
+scope: post-pass-28-decisions
+canonical_source_of_truth: PLAN_POST_PASS_28_2026-05-06.md
+supersedes: []
+superseded_by: null
+safe_for_autopilot: false
+requires_owner_approval: true
+last_topology_audit: 2026-05-09
+runtime_impact_if_misunderstood: medium
+ai_summary: Owner gate decision document for unlocks after Passes 12–28 polish arc; classifies remaining open items.
+last_updated: 2026-05-09
+---
+
 # Plan: BidOnDent post-Pass-28 (2026-05-06)
 
 **Authority:** PLAN — future direction. Not current truth (REF wins; LAW wins over REF).
 **Owner:** Mola
 **Authors:** Claude Opus 4.7 (1M context), via builder relay
-**Status:** Draft awaiting owner gate decisions
+**Status:** DEFERRED — draft awaiting owner gate decisions
 **Last updated:** 2026-05-06
 
 > **Why this doc exists.** Two AI sessions have independently converged on "scope exhausted under current authorization" after the polish/cleanup arc of Passes 12–28. This document captures what was hardened, classifies every remaining open item by which gate it sits behind, and proposes a critical path to soft launch. It is the single decision document for the next round of owner unlocks.
@@ -16,7 +31,7 @@
 - [`docs/REF_KNOWN_ISSUES.md`](REF_KNOWN_ISSUES.md) — KI-001 … KI-120 (current truth)
 - [`docs/REF_VISUAL_SYSTEM.md`](REF_VISUAL_SYSTEM.md) — period-spread rule, atmosphere ledger
 - [`docs/LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md) — Light-Mode Surface Rule, Premium Gold Palette
-- [`docs/map_coherence_audit_sonnet_2026-05-06.md`](map_coherence_audit_sonnet_2026-05-06.md) — map chrome unification audit
+- [`docs/archive/map_coherence_audit_sonnet_2026-05-06_archived_2026-05-09.md`](archive/map_coherence_audit_sonnet_2026-05-06_archived_2026-05-09.md) — map chrome unification audit (archived 2026-05-09)
 - [`docs/audit-assets/visual-2026-05-06/`](audit-assets/visual-2026-05-06/) — atmosphere coherence audit (Pass 18)
 - [`docs/PLAN_POST_LAUNCH_ROADMAP.md`](PLAN_POST_LAUNCH_ROADMAP.md) — what is explicitly deferred to after launch
 
@@ -28,7 +43,7 @@ Two AI sessions, 28 disciplined passes, all on `main`. Grouped by domain.
 
 ### 1.1 Map coherence unification (Pass 12, batches A/B/C)
 
-Map chrome unified at the `bd-glass-card--map` utility layer. Four surface migrations + "Start Navigation" label sweep + dashboard tile-mode parity. Outcome: every active map surface inherits the same cool-blue cream-gold liquid glass family. Cross-ref: [`docs/map_coherence_audit_sonnet_2026-05-06.md`](map_coherence_audit_sonnet_2026-05-06.md).
+Map chrome unified at the `bd-glass-card--map` utility layer. Four surface migrations + "Start Navigation" label sweep + dashboard tile-mode parity. Outcome: every active map surface inherits the same cool-blue cream-gold liquid glass family. Cross-ref: [`docs/archive/map_coherence_audit_sonnet_2026-05-06_archived_2026-05-09.md`](archive/map_coherence_audit_sonnet_2026-05-06_archived_2026-05-09.md) (archived Pass 195 doc consolidation sweep — findings landed as KI-170 / KI-171 / KI-172 in REF_KNOWN_ISSUES.md, then PLAN_MAP_UNIFICATION_2026-05-08.md).
 
 ### 1.2 KI-118 mileage data integrity (Pass 13 / 13b / 13c)
 

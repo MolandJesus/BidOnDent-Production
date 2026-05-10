@@ -15,6 +15,7 @@ import { useShopDirectorySession } from "../../hooks/useShopDirectorySession";
 import { useShopDirectoryNavigation } from "../../hooks/useShopDirectoryNavigation";
 import { useShopDirectoryActions } from "../../hooks/useShopDirectoryActions";
 import { useNotifications } from "../../features/notifications";
+import { useEscapeKey } from "../../hooks/useEscapeKey";
 import {
   type ShopDirectoryScreenProps,
   getRoleIcon,
@@ -141,6 +142,15 @@ export default function ShopDirectoryScreen({
     },
     [session.setSelectedOrigin]
   );
+
+  // Pass 81 (2026-05-07) — KI-147: ESC exits the immersive fullscreen-map
+  // surface back to the hybrid layout. Mirrors KI-118's keyboard-trap fix
+  // pattern at the next mount site (the immersive map itself, not just the
+  // overlay sheets that sit on top of it).
+  const exitImmersive = useCallback(() => {
+    session.setMapViewMode("hybrid");
+  }, [session.setMapViewMode]);
+  useEscapeKey(session.isImmersive, exitImmersive);
 
   /* ── Immersive full-viewport map mode ───────────────────── */
   if (session.isImmersive) {

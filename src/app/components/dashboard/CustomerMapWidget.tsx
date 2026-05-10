@@ -53,7 +53,17 @@ export default function CustomerMapWidget({
     "bd-dashboard-section--accent-cyan",
     "bd-dashboard-section--deep",
   ];
-  const { partnerShops: rawShops, isLoadingShops, fetchError } = useCoveragePartnerShops();
+  // Pass 14 Step 1.6 (co-worker AI) — destructure retryPartnerShops for the
+  // error-state retry button. Brings CustomerMapWidget into parity with
+  // DashboardCoveragePanel (Pass 14 Step 1.5) by surfacing a recoverable
+  // affordance instead of a static message that gives the user no path
+  // forward. Pattern matches Step 1.5 exactly.
+  const {
+    partnerShops: rawShops,
+    isLoadingShops,
+    fetchError,
+    retryPartnerShops,
+  } = useCoveragePartnerShops();
   const partnerShops = rawShops as CoveragePartnerShop[];
   const [mapCenter] = useState<[number, number]>(defaultCoverageCenter);
   const [mapZoom] = useState(9);
@@ -109,7 +119,27 @@ export default function CustomerMapWidget({
   ];
 
   return (
-    <section className="overflow-hidden rounded-2xl ring-1 ring-[rgba(96,165,250,0.18)] ring-inset">
+    /*
+     * CustomerMapWidget — Tier C dashboard tile / Tier B preview hybrid (Pass 234).
+     *
+     * Convergence metadata (per Block D execution doctrine):
+     *  1. Runtime paths touched     : P3 (preview-surface exploration); P4 escalation already wired via onViewShops.
+     *  2. Runtime classes touched   : Preview only.
+     *  3. Tier semantics touched    : Tier B preview (the embedded mini-map block); the surrounding capability teasers panel is Tier C dashboard chrome (not a map). Per 231c §6 the surface is panel-first; the map block is fully tappable + has visible "Tap to explore full map experience" affordance + Open Smart Map CTA.
+     *  4. Motion classes touched    : none. group-hover opacity transition preserved.
+     *  5. Shell hierarchy impact    : Panel-first archetype preserved (231c §6); no hybrid introduced. The role="button" wrapper around the map canvas is the existing tap-to-expand affordance, satisfying 231c §4.2.
+     *  6. Authority semantics       : unchanged. Engine 3 owns no camera; preview is stateless.
+     *  7. Reduced-motion inheritance: unchanged. Engine 3 contract conformance is Phase 2 work.
+     *  8. Hidden-authority risk     : zero. No new callbacks, no new persistence, no imperative camera.
+     *  9. Continuity guarantees     : unaffected.
+     * 10. Rollback semantics        : revert this hunk; behavior reverts to anonymous section.
+     */
+    <section
+      className="overflow-hidden rounded-2xl ring-1 ring-[rgba(96,165,250,0.18)] ring-inset"
+      data-runtime-class="preview"
+      data-tier-semantic="B"
+      data-expand-target="coverage-map"
+    >
       {/* Embedded mini-map with click-through overlay */}
       <div
         className="bd-dashboard-panel bd-dashboard-panel--deep group relative h-[200px] cursor-pointer overflow-hidden rounded-2xl md:h-[220px]"
@@ -128,6 +158,11 @@ export default function CustomerMapWidget({
           isLight={isLight}
           onShopClick={() => onViewShops?.()}
           onMapClick={() => onViewShops?.()}
+          /* Pass 242 (KI-181 sub-pass B audit): autoFit="always".
+             Customer dashboard preview frames partner shops around the
+             customer; fit-driven preserves the visible set. Explicitization
+             preserves current behavior. */
+          autoFit="always"
         />
 
         {/* Bucket 5.6 (KI-074 partial): top ambient gold lamp overlay — simulates
@@ -326,14 +361,31 @@ export default function CustomerMapWidget({
           </div>
         ) : !isLoadingShops && fetchError ? (
           <div
-            className={`bd-dashboard-note flex items-center gap-2 rounded-xl px-3 py-2.5 ${
+            className={`bd-dashboard-note flex items-center gap-2 rounded-xl px-3 py-2.5 animate-in fade-in slide-in-from-top-1 duration-200 motion-reduce:animate-none ${
               isLight ? "text-rose-700" : "text-rose-200"
             }`}
+            role="status"
           >
             <Store
               className={`h-4 w-4 shrink-0 ${isLight ? "text-rose-400" : "text-rose-400/60"}`}
             />
-            <p className="text-xs">Could not load shops. Check your connection.</p>
+            <p className="flex-1 text-xs">
+              {fetchError.includes("timed out")
+                ? "Shop sync timed out. Please retry."
+                : "Could not load shops. Check your connection."}
+            </p>
+            <button
+              type="button"
+              onClick={retryPartnerShops}
+              className={`rounded-md border px-2 py-1 text-xs font-semibold transition-colors min-h-[28px] motion-reduce:transition-none ${
+                isLight
+                  ? "border-rose-300 bg-rose-50 hover:bg-rose-100"
+                  : "border-rose-400/40 bg-rose-400/10 hover:bg-rose-400/20"
+              }`}
+              aria-label="Retry shop sync"
+            >
+              Retry
+            </button>
           </div>
         ) : !isLoadingShops ? (
           <div className="flex flex-col items-center gap-1.5 py-3">
@@ -356,7 +408,7 @@ export default function CustomerMapWidget({
           <button
             type="button"
             onClick={onViewShops}
-            className="bd-dashboard-primary-button group/cta mt-2.5 flex w-full items-center justify-between rounded-xl px-4 py-3 text-sm font-semibold text-white active:scale-[0.98]"
+            className="bd-dashboard-primary-button group/cta mt-2.5 flex w-full items-center justify-between overflow-hidden rounded-xl px-4 py-3 text-sm font-semibold text-white active:scale-[0.98]"
             style={{
               background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
             }}

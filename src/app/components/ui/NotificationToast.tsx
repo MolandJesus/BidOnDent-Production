@@ -54,7 +54,7 @@ export default function NotificationToast({
       role="status"
       aria-live="polite"
       onKeyDown={handleKeyDown}
-      className="fixed top-4 right-4 z-[9999] max-w-sm animate-slide-in-right"
+      className="fixed top-4 right-4 z-[9999] max-w-sm animate-slide-in-right motion-reduce:animate-none"
     >
       <div
         onClick={isClickable ? handleToastClick : undefined}

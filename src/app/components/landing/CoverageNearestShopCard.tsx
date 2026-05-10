@@ -1,5 +1,5 @@
 import { ExternalLink, LocateFixed, Navigation, Star } from "lucide-react";
-import { cn } from "../ui/utils";
+import { cn } from "@/platform-core/cn";
 import { formatApproximateDriveWindow } from "../maps/mapRoutePresentation";
 import type { CoverageNearbyShop } from "../maps/serviceCoverageMapTypes";
 

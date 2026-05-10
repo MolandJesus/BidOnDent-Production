@@ -31,7 +31,7 @@ export function MapPaneHeaderBadges({
 
   return (
     <div
-      className={`pointer-events-none absolute inset-x-0 top-0 z-[500] ${t.topGradient} px-2 py-1.5 @xl:px-2.5 @xl:py-2 @3xl:px-4 @3xl:py-3`}
+      className={`pointer-events-none absolute inset-x-0 top-0 z-[500] ${t.topGradient} px-2 py-1.5 @xl:px-2.5 @xl:py-2 @3xl:px-4 @3xl:py-3 animate-in fade-in slide-in-from-top-2 duration-400 motion-reduce:animate-none`}
     >
       <div className="flex flex-wrap items-start justify-between gap-1.5">
         <div className={`rounded-lg border px-2 py-1.5 ${t.badgeCard}`}>
@@ -147,7 +147,7 @@ export function MapPaneBottomOverlay({
       >
         {selectedShop && !compact && (
           <div
-            className={`w-full max-w-[calc(100vw-1.5rem)] rounded-2xl border ${isCompactDensity ? "p-2 @xl:max-w-[15rem] @3xl:max-w-[16.5rem]" : "p-2 @lg:p-2.5 @3xl:p-3 @xl:max-w-sm @3xl:max-w-md"} ${t.shopCardCls}`}
+            className={`w-full max-w-[calc(100vw-1.5rem)] rounded-2xl border animate-in fade-in slide-in-from-bottom-3 duration-300 motion-reduce:animate-none ${isCompactDensity ? "p-2 @xl:max-w-[15rem] @3xl:max-w-[16.5rem]" : "p-2 @lg:p-2.5 @3xl:p-3 @xl:max-w-sm @3xl:max-w-md"} ${t.shopCardCls}`}
           >
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0 flex-1">
@@ -212,7 +212,7 @@ export function MapPaneBottomOverlay({
                       : "border-blue-200 bg-blue-50 text-blue-700"
                   }`}
                 >
-                  <LoaderCircle className="h-3 w-3 animate-spin" />
+                  <LoaderCircle className="h-3 w-3 animate-spin motion-reduce:animate-none" />
                   Refreshing
                 </span>
               ) : null}
@@ -323,7 +323,7 @@ export function MapPaneSearchPills({
   if (onSearchInArea && hasPanned && !searchWithinViewport) {
     return (
       <div
-        className={`pointer-events-none absolute inset-x-0 z-[600] flex justify-center ${
+        className={`pointer-events-none absolute inset-x-0 z-[600] flex justify-center animate-in fade-in slide-in-from-top-2 duration-300 motion-reduce:animate-none ${
           isCompactDensity ? "top-2" : "top-3"
         }`}
       >
@@ -350,7 +350,7 @@ export function MapPaneSearchPills({
   if (onClearAreaSearch && searchWithinViewport) {
     return (
       <div
-        className={`pointer-events-none absolute inset-x-0 z-[600] flex justify-center ${
+        className={`pointer-events-none absolute inset-x-0 z-[600] flex justify-center animate-in fade-in slide-in-from-top-2 duration-300 motion-reduce:animate-none ${
           isCompactDensity ? "top-2" : "top-3"
         }`}
       >

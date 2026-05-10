@@ -1,4 +1,34 @@
-import { Route } from "lucide-react";
+import { ChevronDown, Layers, Route } from "lucide-react";
+import { useEffect, useState } from "react";
+
+// Pass 12 (audit AI), KI-164 + KI-166 — legend collapse-default + persist.
+// Master builder Pass 180 §7.3.3 approved option (a): collapsed-with-toggle,
+// expanded state persists in localStorage per-user. Default value when key
+// absent must be "collapsed" so first-time visitors do not land on the
+// 20%-viewport bug KI-166 captures.
+const LEGEND_EXPANDED_STORAGE_KEY = "bd:map:legend:expanded";
+
+function readLegendExpandedFromStorage(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    return window.localStorage.getItem(LEGEND_EXPANDED_STORAGE_KEY) === "true";
+  } catch {
+    // localStorage unavailable (private mode / quota / SSR-shim) — fall back
+    // to collapsed default per the LAW_PROJECT_RULES "no silent half-finished
+    // states" rule. The default is the safe state.
+    return false;
+  }
+}
+
+function writeLegendExpandedToStorage(expanded: boolean) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(LEGEND_EXPANDED_STORAGE_KEY, expanded ? "true" : "false");
+  } catch {
+    // Drop silently — persistence is best-effort, not load-bearing for the
+    // current-render correctness contract.
+  }
+}
 
 type MapPaneLegendProps = {
   isDark: boolean;
@@ -28,6 +58,23 @@ export default function MapPaneLegendPanel({
   density = "default",
 }: MapPaneLegendProps) {
   const isCompactDensity = density === "compact";
+  // Pass 78 (2026-05-07) — KI-140: at compact density (mobile fullscreen
+  // map), the legend + status filter pills covered the map. Collapse to a
+  // single tap-to-expand "Legend" pill by default; users opt in to the full
+  // panel.
+  // Pass 12 (audit AI, 2026-05-08) — KI-164 + KI-166: extended the
+  // collapse-by-default pattern to default density too, so the dual legend
+  // no longer eats 20% of viewport on desktop and stops sharing the
+  // bottom-overlay flex-wrap container with the selected-shop card. Master
+  // builder Pass 180 §7.3.3 approved option (a) collapsed-with-toggle.
+  // Initial state: read from localStorage; default collapsed when absent
+  // (so first-time visitors do not land on the bug). Persistence: write on
+  // every toggle.
+  const [isExpanded, setIsExpanded] = useState<boolean>(readLegendExpandedFromStorage);
+
+  useEffect(() => {
+    writeLegendExpandedToStorage(isExpanded);
+  }, [isExpanded]);
   // Pass 12 #5 — legend card + status filter chip bar migrated to canonical
   // bd-glass-card--map utility (theme.css). The bd utility carries the locked
   // Pass 11 #3/#4 grammar across light + dark and keeps both the legend wrap
@@ -39,12 +86,51 @@ export default function MapPaneLegendPanel({
     ? "border border-white/70 bg-slate-900 shadow-[0_0_0_1px_rgba(148,163,184,0.45)]"
     : "border border-slate-400 bg-slate-900";
 
+  // Pass 12 (audit AI) — extended the collapse-to-pill rendering from
+  // compact-only (Pass 78) to ALL densities. This is the structural close
+  // of KI-164 (ROUTE box / legend overlap) + KI-166 (legend eats 20% of
+  // viewport): when collapsed, the legend renders only as a 36px pill, so
+  // it cannot share vertical space with the selected-shop card or compete
+  // for the 185px bottom strip the audit measured.
+  if (!isExpanded) {
+    return (
+      <button
+        type="button"
+        onClick={() => setIsExpanded(true)}
+        aria-label="Expand map legend"
+        aria-expanded={false}
+        className={`bd-glass-card--map pointer-events-auto inline-flex min-h-[36px] items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide animate-in fade-in zoom-in-95 duration-200 motion-reduce:animate-none ${legendCardText}`}
+      >
+        <Layers className="h-3.5 w-3.5 opacity-80" />
+        <span>Legend</span>
+        <ChevronDown className="h-3 w-3 opacity-70" />
+      </button>
+    );
+  }
+
   return (
     <>
       <div
-        className={`bd-glass-card--map ${isCompactDensity ? "rounded-lg px-1.5 py-1 text-[8px] @xl:px-1.5 @xl:py-1 @xl:text-[8px] @3xl:px-2 @3xl:text-[9px]" : "rounded-xl px-2 py-1 text-[9px] @xl:px-2.5 @xl:py-1.5 @xl:text-[10px] @3xl:px-3 @3xl:py-2 @3xl:text-[11px]"} ${legendCardText}`}
+        className={`bd-glass-card--map animate-in fade-in zoom-in-95 duration-200 motion-reduce:animate-none ${isCompactDensity ? "rounded-lg px-1.5 py-1 text-[8px] @xl:px-1.5 @xl:py-1 @xl:text-[8px] @3xl:px-2 @3xl:text-[9px]" : "rounded-xl px-2 py-1 text-[9px] @xl:px-2.5 @xl:py-1.5 @xl:text-[10px] @3xl:px-3 @3xl:py-2 @3xl:text-[11px]"} ${legendCardText}`}
       >
         <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+          {/*
+            Pass 12 (audit AI) — collapse button now shown at ALL densities
+            (was compact-only in Pass 78). Required to give default-density
+            users a way back to the collapsed pill state once they've
+            expanded — without it, expanded would be a one-way trip and
+            localStorage would lock them into the 20%-viewport state.
+          */}
+          <button
+            type="button"
+            onClick={() => setIsExpanded(false)}
+            aria-label="Collapse map legend"
+            aria-expanded={true}
+            className="inline-flex min-h-[28px] items-center gap-0.5 rounded px-1 opacity-70 hover:opacity-100"
+            title="Collapse legend"
+          >
+            <ChevronDown className="h-3 w-3 rotate-180" />
+          </button>
           <span className="inline-flex items-center gap-1">
             <span className="inline-block h-2 w-2 rounded-full bg-orange-500" />
             Origin

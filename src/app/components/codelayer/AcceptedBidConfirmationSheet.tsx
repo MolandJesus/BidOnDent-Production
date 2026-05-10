@@ -155,6 +155,10 @@ export default function AcceptedBidConfirmationSheet({
                     center={[bid.shopLatitude!, bid.shopLongitude!]}
                     zoom={12}
                     isLight={isLight}
+                    /* Pass 243 (KI-181 sub-pass B sweep): autoFit="always"
+                       is a no-op here (single shop → fittedView is null)
+                       but is declared explicitly for invariant compliance. */
+                    autoFit="always"
                   />
                 </div>
               )}

@@ -36,6 +36,10 @@ export default function HeroSection({
 }: HeroSectionProps) {
   const [loaded, setLoaded] = useState(false);
   const [activeValue, setActiveValue] = useState(0);
+  // Pass 79 (2026-05-07) — KI-131: WCAG 2.2.2 Pause/Stop/Hide. Once the user
+  // has manually selected a tagline (via a dot), the auto-rotation stops so
+  // mid-read users do not get the content yanked from under them.
+  const [userPaused, setUserPaused] = useState(false);
   const prefersReducedMotion = useRef(false);
   const isMobile = useMediaQuery("(max-width: 767px)");
   const parallaxY = useParallaxOffset(isMobile ? 0.06 : 0.12);
@@ -72,9 +76,10 @@ export default function HeroSection({
 
   useEffect(() => {
     if (prefersReducedMotion.current) return;
+    if (userPaused) return;
     const interval = setInterval(advanceCarousel, 3800);
     return () => clearInterval(interval);
-  }, [advanceCarousel]);
+  }, [advanceCarousel, userPaused]);
 
   const getButtonText = () => {
     if (isLoggedIn) {
@@ -364,7 +369,7 @@ export default function HeroSection({
                     : undefined,
                 }}
               >
-                <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full mr-2 animate-pulse" />
+                <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full mr-2 animate-pulse motion-reduce:animate-none" />
                 Now serving New York &middot; Free for customers
               </span>
             </div>
@@ -476,9 +481,13 @@ export default function HeroSection({
                     <button
                       key={i}
                       type="button"
-                      aria-label={`Value ${i + 1}`}
+                      aria-label={`Show tagline ${i + 1} of ${VALUE_STATEMENTS.length} (pauses auto-rotation)`}
+                      aria-pressed={activeValue === i}
                       className="flex h-11 w-11 items-center justify-center"
-                      onClick={() => setActiveValue(i)}
+                      onClick={() => {
+                        setActiveValue(i);
+                        setUserPaused(true);
+                      }}
                     >
                       <span
                         className="rounded-full transition-all duration-300"
@@ -729,7 +738,7 @@ export default function HeroSection({
                     : "inset 0 1px 0 rgba(196, 144, 65,0.22), 0 2px 12px rgba(2,6,23,0.30)",
                 }}
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse motion-reduce:animate-none" />
                 NY Coverage
               </div>
               <div

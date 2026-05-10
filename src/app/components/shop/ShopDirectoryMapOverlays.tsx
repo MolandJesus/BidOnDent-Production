@@ -144,7 +144,7 @@ export default function ShopDirectoryMapOverlays({
     <>
       {showDeviation && deviationPrompt && (
         <div
-          className={`pointer-events-auto absolute inset-x-0 ${overlayTopClass} z-[520] flex justify-center px-4`}
+          className={`pointer-events-auto absolute inset-x-0 ${overlayTopClass} z-[520] flex justify-center px-4 animate-in fade-in slide-in-from-top-2 duration-300 motion-reduce:animate-none`}
         >
           {deviationPrompt}
         </div>
@@ -152,7 +152,7 @@ export default function ShopDirectoryMapOverlays({
 
       {showIntelligence && (
         <div
-          className={`pointer-events-auto absolute ${intelligenceLeftClass} ${overlayTopClass} z-[510] max-w-[calc(100vw-2rem)] ${isCompactDensity ? "sm:max-w-[12.5rem]" : "sm:max-w-xs"}`}
+          className={`pointer-events-auto absolute ${intelligenceLeftClass} ${overlayTopClass} z-[510] max-w-[calc(100vw-2rem)] animate-in fade-in slide-in-from-top-2 duration-400 motion-reduce:animate-none ${isCompactDensity ? "sm:max-w-[12.5rem]" : "sm:max-w-xs"}`}
         >
           <button
             className={`flex items-center gap-1.5 rounded-xl border font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
@@ -182,7 +182,7 @@ export default function ShopDirectoryMapOverlays({
 
           {intelligenceExpanded && (
             <div
-              className={`mt-2 rounded-2xl border shadow-xl ${
+              className={`mt-2 rounded-2xl border shadow-xl animate-in fade-in slide-in-from-top-1 duration-200 motion-reduce:animate-none ${
                 isCompactDensity ? "p-2.5" : "p-3"
               } ${glassPanel}`}
             >

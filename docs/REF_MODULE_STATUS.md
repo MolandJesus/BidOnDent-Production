@@ -1,8 +1,23 @@
+---
+status: CANONICAL
+authority: REFERENCE
+scope: module-status
+canonical_source_of_truth: REF_MODULE_STATUS.md
+supersedes: []
+superseded_by: null
+safe_for_autopilot: true
+requires_owner_approval: false
+last_topology_audit: 2026-05-09
+runtime_impact_if_misunderstood: low
+ai_summary: Per-module completion matrix tracking which features are shipped/wired/mock/deferred.
+last_updated: 2026-05-09
+---
+
 # BidOnDent Module Completion Matrix
 
 **Created:** 2026-04-15 (Phase 5.3)
 **Last verified:** 2026-04-27 (Pass 1.6 prod deploy + customer recovery verification)
-**Status:** Active — canonical module completion reference
+**Status:** CANONICAL — module completion reference
 **Build baseline:** 3.28s, 0 errors, 60 PWA precache entries (as of last verification 2026-04-27 — current build is 3817.64 KiB precache stable per recent autopilot blocks; module-cell verification not re-run since 2026-04-27)
 **Edge functions:** Deployed version 50 on `wmdcnjgtsppftrofaqqa` per `REF_SYSTEM_STATE.md` (was version 47 at last full module verification 2026-04-27 — module cells unchanged by edge bundle increment; auth/storage invariants preserved per `verify_jwt: false` + `storage://` pointer pattern)
 

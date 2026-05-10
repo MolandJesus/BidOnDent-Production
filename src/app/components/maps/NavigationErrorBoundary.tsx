@@ -39,7 +39,7 @@ export default class NavigationErrorBoundary extends Component<Props, State> {
     if (!this.state.hasError) return this.props.children;
 
     return (
-      <div className="bd-glass-card flex flex-col items-center gap-3 p-6 text-center">
+      <div className="bd-glass-card animate-in fade-in slide-in-from-top-1 duration-200 motion-reduce:animate-none flex flex-col items-center gap-3 p-6 text-center">
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-600">
           <AlertTriangle className="h-5 w-5" />
         </div>

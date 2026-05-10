@@ -9,6 +9,15 @@ import {
   buildSupabaseFunctionUrl,
   SUPABASE_EDGE_ROUTES,
 } from "./supabase/runtime";
+// Pass 14 Step 2 (audit AI) — KI-165 root-cause class closure for
+// networkProfiles.ts: every `fetch()` here uses the canonical timeout
+// wrapper. 8s ceiling for GETs, 12s for POSTs.
+//
+// Pass 16 (audit AI) — retrofitted to import the shared `fetchWithTimeout`
+// extracted to `services/navigation/requestTimeout.ts` by co-worker AI's
+// Pass 15 helper extraction (3+ raw-fetch consumers reached threshold).
+// Local helper removed; behavior unchanged.
+import { fetchWithTimeout } from "./navigation/requestTimeout";
 
 const SHOP_PROFILE_ENDPOINT = buildSupabaseFunctionUrl(SUPABASE_EDGE_ROUTES.shopProfile);
 const INSURER_PROFILE_ENDPOINT = buildSupabaseFunctionUrl(SUPABASE_EDGE_ROUTES.insurerProfile);
@@ -153,10 +162,14 @@ export function getDirectoryInventoryUpdatedEventName() {
 }
 
 export async function fetchShopBusinessProfile(identity: WebsiteIdentity) {
-  const response = await fetch(`${SHOP_PROFILE_ENDPOINT}?${buildIdentityQuery(identity)}`, {
-    method: "GET",
-    headers: await getRequestHeaders(),
-  });
+  const response = await fetchWithTimeout(
+    `${SHOP_PROFILE_ENDPOINT}?${buildIdentityQuery(identity)}`,
+    {
+      method: "GET",
+      headers: await getRequestHeaders(),
+    },
+    8000,
+  );
 
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) {
@@ -170,14 +183,18 @@ export async function saveShopBusinessProfile(
   identity: WebsiteIdentity,
   profile: Omit<ShopBusinessProfile, "websiteUserKey" | "clerkUserId">
 ) {
-  const response = await fetch(SHOP_PROFILE_ENDPOINT, {
-    method: "POST",
-    headers: await getRequestHeaders(),
-    body: JSON.stringify({
-      identity,
-      profile,
-    }),
-  });
+  const response = await fetchWithTimeout(
+    SHOP_PROFILE_ENDPOINT,
+    {
+      method: "POST",
+      headers: await getRequestHeaders(),
+      body: JSON.stringify({
+        identity,
+        profile,
+      }),
+    },
+    12000,
+  );
 
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) {
@@ -190,10 +207,14 @@ export async function saveShopBusinessProfile(
 }
 
 export async function fetchInsurerBusinessProfile(identity: WebsiteIdentity) {
-  const response = await fetch(`${INSURER_PROFILE_ENDPOINT}?${buildIdentityQuery(identity)}`, {
-    method: "GET",
-    headers: await getRequestHeaders(),
-  });
+  const response = await fetchWithTimeout(
+    `${INSURER_PROFILE_ENDPOINT}?${buildIdentityQuery(identity)}`,
+    {
+      method: "GET",
+      headers: await getRequestHeaders(),
+    },
+    8000,
+  );
 
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) {
@@ -207,14 +228,18 @@ export async function saveInsurerBusinessProfile(
   identity: WebsiteIdentity,
   profile: Omit<InsurerBusinessProfile, "websiteUserKey" | "clerkUserId">
 ) {
-  const response = await fetch(INSURER_PROFILE_ENDPOINT, {
-    method: "POST",
-    headers: await getRequestHeaders(),
-    body: JSON.stringify({
-      identity,
-      profile,
-    }),
-  });
+  const response = await fetchWithTimeout(
+    INSURER_PROFILE_ENDPOINT,
+    {
+      method: "POST",
+      headers: await getRequestHeaders(),
+      body: JSON.stringify({
+        identity,
+        profile,
+      }),
+    },
+    12000,
+  );
 
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) {
@@ -235,10 +260,14 @@ export async function fetchDirectoryInventory(forceRefresh = false) {
     return directoryInventoryPromise;
   }
 
-  directoryInventoryPromise = fetch(DIRECTORY_INVENTORY_ENDPOINT, {
-    method: "GET",
-    headers: await getRequestHeaders(),
-  })
+  directoryInventoryPromise = fetchWithTimeout(
+    DIRECTORY_INVENTORY_ENDPOINT,
+    {
+      method: "GET",
+      headers: await getRequestHeaders(),
+    },
+    8000,
+  )
     .then(async (response) => {
       const payload = await response.json().catch(() => ({}));
       if (!response.ok) {

@@ -1,3 +1,18 @@
+---
+status: DEFERRED
+authority: PLAN
+scope: product-future-cards
+canonical_source_of_truth: PLAN_PRODUCT_FUTURE_CARDS.md
+supersedes: []
+superseded_by: null
+safe_for_autopilot: true
+requires_owner_approval: false
+last_topology_audit: 2026-05-09
+runtime_impact_if_misunderstood: low
+ai_summary: Forward-looking product work cards extracted from original PLAN_PRODUCT_BRAIN during v3.3 Phase 1.5c.
+last_updated: 2026-05-09
+---
+
 # BidOnDent — Product Future Cards (PLAN)
 
 **Authority level:** PLAN — forward-looking work cards extracted from the original `PLAN_PRODUCT_BRAIN.md` during Phase 1.5c of the v3.3 master plan (2026-05-04).

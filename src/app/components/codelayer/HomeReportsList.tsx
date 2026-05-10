@@ -108,7 +108,7 @@ export function HomeReportsList({
       </div>
 
       {usingSeedFallback && (
-        <div className="bd-notice--warn mb-3 flex items-center gap-2 rounded-lg px-3 py-2 text-xs">
+        <div className="bd-notice--warn mb-3 flex items-center gap-2 rounded-lg px-3 py-2 text-xs animate-in fade-in slide-in-from-top-1 duration-300 motion-reduce:animate-none">
           <AlertCircle className="h-3.5 w-3.5 shrink-0" />
           <span>
             Showing example requests for preview. Real requests will appear as customers submit

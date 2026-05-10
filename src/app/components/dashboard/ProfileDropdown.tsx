@@ -254,7 +254,7 @@ export default function ProfileDropdown({
             </span>
             <div className="flex items-center gap-1">
               <Radio
-                className={`w-3 h-3 ${notificationSyncActive ? "text-green-500 animate-pulse" : "text-gray-400"}`}
+                className={`w-3 h-3 ${notificationSyncActive ? "text-green-500 animate-pulse motion-reduce:animate-none" : "text-gray-400"}`}
               />
               <span
                 className={`text-xs ${notificationSyncActive ? (isLightAppearance ? "text-green-600" : "text-green-400") : isLightAppearance ? "text-slate-400" : "text-blue-200/50"}`}
@@ -327,7 +327,7 @@ export default function ProfileDropdown({
                     </p>
                   </div>
                   {!notification.read && (
-                    <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-1.5" />
+                    <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-1.5 animate-in fade-in zoom-in-95 duration-200 motion-reduce:animate-none" />
                   )}
                 </div>
               </button>

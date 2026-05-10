@@ -15,7 +15,7 @@ export default function PhotoGalleryLightbox({ photos, onClose }: PhotoGalleryLi
 
   return (
     <div
-      className="fixed inset-0 bg-black z-50 flex flex-col"
+      className="fixed inset-0 bg-black z-50 flex flex-col animate-in fade-in zoom-in-95 duration-200 motion-reduce:animate-none"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}

@@ -64,7 +64,7 @@ export default function StepPhotos({
 
       {uploadingPhoto && (
         <div className="bd-report-note backdrop-blur-sm rounded-2xl p-3 sm:p-4 mb-4 sm:mb-6 flex items-center gap-3">
-          <div className="animate-spin">
+          <div className="animate-spin motion-reduce:animate-none">
             <Cloud className="w-5 h-5 text-blue-400" />
           </div>
           <div className="flex-1">

@@ -1,0 +1,21 @@
+{
+  "capturedAt": "2026-05-07T03:25:36.827Z",
+  "page": "landing coverage map (unauthenticated)",
+  "viewport": "1280x900",
+  "tileRequests": {
+    "total": 33,
+    "failed": 1,
+    "firstUrl": "https://a.basemaps.cartocdn.com/rastertiles/voyager/10/301/383@2x.png",
+    "sampleFailures": [
+      {
+        "t": 1778124327719,
+        "failed": true,
+        "url": "https://b.basemaps.cartocdn.com/rastertiles/voyager/10/300/385@2x.png",
+        "err": "net::ERR_ABORTED"
+      }
+    ]
+  },
+  "responseStatusCounts": {
+    "200": 31
+  }
+}

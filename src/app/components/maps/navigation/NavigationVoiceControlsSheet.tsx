@@ -1,9 +1,10 @@
 import { Check, Play, X } from "lucide-react";
-import { cn } from "../../ui/utils";
+import { cn } from "@/platform-core/cn";
 import { getMapSurfaceTheme } from "../mapSurfaceTheme";
 import type { MapSurfaceTone } from "../serviceCoverageMapTypes";
 import type { NavigationVoiceMode, NavigationVoiceVolumePreset } from "../../../types/navigation";
 import { speakNavigationInstruction } from "../../../services/navigation/voiceGuidance";
+import { useEscapeKey } from "../../../hooks/useEscapeKey";
 
 type NavigationVoiceControlsSheetProps = {
   tone: MapSurfaceTone;
@@ -41,6 +42,10 @@ export default function NavigationVoiceControlsSheet({
   onClose,
 }: NavigationVoiceControlsSheetProps) {
   const theme = getMapSurfaceTheme(tone, true);
+
+  // Pass 63 (2026-05-07) — KI-118: ESC must close the sheet for keyboard-only
+  // users (WCAG 2.1 §2.1.2 keyboard-trap concern).
+  useEscapeKey(open, onClose);
 
   if (!open) {
     return null;

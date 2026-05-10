@@ -22,9 +22,9 @@ export default function InsurerClaimApprovalModal({
 }: InsurerClaimApprovalModalProps) {
   const isLight = appearanceMode === "light";
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-4 animate-in fade-in duration-200 motion-reduce:animate-none">
       <div
-        className={`rounded-t-2xl sm:rounded-2xl w-full max-w-md overflow-hidden border ${
+        className={`rounded-t-2xl sm:rounded-2xl w-full max-w-md overflow-hidden border animate-in slide-in-from-bottom-4 sm:slide-in-from-bottom-2 sm:zoom-in-95 duration-300 motion-reduce:animate-none ${
           isLight ? "bg-[#fffefa] border-slate-200/60 shadow-xl" : "border-blue-300/20"
         }`}
         style={
