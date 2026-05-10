@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { Clock, FileText, MapPin, Send, X } from "lucide-react";
-import { cn } from "../ui/utils";
+import { cn } from "@/platform-core/cn";
 import type { ShopMapListing } from "../../services/intelligence/shopMapExperience";
 
 type EstimateRequestSheetProps = {

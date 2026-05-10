@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from "react";
 import { DollarSign, Clock, FileText, X, Send } from "lucide-react";
-import { cn } from "../ui/utils";
+import { cn } from "@/platform-core/cn";
 import type { DamageReport } from "../../types";
 
 /** Strip non-numeric characters except decimal point, return raw number string */

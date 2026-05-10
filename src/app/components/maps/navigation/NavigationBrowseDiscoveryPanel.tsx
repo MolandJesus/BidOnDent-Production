@@ -8,7 +8,7 @@ import {
   Sparkles,
   Wrench,
 } from "lucide-react";
-import { cn } from "../../ui/utils";
+import { cn } from "@/platform-core/cn";
 import { formatApproximateDriveWindow } from "../mapRoutePresentation";
 import { getMapSurfaceTheme } from "../mapSurfaceTheme";
 import type {

@@ -11,7 +11,7 @@ import type { WebsiteIdentity } from "../../services/auth/websiteIdentity";
 import type { MarketUserType } from "../../services/intelligence/marketIntelligence";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 import type { DamageReport } from "../../types";
-import { cn } from "../ui/utils";
+import { cn } from "@/platform-core/cn";
 
 import type { useShopDirectorySession } from "../../hooks/useShopDirectorySession";
 import type { useShopDirectoryNavigation } from "../../hooks/useShopDirectoryNavigation";

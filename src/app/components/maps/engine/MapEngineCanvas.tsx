@@ -34,7 +34,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import type { StyleSpecification } from "maplibre-gl";
 import type { GeoJSON } from "geojson";
 
-import { cn } from "../../ui/utils";
+import { cn } from "@/platform-core/cn";
 import { markEngineMount, markEngineDispose } from "../../../utils/perfMarks";
 import {
   MapLibreViewportController,

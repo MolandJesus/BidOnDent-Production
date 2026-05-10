@@ -1,5 +1,5 @@
 import { AlertTriangle, LocateFixed, MapPinned, Navigation, RefreshCw, Search } from "lucide-react";
-import { cn } from "../ui/utils";
+import { cn } from "@/platform-core/cn";
 import { getMapSurfaceTheme } from "../maps/mapSurfaceTheme";
 import CoverageNearestShopCard from "./CoverageNearestShopCard";
 import {

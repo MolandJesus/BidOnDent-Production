@@ -18,7 +18,7 @@ import type {
 } from "../maps/serviceCoverageMapTypes";
 import CoverageBrowseMapOverlays from "./CoverageBrowseMapOverlays";
 import CoverageBrowseSidebarContent from "./CoverageBrowseSidebarContent";
-import { cn } from "../ui/utils";
+import { cn } from "@/platform-core/cn";
 import { getMapSurfaceTheme } from "../maps/mapSurfaceTheme";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
 import MobileMapBottomSheet from "./MobileMapBottomSheet";

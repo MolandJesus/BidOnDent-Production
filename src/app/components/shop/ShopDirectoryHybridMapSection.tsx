@@ -4,7 +4,7 @@ import ShopDirectoryMapOverlays from "./ShopDirectoryMapOverlays";
 import NavigationActiveManeuverCard from "../maps/navigation/NavigationActiveManeuverCard";
 import NavigationErrorBoundary from "../maps/NavigationErrorBoundary";
 import { getDefaultMapCenter } from "../../services/intelligence/shopMapExperience";
-import { cn } from "../ui/utils";
+import { cn } from "@/platform-core/cn";
 import type { MarketUserType } from "../../services/intelligence/marketIntelligence";
 import type { DamageReport } from "../../types";
 import type { useShopDirectorySession } from "../../hooks/useShopDirectorySession";

@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { cn } from "../ui/utils";
+import { cn } from "@/platform-core/cn";
 import MapNavigationHud from "./MapNavigationHud";
 import MapSurfaceControls from "./MapSurfaceControls";
 import MapSurfaceHeaderBadges from "./MapSurfaceHeaderBadges";

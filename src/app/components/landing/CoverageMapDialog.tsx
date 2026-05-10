@@ -7,7 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { cn } from "../ui/utils";
+import { cn } from "@/platform-core/cn";
 import type { CoverageNavigationExperience } from "../../hooks/useCoverageNavigationExperience";
 import type { NavigationProvider } from "../../services/navigation/externalNavigation";
 import { X } from "lucide-react";

@@ -1,5 +1,5 @@
 import { List, LocateFixed, Settings2, Volume2 } from "lucide-react";
-import { cn } from "../../ui/utils";
+import { cn } from "@/platform-core/cn";
 import type { MapSurfaceTone } from "../serviceCoverageMapTypes";
 
 type NavigationActionRailProps = {

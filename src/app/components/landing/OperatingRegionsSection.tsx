@@ -8,7 +8,7 @@ import type { NavigationDiscoveryRole } from "../../services/navigation/placeDis
 import { getMapSurfaceTheme } from "../maps/mapSurfaceTheme";
 import type { MapSurfaceTone } from "../maps/serviceCoverageMapTypes";
 import ServiceCoverageMap from "../maps/MapLibreServiceCoverageMap";
-import { cn } from "../ui/utils";
+import { cn } from "@/platform-core/cn";
 import CoverageMapDialog from "./CoverageMapDialog";
 import CoverageNearestShops from "./CoverageNearestShops";
 import CoverageSearchPanel from "./CoverageSearchPanel";

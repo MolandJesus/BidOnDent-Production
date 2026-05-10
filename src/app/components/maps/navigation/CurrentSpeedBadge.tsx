@@ -1,5 +1,5 @@
 import { Gauge, TriangleAlert } from "lucide-react";
-import { cn } from "../../ui/utils";
+import { cn } from "@/platform-core/cn";
 import type { MapSurfaceTone } from "../serviceCoverageMapTypes";
 
 type CurrentSpeedBadgeProps = {

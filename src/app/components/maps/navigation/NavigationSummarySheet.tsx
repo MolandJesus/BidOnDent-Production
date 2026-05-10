@@ -1,6 +1,6 @@
 import { ExternalLink, Phone, Share2 } from "lucide-react";
 import { useState } from "react";
-import { cn } from "../../ui/utils";
+import { cn } from "@/platform-core/cn";
 import {
   getNavigationProviderLabel,
   navigationProviderOptions,

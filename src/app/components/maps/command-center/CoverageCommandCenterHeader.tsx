@@ -1,7 +1,7 @@
 import type { ExternalNavigationSession } from "../../../types/navigation";
 import { getNavigationProviderLabel } from "../../../services/navigation/externalNavigation";
 import { formatLaunchTime } from "../mapRoutePresentation";
-import { cn } from "../../ui/utils";
+import { cn } from "@/platform-core/cn";
 import { getMapSurfaceTheme } from "../mapSurfaceTheme";
 import type { MapSurfaceTone } from "../serviceCoverageMapTypes";
 

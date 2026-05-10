@@ -6,7 +6,7 @@
  */
 
 import { MapPinned, Navigation, RefreshCcw, Route, TriangleAlert } from "lucide-react";
-import { cn } from "../../ui/utils";
+import { cn } from "@/platform-core/cn";
 import {
   formatApproximateDriveWindow,
   formatDistanceMiles,

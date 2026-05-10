@@ -7,7 +7,7 @@
  * derived route metrics (remaining duration/distance, following step, route geometry).
  */
 import { useEffect, useMemo, useState } from "react";
-import { cn } from "../ui/utils";
+import { cn } from "@/platform-core/cn";
 import type { CoverageNavigationExperience } from "../../hooks/useCoverageNavigationExperience";
 import type { NavigationProvider } from "../../services/navigation/externalNavigation";
 import { shareNavigationEta } from "../../services/navigation/shareEta";

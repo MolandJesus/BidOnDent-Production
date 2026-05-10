@@ -1,5 +1,5 @@
 import { Expand, LocateFixed, Map as MapIcon, MoonStar, Satellite, ScanSearch } from "lucide-react";
-import { cn } from "../ui/utils";
+import { cn } from "@/platform-core/cn";
 import { getMapSurfaceTheme } from "./mapSurfaceTheme";
 import type { MapSurfaceTone, MapTileMode } from "./serviceCoverageMapTypes";
 
