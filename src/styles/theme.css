@@ -412,7 +412,7 @@ body {
   .coverage-map-brand-badge {
     /* Pass 13h (2026-05-06) — top inset migrated from pure white 0.7 to
        cream 0.7 per LAW Light-Mode Surface Rule (no pure-white insets). */
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(var(--bd-blur-medium));
     box-shadow:
       0 10px 26px rgba(30, 58, 138, 0.16),
       inset 0 1px 0 rgba(252, 240, 208, 0.7),
@@ -474,8 +474,8 @@ body {
       rgba(232, 242, 254, 0.84),
       rgba(241, 245, 249, 0.76)
     ) !important;
-    backdrop-filter: blur(20px) saturate(1.1);
-    -webkit-backdrop-filter: blur(20px) saturate(1.1);
+    backdrop-filter: blur(var(--bd-blur-medium)) saturate(1.1);
+    -webkit-backdrop-filter: blur(var(--bd-blur-medium)) saturate(1.1);
     box-shadow:
       0 14px 32px rgba(15, 23, 42, 0.12),
       0 4px 12px rgba(59, 130, 246, 0.06),
@@ -543,8 +543,8 @@ body {
       rgba(232, 242, 254, 0.84),
       rgba(241, 245, 249, 0.72)
     ) !important;
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(var(--bd-glass-blur));
+    -webkit-backdrop-filter: blur(var(--bd-glass-blur));
     font-weight: 600 !important;
     font-size: 10px !important;
     color: rgb(51 65 85) !important;
@@ -563,8 +563,8 @@ body {
     isolation: isolate;
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.16);
-    backdrop-filter: blur(28px) saturate(1.12);
-    -webkit-backdrop-filter: blur(28px) saturate(1.12);
+    backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.12);
+    -webkit-backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.12);
     box-shadow:
       0 24px 60px rgba(15, 23, 42, 0.18),
       0 8px 26px rgba(59, 130, 246, 0.08),
@@ -756,8 +756,8 @@ body {
   background: linear-gradient(180deg, rgba(232, 242, 254, 0.84), rgba(241, 245, 249, 0.76));
   color: rgb(15 23 42);
   padding: 0.9rem 1rem;
-  backdrop-filter: blur(28px) saturate(1.12);
-  -webkit-backdrop-filter: blur(28px) saturate(1.12);
+  backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.12);
+  -webkit-backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.12);
   box-shadow:
     0 24px 60px rgba(15, 23, 42, 0.14),
     0 8px 26px rgba(59, 130, 246, 0.06),
@@ -965,6 +965,19 @@ body {
      Do NOT collapse into --bd-flow-ease — distinct emotional intent
      per LAW_ANIMATION_AND_ATMOSPHERE.md trust+spatial-continuity filter. */
   --bd-ease-entrance: cubic-bezier(0.2, 0.8, 0.2, 1);
+  /* Pass 283 (2026-05-09) — backdrop-blur depth tier tokens.
+     Three-tier hierarchy from theme.css inline survey (Pass 280 §8.1):
+       --bd-blur-heavy   — primary glass depth (was 20 inline sites)
+       --bd-blur-medium  — secondary glass / subdued depth (was 12 inline sites)
+       --bd-blur-light   — lightest glass / mobile-optimized (was 2 inline sites)
+     Existing --bd-glass-blur (16px) continues as the named glass-primitive
+     token; the 3 new tokens are TIER tokens for the depth hierarchy.
+     Variant values (14, 18, 22, 24, 26, 32 px) remain inline as
+     special-case adjustments — emotional asymmetry preserved per
+     relay #14 + Pass 281 §11 invariant #4 (atmospheric layer choreography). */
+  --bd-blur-heavy: 28px;
+  --bd-blur-medium: 20px;
+  --bd-blur-light: 10px;
 }
 
 /* ============================================================
@@ -1393,8 +1406,8 @@ body {
   padding: 0.2rem 0.55rem;
   font-size: 0.75rem;
   font-weight: 500;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(var(--bd-blur-light));
+  -webkit-backdrop-filter: blur(var(--bd-blur-light));
   /* Pass 27 (2026-05-06): cream-gold inset highlight per locked Premium Gold
      Palette (LAW_PROJECT_RULES.md § Light-Mode Surface Rule). Replaces pure
      white inset rgba(255,255,255,0.65) — same LAW slip pattern fixed in
@@ -1489,8 +1502,8 @@ body {
   border: 1px solid rgba(191, 219, 254, 0.5);
   background: linear-gradient(180deg, rgba(248, 252, 255, 0.86) 0%, rgba(240, 248, 255, 0.78) 100%);
   color: #0f172a;
-  backdrop-filter: blur(28px) saturate(1.5);
-  -webkit-backdrop-filter: blur(28px) saturate(1.5);
+  backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.5);
+  -webkit-backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.5);
   border-radius: var(--bd-radius-panel);
   box-shadow:
     var(--bd-glass-shadow-floating),
@@ -1536,8 +1549,8 @@ body {
 }
 
 .bd-shell-header--light {
-  backdrop-filter: blur(28px) saturate(1.4) brightness(1.02);
-  -webkit-backdrop-filter: blur(28px) saturate(1.4) brightness(1.02);
+  backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.4) brightness(1.02);
+  -webkit-backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.4) brightness(1.02);
   /* LAW: cool blue dominant glass + premium gold lamp + bronze trim. Matches
      the locked dashboard panel palette. See LAW_PROJECT_RULES.md § Premium
      Gold Palette. */
@@ -1938,8 +1951,8 @@ body {
     0 0 0 1px rgba(191, 219, 254, 0.28),
     0 0 24px rgba(59, 130, 246, 0.08),
     0 0 36px rgba(196, 130, 45, 0.16);
-  backdrop-filter: blur(20px) saturate(1.4);
-  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  backdrop-filter: blur(var(--bd-blur-medium)) saturate(1.4);
+  -webkit-backdrop-filter: blur(var(--bd-blur-medium)) saturate(1.4);
 }
 
 .dark .bd-glass-card--map,
@@ -2204,8 +2217,8 @@ body {
     radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255, 248, 235, 0.12), transparent 70%),
     linear-gradient(180deg, rgba(255, 253, 248, 0.9) 0%, rgba(250, 247, 240, 0.86) 100%);
   color: #1e293b;
-  backdrop-filter: blur(28px) saturate(1.5);
-  -webkit-backdrop-filter: blur(28px) saturate(1.5);
+  backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.5);
+  -webkit-backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.5);
   box-shadow:
     0 8px 32px rgba(15, 23, 42, 0.08),
     0 0 0 1px rgba(200, 180, 150, 0.1),
@@ -2220,8 +2233,8 @@ body {
     radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255, 248, 235, 0.12), transparent 70%),
     linear-gradient(180deg, rgba(255, 253, 248, 0.92) 0%, rgba(250, 247, 240, 0.88) 100%);
   color: #1e293b;
-  backdrop-filter: blur(28px) saturate(1.5);
-  -webkit-backdrop-filter: blur(28px) saturate(1.5);
+  backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.5);
+  -webkit-backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.5);
   box-shadow:
     0 8px 32px rgba(15, 23, 42, 0.08),
     0 0 0 1px rgba(200, 180, 150, 0.1),
@@ -2348,8 +2361,8 @@ body {
     radial-gradient(ellipse 80% 50% at 50% 0%, rgba(196, 144, 65, 0.05), transparent 70%),
     linear-gradient(180deg, rgba(244, 250, 254, 0.84) 0%, rgba(226, 238, 252, 0.76) 100%);
   color: #1e293b;
-  backdrop-filter: blur(28px) saturate(1.5);
-  -webkit-backdrop-filter: blur(28px) saturate(1.5);
+  backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.5);
+  -webkit-backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.5);
   box-shadow:
     0 22px 60px rgba(15, 42, 92, 0.15),
     0 0 0 1px rgba(196, 144, 65, 0.24),
@@ -2611,8 +2624,8 @@ body {
   background:
     radial-gradient(ellipse 80% 50% at 50% 0%, rgba(96, 165, 250, 0.06), transparent 70%),
     linear-gradient(180deg, rgba(255, 253, 248, 0.84) 0%, rgba(250, 247, 240, 0.76) 100%);
-  backdrop-filter: blur(28px) saturate(1.4);
-  -webkit-backdrop-filter: blur(28px) saturate(1.4);
+  backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.4);
+  -webkit-backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.4);
   box-shadow:
     0 16px 42px rgba(15, 23, 42, 0.1),
     inset 0 1px 0 rgba(255, 255, 252, 0.96),
@@ -2650,8 +2663,8 @@ body {
 
 [data-appearance-mode="light"] .bd-report-progress {
   background: linear-gradient(180deg, rgba(255, 253, 248, 0.8) 0%, rgba(250, 247, 240, 0.72) 100%);
-  backdrop-filter: blur(28px) saturate(1.4);
-  -webkit-backdrop-filter: blur(28px) saturate(1.4);
+  backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.4);
+  -webkit-backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.4);
   box-shadow: inset 0 1px 0 rgba(255, 255, 252, 0.94);
 }
 
@@ -2780,18 +2793,18 @@ body {
 
 /* ── Light-mode frosted blur for report surfaces ── */
 [data-appearance-mode="light"] .bd-report-section {
-  backdrop-filter: blur(28px) saturate(1.4);
-  -webkit-backdrop-filter: blur(28px) saturate(1.4);
+  backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.4);
+  -webkit-backdrop-filter: blur(var(--bd-blur-heavy)) saturate(1.4);
 }
 
 [data-appearance-mode="light"] .bd-report-input {
-  backdrop-filter: blur(20px) saturate(1.3);
-  -webkit-backdrop-filter: blur(20px) saturate(1.3);
+  backdrop-filter: blur(var(--bd-blur-medium)) saturate(1.3);
+  -webkit-backdrop-filter: blur(var(--bd-blur-medium)) saturate(1.3);
 }
 
 [data-appearance-mode="light"] .bd-report-note {
-  backdrop-filter: blur(20px) saturate(1.3);
-  -webkit-backdrop-filter: blur(20px) saturate(1.3);
+  backdrop-filter: blur(var(--bd-blur-medium)) saturate(1.3);
+  -webkit-backdrop-filter: blur(var(--bd-blur-medium)) saturate(1.3);
 }
 
 .bd-report-divider-line {
@@ -2950,7 +2963,7 @@ body {
      instead of having premium gold lighting coming from behind"): body
      opacity dropped 0.92/0.88 -> 0.78/0.72 so the DashboardAtmosphere
      page-level gold lamps (D6/D7/D8/D9/D10) show THROUGH the translucent
-     glass body. Combined with existing backdrop-filter blur(20px), this
+     glass body. Combined with existing backdrop-filter blur(var(--bd-blur-medium)), this
      creates real liquid-glass refraction instead of stamped paint.
      Internal ceiling-lamp radial held at 0.18 (Pass A win) — the radial
      paints subtle warm presence on the top edge that catches the eye, the
@@ -3157,8 +3170,8 @@ body {
   overflow: hidden;
   /* Liquid glass: blur for translucency + saturate for shimmer + slight
      brightness boost to make the glass feel illuminated, not flat. */
-  backdrop-filter: blur(20px) saturate(1.4) brightness(1.02);
-  -webkit-backdrop-filter: blur(20px) saturate(1.4) brightness(1.02);
+  backdrop-filter: blur(var(--bd-blur-medium)) saturate(1.4) brightness(1.02);
+  -webkit-backdrop-filter: blur(var(--bd-blur-medium)) saturate(1.4) brightness(1.02);
 }
 
 .bd-dashboard-panel::before,
