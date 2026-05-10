@@ -614,7 +614,9 @@ body {
   }
 
   .map-ui-enter {
-    animation: mapUiEnter 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    /* Pass 282 (2026-05-09): easing curve tokenized as --bd-ease-entrance.
+       Duration 420ms preserved inline (per-purpose value). */
+    animation: mapUiEnter 420ms var(--bd-ease-entrance) both;
   }
 
   .map-ui-enter-delay-1 {
@@ -762,7 +764,9 @@ body {
     inset 0 1px 0 rgba(252, 240, 208, 0.5),
     inset 0 -1px 0 rgba(148, 163, 184, 0.06);
   font-family: "SF Pro Display", "SF Pro Text", "Segoe UI", sans-serif;
-  animation: mapPopupEnter 280ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  /* Pass 282 (2026-05-09): easing curve tokenized as --bd-ease-entrance.
+     Duration 280ms preserved inline (per-purpose value). */
+  animation: mapPopupEnter 280ms var(--bd-ease-entrance) both;
 }
 
 @keyframes mapPopupEnter {
@@ -954,6 +958,13 @@ body {
   --bd-flow-loop-med: 18s;
   --bd-flow-loop-fast: 4.2s;
   --bd-flow-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  /* Pass 282 (2026-05-09) — entrance physics easing, distinct from flow-ease.
+     Used by mapUiEnter (line 617) and mapPopupEnter (line 765). The
+     cubic-bezier(0.2, 0.8, 0.2, 1) overshoot-then-settle curve carries
+     emotional weight separate from --bd-flow-ease infinite-loop motion.
+     Do NOT collapse into --bd-flow-ease — distinct emotional intent
+     per LAW_ANIMATION_AND_ATMOSPHERE.md trust+spatial-continuity filter. */
+  --bd-ease-entrance: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 /* ============================================================
@@ -1307,8 +1318,11 @@ body {
     radial-gradient(ellipse 80% 60% at 50% 0%, rgba(196, 130, 45, 0.18) 0%, transparent 60%),
     radial-gradient(ellipse 60% 80% at 100% 50%, rgba(220, 150, 60, 0.1) 0%, transparent 70%);
   /* orbDrift gives a 4-stop translate+scale loop. 28s keeps it under perceptual
-     threshold — the eye registers depth, not motion. */
-  animation: orbDrift 28s ease-in-out infinite;
+     threshold — the eye registers depth, not motion.
+     Pass 282 (2026-05-09): 28s tokenized as --bd-flow-loop-slow (canonical
+     atmospheric drift cadence). Counter-pair at line 1335 stays inline at
+     36s (variant; not tokenized — distinct emotional intent). */
+  animation: orbDrift var(--bd-flow-loop-slow) ease-in-out infinite;
 }
 
 .bd-dashboard-atmosphere::after {
